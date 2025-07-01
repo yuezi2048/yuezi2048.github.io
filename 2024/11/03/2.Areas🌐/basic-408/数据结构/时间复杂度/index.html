@@ -1,0 +1,235 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>时间复杂度 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="算法：对特定问题的求解步骤的描述，是指令的有限序列，其中每条指令表示一个或多个操作 特性：  有穷性，确定性，可行性，输入（0&#x2F;1&#x2F;多个）和输出（1个或多个）  “好”的算法应该满足：正确的、可读性、健壮性、高效率（时间）和底存储量（空间）  高效率：运行时间短  &#x3D;&#x3D;&#x3D;&gt; 时间复杂度 低存储量：运行所占用的空间小 &#x3D;&#x3D;&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="时间复杂度">
+<meta property="og:url" content="https://yuezi2048.github.io/2024/11/03/2.Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="算法：对特定问题的求解步骤的描述，是指令的有限序列，其中每条指令表示一个或多个操作 特性：  有穷性，确定性，可行性，输入（0&#x2F;1&#x2F;多个）和输出（1个或多个）  “好”的算法应该满足：正确的、可读性、健壮性、高效率（时间）和底存储量（空间）  高效率：运行时间短  &#x3D;&#x3D;&#x3D;&gt; 时间复杂度 低存储量：运行所占用的空间小 &#x3D;&#x3D;&amp;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2024-11-03T10:10:56.000Z">
+<meta property="article:modified_time" content="2024-11-03T10:10:56.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="数据结构">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "时间复杂度",
+  "url": "https://yuezi2048.github.io/2024/11/03/2.Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2024-11-03T10:10:56.000Z",
+  "dateModified": "2024-11-03T10:10:56.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2024/11/03/2.Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '时间复杂度',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">275</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">45</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">65</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">时间复杂度</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">时间复杂度</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-11-03T10:10:56.000Z" title="发表于 2024-11-03 18:10:56">2024-11-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-11-03T10:10:56.000Z" title="更新于 2024-11-03 18:10:56">2024-11-03</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/basic-408/">basic-408</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">817</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>2分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>算法：对特定问题的求解步骤的描述，是指令的有限序列，其中每条指令表示一个或多个操作</p>
+<p>特性：</p>
+<ul>
+<li><p>有穷性，确定性，可行性，输入（0&#x2F;1&#x2F;多个）和输出（1个或多个）</p>
+</li>
+<li><p>“好”的算法应该满足：正确的、可读性、健壮性、高效率（时间）和底存储量（空间）</p>
+<ul>
+<li>高效率：运行时间短  &#x3D;&#x3D;&#x3D;&gt; <code>时间复杂度</code></li>
+<li>低存储量：运行所占用的空间小 &#x3D;&#x3D;&gt; <code>空间复杂度</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>统计时间，可以通过采用一些统计，监控的函数&#x2F;方法，得到具体的精确的运行时间（<code>事后统计法</code>，马后炮）</p>
+<p>局限性：受测试平台环境的影响，不同性能的硬件配置，对于同一个代码的运行时间是不一样的</p>
+<p>采用<code>事前估计法</code></p>
+<ul>
+<li>高级语言每个语句执行时间差别不大，所以我们可以认为执行时间是一样的，一般是取执行时间最大的单条语句的时间，方便我们估计。</li>
+<li>执行时间和语句的执行条数成正比，给出一个概念<code> 语句频度/时间频度</code>：某条语句在算法中被重复执行的次数，一般将算法中所有频度之和为T (n)<ul>
+<li>T(n) 是关于<code>问题规模 / 数据规模 n</code> 的函数</li>
+<li>引入一个辅助函数 f(n) 来表示，和T(n)是同量级的简单函数（同阶无穷大）</li>
+</ul>
+</li>
+<li>O(f(n)) 就是<code>渐近时间复杂度</code></li>
+<li><strong><code>记（重要）：对于C/C++语言来说，目前常用的测试平台，1s大概最多可以执行10^8条语句</code></strong><ul>
+<li>做题之前先估计时间复杂度</li>
+</ul>
+</li>
+<li>时间复杂度由小到大：Ο(1)＜ Ο(log2n)＜ Ο(n)＜ Ο(nlog2n)＜ Ο(n2)＜ Ο(n3)＜ …＜ Ο(2n)＜ Ο(n!)  </li>
+<li>计算时间复杂度O(f(n))的方式：<strong>去常数、去系数、抓大头</strong>（只需要能评估出数量级即可）</li>
+</ul>
+<hr>
+<p>  最优时间复杂度、最差时间复杂度、平均时间复杂度（期望  概率*取值求和）</p>
+<ul>
+<li>保证健壮性，我们主要关注最坏时间复杂度</li>
+</ul>
+<p><code>均摊时间复杂度</code></p>
+<ul>
+<li>执行n次O(1)，就要执行一个O(n)操作，我可以把后面的O(n)操作看成是前面执行2n次O(1)操作，那么实际上时间复杂度还是O(1)</li>
+<li>大的时间复杂度跟了很多小的时间复杂度，可以把大的时间瘫倒小的时间复杂度，遇到的情况很少</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// array表示⼀个⻓度为n的数组</span></span><br><span class="line"><span class="comment">// 代码中的array.length就等于n</span></span><br><span class="line"><span class="type">int</span>[] array = <span class="keyword">new</span> <span class="type">int</span>[n];</span><br><span class="line"><span class="type">int</span> count = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">insert</span><span class="params">(<span class="type">int</span> val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (count == array.length) &#123;</span><br><span class="line">        <span class="type">int</span> sum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; array.length; ++i) &#123;</span><br><span class="line">            sum = sum + array[i];</span><br><span class="line">        &#125;</span><br><span class="line">        array[<span class="number">0</span>] = sum;</span><br><span class="line">        count = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    array[count] = val;</span><br><span class="line">    ++count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>重点掌握：根据代码计算时间复杂度</p>
+<p>而对于递归的时间复杂度，要用到<code>主定理公式</code>，实际写算法还是以思路分析为主</p>
+<p><strong>空间复杂度</strong></p>
+<p>只算除了临时变量输入输出之外的<code>辅助空间</code>，计算方法和时间复杂度一样</p>
+<ul>
+<li>因此我们会说O(1)的空间时间复杂度，会叫<code>原地算法</code></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2024/11/03/2.Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6/">https://yuezi2048.github.io/2024/11/03/2.Areas🌐/basic-408/数据结构/时间复杂度/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2024/10/30/2.Areas%F0%9F%8C%90/back-end-java/6.SSM/Spring/1.%20%E6%A6%82%E8%BF%B0_%E5%9F%BA%E4%BA%8EXML%E9%85%8D%E7%BD%AEIOC/" title="1. 概述_基于XML配置IOC"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">1. 概述_基于XML配置IOC</div></div><div class="info-2"><div class="info-item-1">一、概述_基于XML配置IOC1.1 Spring的基本概述1.1.1 Spring是什么 Spring 是分层的 Java SE&#x2F;EE 应用 full-stack轻量级开源框架 以 IoC(Inverse Of Control：控制反转)和AOP(Aspect Oriented Programming：面向切面编程)为内核提供了展现层 SpringMVC 和持久层   Spring JDBC 以及业务层事务管理等众多的企业级应用技术，还能整合众多著名的第三方框架和类库，逐渐成为使用最多的 Java EE 企业应用开源框架  发展历程 1997 年 IBM 提出了 EJB 的思想1998 年，SUN 制定开发标准规范 EJB1.01999 年，EJB1.1 发布2001 年，EJB2.0 发布2003 年，EJB2.1 发布2006 年，EJB3.0 发布Rod Johnson（spring 之父）Expert One-to-One J2EE Design and Development(2002)阐述了 J2EE 使用 EJB 开发设计的优点及解决方案Expert...</div></div></div></a><a class="pagination-related" href="/2024/11/05/2.Areas%F0%9F%8C%90/back-end-java/1.JavaSE/%E5%9F%BA%E7%A1%80%E7%AF%87%E2%80%94%E2%80%94%E9%9F%A9%E9%A1%BA%E5%B9%B3/01.%E5%86%85%E5%AE%B9%E6%A1%86%E6%9E%B6/" title="01.内容框架"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">01.内容框架</div></div><div class="info-2"><div class="info-item-1">一、JavaSE内容介绍三个阶段循序渐进学习JavaSE，每个章节课后有面试/联系题 + 讲解，每个阶段结束后用项目检验巩固学习成果。 第一阶段：编程思想(P001 - P373)  第01章 内容介绍(P001 - P006)第02章 Java概述(P007 - P034)第03章 变量(P035 - P062)第04章 运算符(P063 - P103)第05章 程序控制结构(P104 - P155)第06章 数组、排序和查找(P156 - P191)第07章 面向对象编程（基础部分）(P192 - P263)第08章 面向对象编程（中级部分）(P264 - P361)第09章 房屋出租系统(P362 - P373)  第二阶段：编程能力(P374 - P661)  第10章 面向对象编程（高级部分）(P374 - P424)第11章 枚举和注解(P425 - P443)第12章 异常(P444 - P459)第13章 常用类(P460 - P498)第14章 集合(P499 - P553)第15章 泛型(P554 - P568)第16章 坦克大战1(P569 -...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2024/10/05/2.Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/1.%20C%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" title="1. C语言基础"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-05</div><div class="info-item-2">1. C语言基础</div></div><div class="info-2"><div class="info-item-1">一、基础语法1.1 编译过程程序为什么要被编译器编译之后才能运行？  机器识别的只有机器语言（由二进制的0和1组成） 因此我们必须将高级语言翻译为能让机器识别的机器语言程序  转换成机器语言的过程是怎么样的？  预处理：展开头文件&#x2F;宏替换&#x2F;去注释&#x2F;条件编译 编译：检查语法，生成汇编代码 汇编：将汇编代码转化为二进制的机器码 链接合成可执行的程序，并在声明的文件找相关的定义  1.2 宏定义和typedef关键字define  使用一个标识符来表示一个字符串，这就是宏，标识符叫宏名 替换文本可以是常数、表达式、字符串、基本数据类型、简单函数  typedef  为数据类型定义新名称，常用于结构体（对struct {} 起一个别名）  #include &lt;stdio.h&gt;#define ll long long#define Max 20#define MAX(x, y) ((x) &gt; (y) ? (x) : (y))typedef long long lll;ll a;lll b;int aa[Max];    typedef...</div></div></div></a><a class="pagination-related" href="/2024/09/12/2.Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/2.DS%E6%A6%82%E8%BF%B0%E5%92%8C%E9%A1%BA%E5%BA%8F%E8%A1%A8/" title="2.DS概述和顺序表"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-12</div><div class="info-item-2">2.DS概述和顺序表</div></div><div class="info-2"><div class="info-item-1">一、数据结构基本概念1.1 抽象数据类型我们现在有基本数据类型：  int表示2^32个数字：[-2^31, 2^31-1]  为了表示更多的数据类型表示实际复杂的业务，我们需要一个抽象数据类型 抽象数据类型（可自定义）：静态的数据 + 动态的操作（函数） 引出数据结构Data Structure：数据（data）和数据之间的关系（structure） 我们使用抽象数据类型来定义一个数据结构  分析问题：找到数据之间逻辑的关系（逻辑结构） 解决问题：如何把数据和数据之间的关系存入存储器（存储结构&#x2F;物理结构&#x2F;映像） 关系：存储结构是用计算机语言实现的逻辑结构  1.2 逻辑结构和存储结构数据结构可分为两块：逻辑结构和存储结构 逻辑结构  线性逻辑结构：一对一（线性表 栈 队列） 非线性逻辑结构：一对多（树形结构）、多对多（图型结构）  存储结构  顺序存储：逻辑上相邻的元素，在存储中位置也相邻（数组） 链式存储：逻辑上相邻的元素，存储器的位置可以不相邻，但需要实现逻辑上的相邻（链表） 索引存储，散列存储（Hash）...</div></div></div></a><a class="pagination-related" href="/2025/03/25/2.Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/4.%E6%A0%91/" title="4.树"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-03-25</div><div class="info-item-2">4.树</div></div><div class="info-2"><div class="info-item-1">〇、前置知识——递归 递归：某个函数直接或间接的调用自身（递进 回归）  （基于栈实现）   递归的本质：函数调用（创建副本）  如何理解递归代码：画出递归调用图  递归函数组成  递归出口 &#x2F; 终止条件 &#x2F; 边界条件：停止递归调用的条件（避免栈溢出 &#x2F; 爆内存） 特别注意：这里往往出问题（条件找错 &#x2F; 没找全条件）   递归体   解决的问题  如果一个问题能分成若干个小问题，并且小问题的解决思路和大问题一样 大问题和小问题的数据规模不一样   开发中怎么写递归函数  写的时候不要往深层次想执行过程，只需要知道函数解决什么问题的（一次递归的结果），该怎么分配子问题 即编码的时候更多的看成是黑盒问题而不是白盒问题，验证和复盘的时候可以追究白盒      #include&lt;stdio.h&gt;#include&lt;stdlib.h&gt;// 累加问题 1 + 2 + 3 + ... + n/*	5	15*/int add(int n) &#123;    if (n == 1) &#123; // 递归出口       ...</div></div></div></a><a class="pagination-related" href="/2025/04/07/2.Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/5.%E5%9B%BE/" title="5.图"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-07</div><div class="info-item-2">5.图</div></div><div class="info-2"><div class="info-item-1">五、图5.1 基本概念 图：用来描述事物之间相互联系或相互作用的多对多的关系 图是由两个有限集合构成的，分别是点集V和边集E，其中边是通过两个端点来描述的 分类标准1：有无自边和重边，分为简单图（默认）和非简单图 分类标准2：根据边是否有方向性$&lt;v_i,v_j&gt;$，分为有向图和无向图 对于有向图来说，起点$v_i$是弧尾，终点$v_j$是弧头 一条无向边相当于两条有向边（为图的存储铺垫） 环&#x2F;回路：从图中某点出发，沿着边走，最终回到起点 —&gt; 有向无环图（DAG图） 完全有向图：图有n个点，一共有$n(n-1)$个边 完全无向图：图有n个点，一共有$\frac{n(n-1)}{2}$个边   分类标准3：根据边的数目 分为稠密图和稀疏图 分类标准4：根据边是否有权值 分为...</div></div></div></a><a class="pagination-related" href="/2024/10/15/2.Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/3.%E6%A0%88%E5%92%8C%E9%98%9F%E5%88%97/" title="3.栈和队列"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-15</div><div class="info-item-2">3.栈和队列</div></div><div class="info-2"><div class="info-item-1">一、栈1.1 受限逻辑结构栈：受限的线性表（逻辑结构）—&gt; 顺序表和链表是物理结构 线性表：可以在任意位置进行操作 对线性表的操作进行约束：只允许在一端进行添加或者删除，另一端及中间位置不能操作：栈（Stack），生活例子：弹夹  允许操作的一端：栈顶 不允许操作的一段：栈底 如果没有元素：空栈  栈相关方法：  操作 入栈 出栈   判断 判满 判空  性质：先进后出 应用场景：  函数调用的实现（递归） 倒着走的业务逻辑（历史记录 撤销） 内存的堆栈：物理 STL库：stack容器  –&gt; 栈  1.2 顺序存储实现存储结构 顺序存储实现栈：顺序栈 —-&gt; 数组a[MAX_SIZE] 初始化栈：栈底固定不动，在下标0位置。栈顶是活动的，需要变量（int）标记栈顶：top —&gt; 为了描述方便，通常借用指针称呼top变量：栈顶指针  top &#x3D; -1 —&gt; top指向栈顶元素真正的位置 入栈：需判满，top++，指向新的栈顶位置，再在top下标位置放入元素  –&gt; a[++top] &#x3D;...</div></div></div></a><a class="pagination-related" href="/2024/12/10/2.Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/6.%20%E6%8E%92%E5%BA%8F/" title="6. 排序"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-10</div><div class="info-item-2">6. 排序</div></div><div class="info-2"><div class="info-item-1">六、排序（默认升序）  就地排序、非就地排序 –&gt; 空间复杂度 内部排序、外部排序（只能拿一部分数据在内存中排，其他的存在外存中）—&gt; 基本上是内部排序 稳定性：重复数据的相对位置如果不发生变化，那么就是稳定交换 时间复杂度  排序算法包括：  插入：直接插入排序、shell排序（缩小增量排序） 交换：冒泡排序、快速排序 选择：简单选择排序、堆排序（堆） 归并排序：2-路归并 计数排序：桶排序、基数排序  约定  上课案例：a[1] - a[n] 数组分成两部分：乱序区、有序区 初始：整个数组是乱序区 乱序区不断缩小，有序区不断增大 最终：整个数组是有序区    6.1 插入6.1.1 插入排序 初始：a[1]是有序区、a[2]-a[n]是乱序区 每次把乱序区的一个数据插入到有序区中的合适位置，有序区长度+1，乱序区长度-1，执行n-1次为止   如何把数据插入到有序区的合适位置，即对于a[1]~a[i-1]的有序区，如何将a[i]加入到有序区中   找位置：a[i]从后往前比，直到遇到第一个小于等于a[i]的数a[k]，则 k+1...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">275</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">45</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">65</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/01/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2025-07-01T09:26:34.261Z" title="发表于 2025-07-01 17:26:34">2025-07-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/01/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/LightGCN%E7%9A%84%E6%BC%94%E5%8C%96/5.1%20HyperGCN/" title="5.1 HyperGCN">5.1 HyperGCN</a><time datetime="2025-07-01T09:21:17.000Z" title="发表于 2025-07-01 17:21:17">2025-07-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/01/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/LightGCN%E7%9A%84%E6%BC%94%E5%8C%96/5.GDE/" title="5.GDE">5.GDE</a><time datetime="2025-07-01T09:08:25.000Z" title="发表于 2025-07-01 17:08:25">2025-07-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/01/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/LightGCN%E7%9A%84%E6%BC%94%E5%8C%96/4.SimGCL/" title="4.SimGCL">4.SimGCL</a><time datetime="2025-07-01T08:43:20.000Z" title="发表于 2025-07-01 16:43:20">2025-07-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/01/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95/%E6%B7%BB%E5%8A%A0%E9%9A%8F%E6%9C%BA%E5%99%AA%E5%A3%B0/" title="添加随机噪声">添加随机噪声</a><time datetime="2025-07-01T08:37:45.000Z" title="发表于 2025-07-01 16:37:45">2025-07-01</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>
