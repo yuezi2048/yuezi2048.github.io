@@ -1,0 +1,872 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>7.前端工程化上篇_ES6语法_环境搭建 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="七、前端工程化1. 前端工程化是什么 前端工程化是软件工程中单独解决前端在开发流程中模块化、组件化、规范化、自动化的问题，目的是提高效率和降低成本   前端工程化实现的技术栈有很多,我们采用ES6+nodejs+npm+Vite+VUE3+router+pinia+axios+Element-plus组合来实现   ECMAScript6       VUE3中大量使用ES6语法 Nodejs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="7.前端工程化上篇_ES6语法_环境搭建">
+<meta property="og:url" content="https://yuezi2048.github.io/2024/10/02/2.Areas%F0%9F%8C%90/back-end-java/4.JavaWeb/7.%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E4%B8%8A%E7%AF%87_ES6%E8%AF%AD%E6%B3%95_%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="七、前端工程化1. 前端工程化是什么 前端工程化是软件工程中单独解决前端在开发流程中模块化、组件化、规范化、自动化的问题，目的是提高效率和降低成本   前端工程化实现的技术栈有很多,我们采用ES6+nodejs+npm+Vite+VUE3+router+pinia+axios+Element-plus组合来实现   ECMAScript6       VUE3中大量使用ES6语法 Nodejs">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2024-10-02T11:16:16.000Z">
+<meta property="article:modified_time" content="2024-10-02T11:16:16.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="4.JavaWeb">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "7.前端工程化上篇_ES6语法_环境搭建",
+  "url": "https://yuezi2048.github.io/2024/10/02/2.Areas%F0%9F%8C%90/back-end-java/4.JavaWeb/7.%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E4%B8%8A%E7%AF%87_ES6%E8%AF%AD%E6%B3%95_%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2024-10-02T11:16:16.000Z",
+  "dateModified": "2024-10-02T11:16:16.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2024/10/02/2.Areas%F0%9F%8C%90/back-end-java/4.JavaWeb/7.%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E4%B8%8A%E7%AF%87_ES6%E8%AF%AD%E6%B3%95_%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '7.前端工程化上篇_ES6语法_环境搭建',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">423</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">59</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">84</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">7.前端工程化上篇_ES6语法_环境搭建</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">7.前端工程化上篇_ES6语法_环境搭建</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-10-02T11:16:16.000Z" title="发表于 2024-10-02 19:16:16">2024-10-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-02T11:16:16.000Z" title="更新于 2024-10-02 19:16:16">2024-10-02</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/">back-end-java</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/4-JavaWeb/">4.JavaWeb</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">10.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>41分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="七、前端工程化"><a href="#七、前端工程化" class="headerlink" title="七、前端工程化"></a>七、前端工程化</h1><h2 id="1-前端工程化是什么"><a href="#1-前端工程化是什么" class="headerlink" title="1. 前端工程化是什么"></a>1. 前端工程化是什么</h2><blockquote>
+<p>前端工程化是软件工程中<code>单独</code>解决前端在开发流程中<code>模块化、组件化、规范化、自动化</code>的问题，目的是提高效率和降低成本</p>
+</blockquote>
+<blockquote>
+<p>前端工程化实现的技术栈有很多,我们采用<code>ES6+nodejs+npm+Vite+VUE3+router+pinia+axios+Element-plus</code>组合来实现</p>
+</blockquote>
+<ul>
+<li>ECMAScript6       VUE3中大量使用ES6语法</li>
+<li>Nodejs                前端项目运行环境</li>
+<li>npm                    依赖下载工具</li>
+<li>vite                      前端项目构建工具</li>
+<li>VUE3                   优秀的渐进式前端框架</li>
+<li>router                 通过路由实现页面切换</li>
+<li>pinia                   通过状态管理实现组件数据传递</li>
+<li>axios                   ajax异步请求封装技术实现前后端数据交互</li>
+<li>Element-plus     可以提供丰富的快速构建网页的组件仓库</li>
+</ul>
+<h2 id="2-ECMA6Script-ES6"><a href="#2-ECMA6Script-ES6" class="headerlink" title="2. ECMA6Script(ES6)"></a>2. ECMA6Script(ES6)</h2><h3 id="2-1-es6简介"><a href="#2-1-es6简介" class="headerlink" title="2.1 es6简介"></a>2.1 es6简介</h3><blockquote>
+<p>CMAScript 6，简称ES6，是<strong>JavaScript</strong>语言的一次重大更新。它于<strong>2015</strong>年发布，是原来的ECMAScript标准的第六个版本。ES6带来了大量的新特性，包括箭头函数、模板字符串、let和const关键字、解构、默认参数值、模块系统等等，大大提升了JavaScript的开发体验。<code>由于VUE3中大量使用了ES6的语法,所以ES6成为了学习VUE3的门槛之一</code><br>ES6对JavaScript的改进在以下几个方面：</p>
+</blockquote>
+<ol>
+<li>更加简洁：ES6引入了一些新的语法，如箭头函数、类和模板字符串等，使代码更加简洁易懂。</li>
+<li>更强大的功能：ES6引入了一些新的API、解构语法和迭代器等功能，从而使得JavaScript更加强大。</li>
+<li>更好的适用性：ES6引入的模块化功能为JavaScript代码的组织和管理提供了更好的方式，不仅提高了程序的可维护性，还让JavaScript更方便地应用于大型的应用程序。</li>
+</ol>
+<blockquote>
+<p>总的来说，ES6在提高JavaScript的核心语言特性和功能方面取得了很大的进展。由于ES6已经成为了JavaScript的标准，它的大多数新特性都已被现在浏览器所支持，因此现在可以放心地使用ES6来开发前端应用程序。</p>
+</blockquote>
+<p><strong>历史版本：</strong></p>
+<table>
+<thead>
+<tr>
+<th>标准版本</th>
+<th>发布时间</th>
+<th>新特性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ES1</td>
+<td>1997年</td>
+<td>第一版 ECMAScript</td>
+</tr>
+<tr>
+<td>ES2</td>
+<td>1998年</td>
+<td>引入setter和getter函数，增加了try&#x2F;catch，switch语句允许字符串</td>
+</tr>
+<tr>
+<td>ES3</td>
+<td>1999年</td>
+<td>引入了正则表达式和更好的字符串处理</td>
+</tr>
+<tr>
+<td>ES4</td>
+<td>取消</td>
+<td>取消，部分特性被ES3.1和ES5继承</td>
+</tr>
+<tr>
+<td>ES5</td>
+<td>2009年</td>
+<td>Object.defineProperty，JSON，严格模式，数组新增方法等</td>
+</tr>
+<tr>
+<td>ES5.1</td>
+<td>2011年</td>
+<td>对ES5做了一些勘误和例行修订</td>
+</tr>
+<tr>
+<td><code>ES6</code></td>
+<td><code>2015年</code></td>
+<td><code>箭头函数、模板字符串、解构、let和const关键字、类、模块系统等</code></td>
+</tr>
+<tr>
+<td>ES2016</td>
+<td>2016年</td>
+<td>数组.includes，指数操作符（**），Array.prototype.fill等</td>
+</tr>
+<tr>
+<td>ES2017</td>
+<td>2017年</td>
+<td>异步函数async&#x2F;await，Object.values&#x2F;Object.entries，字符串填充</td>
+</tr>
+<tr>
+<td>ES2018</td>
+<td>2018年</td>
+<td>正则表达式命名捕获组，几个有用的对象方法，异步迭代器等</td>
+</tr>
+<tr>
+<td>ES2019</td>
+<td>2019年</td>
+<td>Array.prototype.{flat,flatMap}，Object.fromEntries等</td>
+</tr>
+<tr>
+<td>ES2020</td>
+<td>2020年</td>
+<td>BigInt、动态导入、可选链操作符、空位合并操作符</td>
+</tr>
+<tr>
+<td>ES2021</td>
+<td>2021年</td>
+<td>String.prototype.replaceAll，逻辑赋值运算符，Promise.any等</td>
+</tr>
+<tr>
+<td>… …</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="2-2-变量和模板字符串"><a href="#2-2-变量和模板字符串" class="headerlink" title="2.2 变量和模板字符串"></a>2.2 变量和模板字符串</h3><p><code>let</code>和<code>const</code></p>
+<p>let 和var的差别</p>
+<p>1、let 不能重复声明</p>
+<p>2、let有<code>块级作用域</code>，非函数的花括号遇见let会有块级作用域，也就是只能在花括号里面访问。</p>
+<p>3、let不会预解析进行变量提升</p>
+<p>4、let 定义的全局变量不会作为window的属性</p>
+<p>5、let在es6中推荐优先使用</p>
+<p><code>模板字符串</code></p>
+<blockquote>
+<p>模板字符串（template string）是增强版的字符串，用反引号（&#96;）标识  </p>
+</blockquote>
+<p>1、字符串中可以出现**·换行符**</p>
+<p>2、可以使用 <code>${xxx} 形式</code>输出变量和拼接变量</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 1、let 不能重复声明</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">        var i = 10;</span></span><br><span class="line"><span class="comment">        var i = &quot;&quot;;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">        let j = 10;</span></span><br><span class="line"><span class="comment">        let j = &quot;&quot;;</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 2、let有块级作用域，非函数的花括号遇见let会有块级作用域，也就是只能在花括号里面访问。</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">        &#123;</span></span><br><span class="line"><span class="comment">            var i = 10;</span></span><br><span class="line"><span class="comment">            let j = 10;</span></span><br><span class="line"><span class="comment">            console.log(j); // 10</span></span><br><span class="line"><span class="comment">        &#125;</span></span><br><span class="line"><span class="comment">        console.log(i); // 10</span></span><br><span class="line"><span class="comment">        console.log(j); // ReferenceError: j is not defined</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 3、let不会预解析进行变量提升</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">        console.log(a);</span></span><br><span class="line"><span class="comment">        var a = 10; // undefined</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">        console.log(b);</span></span><br><span class="line"><span class="comment">        let b = 10; // Cannot access &#x27;b&#x27; before initialization</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 4、let 定义的全局变量不会作为window的属性</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">        var a = 10; // a会变成window对象的属性</span></span><br><span class="line"><span class="comment">        let b = 10; // b不会变成window对象的属性</span></span><br><span class="line"><span class="comment">        console.log(window.a); // 10</span></span><br><span class="line"><span class="comment">        console.log(window.b); // undefined</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 5、let在es6中推荐优先使用</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 6. const就是不可修改的let，类似于final关键字，必须初始化值。</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">        let a = 10;</span></span><br><span class="line"><span class="comment">        a = 20; // 可以修改</span></span><br><span class="line"><span class="comment">        const b;</span></span><br><span class="line"><span class="comment">        b = 10; // Uncaught SyntaxError: Missing initializer in const declaration</span></span><br><span class="line"><span class="comment">        const b = 10;</span></span><br><span class="line"><span class="comment">        b = 20; // Assignment to constant variable.</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">PI</span> = <span class="number">3.14</span>;</span><br><span class="line"><span class="comment">// 类比java中的引用传递，栈内存中创建的对象，栈内存的地址不可修改，但是指向的堆内存中的对象可以修改，类比String类的value属性。</span></span><br><span class="line"><span class="keyword">const</span> teachers = [<span class="string">&quot;张老师&quot;</span>, <span class="string">&quot;王老师&quot;</span>, <span class="string">&quot;李老师&quot;</span>];</span><br><span class="line"><span class="comment">// teachers = [&quot;&quot;, &quot;&quot;]; // 不允许</span></span><br><span class="line">teachers.<span class="title function_">push</span>(<span class="string">&quot;陈老师&quot;</span>); <span class="comment">// 不会报错</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 模板字符串：字符串换行和字符串拼接问题 */</span></span><br><span class="line"><span class="comment">/* 传统的字符串拼接不支持多行，只能用+拼接 */</span></span><br><span class="line"><span class="comment">/* 可以使用``实现模板字符串，类似于java中的&quot;&quot;&quot;实现多行字符串 */</span></span><br><span class="line"><span class="keyword">let</span> city = <span class="string">&quot;北京&quot;</span>;</span><br><span class="line"><span class="keyword">let</span> info = <span class="string">&quot;&lt;ul&gt;&quot;</span> +</span><br><span class="line">    <span class="string">&quot;&lt;li&gt;&quot;</span> + city + <span class="string">&quot;&lt;/li&gt;&quot;</span> +</span><br><span class="line">    <span class="string">&quot;&lt;/ul&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">let</span> str = <span class="string">`&lt;ul&gt;</span></span><br><span class="line"><span class="string">                &lt;li&gt;<span class="subst">$&#123;city&#125;</span>&lt;/li&gt;</span></span><br><span class="line"><span class="string">                &lt;li&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">                &lt;li&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">    &lt;/ul&gt;`</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(str);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>输出：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span>北京<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="2-3-解构表达式"><a href="#2-3-解构表达式" class="headerlink" title="2.3 解构表达式"></a>2.3 解构表达式</h3><p><code>解构</code>：快速将数组或对象的值拆分赋值给变量（可以指定默认值）</p>
+<ul>
+<li><strong>数组解构</strong>：[a, b, c]</li>
+<li><strong>对象解构</strong>：{a, b}</li>
+<li><strong>函数参数解构</strong>：[x, y]</li>
+</ul>
+<p>通过该表达式，让变量的初始化更加简单和便捷。通过解构赋值，我们可以访问到对象中的属性，并将其赋值给对应的变量，从而提高代码的可读性和可维护性。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">let</span> arr = [<span class="number">11</span>, <span class="number">22</span>, <span class="number">33</span>, <span class="number">44</span>];</span><br><span class="line"><span class="comment">// console.log(arr[0]);    </span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用解构表达式取出数组中的元素, 可以指定默认值</span></span><br><span class="line"><span class="keyword">let</span> [a, b, c, d, e = <span class="number">1000</span>] = arr;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(a, b, c, d, e);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 除了数组，也可以在对象中使用解构表达式，有点类似于java的反射机制</span></span><br><span class="line"><span class="keyword">let</span> person = &#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&quot;ljy&quot;</span>,</span><br><span class="line">    age : <span class="number">10</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// console.log(person.name, person.age);</span></span><br><span class="line"><span class="keyword">let</span> &#123;name, age, gender = <span class="string">&quot;male&quot;</span>&#125; = person;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(name, age, gender);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在方法的参数列表中也可使用解构表达式</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">        function showArr(arr) &#123;</span></span><br><span class="line"><span class="comment">            console.log(arr[0], arr[1], arr[2]);</span></span><br><span class="line"><span class="comment">        &#125;</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">showArr</span>(<span class="params">[a, b, c, d = <span class="number">1000</span>]</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(a, b, c, d);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">showArr</span>(arr);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240928210052371.png" alt="image-20240928210052371">	</p>
+<h3 id="2-4-箭头函数"><a href="#2-4-箭头函数" class="headerlink" title="2.4 箭头函数"></a>2.4 箭头函数</h3><p>ES6 允许使用“箭头” 函数。语法类似Java中的<code>Lambda表达式</code></p>
+<h4 id="2-4-1-快速入门"><a href="#2-4-1-快速入门" class="headerlink" title="2.4.1 快速入门"></a>2.4.1 快速入门</h4><ul>
+<li>箭头函数声明和java的Lamda表达式几乎一样</li>
+<li>有且仅一个参数可省略不写，有且只有一行代码可以省略和花括号，有且只有一行代码且是return语句 可以省略return关键字</li>
+<li><code>箭头函数this的问题</code>(箭头函数范围更大)<ul>
+<li>普通函数中使用的this指向调用该方法对象的局部变量</li>
+<li>箭头函数中使用的this指向的是外层作用域的this</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// let fun1 = function() &#123;&#125;; // 普通的函数声明</span></span><br><span class="line"><span class="comment">// let fun2 = () =&gt; &#123;&#125;; // 箭头函数声明，和java的lambda表达式几乎一样</span></span><br><span class="line"><span class="comment">// let fun3 = (x) =&gt; &#123; return x + 1; &#125;;</span></span><br><span class="line"><span class="comment">// let fun4 = x =&gt; &#123; return x + 1; &#125;; // 有且仅有一个参数可以省略括号</span></span><br><span class="line"><span class="comment">// let fun5 = x =&gt; console.log(x); // 函数体中只有一行代码可以省略花括号</span></span><br><span class="line"><span class="comment">// let fun6 = x =&gt; x + 1; // 有且只有一行代码，且是return语句，可以省略return关键字</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// lambda表达式的this问题</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">            箭头函数没有自己的this</span></span><br><span class="line"><span class="comment">            箭头函数中的this是外层上下文环境中的this（windows对象）</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>); <span class="comment">// window对象</span></span><br><span class="line"><span class="keyword">let</span> person = &#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;ljy&#x27;</span>,</span><br><span class="line">    <span class="attr">showName</span>: <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>.<span class="property">name</span>); <span class="comment">// 这里的name是局部变量，应该使用this.name</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">showName2</span>:<span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>) <span class="comment">// 外层作用域的this，即window对象</span></span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">person.<span class="title function_">showName</span>(); <span class="comment">// ljy</span></span><br><span class="line">person.<span class="title function_">showName2</span>(); <span class="comment">// 空，因为箭头函数没有自己的this，所以this指向外层作用域的this，这里的this指向window，所以输出为空</span></span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240928211248105.png" alt="image-20240928211248105">	</p>
+<h4 id="2-4-2-实际应用"><a href="#2-4-2-实际应用" class="headerlink" title="2.4.2 实际应用"></a>2.4.2 实际应用</h4><ul>
+<li>对于普通函数来说，这里的this是调用方法的window对象，需要在外层事先使用var保存this的引用</li>
+<li>对于箭头函数来说，this指向的是外层调用该函数的 xdd对象</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="language-css"></span></span><br><span class="line"><span class="language-css">        <span class="selector-id">#xdd</span> &#123;</span></span><br><span class="line"><span class="language-css">            <span class="attribute">display</span>: inline-block;</span></span><br><span class="line"><span class="language-css">            <span class="attribute">width</span>: <span class="number">200px</span>;</span></span><br><span class="line"><span class="language-css">            <span class="attribute">height</span>: <span class="number">200px</span>;</span></span><br><span class="line"><span class="language-css">            <span class="attribute">background-color</span>: red;</span></span><br><span class="line"><span class="language-css">        &#125;</span></span><br><span class="line"><span class="language-css">    </span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="variable language_">window</span>.<span class="property">onload</span> = <span class="function">() =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">            <span class="comment">// 实现两秒后变黄色</span></span></span><br><span class="line"><span class="language-javascript">            <span class="keyword">var</span> xdd = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;xdd&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">            xdd.<span class="property">onclick</span> = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">                <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>); <span class="comment">// 该层的this指向xdd</span></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">                <span class="comment">// 法一：如果内层函数需要用到外层的this，可以先保存this的引用</span></span></span><br><span class="line"><span class="language-javascript">                <span class="keyword">var</span> _this = <span class="variable language_">this</span>;</span></span><br><span class="line"><span class="language-javascript">                <span class="variable language_">window</span>.<span class="built_in">setTimeout</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">                    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>); <span class="comment">// 这里指向的是调用方法的window对象</span></span></span><br><span class="line"><span class="language-javascript">                    _this.<span class="property">style</span>.<span class="property">backgroundColor</span> = <span class="string">&quot;yellow&quot;</span>;  <span class="comment">// 对xdd对象的style进行修改</span></span></span><br><span class="line"><span class="language-javascript">                &#125;, <span class="number">2000</span>);</span></span><br><span class="line"><span class="language-javascript">                </span></span><br><span class="line"><span class="language-javascript">                <span class="comment">// 法二：使用箭头函数，此时内部函数的this实际上指向的是外层this</span></span></span><br><span class="line"><span class="language-javascript">                <span class="variable language_">window</span>.<span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-javascript">                    <span class="variable language_">this</span>.<span class="property">style</span>.<span class="property">backgroundColor</span> = <span class="string">&quot;blue&quot;</span>;</span></span><br><span class="line"><span class="language-javascript">                &#125;, <span class="number">5000</span>);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">                </span></span><br><span class="line"><span class="language-javascript">            &#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        &#125;</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;xdd&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240928211353512.png" alt="image-20240928211353512">	</p>
+<h4 id="2-4-3-spread和rest"><a href="#2-4-3-spread和rest" class="headerlink" title="2.4.3 spread和rest"></a>2.4.3 spread和rest</h4><ul>
+<li><code>rest参数</code>，定义在<code>形参</code>上， 类比于java中的<code>可变参数</code></li>
+<li><code>spread</code>参数，定义在<code>实参</code>上，从而将数组&#x2F;对象的元素分散传入到函数中<ul>
+<li>其他应用：快速合并数组、快速合并对象</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        </span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// rest参数（解决剩余参数接收问题），与java中的可变参数类似</span></span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// 只能是最后一个参数且只能写一个</span></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">let</span> <span class="title function_">fun1</span> = (<span class="params">a, b, c, ... arr</span>) =&gt; &#123;</span></span><br><span class="line"><span class="language-javascript">            <span class="variable language_">console</span>.<span class="title function_">log</span>(a, b, c);</span></span><br><span class="line"><span class="language-javascript">            <span class="variable language_">console</span>.<span class="title function_">log</span>(arr);</span></span><br><span class="line"><span class="language-javascript">        &#125;;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="title function_">fun1</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>); <span class="comment">// 1 2 3 [4, 5, 6]</span></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// spread参数（扩散 展开） 是rest在实参上的应用</span></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">let</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span></span><br><span class="line"><span class="language-javascript">        </span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// ...arr 展开数组：arr -&gt; 1, 2, 3  必须在调用方法时作为实参传入</span></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">let</span> <span class="title function_">fun2</span> = (<span class="params">a, b, c</span>) =&gt; &#123;</span></span><br><span class="line"><span class="language-javascript">            <span class="variable language_">console</span>.<span class="title function_">log</span>(a, b, c);</span></span><br><span class="line"><span class="language-javascript">        &#125;</span></span><br><span class="line"><span class="language-javascript">        <span class="title function_">fun2</span>(arr); <span class="comment">// &#123;arr[1, 2, 3], undefined, undefined&#125;</span></span></span><br><span class="line"><span class="language-javascript">        <span class="title function_">fun2</span>(...arr); <span class="comment">// &#123;1, 2, 3&#125;</span></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// spread应用1：快速合并数组</span></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">let</span> a = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">let</span> b = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>];</span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">let</span> c = [<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>];</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">let</span> d = [...a, ...b, ...c]; <span class="comment">// [1, 2, 3, 4, 5, 6, 7, 8, 9]</span></span></span><br><span class="line"><span class="language-javascript">        <span class="variable language_">console</span>.<span class="title function_">log</span>(d);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// spread应用2：快速合并对象</span></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">let</span> person1 = &#123; <span class="attr">name</span>: <span class="string">&#x27;ljy&#x27;</span> &#125;;</span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">let</span> person2 = &#123; <span class="attr">age</span>: <span class="number">20</span> &#125;;</span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">let</span> person3 = &#123; <span class="attr">gender</span>: <span class="string">&#x27;boy&#x27;</span> &#125;;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">let</span> person4 = &#123;...person1, ...person2, ...person3 &#125;;</span></span><br><span class="line"><span class="language-javascript">        <span class="variable language_">console</span>.<span class="title function_">log</span>(person4); <span class="comment">// &#123;name: &quot;ljy&quot;, age: 20, gender: &quot;boy&quot;&#125;</span></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    </span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240928211415647.png" alt="image-20240928211415647">	</p>
+<h3 id="2-5-对象创建与拷贝"><a href="#2-5-对象创建与拷贝" class="headerlink" title="2.5 对象创建与拷贝"></a>2.5 对象创建与拷贝</h3><h4 id="2-5-1-对象创建语法糖"><a href="#2-5-1-对象创建语法糖" class="headerlink" title="2.5.1 对象创建语法糖"></a>2.5.1 对象创建语法糖</h4><p>es6定义了一套类似于java的类对象创建的语法糖，支持<code>class extends constructor</code>等关键字，使得更加接近于java的面向对象</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// 类和对象的一个语法糖，用的不多但要了解到</span></span></span><br><span class="line"><span class="language-javascript">        </span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">class</span> <span class="title class_">Person</span> &#123;</span></span><br><span class="line"><span class="language-javascript">            <span class="comment">// 属性</span></span></span><br><span class="line"><span class="language-javascript">            #n; <span class="comment">// 私有属性，后面关于n的都要改成#n</span></span></span><br><span class="line"><span class="language-javascript">            age;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">            <span class="comment">// constructor</span></span></span><br><span class="line"><span class="language-javascript">            <span class="title function_">constructor</span>(<span class="params">n, age</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">                <span class="variable language_">this</span>.#n = n;</span></span><br><span class="line"><span class="language-javascript">                <span class="variable language_">this</span>.<span class="property">age</span> = age;</span></span><br><span class="line"><span class="language-javascript">            &#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">            <span class="comment">// getter setter</span></span></span><br><span class="line"><span class="language-javascript">            <span class="keyword">get</span> <span class="title function_">name</span>() &#123;</span></span><br><span class="line"><span class="language-javascript">                <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Person get name&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">                <span class="keyword">return</span> <span class="variable language_">this</span>.#n;</span></span><br><span class="line"><span class="language-javascript">            &#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">            <span class="keyword">set</span> <span class="title function_">name</span>(<span class="params">n</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">                <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Person set name&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">                <span class="variable language_">this</span>.#n = n;</span></span><br><span class="line"><span class="language-javascript">            &#125;</span></span><br><span class="line"><span class="language-javascript">            </span></span><br><span class="line"><span class="language-javascript">            <span class="comment">// method</span></span></span><br><span class="line"><span class="language-javascript">            <span class="title function_">eat</span>(<span class="params">food</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">                <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`<span class="subst">$&#123;<span class="variable language_">this</span>.age&#125;</span>岁的<span class="subst">$&#123;<span class="variable language_">this</span>.#n&#125;</span>正在吃<span class="subst">$&#123;food&#125;</span>`</span>);</span></span><br><span class="line"><span class="language-javascript">            &#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">            <span class="comment">// static method</span></span></span><br><span class="line"><span class="language-javascript">            <span class="keyword">static</span> <span class="title function_">sum</span>(<span class="params">a, b</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">                <span class="keyword">return</span> a + b;</span></span><br><span class="line"><span class="language-javascript">            &#125;</span></span><br><span class="line"><span class="language-javascript">        &#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">let</span> person = <span class="keyword">new</span> <span class="title class_">Person</span>(<span class="string">&quot;小明&quot;</span>, <span class="number">18</span>);</span></span><br><span class="line"><span class="language-javascript">        person.<span class="property">name</span> = <span class="string">&quot;ljy&quot;</span>; <span class="comment">// 可能会触发setter,同名的情况下访问属性优先级高于方法</span></span></span><br><span class="line"><span class="language-javascript">        <span class="variable language_">console</span>.<span class="title function_">log</span>(person.<span class="property">name</span>);</span></span><br><span class="line"><span class="language-javascript">        person.<span class="title function_">eat</span>(<span class="string">&quot;apple&quot;</span>);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Person</span>.<span class="title function_">sum</span>(<span class="number">1</span>, <span class="number">2</span>)); <span class="comment">// 调用静态方法</span></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// 测试私有属性</span></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">let</span> person2 = <span class="keyword">new</span> <span class="title class_">Person</span>(<span class="string">&quot;小红&quot;</span>, <span class="number">19</span>);</span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// console.log(person2.#n); // 报错，不能访问私有属性</span></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// 测试继承</span></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">class</span> <span class="title class_">Student</span> <span class="keyword">extends</span> <span class="title class_ inherited__">Person</span> &#123;</span></span><br><span class="line"><span class="language-javascript">            score;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">            <span class="title function_">constructor</span>(<span class="params">n, age, score</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">                <span class="variable language_">super</span>(n, age);</span></span><br><span class="line"><span class="language-javascript">                <span class="variable language_">this</span>.<span class="property">score</span> = score;</span></span><br><span class="line"><span class="language-javascript">            &#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">            <span class="title function_">study</span>(<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">                <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`<span class="subst">$&#123;<span class="variable language_">this</span>.age&#125;</span>岁的<span class="subst">$&#123;<span class="variable language_">this</span>.name&#125;</span>正在学习，考了<span class="subst">$&#123;<span class="variable language_">this</span>.score&#125;</span>分`</span>) <span class="comment">// 使用get方法获取父类属性</span></span></span><br><span class="line"><span class="language-javascript">            &#125;</span></span><br><span class="line"><span class="language-javascript">        &#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">new</span> <span class="title class_">Student</span>(<span class="string">&quot;hsp&quot;</span>, <span class="number">39</span>, <span class="number">90</span>).<span class="title function_">study</span>(); <span class="comment">// 调用父类方法</span></span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    </span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>输出结果</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240928215356398.png" alt="image-20240928215356398">	</p>
+<h4 id="2-5-2-深拷贝和浅拷贝"><a href="#2-5-2-深拷贝和浅拷贝" class="headerlink" title="2.5.2 深拷贝和浅拷贝"></a>2.5.2 深拷贝和浅拷贝</h4><p>拷贝：快速获得一个和已有对象相同的对象</p>
+<ul>
+<li>js中的es6语法区分深和浅主要是看是否产生新对象：<ul>
+<li><code>浅拷贝</code>：拷贝的是地址，和原先的数据有关联，类似java的引用传递<ul>
+<li>例如let arr2 &#x3D; arr1，let person2 &#x3D; person1</li>
+</ul>
+</li>
+<li><code>深拷贝</code>：产生了相同的新数据，和原先的数据没有任何关系<ul>
+<li>实现方式1：<code>数组/对象解构表达式</code></li>
+<li>实现方式2：<code>JSON.parse(JSON.stringify())</code></li>
+<li>后续开发过程中如果业务需要跟原来数据不相关的副本，可能会用到深拷贝</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">let</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">let</span> person = &#123;<span class="attr">name</span>: <span class="string">&#x27;ljy&#x27;</span>&#125;;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="comment">/* 浅拷贝: 相当于java的引用传递，只是拷贝了地址 没有产生新数据 所以叫浅拷贝 */</span></span></span><br><span class="line"><span class="language-javascript">        <span class="comment">/*</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">        let arr2 = arr;</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">        arr[0] = 100;</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">        console.log(arr2); // [100, 2, 3]</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript"></span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">        let person2 = person;</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">        person.name = &#x27;ljy2&#x27;;</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">        console.log(person2); // &#123;name: &#x27;ljy2&#x27;&#125;</span></span></span><br><span class="line"><span class="comment"><span class="language-javascript">        */</span></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="comment">/* 深拷贝: 产生了新数据 和原先的数据没有关系 所以叫深拷贝 */</span></span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// 可以通过解构表达式来实现深拷贝</span></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">let</span> arr2 = [...arr];</span></span><br><span class="line"><span class="language-javascript">        arr[<span class="number">0</span>] = <span class="number">100</span>;</span></span><br><span class="line"><span class="language-javascript">        <span class="variable language_">console</span>.<span class="title function_">log</span>(arr2); <span class="comment">// [1, 2, 3]</span></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">let</span> person2 = &#123;...person&#125;;</span></span><br><span class="line"><span class="language-javascript">        person.<span class="property">name</span> = <span class="string">&#x27;ljy2&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript">        <span class="variable language_">console</span>.<span class="title function_">log</span>(person2); <span class="comment">// &#123;name: &#x27;ljy&#x27;&#125;</span></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// 也可以通过JSON.parse(JSON.stringify())来实现深拷贝</span></span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// 后续业务我们可能需要一条新数据不能对原有数据产生影响，那就会频繁用到深拷贝</span></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">let</span> person3 = <span class="title class_">JSON</span>.<span class="title function_">parse</span>(<span class="title class_">JSON</span>.<span class="title function_">stringify</span>(person));</span></span><br><span class="line"><span class="language-javascript">        person.<span class="property">name</span> = <span class="string">&#x27;ljy3&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript">        <span class="variable language_">console</span>.<span class="title function_">log</span>(person3); <span class="comment">// &#123;name: &#x27;ljy&#x27;&#125;</span></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    </span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2-6-模块化处理"><a href="#2-6-模块化处理" class="headerlink" title="2.6 模块化处理"></a>2.6 模块化处理</h3><blockquote>
+<ul>
+<li>模块化是前端当中，组织和管理代码的方式，代码拆分成若干模块单元，更利于维护、拓展和复用</li>
+<li>包括定义、导出、导入、管理模块的方式与规范</li>
+</ul>
+</blockquote>
+<p>我们推荐进行模块化处理，有以下优势：</p>
+<ol>
+<li>提高代码可维护性：通过将代码拆分为小的模块单元，使得代码结构更为清晰，可读性更高，便于开发者阅读和维护。</li>
+<li>提高代码可复用性：通过将重复使用的代码变成可复用的模块，减少代码重复率，降低开发成本。</li>
+<li>提高代码可扩展性：通过模块化来实现代码的松耦合，便于更改和替换模块，从而方便地扩展功能。</li>
+</ol>
+<blockquote>
+<p>目前，前端模块化有多种规范和实现，包括 CommonJS、AMD 和 ES6 模块化。</p>
+<p>ES6 模块化是 JavaScript 语言的模块标准，使用<code> import</code> 和 <code>export </code>关键字来实现模块的导入和导出。</p>
+<p>现在，大部分浏览器都已经原生支持 ES6 模块化，因此它成为了最为广泛使用的前端模块化标准. </p>
+</blockquote>
+<ul>
+<li>ES6模块化的几种暴露和导入方式<ol>
+<li>分别导出</li>
+<li>统一导出</li>
+<li>默认导出</li>
+</ol>
+</li>
+<li><code>ES6中无论以何种方式导出,导出的都是一个对象,导出的内容都可以理解为是向这个对象中添加属性或者方法</code></li>
+</ul>
+<p>测试导出页面：index.html</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 引入app.js的文件 相当于copy到当前标签内容中 --&gt;</span></span><br><span class="line">     <span class="comment">&lt;!-- 注：浏览器默认不支持模块化，需要通过配置type属性来支持模块化 --&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;module&quot;</span> <span class="attr">src</span>=<span class="string">&quot;./app.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    </span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="2-6-1-分别导出"><a href="#2-6-1-分别导出" class="headerlink" title="2.6.1 分别导出"></a>2.6.1 分别导出</h4><p>module.js ：向外分别暴露成员</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 变量</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// export 理解为java中的public关键字，表示该成员向外暴露，而不加export则类似于private</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> <span class="variable constant_">PI</span> = <span class="number">3.14</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="title class_">PI2</span> = <span class="number">3.1415926</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 函数</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">sum</span> (<span class="params">a, b</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 类</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">Person</span> &#123;</span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params">name, age</span>) &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">name</span> = name; <span class="comment">// 会自动增加</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">age</span> = age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">sayHello</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`Hello, my name is <span class="subst">$&#123;<span class="variable language_">this</span>.name&#125;</span> and I am <span class="subst">$&#123;<span class="variable language_">this</span>.age&#125;</span> years old.`</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>app.js： 导入module.js中的成员</p>
+<ul>
+<li><strong>导入后的内容会被当作对象处理，后面同理！</strong></li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 法一：分别暴露 module.js文件</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    *表示module.js的所有成员</span></span><br><span class="line"><span class="comment">    无论何种方式导入，导入的内容都会被当做对象处理</span></span><br><span class="line"><span class="comment">    因此要用对象来接收成员</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> m1 <span class="keyword">from</span> <span class="string">&#x27;./module.js&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(m1.<span class="property">PI</span>); <span class="comment">// 只能访问module.js暴露出来的成员</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(m1.<span class="title function_">sum</span>(<span class="number">1</span>, <span class="number">2</span>)); <span class="comment">// 3</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> person = <span class="keyword">new</span> m1.<span class="title class_">Person</span>(<span class="string">&#x27;ljy&#x27;</span>, <span class="number">20</span>);</span><br><span class="line">person.<span class="title function_">sayHello</span>(); <span class="comment">// 输出：Hello, my name is ljy and I am 20 years old.</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>输出</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240928221006890.png" alt="image-20240928221006890">	</p>
+<h4 id="2-6-2-统一导出"><a href="#2-6-2-统一导出" class="headerlink" title="2.6.2 统一导出"></a>2.6.2 统一导出</h4><p>module.js：向外统一导出成员</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 变量</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// export 理解为java中的public关键字，表示该成员向外暴露，而不加export则类似于private</span></span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">PI</span> = <span class="number">3.14</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="title class_">PI2</span> = <span class="number">3.1415926</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 函数</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">sum</span> (<span class="params">a, b</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Person</span> &#123;</span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params">name, age</span>) &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">name</span> = name; <span class="comment">// 会自动增加</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">age</span> = age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">sayHello</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`Hello, my name is <span class="subst">$&#123;<span class="variable language_">this</span>.name&#125;</span> and I am <span class="subst">$&#123;<span class="variable language_">this</span>.age&#125;</span> years old.`</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 统一导出/暴露</span></span><br><span class="line"><span class="keyword">export</span> &#123;<span class="variable constant_">PI</span>, sum, <span class="title class_">Person</span>&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>app.js：导入module.js中的成员</p>
+<ul>
+<li>可通过解构表达式来导入</li>
+<li>顺序可以不一致，可以起别名</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    &#123;&#125;中导入要使用的来自于module.js中的成员</span></span><br><span class="line"><span class="comment">    &#123;&#125;中导入的名称要和module.js中导出的一致,也可以在此处起别名</span></span><br><span class="line"><span class="comment">    &#123;&#125;中如果定义了别名,那么在当前模块中就只能使用别名</span></span><br><span class="line"><span class="comment">    &#123;&#125;中导入成员的顺序可以不是暴露的顺序</span></span><br><span class="line"><span class="comment">    一个模块中可以同时有多个import</span></span><br><span class="line"><span class="comment">    多个import可以导入多个不同的模块,也可以是同一个模块</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">// 法二：统一暴露 module.js文件，不必导入*，可以通过解构表达式来导入(可以起别名)</span></span><br><span class="line"><span class="comment">// 后续访问无需通过对象，直接访问即可</span></span><br><span class="line"><span class="keyword">import</span> &#123;<span class="variable constant_">PI</span>, <span class="variable constant_">PI</span> <span class="keyword">as</span> pi, sum, <span class="title class_">Person</span>&#125; <span class="keyword">from</span> <span class="string">&#x27;./module.js&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(pi);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">sum</span>(<span class="number">1</span>, <span class="number">2</span>)); <span class="comment">// 3</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> person = <span class="keyword">new</span> <span class="title class_">Person</span>(<span class="string">&#x27;ljy&#x27;</span>, <span class="number">20</span>);</span><br><span class="line">person.<span class="title function_">sayHello</span>(); <span class="comment">// 输出：Hello, my name is ljy and I am 20 years old.</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>输出</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240928221135393.png" alt="image-20240928221135393">	</p>
+<h4 id="2-6-3-默认导出"><a href="#2-6-3-默认导出" class="headerlink" title="2.6.3 默认导出"></a>2.6.3 默认导出</h4><p>module.js：默认导出只能导出一个，下面一句是混合向外导出</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 变量</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> <span class="variable constant_">PI</span> = <span class="number">3.14</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="title class_">PI2</span> = <span class="number">3.1415926</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 函数</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">sum</span> (<span class="params">a, b</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Person</span> &#123;</span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params">name, age</span>) &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">name</span> = name; <span class="comment">// 会自动增加</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">age</span> = age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">sayHello</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`Hello, my name is <span class="subst">$&#123;<span class="variable language_">this</span>.name&#125;</span> and I am <span class="subst">$&#123;<span class="variable language_">this</span>.age&#125;</span> years old.`</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 默认导出在一个js中只能有一个</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> sum;</span><br><span class="line"><span class="keyword">export</span> &#123;<span class="title class_">Person</span>&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>app.js：默认导入可以简化导入，直接写属性名</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// 法三：1.默认导入</span></span><br><span class="line"><span class="comment">// 因为默认导入只有一个，因此可以简化直接导入</span></span><br><span class="line"><span class="keyword">import</span> sum2 <span class="keyword">from</span> <span class="string">&#x27;./module.js&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">sum2</span>(<span class="number">10</span>, <span class="number">20</span>)); <span class="comment">// 输出module默认导出的sum</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>拓展：以上三个方法可以混合使用，app.js可以这样写</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 混合导入</span></span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> m1 <span class="keyword">from</span> <span class="string">&#x27;./module.js&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(m1.<span class="title function_">default</span>(<span class="number">10</span>, <span class="number">20</span>)); <span class="comment">// 输出module默认导出的sum</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(m1.<span class="property">PI</span>); <span class="comment">// 支持多种方式综合使用，但一般很少</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 2.默认导入也可以通过解构表达式（default命名冲突需要起别名）</span></span><br><span class="line"><span class="keyword">import</span> &#123;<span class="keyword">default</span> <span class="keyword">as</span> sum&#125; <span class="keyword">from</span> <span class="string">&#x27;./module.js&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;<span class="title class_">Person</span>&#125; <span class="keyword">from</span> <span class="string">&#x27;./module.js&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">sum</span>(<span class="number">10</span>, <span class="number">20</span>)); <span class="comment">// 输出module默认导出的sum</span></span><br><span class="line"><span class="keyword">let</span> person = <span class="keyword">new</span> <span class="title class_">Person</span>(<span class="string">&#x27;ljy&#x27;</span>);</span><br><span class="line">person.<span class="title function_">sayHello</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3.因为默认导入只有一个，因此可以简化直接导入</span></span><br><span class="line"><span class="keyword">import</span> sum2 <span class="keyword">from</span> <span class="string">&#x27;./module.js&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">sum2</span>(<span class="number">10</span>, <span class="number">20</span>)); <span class="comment">// 输出module默认导出的sum</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>输出</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240928221248060.png" alt="image-20240928221248060">	</p>
+<h2 id="3-部署前端工程化环境"><a href="#3-部署前端工程化环境" class="headerlink" title="3. 部署前端工程化环境"></a>3. 部署前端工程化环境</h2><h3 id="3-1-nodejs的简介和安装"><a href="#3-1-nodejs的简介和安装" class="headerlink" title="3.1 nodejs的简介和安装"></a>3.1 nodejs的简介和安装</h3><h4 id="3-1-1-什么是Nodejs"><a href="#3-1-1-什么是Nodejs" class="headerlink" title="3.1.1 什么是Nodejs"></a>3.1.1 什么是Nodejs</h4><ul>
+<li>说这么多废话，就是提供了js的运行环境，理解为运行java的jvm即可</li>
+</ul>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240928223315646.png" alt="image-20240928223315646" style="zoom: 25%;" />	
+
+<blockquote>
+<p><code>Node.js</code> 是一个基于 Chrome V8 引擎的<code> JavaScript 运行时环境</code>，可以使 JavaScript <strong>运行在服务器端</strong>。</p>
+<p>使用 Node.js，可以方便地开发服务器端应用程序，如 Web 应用、API、后端服务，还可以通过 Node.js 构建命令行工具等。</p>
+</blockquote>
+<p>相比于传统的服务器端语言（如 PHP、Java、Python 等），Node.js 具有以下特点：</p>
+<ul>
+<li>单线程，但是采用了事件驱动、异步 I&#x2F;O 模型，可以处理高并发请求。</li>
+<li>轻量级，使用 C++ 编写的 V8 引擎让 Node.js 的运行速度很快。</li>
+<li>模块化，Node.js 内置了大量模块，同时也可以通过第三方模块扩展功能。</li>
+<li>跨平台，可以在 Windows、Linux、Mac 等多种平台下运行。</li>
+</ul>
+<blockquote>
+<p>Node.js 的核心是其管理事件和异步 I&#x2F;O 的能力。Node.js 的异步 I&#x2F;O 使其能够处理大量并发请求，并且能够避免在等待 I&#x2F;O 资源时造成的阻塞。</p>
+<p>此外，Node.js 还拥有高性能网络库和文件系统库，可用于搭建 WebSocket 服务器、上传文件等。</p>
+<p><code>在 Node.js 中，我们可以使用 JavaScript 来编写服务器端程序，这也使得前端开发人员可以利用自己已经熟悉的技能来开发服务器端程序，同时也让 JavaScript 成为一种全栈语言。</code></p>
+<p>Node.js 受到了广泛的应用，包括了大型企业级应用、云计算、物联网、游戏开发等领域。</p>
+<p>常用的 Node.js 框架包括 Express、Koa、Egg.js 等，它们能够显著提高开发效率和代码质量。</p>
+</blockquote>
+<h4 id="3-1-2-如何安装nodejs"><a href="#3-1-2-如何安装nodejs" class="headerlink" title="3.1.2 如何安装nodejs"></a>3.1.2 如何安装nodejs</h4><ol>
+<li>打开官网<a target="_blank" rel="noopener" href="https://nodejs.org/en%E4%B8%8B%E8%BD%BD%E5%AF%B9%E5%BA%94%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84">https://nodejs.org/en下载对应操作系统的</a> LTS 版本。</li>
+<li>双击安装包进行安装，安装过程中遵循默认选项即可(或者参照<a target="_blank" rel="noopener" href="https://www.runoob.com/nodejs/nodejs-install-setup.html">https://www.runoob.com/nodejs/nodejs-install-setup.html</a> )。安装完成后，可以在命令行终端输入 <code>node -v</code> 和 <code>npm -v</code> 查看 Node.js 和 npm 的版本号。</li>
+</ol>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240928223309262.png" alt="image-20240928223309262" style="zoom:50%;" />	
+
+<ol start="3">
+<li>定义一个app.js文件,cmd到该文件所在目录,然后在dos上通过<code>node app.js</code>命令即可运行</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">sum</span>(<span class="params">a,b</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> a+b;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">main</span>(<span class="params"></span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">sum</span>(<span class="number">10</span>,<span class="number">20</span>))</span><br><span class="line">&#125;</span><br><span class="line"><span class="title function_">main</span>()</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3-2-npm-配置和使用"><a href="#3-2-npm-配置和使用" class="headerlink" title="3.2 npm 配置和使用"></a>3.2 npm 配置和使用</h3><h4 id="3-2-1-npm介绍"><a href="#3-2-1-npm介绍" class="headerlink" title="3.2.1 npm介绍"></a>3.2.1 npm介绍</h4><ul>
+<li>一句话，npm就是帮我们装模块的，理解为maven</li>
+</ul>
+<img src="/img/loading.gif" data-original="E:/JavaWeb图书配套资料/参考视频及资料/笔记/images/1684487779164.png" alt="1684487779164" style="zoom: 25%;" />	
+
+<blockquote>
+<p><code>NPM</code>全称<code>Node Package Manager</code>，是<strong>Node.js包管理工具</strong>，是全球最大的模块生态系统，里面所有的模块都是开源免费的；</p>
+<p>也是Node.js的包管理工具，相当于后端的<code>Maven</code> 。</p>
+</blockquote>
+<h4 id="3-2-2-npm-安装和配置"><a href="#3-2-2-npm-安装和配置" class="headerlink" title="3.2.2 npm 安装和配置"></a>3.2.2 npm 安装和配置</h4><blockquote>
+<p>1.安装</p>
+</blockquote>
+<ul>
+<li>安装node，自动安装npm包管理工具！</li>
+</ul>
+<blockquote>
+<p>2.配置依赖下载使用阿里镜像</p>
+</blockquote>
+<ul>
+<li>npm 安装依赖包时默认使用的是官方源，由于国内网络环境的原因，有时会出现下载速度过慢的情况。为了解决这个问题，可以配置使用阿里镜像来加速 npm 的下载速度，具体操作如下：</li>
+<li>打开命令行终端，执行以下命令，配置使用阿里镜像：</li>
+<li>原来的 registry.npm.taobao.org 已替换为 registry.npmmirror.com</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm config set registry https://registry.npmmirror.com</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>确认配置已生效，可以使用以下命令查看当前 registry 的配置：如果输出结果为 <code>https://registry.npmmirror.com</code>，说明配置已成功生效。</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm config get registry</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>如果需要恢复默认的官方源，可以执行以下命令：</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">npm config set registry <span class="attr">https</span>:<span class="comment">//registry.npmjs.org/</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>3.配置全局依赖下载后存储位置</p>
+</blockquote>
+<ul>
+<li><p>在 Windows 系统上，npm 的全局依赖默认安装在 <code>&lt;用户目录&gt;\AppData\Roaming\npm</code> 目录下。</p>
+</li>
+<li><p>如果需要修改全局依赖的安装路径，可以按照以下步骤操作：</p>
+<ol>
+<li><p>创建一个新的全局依赖存储目录，例如 <code>D:\GlobalNodeModules</code>。</p>
+</li>
+<li><p>打开命令行终端，执行以下命令来配置新的全局依赖存储路径：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm config set prefix &quot;D:\GlobalNodeModules&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>确认配置已生效，可以使用以下命令查看当前的全局依赖存储路径：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm config get prefix</span><br></pre></td></tr></table></figure></li>
+</ol>
+</li>
+</ul>
+<blockquote>
+<p>4.升级npm版本</p>
+</blockquote>
+<ul>
+<li><p>cmd 输入npm -v 查看版本</p>
+</li>
+<li><p>如果node中自带的npm版本过低！则需要升级至9.6.6！</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm install -g npm@9.6.6</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="3-2-3-npm-常用命令"><a href="#3-2-3-npm-常用命令" class="headerlink" title="3.2.3 npm 常用命令"></a>3.2.3 npm 常用命令</h4><blockquote>
+<p>1.项目初始化</p>
+</blockquote>
+<ul>
+<li><code>npm init</code><ul>
+<li>进入一个vscode创建好的项目中, 执行 npm init 命令后，npm 会引导您在命令行界面上回答一些问题,例如项目名称、版本号、作者、许可证等信息，并最终生成一个package.json 文件。package.json信息会包含项目基本信息！类似maven的pom.xml</li>
+</ul>
+</li>
+<li>npm init -y<ul>
+<li>执行，-y yes的意思，所有信息使用当前文件夹的默认值！不用挨个填写！</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>2.安装依赖  (查看所有依赖地址  <a target="_blank" rel="noopener" href="https://www.npmjs.com/">https://www.npmjs.com</a> )</p>
+</blockquote>
+<ul>
+<li><strong><code>npm install</code> 包名 或者 npm install 包名@版本号</strong><ul>
+<li>安装包或者指定版本的依赖包(安装到当前项目中)</li>
+</ul>
+</li>
+<li>npm install -g 包名<ul>
+<li>安装全局依赖包(安装到d:&#x2F;GlobalNodeModules)则可以在任何项目中使用它，而无需在每个项目中独立安装该包。</li>
+</ul>
+</li>
+<li><strong>npm install</strong>（npm i）<ul>
+<li>安装package.json中的所有记录的依赖</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>3.升级依赖</p>
+</blockquote>
+<ul>
+<li>npm update 包名<ul>
+<li>将依赖升级到最新版本</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>4.卸载依赖</p>
+</blockquote>
+<ul>
+<li>npm uninstall 包名</li>
+</ul>
+<blockquote>
+<p>5.查看依赖</p>
+</blockquote>
+<ul>
+<li><p><code>npm ls</code></p>
+<ul>
+<li>查看项目依赖</li>
+</ul>
+</li>
+<li><p>npm list -g</p>
+<ul>
+<li>查看全局依赖</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>6.运行命令</p>
+</blockquote>
+<ul>
+<li><p><code>npm run</code> 命令是在执行 npm 脚本时使用的命令。</p>
+<ul>
+<li>npm 脚本是一组在 package.json 文件中定义的可执行命令。</li>
+<li>npm 脚本可用于启动应用程序，运行测试，生成文档等，还可以自定义命令以及配置需要运行的脚本。</li>
+</ul>
+</li>
+<li><p>在<code>package.json</code>文件中，scripts 字段是一个对象，其中包含一组键值对，键是要运行的脚本的名称，值是要执行的命令。</p>
+<ul>
+<li>例如，以下是一个简单的 package.json 文件：</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">	<span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;my-app&quot;</span><span class="punctuation">,</span></span><br><span class="line">  	<span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;scripts&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;start&quot;</span><span class="punctuation">:</span> <span class="string">&quot;node index.js&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;test&quot;</span><span class="punctuation">:</span> <span class="string">&quot;jest&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;build&quot;</span><span class="punctuation">:</span> <span class="string">&quot;webpack&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;dependencies&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;express&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^4.17.1&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;jest&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^27.1.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;webpack&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^5.39.0&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>scripts 对象包含 start、test 和 build 三个脚本。<ul>
+<li>当您运行 npm run start 时，将运行 node index.js，并启动应用程序。</li>
+<li>同样，运行 npm run test 时，将运行 Jest 测试套件</li>
+<li>而 npm run build 将运行 webpack 命令以生成最终的构建输出。</li>
+</ul>
+</li>
+<li>总之，<code>npm run </code>命令为您提供了一种在 package.json 文件中定义和管理一组指令的方法，可以在项目中快速且灵活地运行各种操作。</li>
+</ul>
+<h2 id="4-Vue3介绍"><a href="#4-Vue3介绍" class="headerlink" title="4. Vue3介绍"></a>4. Vue3介绍</h2><h3 id="4-1-Vue3介绍"><a href="#4-1-Vue3介绍" class="headerlink" title="4.1 Vue3介绍"></a>4.1 Vue3介绍</h3><ul>
+<li>这个是好东西，相比于前面写的纯HTML，学了这个前面都可以算<del>白学了</del></li>
+</ul>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240928223249200.png" alt="image-20240928223249200" style="zoom:25%;" />	
+
+<blockquote>
+<p>Vue (发音为 &#x2F;vju&#x2F;，类似 <strong>view</strong>) 是一款用于构建用户界面的 JavaScript 框架。它基于标准 HTML、CSS 和 JavaScript 构建，并提供了一套声明式的、组件化的编程模型，帮助你高效地开发用户界面。无论是简单还是复杂的界面，Vue 都可以胜任。官网为:<a target="_blank" rel="noopener" href="https://cn.vuejs.org/">https://cn.vuejs.org/</a></p>
+</blockquote>
+<p> <strong>Vue的两个核心功能：</strong></p>
+<ul>
+<li><code>声明式渲染</code>：Vue 基于标准 HTML 拓展了一套模板语法，使得我们可以<strong>声明式</strong>地描述最终输出的 <strong>HTML 和 JavaScript 状态之间的关系</strong>。</li>
+<li><code>响应性</code>：Vue 会自动跟踪 JavaScript 状态并在其发生变化时<strong>响应式地更新 DOM</strong></li>
+</ul>
+<blockquote>
+<p>VUE作者:尤雨溪</p>
+</blockquote>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240928223244292.png" alt="image-20240928223244292" style="zoom:25%;" />	
+
+<ul>
+<li>尤雨溪（Evan You），毕业于科尔盖特大学，前端框架Vue.js的作者、HTML5版Clear的打造人、独立开源开发者。曾就职于Google Creative Labs和Meteor Development Group。由于工作中大量接触开源的JavaScript项目，最后自己也走上了开源之路，现全职开发和维护Vue.js</li>
+<li>尤雨溪毕业于上海复旦附中，在美国完成大学学业，本科毕业于Colgate University，后在Parsons设计学院获得Design &amp; Technology艺术硕士学位，任职于纽约Google Creative Lab。</li>
+<li>尤雨溪大学专业并非是计算机专业，在大学期间他学习专业是室内艺术和艺术史，后来读了美术设计和技术的硕士，正是在读硕士期间，他偶然接触到了JavaScript，从此被这门编程语言深深吸引，开启了自己的前端生涯。</li>
+</ul>
+<h3 id="4-2-Vue3快速体验-非工程化方式"><a href="#4-2-Vue3快速体验-非工程化方式" class="headerlink" title="4.2 Vue3快速体验(非工程化方式)"></a>4.2 Vue3快速体验(非工程化方式)</h3><p>仅演示vue3的核心功能，后面就主要看工程化</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 导入vue的依赖 核心的vue3的js文件 --&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;./js/vue.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;app&quot;</span>&gt;</span></span><br><span class="line">         <span class="comment">&lt;!-- v-test: 绑定变量 v-bind: 绑定对象 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">h1</span> <span class="attr">v-text</span>=<span class="string">&quot;message&quot;</span> <span class="attr">v-bind:style</span>=<span class="string">&quot;colorStyle&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">h1</span>&gt;</span>&#123;&#123; message &#125;&#125;<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">&lt;!-- 绑定事件 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">button</span> @<span class="attr">click</span>=<span class="string">&quot;changeMessage&quot;</span>&gt;</span>change<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">const</span> app = <span class="title class_">Vue</span>.<span class="title function_">createApp</span>(&#123;</span></span><br><span class="line"><span class="language-javascript">            <span class="title function_">setup</span>(<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">                <span class="comment">//定义数据</span></span></span><br><span class="line"><span class="language-javascript">                <span class="comment">//在VUE中实现DOM的思路是: 通过修改修数据而影响页面元素</span></span></span><br><span class="line"><span class="language-javascript">                <span class="comment">// vue3中,数据默认不是响应式的,需要加ref或者reactive处理,后面会详细讲解</span></span></span><br><span class="line"><span class="language-javascript">                </span></span><br><span class="line"><span class="language-javascript">                <span class="comment">// 定义数据 变量/对象的形式</span></span></span><br><span class="line"><span class="language-javascript">                <span class="keyword">let</span> message = <span class="string">&quot;hello&quot;</span>;</span></span><br><span class="line"><span class="language-javascript">                <span class="keyword">let</span> colorStyle = &#123;</span></span><br><span class="line"><span class="language-javascript">                    <span class="string">&quot;background-color&quot;</span>: <span class="string">&quot;yellow&quot;</span>,</span></span><br><span class="line"><span class="language-javascript">                &#125;;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">                <span class="keyword">function</span> <span class="title function_">changeMessage</span>(<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">                    <span class="comment">// 思考：为什么这里不会更新前端的值？</span></span></span><br><span class="line"><span class="language-javascript">                    <span class="comment">// 解答：message在这里是局部变量，不会通过vue将该数据的更新告诉前端</span></span></span><br><span class="line"><span class="language-javascript">                    <span class="comment">// 后续我们会谈到响应式变量来解决这个问题。</span></span></span><br><span class="line"><span class="language-javascript">                    message = <span class="string">&quot;hello world&quot;</span>;</span></span><br><span class="line"><span class="language-javascript">                    </span></span><br><span class="line"><span class="language-javascript">                    <span class="title function_">alert</span>(message);</span></span><br><span class="line"><span class="language-javascript">                &#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">                <span class="comment">// 在return中返回的变量/方法 才能够和HTML元素关联</span></span></span><br><span class="line"><span class="language-javascript">                <span class="keyword">return</span> &#123;</span></span><br><span class="line"><span class="language-javascript">                    message,</span></span><br><span class="line"><span class="language-javascript">                    colorStyle,</span></span><br><span class="line"><span class="language-javascript">                    changeMessage,</span></span><br><span class="line"><span class="language-javascript">                &#125;</span></span><br><span class="line"><span class="language-javascript">            &#125;</span></span><br><span class="line"><span class="language-javascript">        &#125;);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// 将app对象挂载到指定元素上，被挂载的元素内部就可以通过vue框架实现数据渲染</span></span></span><br><span class="line"><span class="language-javascript">        app.<span class="title function_">mount</span>(<span class="string">&quot;#app&quot;</span>);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// 这里做一个简单的非工程化的尝试，将vue的模板语法和HTML结合起来，简单理解一下vue的思想，后续开发不会用到</span></span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// 后续我们使用完整的vue文件来建立前端工程化项目</span></span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>效果</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240928222331183.png" alt="image-20240928222331183">	</p>
+<p>点击后：弹窗：</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240928222342291.png" alt="image-20240928222342291">	</p>
+<h2 id="5-Vue3通过vite实现工程化"><a href="#5-Vue3通过vite实现工程化" class="headerlink" title="5. Vue3通过vite实现工程化"></a>5. Vue3通过vite实现工程化</h2><h3 id="5-1-Vite介绍"><a href="#5-1-Vite介绍" class="headerlink" title="5.1 Vite介绍"></a>5.1 Vite介绍</h3><ul>
+<li>说了这么多，理解为vite是帮我们搭建项目的脚手架即可…</li>
+</ul>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240928223226551.png" alt="image-20240928223226551" style="zoom:25%;" />	
+
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240928223232313.png" alt="image-20240928223232313" style="zoom:25%;" />	
+
+<blockquote>
+<p>在浏览器支持 ES 模块之前，JavaScript 并没有提供原生机制让开发者以模块化的方式进行开发。</p>
+<p>这也正是我们对 “打包” 这个概念熟悉的原因：使用工具抓取、处理并将我们的源码模块串联成可以在浏览器中运行的文件。</p>
+<p>时过境迁，我们见证了诸如 <a target="_blank" rel="noopener" href="https://webpack.js.org/" title="webpack">webpack</a>、<a target="_blank" rel="noopener" href="https://rollupjs.org/" title="Rollup">Rollup</a> 和 <a target="_blank" rel="noopener" href="https://parceljs.org/" title="Parcel">Parcel</a> 等工具的变迁，它们极大地改善了前端开发者的开发体验</p>
+</blockquote>
+<ul>
+<li>当我们开始构建越来越大型的应用时，需要处理的 JavaScript 代码量也呈指数级增长。</li>
+<li>包含数千个模块的大型项目相当普遍。基于 JavaScript 开发的工具就会开始遇到性能瓶颈：通常需要很长时间（甚至是几分钟！）才能启动开发服务器，即使使用模块热替换（HMR），文件修改后的效果也需要几秒钟才能在浏览器中反映出来。如此循环往复，迟钝的反馈会极大地影响开发者的开发效率和幸福感。</li>
+</ul>
+<blockquote>
+<p>Vite 旨在利用生态系统中的新进展解决上述问题：浏览器开始原生支持 ES 模块，且越来越多 JavaScript 工具使用编译型语言编写。</p>
+<p><a target="_blank" rel="noopener" href="https://cn.vitejs.dev/guide/why.html">https://cn.vitejs.dev/guide/why.html</a></p>
+</blockquote>
+<p>前端工程化的作用包括但不限于以下几个方面：</p>
+<ol>
+<li>快速创建项目：使用脚手架可以快速搭建项目基本框架，避免从零开始搭建项目的重复劳动和繁琐操作，从而节省时间和精力。</li>
+<li>统一的工程化规范：前端脚手架可以预设项目目录结构、代码规范、git提交规范等统一的工程化规范，让不同开发者在同一个项目上编写出风格一致的代码，提高协作效率和质量。</li>
+<li>代码模板和组件库：前端脚手架可以包含一些常用的代码模板和组件库，使开发者在实现常见功能时不再重复造轮子，避免因为轮子质量不高带来的麻烦，能够更加专注于项目的业务逻辑。</li>
+<li>自动化构建和部署：前端脚手架可以自动进行代码打包、压缩、合并、编译等常见的构建工作，可以通过集成自动化部署脚本，自动将代码部署到测试、生产环境等。</li>
+</ol>
+<h3 id="5-2-Vue3-vite项目环境搭建"><a href="#5-2-Vue3-vite项目环境搭建" class="headerlink" title="5.2 Vue3+vite项目环境搭建"></a>5.2 Vue3+vite项目环境搭建</h3><ul>
+<li>npm create vite</li>
+<li>cd, npm install </li>
+<li>npm run dev</li>
+</ul>
+<h4 id="5-2-1-Vue3-vite项目创建-启动-停止"><a href="#5-2-1-Vue3-vite项目创建-启动-停止" class="headerlink" title="5.2.1 Vue3+vite项目创建 启动 停止"></a>5.2.1 Vue3+vite项目创建 启动 停止</h4><blockquote>
+<p>1 使用命令行创建工程</p>
+</blockquote>
+<ul>
+<li>在磁盘的合适位置上,创建一个空目录用于存储多个前端项目</li>
+<li>用vscode打开该目录</li>
+<li>在vocode中打开命令行运行如下命令</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm create vite@latest</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>第一次使用vite时会提示下载vite,输入y回车即可,下次使用vite就不会出现了</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240929213312194.png" alt="image-20240929213312194">	</p>
+<ul>
+<li>注意： 选择vue+JavaScript选项即可</li>
+</ul>
+<blockquote>
+<p>2 安装项目所需依赖</p>
+</blockquote>
+<ul>
+<li>cd进入刚刚创建的项目目录</li>
+<li>npm install命令安装基础依赖</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cd ./vue3-demo1</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>3 启动项目</p>
+</blockquote>
+<ul>
+<li>查看项目下的package.json</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;vue3-demo1&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;private&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;module&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;scripts&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;dev&quot;</span><span class="punctuation">:</span> <span class="string">&quot;vite&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;build&quot;</span><span class="punctuation">:</span> <span class="string">&quot;vite build&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;preview&quot;</span><span class="punctuation">:</span> <span class="string">&quot;vite preview&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;dependencies&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;bootstrap&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^5.2.3&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;sass&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^1.62.1&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;vue&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^3.2.47&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;devDependencies&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;@vitejs/plugin-vue&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^4.1.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;vite&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^4.3.2&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm run dev</span><br></pre></td></tr></table></figure>
+
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240929213322128.png" alt="image-20240929213322128" style="zoom: 33%;" />	
+
+
+
+<blockquote>
+<p>5 停止项目</p>
+</blockquote>
+<ul>
+<li>命令行上 ctrl+c</li>
+</ul>
+<h4 id="5-2-2-Vite-Vue3项目的目录结构"><a href="#5-2-2-Vite-Vue3项目的目录结构" class="headerlink" title="5.2.2 Vite+Vue3项目的目录结构"></a>5.2.2 Vite+Vue3项目的目录结构</h4><blockquote>
+<p>1.下面是 Vite 项目结构和入口的详细说明：</p>
+</blockquote>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240929213334551.png" alt="image-20240929213334551">	</p>
+<ul>
+<li>public&#x2F; 目录：用于存放一些公共资源，如 HTML 文件、图像、字体等，这些资源会被直接复制到构建出的目标目录中。</li>
+<li>src&#x2F; 目录：存放项目的源代码，包括 JavaScript、CSS、Vue 组件、图像和字体等资源。在开发过程中，这些文件会被 Vite 实时编译和处理，并在浏览器中进行实时预览和调试。以下是src内部划分建议：<ol>
+<li><code>assets/</code> 目录：用于存放一些项目中用到的静态资源，如图片、字体、样式文件等。</li>
+<li><code>components/</code> 目录：用于存放组件相关的文件。组件是代码复用的一种方式，用于抽象出一个可复用的 UI 部件，方便在不同的场景中进行重复使用。</li>
+<li><code>layouts/</code> 目录：用于存放布局组件的文件。布局组件通常负责整个应用程序的整体布局，如头部、底部、导航菜单等。</li>
+<li><code>pages/</code> 目录：用于存放页面级别的组件文件，通常是路由对应的组件文件。在这个目录下，可以创建对应的文件夹，用于存储不同的页面组件。</li>
+<li><code>plugins/</code> 目录：用于存放 Vite 插件相关的文件，可以按需加载不同的插件来实现不同的功能，如自动化测试、代码压缩等。</li>
+<li><code>router/</code> 目录：用于存放 Vue.js 的路由配置文件，负责管理视图和 URL 之间的映射关系，方便实现页面之间的跳转和数据传递。</li>
+<li><code>store/</code> 目录：用于存放 Vuex 状态管理相关的文件，负责管理应用程序中的数据和状态，方便统一管理和共享数据，提高开发效率。</li>
+<li><code>utils/</code> 目录：用于存放一些通用的工具函数，如日期处理函数、字符串操作函数等。</li>
+</ol>
+</li>
+<li>vite.config.js 文件：Vite 的配置文件，可以通过该文件配置项目的参数、插件、打包优化等。该文件可以使用 CommonJS 或 ES6 模块的语法进行配置。</li>
+<li>package.json 文件：标准的 Node.js 项目配置文件，包含了项目的基本信息和依赖关系。其中可以通过 scripts 字段定义几个命令，如 dev、build、serve 等，用于启动开发、构建和启动本地服务器等操作。</li>
+<li>Vite 项目的入口为 src&#x2F;main.js 文件，这是 Vue.js 应用程序的启动文件，也是整个前端应用程序的入口文件。在该文件中，通常会引入 Vue.js 及其相关插件和组件，同时会创建 Vue 实例，挂载到 HTML 页面上指定的 DOM 元素中。</li>
+</ul>
+<blockquote>
+<p> 2.vite的运行界面</p>
+</blockquote>
+<ul>
+<li>在安装了 Vite 的项目中，可以在 npm scripts 中使用 <code>vite</code> 可执行文件，或者直接使用 <code>npx vite</code> 运行它。下面是通过脚手架创建的 Vite 项目中默认的 npm scripts：(package.json)</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;scripts&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;dev&quot;</span><span class="punctuation">:</span> <span class="string">&quot;vite&quot;</span><span class="punctuation">,</span> <span class="comment">// 启动开发服务器，别名：`vite dev`，`vite serve`</span></span><br><span class="line">    <span class="attr">&quot;build&quot;</span><span class="punctuation">:</span> <span class="string">&quot;vite build&quot;</span><span class="punctuation">,</span> <span class="comment">// 为生产环境构建产物</span></span><br><span class="line">    <span class="attr">&quot;preview&quot;</span><span class="punctuation">:</span> <span class="string">&quot;vite preview&quot;</span> <span class="comment">// 本地预览生产构建产物</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>运行设置端口号：(vite.config.js)</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">//修改vite项目配置文件 vite.config.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title function_">defineConfig</span>(&#123;</span><br><span class="line">  <span class="attr">plugins</span>: [<span class="title function_">vue</span>()],</span><br><span class="line">  <span class="attr">server</span>:&#123;</span><br><span class="line">    <span class="attr">port</span>:<span class="number">3000</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="5-2-3-Vue3-vite项目组件（SFC入门）"><a href="#5-2-3-Vue3-vite项目组件（SFC入门）" class="headerlink" title="5.2.3 Vue3+vite项目组件（SFC入门）"></a>5.2.3 Vue3+vite项目组件（SFC入门）</h4><blockquote>
+<p>什么是VUE的组件?</p>
+</blockquote>
+<ul>
+<li>一个页面作为整体,是由多个部分组成的,每个部分在这里就可以理解为一个组件</li>
+<li>每个.vue文件就可以理解为一个组件,多个.vue文件可以构成一个整体页面</li>
+<li>组件化给我们带来的另一个好处就是组件的复用和维护非常的方便</li>
+</ul>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240929213732327.png" alt="image-20240929213732327" style="zoom: 33%;" />	
+
+
+
+<blockquote>
+<p>什么是.vue文件?</p>
+</blockquote>
+<ul>
+<li><p>传统的页面有.html文件.css文件和.js文件三个文件组成(多文件组件) </p>
+</li>
+<li><p>vue将这文件合并成一个.vue文件(Single-File Component，简称 SFC,单文件组件)</p>
+</li>
+<li><p>.vue文件对js&#x2F;css&#x2F;html统一封装,这是VUE中的概念 该文件由三个部分组成    <code>&lt;script&gt;    &lt;template&gt;    &lt;style&gt;</code></p>
+<ul>
+<li>template标签     代表组件的html部分代码    代替传统的.html文件</li>
+<li>script标签           代表组件的js代码 代替传统的.js文件</li>
+<li>style标签            代表组件的css样式代码 代替传统的.css文件</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>工程化vue项目如何组织这些组件?</p>
+</blockquote>
+<ul>
+<li>index.html是项目的入口,其中 <code>&lt;div id =&#39;app&#39;&gt;&lt;/div&gt;</code>是用于挂载所有组建的元素</li>
+<li>index.html中的script标签引入了一个main.js文件,具体的挂载过程在main.js中执行</li>
+<li>main.js是vue工程中非常重要的文件,他决定这项目使用哪些依赖,导入的第一个组件</li>
+<li>App.vue是vue中的核心组件,所有的其他组件都要通过该组件进行导入,该组件通过路由可以控制页面的切换</li>
+</ul>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240929213723094.png" alt="image-20240929213723094" style="zoom:67%;" />	
+
+
+
+
+
+<h4 id="5-2-4-Vue3-vite响应式入门和setup函数"><a href="#5-2-4-Vue3-vite响应式入门和setup函数" class="headerlink" title="5.2.4 Vue3+vite响应式入门和setup函数"></a>5.2.4 Vue3+vite响应式入门和setup函数</h4><p>App.vue，加入setup语法糖</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;!-- 通过setup语法糖，可以省略掉export default setup return等重复性语句，省事了，但是要知道怎么回事 --&gt;</span><br><span class="line">&lt;!--</span><br><span class="line">export default&#123;</span><br><span class="line">    setup()&#123;</span><br><span class="line">      ...</span><br><span class="line">    &#125;</span><br><span class="line">    return &#123;</span><br><span class="line">      ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">--&gt;</span><br><span class="line">&lt;script setup&gt;</span><br><span class="line">  import &#123; ref &#125; from &#x27;vue&#x27;;</span><br><span class="line"></span><br><span class="line">  // 定义要展示到HTML上的数据 变量/对象</span><br><span class="line">  /*</span><br><span class="line">    响应式数据：数据变化时，VUE框架会将变量最新的值更新到DOM树中，页面的数据就是实时最新的</span><br><span class="line">    非响应式数据：数据变化时，VUE框架不会将变量最新的值更新到DOM树中，页面的数据不是实时最新的</span><br><span class="line"></span><br><span class="line">    Vue2中，数据不做特殊处理，默认就是响应式的</span><br><span class="line">    Vue3中，数据要经过ref / reactive 处理后，才能是响应式的</span><br><span class="line">        ref和reactive函数是Vue框架给我们提供的方法，导入后才可以使用</span><br><span class="line">    ref处理的响应式数据，在操作时需注意：</span><br><span class="line">        在script标签中，操作ref响应式数据，需通过.Pvalue进行操作</span><br><span class="line">        在template标签中，操作ref响应式数据，无需使用.value</span><br><span class="line">  */</span><br><span class="line"></span><br><span class="line">  let counter = ref(10); // &#123; value: 10 &#125;</span><br><span class="line"></span><br><span class="line">  // 让counter自增的方法</span><br><span class="line">  function counterIncre() &#123;</span><br><span class="line">    counter.value ++;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // 让counter自减的方法</span><br><span class="line">  function counterDecre() &#123;</span><br><span class="line">    counter.value --;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // 显示counter的方法</span><br><span class="line">  function showCounter() &#123;</span><br><span class="line">    alert(counter.value);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;button @click=&quot;counterDecre()&quot;&gt;-&lt;/button&gt;</span><br><span class="line">    &lt;span v-text=&quot;counter&quot;&gt;&lt;/span&gt;</span><br><span class="line">    &lt;button @click=&quot;counterIncre()&quot;&gt;+&lt;/button&gt;</span><br><span class="line">    &lt;br&gt;</span><br><span class="line">    &lt;button @click=&quot;showCounter()&quot;&gt;showCounter&lt;/button&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;style scoped&gt;</span><br><span class="line"></span><br><span class="line">&lt;/style&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>效果</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240929214321158.png" alt="image-20240929214321158">	</p>
+<h4 id="5-2-5-CSS样式三种导入方式"><a href="#5-2-5-CSS样式三种导入方式" class="headerlink" title="5.2.5 CSS样式三种导入方式"></a>5.2.5 CSS样式三种导入方式</h4><ol>
+<li><p>全局引入main.js</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;./style/reset.css&#x27;</span> <span class="comment">//书写引入的资源的相对路径即可！</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>vue文件script代码引入</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;./style/reset.css&#x27;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Vue文件style代码引入</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">@<span class="keyword">import</span> <span class="string">&#x27;./style/reset.css&#x27;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;script setup&gt;</span><br><span class="line">  /*</span><br><span class="line">    CSS 导入方式：</span><br><span class="line">      1. 在.vue的style标签中</span><br><span class="line">      2. 将css样式保存到独立的css文件中，哪里.vue文件需要就在哪里导入即可</span><br><span class="line">        2.1 在script标签中导入</span><br><span class="line">        2.2 在style标签中导入，@import语句</span><br><span class="line">      3. 如果CSS要在所有.vue文件生效，可以在main.js中导入</span><br><span class="line">  */</span><br><span class="line">  // import &#x27;./style/test.css&#x27;;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;!-- 语法上要求template标签下只能有一个根标签，可以通过外层定义一个div标签来包裹解决 --&gt;</span><br><span class="line">   &lt;div&gt;</span><br><span class="line">   &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;style scoped&gt;</span><br><span class="line">  /* @import &#x27;./style/test.css&#x27;; */</span><br><span class="line">&lt;/style&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="5-2-5-JS和TS的选择"><a href="#5-2-5-JS和TS的选择" class="headerlink" title="5.2.5 JS和TS的选择"></a>5.2.5 JS和TS的选择</h4><blockquote>
+<p>TS是JS的一个超集,使用TS之后,JS的语法更加的像JAVA,实际开发中用的确实更多,那么这里为什么我们没有立即使用TS进行开发,原因如下</p>
+</blockquote>
+<p>1 为了降低难度,提高前端工程化的效率</p>
+<p>2 对于学JAVA的我们来说,学习TS非常容易,但是还是需要一些时间</p>
+<p>3 TS不是非学不可,不用TS仍然可以正常开发工程化的前端项目</p>
+<p>4  尚硅谷已经发布了TS的专项课程,请大家在B站上自行搜索 “尚硅谷  TS” </p>
+<p>5  建议大家先学完完整的前端工程化内容,然后再根据需求单独学习TS即可</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2024/10/02/2.Areas%F0%9F%8C%90/back-end-java/4.JavaWeb/7.%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E4%B8%8A%E7%AF%87_ES6%E8%AF%AD%E6%B3%95_%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">https://yuezi2048.github.io/2024/10/02/2.Areas🌐/back-end-java/4.JavaWeb/7.前端工程化上篇_ES6语法_环境搭建/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/4-JavaWeb/">4.JavaWeb</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2024/09/26/2.Areas%F0%9F%8C%90/back-end-java/4.JavaWeb/2.%20HTML_CSS/" title="2. HTML_CSS"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">2. HTML_CSS</div></div><div class="info-2"><div class="info-item-1">第二章 HTML-CSS1. HTML入门1.1 HTML_CSS_JS作用 HTML用于搭建网站主体 CSS用于对页面元素美化 JS用于对页面元素动态处理  1.2 HTML概念HTML  HTML(Hyper Test Markup Language 超文本标记语言)，搭建网站结构，显示相关元素 HTML5   HTML5 技术结合了 HTML4.01 的相关标准并革新，符合现代网络发展要求，在 2008 年正式发布。HTML5 由不同的技术构成，其在互联网中得到了非常广泛的应用，提供更多增强网络应用的标准机。 与传统的技术相比，HTML5 的语法特征更加明显，并且结合了 SVG 的内容。这些内容在网页中使用可以更加便捷地处理多媒体内容，而且 HTML5中还结合了其他元素，对原有的功能进行调整和修改，进行标准化工作。 HTML5 在 2012...</div></div></div></a><a class="pagination-related" href="/2024/10/02/2.Areas%F0%9F%8C%90/back-end-java/4.JavaWeb/3.%20JavaScript/" title="3. JavaScript"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">3. JavaScript</div></div><div class="info-2"><div class="info-item-1">第三章 JavaScript1. JS简介1.1 JS起源和特点 JavaScript：由Netscape(网景)的LiveScript发展而来的基于对象的动态类型区分大小写的客户端脚本语言，最初目的是为了解决服务端语言，为用户提供流畅的访问速度，而当时服务端对数据验证慢，Netscape公司的浏览器Navigator提供了数据验证的基本功能 ECMA-262是正式JavaScript标准，基于 JavaScript (Netscape) 和JScript (Microsoft)，在1996年开始，1997.7采纳了首个版本 JavaScript正式名称为ECMAScript JS包括ECMAScript、DOM、BOM  	 JS是一种运行于浏览器端上的小脚本语句,可以实现网页如文本内容动,数据动态变化和动画特效等， 特点如下  脚本语言  解释型脚本语言，不同于C&#x2F;C++ Java...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2024/09/01/2.Areas%F0%9F%8C%90/back-end-java/4.JavaWeb/1.%20JavaWeb%E6%A6%82%E8%BF%B0/" title="1. JavaWeb概述"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-01</div><div class="info-item-2">1. JavaWeb概述</div></div><div class="info-2"><div class="info-item-1">第一章 Web概述1.1 JavaWeb是什么 通过Java技术解决Web互联网领域的技术栈（使用JavaEE技术开发企业级互联网项目，项目规模和架构模式和JavaSE有很大区别） 客户-服务器模式 客户端：与用户交互，接收用户的输入，向服务器发送数据并返回服务器输出的数据 服务器：从硬件和软件两个方面描述(广义和狭义) 硬件上，是比普通计算机运行更快 负载更高 价格更贵，一般是网络中的大型客户机提供计算服务 软件上，是安装在计算机上的某个进程，根据不同的作用可以分为不同的服务器，如DNS redis ftp服务器等     应用 APP 微信小程序 PC端程序 PC浏览器 外设（小米音箱 电话手表 POS机等）    1.2 JavaWeb技术栈前端 HTML CSS JS ES6 Nodejs npm vite vue3 router pinia axios element-plus… 后端 HTTP xml Tomcat Servlet Request Response Cookie Session Filter Listener MySQL JDBC Druid...</div></div></div></a><a class="pagination-related" href="/2024/10/13/2.Areas%F0%9F%8C%90/back-end-java/4.JavaWeb/10.%E9%98%B6%E6%AE%B5%E9%A1%B9%E7%9B%AE%E2%80%94%E2%80%94%E5%BE%AE%E5%A4%B4%E6%9D%A1/" title="10.阶段项目——微头条"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-13</div><div class="info-item-2">10.阶段项目——微头条</div></div><div class="info-2"><div class="info-item-1">10. 阶段项目——微头条1....</div></div></div></a><a class="pagination-related" href="/2024/09/26/2.Areas%F0%9F%8C%90/back-end-java/4.JavaWeb/2.%20HTML_CSS/" title="2. HTML_CSS"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-26</div><div class="info-item-2">2. HTML_CSS</div></div><div class="info-2"><div class="info-item-1">第二章 HTML-CSS1. HTML入门1.1 HTML_CSS_JS作用 HTML用于搭建网站主体 CSS用于对页面元素美化 JS用于对页面元素动态处理  1.2 HTML概念HTML  HTML(Hyper Test Markup Language 超文本标记语言)，搭建网站结构，显示相关元素 HTML5   HTML5 技术结合了 HTML4.01 的相关标准并革新，符合现代网络发展要求，在 2008 年正式发布。HTML5 由不同的技术构成，其在互联网中得到了非常广泛的应用，提供更多增强网络应用的标准机。 与传统的技术相比，HTML5 的语法特征更加明显，并且结合了 SVG 的内容。这些内容在网页中使用可以更加便捷地处理多媒体内容，而且 HTML5中还结合了其他元素，对原有的功能进行调整和修改，进行标准化工作。 HTML5 在 2012...</div></div></div></a><a class="pagination-related" href="/2024/10/02/2.Areas%F0%9F%8C%90/back-end-java/4.JavaWeb/3.%20JavaScript/" title="3. JavaScript"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-02</div><div class="info-item-2">3. JavaScript</div></div><div class="info-2"><div class="info-item-1">第三章 JavaScript1. JS简介1.1 JS起源和特点 JavaScript：由Netscape(网景)的LiveScript发展而来的基于对象的动态类型区分大小写的客户端脚本语言，最初目的是为了解决服务端语言，为用户提供流畅的访问速度，而当时服务端对数据验证慢，Netscape公司的浏览器Navigator提供了数据验证的基本功能 ECMA-262是正式JavaScript标准，基于 JavaScript (Netscape) 和JScript (Microsoft)，在1996年开始，1997.7采纳了首个版本 JavaScript正式名称为ECMAScript JS包括ECMAScript、DOM、BOM  	 JS是一种运行于浏览器端上的小脚本语句,可以实现网页如文本内容动,数据动态变化和动画特效等， 特点如下  脚本语言  解释型脚本语言，不同于C&#x2F;C++ Java...</div></div></div></a><a class="pagination-related" href="/2024/09/15/2.Areas%F0%9F%8C%90/back-end-java/4.JavaWeb/4.%20XML_Tomcat_HTTP/" title="4. XML_Tomcat_HTTP"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-15</div><div class="info-item-2">4. XML_Tomcat_HTTP</div></div><div class="info-2"><div class="info-item-1">第四章 XML_Tomcat10_HTTP1. XML XML（EXtensible Markup Lanauage 可扩展标记语言），同和HTML一样，基本语法是标签	 可扩展：含义是XML允许自定义格式 在XML语法规范基础上，第三方应用程序、框架都会通过XML约束来规定配置文件中可以写什么以及怎么写 我们只需在第三方APP或框架上定义好的配置文件基础上，根据需求加以修改即可    	 1.1...</div></div></div></a><a class="pagination-related" href="/2024/10/02/2.Areas%F0%9F%8C%90/back-end-java/4.JavaWeb/5.%20Servlet/" title="5. Servlet"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-02</div><div class="info-item-2">5. Servlet</div></div><div class="info-2"><div class="info-item-1">第五章 Servlet1. Servlet简介首先明确动态资源和静态资源的概念（买蛋糕的例子，现有和现做的区别） 静态资源：无需通过代码运行生成的资源，即在运行前就写好的资源，包括前端三大件、img等多媒体文件 动态资源：需要通过代码运行生成的资源，即程序运行前无法确定的数据，需要运行时动态生成，包括Servlet、Thymeleaf  注：动态资源是强调运行时动态生成数据，而不是视图上的动画效果或者是简单的人机交互效果  接下来引出我们的动态资源——Servlet  Servlet（Server...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">423</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">59</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">84</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96"><span class="toc-text">七、前端工程化</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-text">1. 前端工程化是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-ECMA6Script-ES6"><span class="toc-text">2. ECMA6Script(ES6)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-es6%E7%AE%80%E4%BB%8B"><span class="toc-text">2.1 es6简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E5%8F%98%E9%87%8F%E5%92%8C%E6%A8%A1%E6%9D%BF%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-text">2.2 变量和模板字符串</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E8%A7%A3%E6%9E%84%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-text">2.3 解构表达式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E7%AE%AD%E5%A4%B4%E5%87%BD%E6%95%B0"><span class="toc-text">2.4 箭头函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-1-%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8"><span class="toc-text">2.4.1 快速入门</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-2-%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8"><span class="toc-text">2.4.2 实际应用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-3-spread%E5%92%8Crest"><span class="toc-text">2.4.3 spread和rest</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E4%B8%8E%E6%8B%B7%E8%B4%9D"><span class="toc-text">2.5 对象创建与拷贝</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5-1-%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E8%AF%AD%E6%B3%95%E7%B3%96"><span class="toc-text">2.5.1 对象创建语法糖</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5-2-%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B5%85%E6%8B%B7%E8%B4%9D"><span class="toc-text">2.5.2 深拷贝和浅拷贝</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-%E6%A8%A1%E5%9D%97%E5%8C%96%E5%A4%84%E7%90%86"><span class="toc-text">2.6 模块化处理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-6-1-%E5%88%86%E5%88%AB%E5%AF%BC%E5%87%BA"><span class="toc-text">2.6.1 分别导出</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-6-2-%E7%BB%9F%E4%B8%80%E5%AF%BC%E5%87%BA"><span class="toc-text">2.6.2 统一导出</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-6-3-%E9%BB%98%E8%AE%A4%E5%AF%BC%E5%87%BA"><span class="toc-text">2.6.3 默认导出</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E9%83%A8%E7%BD%B2%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E7%8E%AF%E5%A2%83"><span class="toc-text">3. 部署前端工程化环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-nodejs%E7%9A%84%E7%AE%80%E4%BB%8B%E5%92%8C%E5%AE%89%E8%A3%85"><span class="toc-text">3.1 nodejs的简介和安装</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-1-%E4%BB%80%E4%B9%88%E6%98%AFNodejs"><span class="toc-text">3.1.1 什么是Nodejs</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-2-%E5%A6%82%E4%BD%95%E5%AE%89%E8%A3%85nodejs"><span class="toc-text">3.1.2 如何安装nodejs</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-npm-%E9%85%8D%E7%BD%AE%E5%92%8C%E4%BD%BF%E7%94%A8"><span class="toc-text">3.2 npm 配置和使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-1-npm%E4%BB%8B%E7%BB%8D"><span class="toc-text">3.2.1 npm介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-2-npm-%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE"><span class="toc-text">3.2.2 npm 安装和配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-3-npm-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-text">3.2.3 npm 常用命令</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Vue3%E4%BB%8B%E7%BB%8D"><span class="toc-text">4. Vue3介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-Vue3%E4%BB%8B%E7%BB%8D"><span class="toc-text">4.1 Vue3介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-Vue3%E5%BF%AB%E9%80%9F%E4%BD%93%E9%AA%8C-%E9%9D%9E%E5%B7%A5%E7%A8%8B%E5%8C%96%E6%96%B9%E5%BC%8F"><span class="toc-text">4.2 Vue3快速体验(非工程化方式)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-Vue3%E9%80%9A%E8%BF%87vite%E5%AE%9E%E7%8E%B0%E5%B7%A5%E7%A8%8B%E5%8C%96"><span class="toc-text">5. Vue3通过vite实现工程化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-Vite%E4%BB%8B%E7%BB%8D"><span class="toc-text">5.1 Vite介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-Vue3-vite%E9%A1%B9%E7%9B%AE%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-text">5.2 Vue3+vite项目环境搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-1-Vue3-vite%E9%A1%B9%E7%9B%AE%E5%88%9B%E5%BB%BA-%E5%90%AF%E5%8A%A8-%E5%81%9C%E6%AD%A2"><span class="toc-text">5.2.1 Vue3+vite项目创建 启动 停止</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-2-Vite-Vue3%E9%A1%B9%E7%9B%AE%E7%9A%84%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"><span class="toc-text">5.2.2 Vite+Vue3项目的目录结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-3-Vue3-vite%E9%A1%B9%E7%9B%AE%E7%BB%84%E4%BB%B6%EF%BC%88SFC%E5%85%A5%E9%97%A8%EF%BC%89"><span class="toc-text">5.2.3 Vue3+vite项目组件（SFC入门）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-4-Vue3-vite%E5%93%8D%E5%BA%94%E5%BC%8F%E5%85%A5%E9%97%A8%E5%92%8Csetup%E5%87%BD%E6%95%B0"><span class="toc-text">5.2.4 Vue3+vite响应式入门和setup函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-5-CSS%E6%A0%B7%E5%BC%8F%E4%B8%89%E7%A7%8D%E5%AF%BC%E5%85%A5%E6%96%B9%E5%BC%8F"><span class="toc-text">5.2.5 CSS样式三种导入方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-5-JS%E5%92%8CTS%E7%9A%84%E9%80%89%E6%8B%A9"><span class="toc-text">5.2.5 JS和TS的选择</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/11/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2025-10-11T16:01:27.209Z" title="发表于 2025-10-12 00:01:27">2025-10-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/11/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/5.Session%E5%85%B1%E4%BA%AB%E5%88%86%E5%B8%83%E5%BC%8F%E7%99%BB%E5%BD%95/" title="5.Session共享分布式登录">5.Session共享分布式登录</a><time datetime="2025-10-11T14:03:26.000Z" title="发表于 2025-10-11 22:03:26">2025-10-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/11/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/3.swagger+knife4j%E6%8E%A5%E5%8F%A3%E6%96%87%E6%A1%A3/" title="3.swagger+knife4j接口文档">3.swagger+knife4j接口文档</a><time datetime="2025-10-11T13:09:03.000Z" title="发表于 2025-10-11 21:09:03">2025-10-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/11/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/4.%E7%BD%91%E9%A1%B5%E5%86%85%E5%AE%B9%E6%8A%93%E5%8F%96/" title="4.网页内容抓取">4.网页内容抓取</a><time datetime="2025-10-11T13:05:37.000Z" title="发表于 2025-10-11 21:05:37">2025-10-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/10/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/2.%E6%A0%B9%E6%8D%AE%E6%A0%87%E7%AD%BE%E6%90%9C%E7%B4%A2%E7%94%A8%E6%88%B7%E5%8A%9F%E8%83%BD/" title="2.根据标签搜索用户功能">2.根据标签搜索用户功能</a><time datetime="2025-10-10T13:59:53.000Z" title="发表于 2025-10-10 21:59:53">2025-10-10</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>
