@@ -1,0 +1,492 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>2.进阶篇_面向对象_连接池 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="进阶篇一、JDBC进阶1.1 ORM思想 ORM（Object Relational Mapping）思想即为对象到关系数据库的映射，面向对象与数据库表的概念对应起来了 问题：JDBC操作时，数据库的一行完整的数据，传到了Java却是一个个变量，不利于维护和管理 解决：一张表对应一个类，一行数据对应一个对象，一列对应对象的属性，即将数据存储在一个实体类里   现在我们使用JDBC实现手动ORM，后">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2.进阶篇_面向对象_连接池">
+<meta property="og:url" content="https://yuezi2048.github.io/2024/09/06/2.Areas%F0%9F%8C%90/back-end-java/3.JDBC/2.%E8%BF%9B%E9%98%B6%E7%AF%87_%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E8%BF%9E%E6%8E%A5%E6%B1%A0/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="进阶篇一、JDBC进阶1.1 ORM思想 ORM（Object Relational Mapping）思想即为对象到关系数据库的映射，面向对象与数据库表的概念对应起来了 问题：JDBC操作时，数据库的一行完整的数据，传到了Java却是一个个变量，不利于维护和管理 解决：一张表对应一个类，一行数据对应一个对象，一列对应对象的属性，即将数据存储在一个实体类里   现在我们使用JDBC实现手动ORM，后">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2024-09-06T13:48:47.000Z">
+<meta property="article:modified_time" content="2024-09-06T13:48:47.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="3.JDBC">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "2.进阶篇_面向对象_连接池",
+  "url": "https://yuezi2048.github.io/2024/09/06/2.Areas%F0%9F%8C%90/back-end-java/3.JDBC/2.%E8%BF%9B%E9%98%B6%E7%AF%87_%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E8%BF%9E%E6%8E%A5%E6%B1%A0/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2024-09-06T13:48:47.000Z",
+  "dateModified": "2024-09-06T13:48:47.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2024/09/06/2.Areas%F0%9F%8C%90/back-end-java/3.JDBC/2.%E8%BF%9B%E9%98%B6%E7%AF%87_%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E8%BF%9E%E6%8E%A5%E6%B1%A0/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '2.进阶篇_面向对象_连接池',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">488</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">60</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">84</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">2.进阶篇_面向对象_连接池</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">2.进阶篇_面向对象_连接池</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-09-06T13:48:47.000Z" title="发表于 2024-09-06 21:48:47">2024-09-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-09-06T13:48:47.000Z" title="更新于 2024-09-06 21:48:47">2024-09-06</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/">back-end-java</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/3-JDBC/">3.JDBC</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>14分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="进阶篇"><a href="#进阶篇" class="headerlink" title="进阶篇"></a>进阶篇</h1><h2 id="一、JDBC进阶"><a href="#一、JDBC进阶" class="headerlink" title="一、JDBC进阶"></a>一、JDBC进阶</h2><h3 id="1-1-ORM思想"><a href="#1-1-ORM思想" class="headerlink" title="1.1 ORM思想"></a>1.1 ORM思想</h3><ul>
+<li>ORM（Object Relational Mapping）思想即为<code>对象到关系数据库的映射</code>，面向对象与数据库表的概念对应起来了<ul>
+<li>问题：JDBC操作时，数据库的一行完整的数据，传到了Java却是一个个变量，不利于维护和管理</li>
+<li>解决：一张表对应一个类，一行数据对应一个对象，一列对应对象的属性，即将数据存储在一个<code>实体类</code>里</li>
+</ul>
+</li>
+<li>现在我们使用JDBC实现手动ORM，后续有ORM框架，<code>如MyBatis</code>、<code>JPA</code>等</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.atguigu.pojo;</span><br><span class="line"><span class="comment">//类名和数据库名对应，但是表名一般缩写，类名要全写！</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Employee</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> Integer empId;<span class="comment">//emp_id = empId 数据库中列名用下划线分隔，属性名用驼峰！</span></span><br><span class="line">    <span class="keyword">private</span> String empName;<span class="comment">//emp_name = empName</span></span><br><span class="line">    <span class="keyword">private</span> Double empSalary;<span class="comment">//emp_salary = empSalary</span></span><br><span class="line">    <span class="keyword">private</span> Integer empAge;<span class="comment">//emp_age = empAge</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//省略get、set、无参、有参、toString方法。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="comment">// 演示封装单个对象</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testORM</span><span class="params">()</span> <span class="keyword">throws</span> SQLException &#123;</span><br><span class="line">       <span class="type">Connection</span> <span class="variable">connection</span> <span class="operator">=</span> DriverManager.getConnection(<span class="string">&quot;jdbc:mysql:///atguigu&quot;</span>, <span class="string">&quot;root&quot;</span>, <span class="string">&quot;root&quot;</span>);</span><br><span class="line">       <span class="type">PreparedStatement</span> <span class="variable">preparedStatement</span> <span class="operator">=</span> connection.prepareStatement(<span class="string">&quot;SELECT emp_id, emp_name, emp_salary, emp_age FROM t_emp WHERE emp_id = ?&quot;</span>);</span><br><span class="line"></span><br><span class="line">       preparedStatement.setInt(<span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">       <span class="type">ResultSet</span> <span class="variable">resultSet</span> <span class="operator">=</span> preparedStatement.executeQuery();</span><br><span class="line"></span><br><span class="line">       <span class="type">Employee</span> <span class="variable">employee</span> <span class="operator">=</span> <span class="literal">null</span>; <span class="comment">// 只有查到数据再创建对象</span></span><br><span class="line"></span><br><span class="line">       <span class="keyword">if</span> (resultSet.next()) &#123;</span><br><span class="line">           <span class="type">int</span> <span class="variable">empId</span> <span class="operator">=</span> resultSet.getInt(<span class="string">&quot;emp_id&quot;</span>);</span><br><span class="line">           <span class="type">String</span> <span class="variable">empName</span> <span class="operator">=</span> resultSet.getString(<span class="string">&quot;emp_name&quot;</span>);</span><br><span class="line">           <span class="type">double</span> <span class="variable">empSalary</span> <span class="operator">=</span> resultSet.getDouble(<span class="string">&quot;emp_salary&quot;</span>);</span><br><span class="line">           <span class="type">int</span> <span class="variable">empAge</span> <span class="operator">=</span> resultSet.getInt(<span class="string">&quot;emp_age&quot;</span>);</span><br><span class="line">           <span class="comment">// 为对象的属性赋值(或者用默认构造器+set方法)</span></span><br><span class="line">           <span class="comment">// ORM思想的体现 ---&gt; 对象到关系数据库的映射</span></span><br><span class="line">           employee = <span class="keyword">new</span> <span class="title class_">Employee</span>(empId, empName, empSalary, empAge);</span><br><span class="line">       &#125;</span><br><span class="line">       System.out.println(employee);</span><br><span class="line"></span><br><span class="line">       resultSet.close();</span><br><span class="line">       preparedStatement.close();</span><br><span class="line">       connection.close();</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line">   <span class="comment">// 演示封装多个对象</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testORMList</span><span class="params">()</span> <span class="keyword">throws</span> SQLException &#123;</span><br><span class="line">       <span class="type">Connection</span> <span class="variable">connection</span> <span class="operator">=</span> DriverManager.getConnection(<span class="string">&quot;jdbc:mysql:///atguigu&quot;</span>, <span class="string">&quot;root&quot;</span>, <span class="string">&quot;root&quot;</span>);</span><br><span class="line">       <span class="type">PreparedStatement</span> <span class="variable">preparedStatement</span> <span class="operator">=</span> connection.prepareStatement(<span class="string">&quot;SELECT emp_id, emp_name, emp_salary, emp_age FROM t_emp&quot;</span>);</span><br><span class="line"></span><br><span class="line">       <span class="type">ResultSet</span> <span class="variable">resultSet</span> <span class="operator">=</span> preparedStatement.executeQuery();</span><br><span class="line"></span><br><span class="line">       List&lt;Employee&gt; employeeList = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">       <span class="keyword">while</span> (resultSet.next()) &#123;</span><br><span class="line">           <span class="type">int</span> <span class="variable">empId</span> <span class="operator">=</span> resultSet.getInt(<span class="string">&quot;emp_id&quot;</span>);</span><br><span class="line">           <span class="type">String</span> <span class="variable">empName</span> <span class="operator">=</span> resultSet.getString(<span class="string">&quot;emp_name&quot;</span>);</span><br><span class="line">           <span class="type">double</span> <span class="variable">empSalary</span> <span class="operator">=</span> resultSet.getDouble(<span class="string">&quot;emp_salary&quot;</span>);</span><br><span class="line">           <span class="type">int</span> <span class="variable">empAge</span> <span class="operator">=</span> resultSet.getInt(<span class="string">&quot;emp_age&quot;</span>);</span><br><span class="line">           <span class="comment">// 将每次循环得到的一行数据，封装为一个对象加入到List集合中</span></span><br><span class="line">           employeeList.add(<span class="keyword">new</span> <span class="title class_">Employee</span>(empId, empName, empSalary, empAge));</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="comment">// 得到List处理集合即可(lambda表达式或者foreach:employee.for快捷键)</span></span><br><span class="line">       <span class="keyword">for</span> (Employee employee : employeeList) &#123;</span><br><span class="line">           System.out.println(employee);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       resultSet.close();</span><br><span class="line">       preparedStatement.close();</span><br><span class="line">       connection.close();</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="1-2-主键回显"><a href="#1-2-主键回显" class="headerlink" title="1.2 主键回显"></a>1.2 主键回显</h3><ul>
+<li>问题：在数据库中新增数据，主键列自动增长，可以在表中直接看到，但Java程序只能得到<code>受影响的行数</code>，无法回显得到表的主键值</li>
+<li>解决：<ul>
+<li>需要在预编译SQL时，告知SQL返回新增的主键列，方法：加上参数<code>Statement.RETURN_GENERATED_KEYS</code></li>
+<li>在成功插入数据后，使用<code>preparedStatement.getGeneratedKeys()</code>方法返回主键结果集，并赋值给对应对象的id等属性上</li>
+</ul>
+</li>
+<li>应用：用户手机号注册成功后，需要进一步填写姓名等信息，Java需要得到主键更新用户的相关记录</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testReturnPK</span><span class="params">()</span> <span class="keyword">throws</span> SQLException &#123;</span><br><span class="line">    <span class="comment">// 加载驱动，获取连接</span></span><br><span class="line">    <span class="type">Connection</span> <span class="variable">connection</span> <span class="operator">=</span> DriverManager.getConnection(<span class="string">&quot;jdbc:mysql:///atguigu&quot;</span>, <span class="string">&quot;root&quot;</span>, <span class="string">&quot;root&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建PreparedStatement对象，预编译SQL语句，告知preparedStatement返回新增的主键列（成功后拿这个数据）</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">sql</span> <span class="operator">=</span> <span class="string">&quot;INSERT INTO t_emp (emp_name,emp_salary,emp_age) VALUES  (?,?,?)&quot;</span>;</span><br><span class="line">    <span class="type">PreparedStatement</span> <span class="variable">preparedStatement</span> <span class="operator">=</span> connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建一个对象，将对象的属性值映射到关系数据库(ORM思想)</span></span><br><span class="line">    <span class="type">Employee</span> <span class="variable">employee</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Employee</span>(<span class="literal">null</span>, <span class="string">&quot;yuezi2048&quot;</span>, <span class="number">20000.0</span>, <span class="number">25</span>);</span><br><span class="line">    preparedStatement.setString(<span class="number">1</span>, employee.getEmpName());</span><br><span class="line">    preparedStatement.setDouble(<span class="number">2</span>, employee.getEmpSalary());</span><br><span class="line">    preparedStatement.setInt(<span class="number">3</span>, employee.getEmpAge());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 执行SQL，获取结果</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">res</span> <span class="operator">=</span> preparedStatement.executeUpdate();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 优化：主键结果集也需要释放掉，所以要在外部定义一下</span></span><br><span class="line">    <span class="type">ResultSet</span> <span class="variable">resultSet</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 处理结果</span></span><br><span class="line">    <span class="keyword">if</span> (res &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;success&quot;</span>);</span><br><span class="line">        <span class="comment">// 成功插入数据后，再获取当前新增数据的主键列，回显到Java的Employee对象的empId属性上（主键回填 主键回显）</span></span><br><span class="line">        <span class="comment">// 注意：返回的主键值是单行单列的结果（结果集的形式）</span></span><br><span class="line">        resultSet = preparedStatement.getGeneratedKeys();</span><br><span class="line">        <span class="keyword">if</span> (resultSet.next()) &#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">empId</span> <span class="operator">=</span> resultSet.getInt(<span class="number">1</span>);</span><br><span class="line">            employee.setEmpId(empId);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(employee);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;failed&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 释放资源</span></span><br><span class="line">    <span class="keyword">if</span> (resultSet != <span class="literal">null</span>) &#123;</span><br><span class="line">        resultSet.close();</span><br><span class="line">    &#125;</span><br><span class="line">    preparedStatement.close();</span><br><span class="line">    connection.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="1-3-批量操作"><a href="#1-3-批量操作" class="headerlink" title="1.3 批量操作"></a>1.3 批量操作</h3><ul>
+<li><p>问题：插入多条数据时，一条一条发送给数据库执行，效率低下！</p>
+</li>
+<li><p>解决：通过批量操作，可以提升多次操作效率！</p>
+<ul>
+<li>JDBC默认不支持批量，需要在连接时加上参数<code>rewriteBatchedStatements=true</code></li>
+<li>执行的方法从<code>executeUpdate()</code>改为<code>addBatch()</code>，最后调用<code>executeBatch()</code>方法实现</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testMoreInsert</span><span class="params">()</span> <span class="keyword">throws</span> ClassNotFoundException, SQLException &#123;</span><br><span class="line">    Class.forName(<span class="string">&quot;com.mysql.cj.jdbc.Driver&quot;</span>);</span><br><span class="line">    <span class="type">Connection</span> <span class="variable">connection</span> <span class="operator">=</span> DriverManager.getConnection(<span class="string">&quot;jdbc:mysql:///atguigu&quot;</span>, <span class="string">&quot;root&quot;</span>, <span class="string">&quot;root&quot;</span>);</span><br><span class="line">    <span class="type">String</span> <span class="variable">sql</span> <span class="operator">=</span> <span class="string">&quot;INSERT INTO t_emp (emp_name,emp_salary,emp_age) VALUES  (?,?,?)&quot;</span>;</span><br><span class="line">    <span class="type">PreparedStatement</span> <span class="variable">preparedStatement</span> <span class="operator">=</span> connection.prepareStatement(sql);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 测试代码测试时间</span></span><br><span class="line">    <span class="type">long</span> <span class="variable">start</span> <span class="operator">=</span> System.currentTimeMillis();</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt;= <span class="number">10000</span>; i++) &#123;</span><br><span class="line">        <span class="comment">// 为占位符赋值</span></span><br><span class="line">        preparedStatement.setString(<span class="number">1</span>, <span class="string">&quot;Mary&quot;</span> + i);</span><br><span class="line">        preparedStatement.setDouble(<span class="number">2</span>, <span class="number">100.0</span> + i);</span><br><span class="line">        preparedStatement.setInt(<span class="number">3</span>, <span class="number">20</span> + i);</span><br><span class="line">        <span class="comment">// 每次执行都需要返回结果，一条一条执行，效率低下！</span></span><br><span class="line">        preparedStatement.executeUpdate();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">long</span> <span class="variable">end</span> <span class="operator">=</span> System.currentTimeMillis();</span><br><span class="line"></span><br><span class="line">    System.out.println(<span class="string">&quot;执行时间：&quot;</span> + (end - start) + <span class="string">&quot;ms&quot;</span>); <span class="comment">// 执行时间：11561ms</span></span><br><span class="line"></span><br><span class="line">    preparedStatement.close();</span><br><span class="line">    connection.close();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="comment">// 测试批量操作优化上述代码</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testBatch</span><span class="params">()</span> <span class="keyword">throws</span> ClassNotFoundException, SQLException &#123;</span><br><span class="line">    Class.forName(<span class="string">&quot;com.mysql.cj.jdbc.Driver&quot;</span>);</span><br><span class="line">    <span class="comment">// 注意1：MySQL默认不允许批量处理操作，要执行批量的话，首先要在这里赋值一下</span></span><br><span class="line">    <span class="type">Connection</span> <span class="variable">connection</span> <span class="operator">=</span> DriverManager.getConnection(<span class="string">&quot;jdbc:mysql:///atguigu?rewriteBatchedStatements=true&quot;</span>, <span class="string">&quot;root&quot;</span>, <span class="string">&quot;root&quot;</span>);</span><br><span class="line">    <span class="comment">// 注意2：注意这里不能是VALUE 并且末尾不要有分号，因为要在后面追加记录</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">sql</span> <span class="operator">=</span> <span class="string">&quot;INSERT INTO t_emp (emp_name,emp_salary,emp_age) VALUES  (?,?,?)&quot;</span>;</span><br><span class="line">    <span class="type">PreparedStatement</span> <span class="variable">preparedStatement</span> <span class="operator">=</span> connection.prepareStatement(sql);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 测试代码测试时间</span></span><br><span class="line">    <span class="type">long</span> <span class="variable">start</span> <span class="operator">=</span> System.currentTimeMillis();</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt;= <span class="number">10000</span>; i++) &#123;</span><br><span class="line">        <span class="comment">// 为占位符赋值</span></span><br><span class="line">        preparedStatement.setString(<span class="number">1</span>, <span class="string">&quot;Mary&quot;</span> + i);</span><br><span class="line">        preparedStatement.setDouble(<span class="number">2</span>, <span class="number">100.0</span> + i);</span><br><span class="line">        preparedStatement.setInt(<span class="number">3</span>, <span class="number">20</span> + i);</span><br><span class="line">        <span class="comment">// 注意3：每次循环的时候不是执行，而是调用addBatch方法，添加批量的操作</span></span><br><span class="line">        preparedStatement.addBatch();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 注意4：调用executeBatch方法，执行批量处理的操作</span></span><br><span class="line">    preparedStatement.executeBatch();</span><br><span class="line">    <span class="type">long</span> <span class="variable">end</span> <span class="operator">=</span> System.currentTimeMillis();</span><br><span class="line"></span><br><span class="line">    System.out.println(<span class="string">&quot;执行时间：&quot;</span> + (end - start) + <span class="string">&quot;ms&quot;</span>); <span class="comment">// 执行时间：318ms</span></span><br><span class="line"></span><br><span class="line">    preparedStatement.close();</span><br><span class="line">    connection.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="二、连接池"><a href="#二、连接池" class="headerlink" title="二、连接池"></a>二、连接池</h2><h3 id="2-1-为什么要连接池"><a href="#2-1-为什么要连接池" class="headerlink" title="2.1 为什么要连接池"></a>2.1 为什么要连接池</h3><ul>
+<li>问题：<ul>
+<li>用户每次操作数据库都要获取新连接，使用完毕后就释放，频繁创建和销毁连接会造成<code>资源浪费 </code>–&gt; 有一个代理如果可以复用用户释放的连接就好了</li>
+<li>连接的数量不确定，<code>服务器</code>可能负载过重  –&gt; 需要有管理者</li>
+</ul>
+</li>
+<li>解决：使用<code>连接池</code><ul>
+<li>连接池是数据库连接对象的缓冲区，通过配置，可以让连接池<code>创建连接、管理连接、释放连接</code></li>
+<li>预先将数据库的连接放入连接池，用户在请求时，直接通过连接池获取连接，完毕后将连接归还给池，避免了频繁的创建和销毁，并改善创建的效率</li>
+<li>连接池分配连接的规则<ul>
+<li>如果池无连接可用但没有到达上限，则新建连接</li>
+<li>如果池到达上限，用户等待，可设置超时时间（13亿人民打客服的例子）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-2-常见连接池"><a href="#2-2-常见连接池" class="headerlink" title="2.2 常见连接池"></a>2.2 常见连接池</h3><p>连接池均遵循<code> javax.sql.DataSource接口</code>进行实现，即从连接池获取连接和回收连接的方法是一样的，不同的是性能和拓展功能。</p>
+<p>常见连接池如下：</p>
+<ul>
+<li>DBCP是Apache提供的，速度比C3P0快，但有BUG</li>
+<li>C3P0是开源组织的数据库连接池，速度慢，但稳定</li>
+<li>Proxool是sourceforge的开源项目数据库连接池，可以监控连接池状态，但稳定性比C3P0查</li>
+<li><strong>Druid 是阿里提供的数据库连接池，是集DBCP 、C3P0 、Proxool 优点于一身的数据库连接池，性能、扩展性、易用性都更好，功能丰富</strong>。</li>
+<li><strong>Hikari（ひかり[shi ga li]） 取自日语，是光的意思，是SpringBoot2.x之后内置的一款连接池，基于 BoneCP （已经放弃维护，推荐该连接池）做了不少的改进和优化，口号是快速、简单、可靠。</strong></li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240818100347127.png" alt="image-20240818100347127">	</p>
+<p>性能数据</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240818100406742.png" alt="image-20240818100406742">	</p>
+<p>mysql性能数据</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240818100415822.png" alt="image-20240818100415822">	</p>
+<h3 id="2-3-Druid连接池使用"><a href="#2-3-Druid连接池使用" class="headerlink" title="2.3 Druid连接池使用"></a>2.3 Druid连接池使用</h3><p>引入Druid的Jar包后即可编码使用</p>
+<p><strong>硬编码实现（了解）</strong></p>
+<ul>
+<li>通过DruidDataSource的set方法设置参数</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void testHardCodeDruid() throws SQLException &#123;</span><br><span class="line">    /*</span><br><span class="line">        硬编码：连接池的配置信息和Java代码耦合在一起</span><br><span class="line">        1. 创建DruidDataSource连接池对象</span><br><span class="line">        2. 设置连接池的配置信息【必须 | 非必须】</span><br><span class="line">        3. 通过连接池获取连接对象</span><br><span class="line">        4. 回收连接【不是释放连接，而是将连接归还给连接池，给其他线程复用】</span><br><span class="line">     */</span><br><span class="line"></span><br><span class="line">    // 1. 创建DruidDataSource连接池对象</span><br><span class="line">    DruidDataSource druidDataSource = new DruidDataSource();</span><br><span class="line">    // 2. 设置连接池的配置信息【必须 | 非必须】</span><br><span class="line">    // 2.1 必须设置的配置</span><br><span class="line">    druidDataSource.setDriverClassName(&quot;com.mysql.cj.jdbc.Driver&quot;);</span><br><span class="line">    druidDataSource.setUrl(&quot;jdbc:mysql:///atguigu&quot;);</span><br><span class="line">    druidDataSource.setUsername(&quot;root&quot;);</span><br><span class="line">    druidDataSource.setPassword(&quot;root&quot;);</span><br><span class="line"></span><br><span class="line">    // 2.2 非必须设置的配置</span><br><span class="line">    druidDataSource.setInitialSize(10);</span><br><span class="line">    druidDataSource.setMaxActive(20);</span><br><span class="line"></span><br><span class="line">    // 3. 通过连接池获取连接对象(DruidPooledConnection是Connection的实现类)</span><br><span class="line">    DruidPooledConnection connection = druidDataSource.getConnection();</span><br><span class="line">    System.out.println(connection);</span><br><span class="line"></span><br><span class="line">    // 基于connection实现crud</span><br><span class="line"></span><br><span class="line">    // 4. 归还连接</span><br><span class="line">    connection.close();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>软编码方式（推荐）：</strong></p>
+<ul>
+<li>在项目目录下创建resources文件夹，标识该文件夹为资源目录，创建db.properties配置文件，将连接信息定义在该文件中。</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240818100759795.png" alt="image-20240818100759795">	</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="attr">driverClassName</span>=<span class="string">com.mysql.cj.jdbc.Driver</span></span><br><span class="line"><span class="attr">url</span>=<span class="string">jdbc:mysql:///atguigu</span></span><br><span class="line"><span class="attr">username</span>=<span class="string">root</span></span><br><span class="line"><span class="attr">password</span>=<span class="string">root</span></span><br><span class="line"><span class="attr">initialSize</span>=<span class="string">10</span></span><br><span class="line"><span class="attr">maxActive</span>=<span class="string">20</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>编写java测试文件</p>
+<ul>
+<li>通过<code>ClassLoader</code>从Properties转换成输入流，读取文件，载入本地properties对象</li>
+<li>使用<code>DruidDataSourceFactory</code> 实现基于Properties创建<code>createDataSource</code></li>
+<li>通过<code>dataSource.getConnection();</code> 获取连接对象</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">@Test</span><br><span class="line">public void testResourcesDruid() throws Exception &#123;</span><br><span class="line">    // 1. 创建Properties集合，用于存储外部k-v值</span><br><span class="line">    Properties properties = new Properties();</span><br><span class="line"></span><br><span class="line">    // 2. 读取外部配置文件，获取输入流，加载到Properties集合</span><br><span class="line">    InputStream inputStream = DruidTest.class.getClassLoader().getResourceAsStream(&quot;db.properties&quot;);// 通过类加载器得到字节输入流</span><br><span class="line">    properties.load(inputStream);</span><br><span class="line"></span><br><span class="line">    // 3. 基于Properties集合构建DruidDataSource连接池</span><br><span class="line">    DataSource dataSource = DruidDataSourceFactory.createDataSource(properties);</span><br><span class="line"></span><br><span class="line">    // 4. 通过连接池获取连接对象</span><br><span class="line">    Connection connection = dataSource.getConnection();</span><br><span class="line">    System.out.println(connection);</span><br><span class="line"></span><br><span class="line">    // 5. crud</span><br><span class="line"></span><br><span class="line">    // 6. 回收连接</span><br><span class="line">    connection.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2-4-Druid连接池其他配置-了解"><a href="#2-4-Druid连接池其他配置-了解" class="headerlink" title="2.4 Druid连接池其他配置(了解)"></a>2.4 Druid连接池其他配置(了解)</h3><table>
+<thead>
+<tr>
+<th>配置</th>
+<th><strong>缺省</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>name</td>
+<td></td>
+<td>配置这个属性的意义在于，如果存在多个数据源，监控的时候可以通过名字来区分开来。 如果没有配置，将会生成一个名字，格式是：”DataSource-” + System.identityHashCode(this)</td>
+</tr>
+<tr>
+<td>jdbcUrl</td>
+<td></td>
+<td>连接数据库的url，不同数据库不一样。例如：mysql : jdbc:mysql:&#x2F;&#x2F;10.20.153.104:3306&#x2F;druid2 oracle : jdbc:oracle:thin:@10.20.149.85:1521:ocnauto</td>
+</tr>
+<tr>
+<td>username</td>
+<td></td>
+<td>连接数据库的用户名</td>
+</tr>
+<tr>
+<td>password</td>
+<td></td>
+<td>连接数据库的密码。如果你不希望密码直接写在配置文件中，可以使用ConfigFilter。详细看这里：<a target="_blank" rel="noopener" href="https://github.com/alibaba/druid/wiki/%E4%BD%BF%E7%94%A8ConfigFilter">https://github.com/alibaba/druid/wiki/%E4%BD%BF%E7%94%A8ConfigFilter</a></td>
+</tr>
+<tr>
+<td>driverClassName</td>
+<td></td>
+<td>根据url自动识别 这一项可配可不配，如果不配置druid会根据url自动识别dbType，然后选择相应的driverClassName(建议配置下)</td>
+</tr>
+<tr>
+<td>initialSize</td>
+<td>0</td>
+<td>初始化时建立物理连接的个数。初始化发生在显示调用init方法，或者第一次getConnection时</td>
+</tr>
+<tr>
+<td>maxActive</td>
+<td>8</td>
+<td>最大连接池数量</td>
+</tr>
+<tr>
+<td>maxIdle</td>
+<td>8</td>
+<td>已经不再使用，配置了也没效果</td>
+</tr>
+<tr>
+<td>minIdle</td>
+<td></td>
+<td>最小连接池数量</td>
+</tr>
+<tr>
+<td>maxWait</td>
+<td></td>
+<td>获取连接时最大等待时间，单位毫秒。配置了maxWait之后，缺省启用公平锁，并发效率会有所下降，如果需要可以通过配置useUnfairLock属性为true使用非公平锁。</td>
+</tr>
+<tr>
+<td>poolPreparedStatements</td>
+<td>false</td>
+<td>是否缓存preparedStatement，也就是PSCache。PSCache对支持游标的数据库性能提升巨大，比如说oracle。在mysql下建议关闭。</td>
+</tr>
+<tr>
+<td>maxOpenPreparedStatements</td>
+<td>-1</td>
+<td>要启用PSCache，必须配置大于0，当大于0时，poolPreparedStatements自动触发修改为true。在Druid中，不会存在Oracle下PSCache占用内存过多的问题，可以把这个数值配置大一些，比如说100</td>
+</tr>
+<tr>
+<td>validationQuery</td>
+<td></td>
+<td>用来检测连接是否有效的sql，要求是一个查询语句。如果validationQuery为null，testOnBorrow、testOnReturn、testWhileIdle都不会其作用。</td>
+</tr>
+<tr>
+<td>testOnBorrow</td>
+<td>true</td>
+<td>申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。</td>
+</tr>
+<tr>
+<td>testOnReturn</td>
+<td>false</td>
+<td>归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能</td>
+</tr>
+<tr>
+<td>testWhileIdle</td>
+<td>false</td>
+<td>建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。</td>
+</tr>
+<tr>
+<td>timeBetweenEvictionRunsMillis</td>
+<td></td>
+<td>有两个含义： 1)Destroy线程会检测连接的间隔时间2)testWhileIdle的判断依据，详细看testWhileIdle属性的说明</td>
+</tr>
+<tr>
+<td>numTestsPerEvictionRun</td>
+<td></td>
+<td>不再使用，一个DruidDataSource只支持一个EvictionRun</td>
+</tr>
+<tr>
+<td>minEvictableIdleTimeMillis</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>connectionInitSqls</td>
+<td></td>
+<td>物理连接初始化的时候执行的sql</td>
+</tr>
+<tr>
+<td>exceptionSorter</td>
+<td></td>
+<td>根据dbType自动识别 当数据库抛出一些不可恢复的异常时，抛弃连接</td>
+</tr>
+<tr>
+<td>filters</td>
+<td></td>
+<td>属性类型是字符串，通过别名的方式配置扩展插件，常用的插件有： 监控统计用的filter:stat日志用的filter:log4j防御sql注入的filter:wall</td>
+</tr>
+<tr>
+<td>proxyFilters</td>
+<td></td>
+<td>类型是List，如果同时配置了filters和proxyFilters，是组合关系，并非替换关系</td>
+</tr>
+</tbody></table>
+<h3 id="2-5-HikariCP连接池使用"><a href="#2-5-HikariCP连接池使用" class="headerlink" title="2.5 HikariCP连接池使用"></a>2.5 HikariCP连接池使用</h3><p>引入jar包，注意还要引入slf4j的日志包</p>
+<p><strong>硬编码方式(（了解）</strong></p>
+<ul>
+<li>用HikariDataSource</li>
+<li><strong>和Druid的第一点区别</strong>：注意URL的设定是<code>setJdbcUrl(String)</code>方法</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testHardCodeHikari</span><span class="params">()</span> <span class="keyword">throws</span> SQLException &#123;</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">            硬编码：将连接池的配置信息和Java代码耦合在一起</span></span><br><span class="line"><span class="comment">            1. 创建HikariDataSource连接池对象</span></span><br><span class="line"><span class="comment">            2. 设置连接池配置信息【必须 | 非必须】</span></span><br><span class="line"><span class="comment">            3. 获取连接对象</span></span><br><span class="line"><span class="comment">            4. 回收连接</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="comment">// 1. 创建HikariDataSource连接池对象</span></span><br><span class="line">        <span class="type">HikariDataSource</span> <span class="variable">hikariDataSource</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HikariDataSource</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 2. 设置连接池配置信息【必须 | 非必须】</span></span><br><span class="line">        <span class="comment">// 2.1 必须设置的配置</span></span><br><span class="line">        hikariDataSource.setDriverClassName(<span class="string">&quot;com.mysql.cj.jdbc.Driver&quot;</span>);</span><br><span class="line">        hikariDataSource.setJdbcUrl(<span class="string">&quot;jdbc:mysql:///atguigu&quot;</span>); <span class="comment">// 和Druid第一个区别</span></span><br><span class="line">        hikariDataSource.setUsername(<span class="string">&quot;root&quot;</span>);</span><br><span class="line">        hikariDataSource.setPassword(<span class="string">&quot;root&quot;</span>);</span><br><span class="line">        <span class="comment">// 2.2 非必须设置的配置</span></span><br><span class="line">        hikariDataSource.setMinimumIdle(<span class="number">10</span>);</span><br><span class="line">        hikariDataSource.setMaximumPoolSize(<span class="number">20</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 3. 获取连接池对象</span></span><br><span class="line">        <span class="type">Connection</span> <span class="variable">connection</span> <span class="operator">=</span> hikariDataSource.getConnection();</span><br><span class="line">        System.out.println(connection);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 4. 回收连接</span></span><br><span class="line">        connection.close();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>软编码方式</strong></p>
+<p>软编码方式：</p>
+<ul>
+<li>在项目下创建resources&#x2F;hikari.properties配置文件</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="attr">driverClassName</span>=<span class="string">com.mysql.cj.jdbc.Driver</span></span><br><span class="line"><span class="attr">jdbcUrl</span>=<span class="string">jdbc:mysql:///atguigu</span></span><br><span class="line"><span class="attr">username</span>=<span class="string">root</span></span><br><span class="line"><span class="attr">password</span>=<span class="string">root</span></span><br><span class="line"><span class="attr">minimumIdle</span>=<span class="string">10</span></span><br><span class="line"><span class="attr">maximumPoolSize</span>=<span class="string">20</span></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>加载properties和Druid一样</li>
+<li><strong>和Druid的第二点区别</strong>：首先要传入properties对象，新建<code>hikariConfig</code>配置对象，再通过配置对象创建<code>hikariDataSource</code></li>
+<li>通过hikariDataSource.getConnection()获取到连接</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testResourcesHikari</span><span class="params">()</span> <span class="keyword">throws</span> IOException, SQLException &#123;</span><br><span class="line">    <span class="comment">// 1. 创建properties 用于存储外部的k-v</span></span><br><span class="line">    <span class="type">Properties</span> <span class="variable">properties</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Properties</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 类加载 读取 外部配置文件，加载到Properties中</span></span><br><span class="line">    <span class="type">InputStream</span> <span class="variable">inputStream</span> <span class="operator">=</span> HikariTest.class.getClassLoader().getResourceAsStream(<span class="string">&quot;Hikari.properties&quot;</span>);</span><br><span class="line">    properties.load(inputStream);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 创建HikariConfig连接池配置对象，将集合传进去（区别于Druid直接创建连接对象,其他一样）</span></span><br><span class="line">    <span class="type">HikariConfig</span> <span class="variable">hikariConfig</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HikariConfig</span>(properties);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. 基于HikariConfig配置对象构建HikariDataSource，获取连接，后续crud</span></span><br><span class="line">    <span class="type">HikariDataSource</span> <span class="variable">hikariDataSource</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HikariDataSource</span>(hikariConfig);</span><br><span class="line">    <span class="type">Connection</span> <span class="variable">connection</span> <span class="operator">=</span> hikariDataSource.getConnection();</span><br><span class="line">    System.out.println(connection);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 5. 回收连接</span></span><br><span class="line">    connection.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="2-6-HikariCP连接池其他配置-了解"><a href="#2-6-HikariCP连接池其他配置-了解" class="headerlink" title="2.6 HikariCP连接池其他配置(了解)"></a>2.6 HikariCP连接池其他配置(了解)</h3><table>
+<thead>
+<tr>
+<th>属性</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>isAutoCommit</td>
+<td>true</td>
+<td>自动提交从池中返回的连接</td>
+</tr>
+<tr>
+<td>connectionTimeout</td>
+<td>30000</td>
+<td>等待来自池的连接的最大毫秒数</td>
+</tr>
+<tr>
+<td>maxLifetime</td>
+<td>1800000</td>
+<td>池中连接最长生命周期如果不等于0且小于30秒则会被重置回30分钟</td>
+</tr>
+<tr>
+<td>minimumIdle</td>
+<td>10</td>
+<td>池中维护的最小空闲连接数 minIdle&lt;0或者minIdle&gt;maxPoolSize，则被重置为maxPoolSize</td>
+</tr>
+<tr>
+<td>maximumPoolSize</td>
+<td>10</td>
+<td>池中最大连接数，包括闲置和使用中的连接</td>
+</tr>
+<tr>
+<td>metricRegistry</td>
+<td>null</td>
+<td>连接池的用户定义名称，主要出现在日志记录和JMX管理控制台中以识别池和池配置</td>
+</tr>
+<tr>
+<td>healthCheckRegistry</td>
+<td>null</td>
+<td>报告当前健康信息</td>
+</tr>
+<tr>
+<td>poolName</td>
+<td>HikariPool-1</td>
+<td>连接池的用户定义名称，主要出现在日志记录和JMX管理控制台中以识别池和池配置</td>
+</tr>
+<tr>
+<td>idleTimeout</td>
+<td></td>
+<td>是允许连接在连接池中空闲的最长时间</td>
+</tr>
+</tbody></table>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2024/09/06/2.Areas%F0%9F%8C%90/back-end-java/3.JDBC/2.%E8%BF%9B%E9%98%B6%E7%AF%87_%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1_%E8%BF%9E%E6%8E%A5%E6%B1%A0/">https://yuezi2048.github.io/2024/09/06/2.Areas🌐/back-end-java/3.JDBC/2.进阶篇_面向对象_连接池/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/3-JDBC/">3.JDBC</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2024/09/01/2.Areas%F0%9F%8C%90/back-end-java/4.JavaWeb/1.%20JavaWeb%E6%A6%82%E8%BF%B0/" title="1. JavaWeb概述"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">1. JavaWeb概述</div></div><div class="info-2"><div class="info-item-1">第一章 Web概述1.1 JavaWeb是什么 通过Java技术解决Web互联网领域的技术栈（使用JavaEE技术开发企业级互联网项目，项目规模和架构模式和JavaSE有很大区别） 客户-服务器模式 客户端：与用户交互，接收用户的输入，向服务器发送数据并返回服务器输出的数据 服务器：从硬件和软件两个方面描述(广义和狭义) 硬件上，是比普通计算机运行更快 负载更高 价格更贵，一般是网络中的大型客户机提供计算服务 软件上，是安装在计算机上的某个进程，根据不同的作用可以分为不同的服务器，如DNS redis ftp服务器等     应用 APP 微信小程序 PC端程序 PC浏览器 外设（小米音箱 电话手表 POS机等）    1.2 JavaWeb技术栈前端 HTML CSS JS ES6 Nodejs npm vite vue3 router pinia axios element-plus… 后端 HTTP xml Tomcat Servlet Request Response Cookie Session Filter Listener MySQL JDBC Druid...</div></div></div></a><a class="pagination-related" href="/2024/09/12/2.Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/2.DS%E6%A6%82%E8%BF%B0%E5%92%8C%E9%A1%BA%E5%BA%8F%E8%A1%A8/" title="2.DS概述和顺序表"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">2.DS概述和顺序表</div></div><div class="info-2"><div class="info-item-1">一、数据结构基本概念1.1 抽象数据类型我们现在有基本数据类型：  int表示2^32个数字：[-2^31, 2^31-1]  为了表示更多的数据类型表示实际复杂的业务，我们需要一个抽象数据类型 抽象数据类型（可自定义）：静态的数据 + 动态的操作（函数） 引出数据结构Data Structure：数据（data）和数据之间的关系（structure） 我们使用抽象数据类型来定义一个数据结构  分析问题：找到数据之间逻辑的关系（逻辑结构） 解决问题：如何把数据和数据之间的关系存入存储器（存储结构&#x2F;物理结构&#x2F;映像） 关系：存储结构是用计算机语言实现的逻辑结构  1.2 逻辑结构和存储结构数据结构可分为两块：逻辑结构和存储结构 逻辑结构  线性逻辑结构：一对一（线性表 栈 队列） 非线性逻辑结构：一对多（树形结构）、多对多（图型结构）  存储结构  顺序存储：逻辑上相邻的元素，在存储中位置也相邻（数组） 链式存储：逻辑上相邻的元素，存储器的位置可以不相邻，但需要实现逻辑上的相邻（链表） 索引存储，散列存储（Hash）...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2024/08/20/2.Areas%F0%9F%8C%90/back-end-java/3.JDBC/1.%E5%9F%BA%E7%A1%80%E7%AF%87_%E5%9F%BA%E7%A1%80API_%E9%A2%84%E7%BC%96%E8%AF%91/" title="1.基础篇_基础API_预编译"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-20</div><div class="info-item-2">1.基础篇_基础API_预编译</div></div><div class="info-2"><div class="info-item-1">JDBC基础篇一、为什么要JDBC我们持久化数据一般有两种方式  I/O流技术，存储在本地磁盘中，但没有结构和逻辑，不方便管理和维护  –&gt; 有一个易于管理的技术就好了 关系型数据库，交由DBMS维护，通过database、table分隔不同的数据，使用表的行列存储，区分出不同格式的数据  给出需求：  程序运行时，我们需要crud数据库中的数据，如何使用Java程序进行修改？可以用JDBC的技术  	    二、JDBC概述 JDBC（Java Database Connectivity），即Java数据库连接 JDBC提供独立于所有DBMS的API接口 Java接口定义了规范，交由各厂商实现。厂商将实现类封装为 数据库驱动jar包   我们实际调用时无需过多关心实现过程，只用关心标准和规范，体会接口编程的实际作用  	      三、JDBC快速入门3.1 环境搭建搭建环境  准备数据库。 官网下载数据库连接驱动jar包。https://downloads.mysql.com/archives/c-j/ 创建Java项目（这里没有用Maven...</div></div></div></a><a class="pagination-related" href="/2024/10/13/2.Areas%F0%9F%8C%90/back-end-java/3.JDBC/3.%E9%AB%98%E7%BA%A7%E7%AF%87_%E5%B7%A5%E5%85%B7%E7%B1%BB%E5%B0%81%E8%A3%85_%E6%A0%87%E8%AF%86%E8%BF%9E%E6%8E%A5/" title="3.高级篇_工具类封装_标识连接"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-13</div><div class="info-item-2">3.高级篇_工具类封装_标识连接</div></div><div class="info-2"><div class="info-item-1">高级篇一、JDBC优化和工具类封装1.1 存在的问题我们发现，虽然连接池解决了用户频繁请求释放连接造成的资源浪费，但有这些问题：  用户连接一次就要写 创建连接池、建立连接、连接回收的代码，存在代码冗余的问题 —&gt; 工具类封装 用户频繁连接，会对应连接池不同的新连接，在使用事务时，用户无法保证事务的正常提交 -&gt; 怎么让用户线程在一段时间内标识唯一的连接？ –&gt; map  1.2...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">488</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">60</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">84</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BF%9B%E9%98%B6%E7%AF%87"><span class="toc-text">进阶篇</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81JDBC%E8%BF%9B%E9%98%B6"><span class="toc-text">一、JDBC进阶</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-ORM%E6%80%9D%E6%83%B3"><span class="toc-text">1.1 ORM思想</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E4%B8%BB%E9%94%AE%E5%9B%9E%E6%98%BE"><span class="toc-text">1.2 主键回显</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E6%89%B9%E9%87%8F%E6%93%8D%E4%BD%9C"><span class="toc-text">1.3 批量操作</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E8%BF%9E%E6%8E%A5%E6%B1%A0"><span class="toc-text">二、连接池</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E8%BF%9E%E6%8E%A5%E6%B1%A0"><span class="toc-text">2.1 为什么要连接池</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E5%B8%B8%E8%A7%81%E8%BF%9E%E6%8E%A5%E6%B1%A0"><span class="toc-text">2.2 常见连接池</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-Druid%E8%BF%9E%E6%8E%A5%E6%B1%A0%E4%BD%BF%E7%94%A8"><span class="toc-text">2.3 Druid连接池使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-Druid%E8%BF%9E%E6%8E%A5%E6%B1%A0%E5%85%B6%E4%BB%96%E9%85%8D%E7%BD%AE-%E4%BA%86%E8%A7%A3"><span class="toc-text">2.4 Druid连接池其他配置(了解)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-HikariCP%E8%BF%9E%E6%8E%A5%E6%B1%A0%E4%BD%BF%E7%94%A8"><span class="toc-text">2.5 HikariCP连接池使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-HikariCP%E8%BF%9E%E6%8E%A5%E6%B1%A0%E5%85%B6%E4%BB%96%E9%85%8D%E7%BD%AE-%E4%BA%86%E8%A7%A3"><span class="toc-text">2.6 HikariCP连接池其他配置(了解)</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/17/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2025-10-17T16:00:19.506Z" title="发表于 2025-10-18 00:00:19">2025-10-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/17/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2025-10-17T16:00:18.993Z" title="发表于 2025-10-18 00:00:18">2025-10-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/17/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Redis/20.%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6/" title="20.持久化机制">20.持久化机制</a><time datetime="2025-10-17T10:02:34.000Z" title="发表于 2025-10-17 18:02:34">2025-10-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/17/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Redis/21.%E7%94%9F%E6%88%90RDB%E6%97%B6%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E8%AF%B7%E6%B1%82/" title="21.生成RDB时如何处理请求">21.生成RDB时如何处理请求</a><time datetime="2025-10-17T10:02:26.000Z" title="发表于 2025-10-17 18:02:26">2025-10-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/17/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Redis/19.%E7%83%AD%E7%82%B9key/" title="19.热点key">19.热点key</a><time datetime="2025-10-17T09:58:38.000Z" title="发表于 2025-10-17 17:58:38">2025-10-17</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>
