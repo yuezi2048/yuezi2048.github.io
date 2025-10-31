@@ -1,0 +1,305 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>1.配置git环境和项目搭建 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一、游戏系统设计框架我们的框架树里面，每个孩子都是对应一个导航栏（链接）  	  前后端分离的优越性：一个后端可以对应多个前端。 二、git基础应用为什么用git？  代码存档(commit)，可以回滚出历史代码 同步不同设备  怎么用git？  首先用git bash在home目录下输入ssh-keygen 生成密钥，找到公钥，放入平台的SSH密钥  	  创建项目文件KOB，使用git ini">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1.配置git环境和项目搭建">
+<meta property="og:url" content="https://yuezi2048.github.io/2024/02/17/4.Archives%F0%9F%97%91/KOB/1.%E9%85%8D%E7%BD%AEgit%E7%8E%AF%E5%A2%83%E5%92%8C%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="一、游戏系统设计框架我们的框架树里面，每个孩子都是对应一个导航栏（链接）  	  前后端分离的优越性：一个后端可以对应多个前端。 二、git基础应用为什么用git？  代码存档(commit)，可以回滚出历史代码 同步不同设备  怎么用git？  首先用git bash在home目录下输入ssh-keygen 生成密钥，找到公钥，放入平台的SSH密钥  	  创建项目文件KOB，使用git ini">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2024-02-17T05:29:01.000Z">
+<meta property="article:modified_time" content="2024-02-17T05:29:01.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="KOB">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "1.配置git环境和项目搭建",
+  "url": "https://yuezi2048.github.io/2024/02/17/4.Archives%F0%9F%97%91/KOB/1.%E9%85%8D%E7%BD%AEgit%E7%8E%AF%E5%A2%83%E5%92%8C%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2024-02-17T05:29:01.000Z",
+  "dateModified": "2024-02-17T05:29:01.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2024/02/17/4.Archives%F0%9F%97%91/KOB/1.%E9%85%8D%E7%BD%AEgit%E7%8E%AF%E5%A2%83%E5%92%8C%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '1.配置git环境和项目搭建',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">603</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">61</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">85</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">1.配置git环境和项目搭建</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">1.配置git环境和项目搭建</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-02-17T05:29:01.000Z" title="发表于 2024-02-17 13:29:01">2024-02-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-02-17T05:29:01.000Z" title="更新于 2024-02-17 13:29:01">2024-02-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/4-Archives%F0%9F%97%91/">4.Archives🗑</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/4-Archives%F0%9F%97%91/KOB/">KOB</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>7分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="一、游戏系统设计框架"><a href="#一、游戏系统设计框架" class="headerlink" title="一、游戏系统设计框架"></a>一、游戏系统设计框架</h1><p>我们的框架树里面，每个孩子都是对应一个导航栏（链接）</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240107205039939.png" alt="image-20240107205039939"></p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240107205207262.png" alt="image-20240107205207262" style="zoom:50%;" />	
+
+<p>前后端分离的优越性：一个后端可以对应多个前端。</p>
+<h1 id="二、git基础应用"><a href="#二、git基础应用" class="headerlink" title="二、git基础应用"></a>二、git基础应用</h1><p><strong>为什么用git？</strong></p>
+<ul>
+<li>代码存档(commit)，可以回滚出历史代码</li>
+<li>同步不同设备</li>
+</ul>
+<p><strong>怎么用git？</strong></p>
+<ul>
+<li>首先用git bash在home目录下输入ssh-keygen 生成密钥，找到公钥，放入平台的SSH密钥</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240107210035229.png" alt="image-20240107210035229">	</p>
+<ul>
+<li>创建项目文件KOB，使用git init 生成.git隐藏文件夹，再新建一个readme.md</li>
+<li>然后我们如果想commit 流程如下<ul>
+<li>ps：我们应该要去掉–global，以此来保证每个项目不用这个信息</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240107210437779.png" alt="image-20240107210437779">	</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240107210558940.png" alt="image-20240107210558940">	</p>
+<ul>
+<li>我们后续提交代码就这固定的操作就OK</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240107210831521.png" alt="image-20240107210831521">	</p>
+<ul>
+<li>接收方面， 我们可以使用git pull拉取最新的代码</li>
+</ul>
+<h1 id="三、后端创建"><a href="#三、后端创建" class="headerlink" title="三、后端创建"></a>三、后端创建</h1><h2 id="3-1-基本概念和环境搭建"><a href="#3-1-基本概念和环境搭建" class="headerlink" title="3.1 基本概念和环境搭建"></a>3.1 基本概念和环境搭建</h2><p>我们首先明确前后端分离的概念</p>
+<p>那先明确大家都在说的前后端到底是什么？他就是给前端服务的，他本质上其实就是函数的调用，前端需要什么页面就输入相关内容，那后端就给他输出返回，好比上菜，后端就是厨师，服务员就是前端。</p>
+<p>前后端分离是什么？就是首先web端返回给用户，后续再通过后端在对应的地方渲染出来（本质就是字符串拼接）</p>
+<p><strong>每个链接本质上就是函数调用</strong>，我们具体的实现是使用到了controller来控制返回哪些页面。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240107211255298.png" alt="image-20240107211255298">	</p>
+<p>引申 MVC：C是controller负责向用户返回数据 V就是html M是model 数据库</p>
+<p>我们在idea新建一个项目，选择Spring，这里用的是1.8版本的</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240107211550905.png" alt="image-20240107211550905" style="zoom:67%;" />	
+
+<p>选择依赖Spring Web,注意Spring版本要低于7才行 否则不支持了</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240107211653236.png" alt="image-20240107211653236" style="zoom:67%;" />	
+
+
+
+<p>我们改一下端口防止和vue默认的8080端口冲突</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240109114259491.png" alt="image-20240109114259491"></p>
+<p>运行main文件后就可以启动了</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240109112210787.png" alt="image-20240109112210787">	</p>
+<h2 id="3-2-前后端不分离"><a href="#3-2-前后端不分离" class="headerlink" title="3.2 前后端不分离"></a>3.2 前后端不分离</h2><p>我们建立一个controller包用来作后端函数，pk模块 排行榜 用户中心。</p>
+<p>比如我们新建一个pk界面，&#x2F;controller&#x2F;pk&#x2F;IndexController.java</p>
+<ul>
+<li><p>我们建立一个注解Controller</p>
+</li>
+<li><p>注解 RequestMapping是对Web资源配置请求的映射</p>
+<ul>
+<li>我们映射的是&#x2F;pk&#x2F;index&#x2F; 目录 对应的 index()函数 &#x3D;&gt; 返回templates里面的pk&#x2F;index.html</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zjxu.kob.backend.controller.pk;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Controller;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/pk/&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">IndexController</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;index/&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">index</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;pk/index.html&quot;</span>;  <span class="comment">// 返回pk页面的路径 resources/templates/pk/index.html</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>index.html文件我们是放在了resources&#x2F;templates&#x2F;pk&#x2F;index.html中</li>
+<li>图片是在resources&#x2F;static下，我们引用就是在其&#x2F;imge&#x2F;img.png</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">&quot;text-align: center&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;/image/img.png&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240109113309791.png" alt="image-20240109113309791">	</p>
+<h2 id="3-3-前后端分离"><a href="#3-3-前后端分离" class="headerlink" title="3.3 前后端分离"></a>3.3 前后端分离</h2><p> 比如说我们后续需要返回数据BotInfoController</p>
+<ul>
+<li>这里的注解就是RestController了</li>
+<li>类似地，加上RequestMapping映射</li>
+<li>我们不止可以返回所谓的数据，还可以返回列表、字典这些，还可以嵌套</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zjxu.kob.backend.controller.pk;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RestController;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.LinkedList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/pk/&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BotInfoController</span> &#123;</span><br><span class="line">    <span class="comment">// 可以返回字符串、列表、字典</span></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;getbotinfo/&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> Map&lt;String, String&gt; <span class="title function_">getBotInfo</span><span class="params">()</span>&#123;</span><br><span class="line">        List&lt;Map&lt;String, String&gt;&gt; list = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">        </span><br><span class="line">        Map&lt;String, String&gt; bot1 = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">        bot1.put(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;tiger&quot;</span>);</span><br><span class="line">        bot1.put(<span class="string">&quot;rating&quot;</span>, <span class="string">&quot;1500&quot;</span>);</span><br><span class="line">        </span><br><span class="line">        Map&lt;String, String&gt; bot2 = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">        bot2.put(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;apple&quot;</span>);</span><br><span class="line">        bot2.put(<span class="string">&quot;rating&quot;</span>, <span class="string">&quot;1800&quot;</span>);</span><br><span class="line">        </span><br><span class="line">        list.add(bot1);</span><br><span class="line">        list.add(bot2);</span><br><span class="line">        <span class="keyword">return</span> bot1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240109113950677.png" alt="image-20240109113950677">	</p>
+<h1 id="四、前端创建"><a href="#四、前端创建" class="headerlink" title="四、前端创建"></a>四、前端创建</h1><p>我们在当前后端目录下创建前端</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240109115119787.png" alt="image-20240109115119787"></p>
+<p>不用git初始化，使用的是vue3</p>
+<p> 我们创建一个web 和acppp项目，需要vue-router和vuex插件，具体细节看我的<a target="_blank" rel="noopener" href="https://www.cnblogs.com/yuezi2048/articles/17950455/vue1">vue学习笔记</a></p>
+<p>web端装一个jquery和bootstrap</p>
+<p>我们可以把hash去掉，让url里的#号去掉</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240109115431682.png" alt="image-20240109115431682">	</p>
+<p>我们把默认的view都可以删掉</p>
+<h2 id="4-1-前端ajax访问后端"><a href="#4-1-前端ajax访问后端" class="headerlink" title="4.1 前端ajax访问后端"></a>4.1 前端ajax访问后端</h2><ul>
+<li>script写法都是固定的，我们export若干对象（我们理解为vue创建了一个新的实例），里面有name和setup()函数入口 注意最后return{ }</li>
+<li>在setup()里我们定义bot_name和bot_rating变量，并且使用ajax来获取<ul>
+<li>url是我们需要访问的地址</li>
+<li>type是访问类型，有get获取 post提交 delete删除 put修改</li>
+<li>success 是获取成功后的操作 也可以简写成success(resp) {  } ，setup(){  }同理</li>
+</ul>
+</li>
+<li>template前端界面使用<code>&#123;&#123;  &#125;&#125;</code>来取得ref响应式变量</li>
+<li>我们在CSS里引用了assets里的背景图片 使用cover 100%填充 @是当前目录的根目录</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;div&gt;Bot昵称：&#123;&#123; bot_name &#125;&#125;&lt;/div&gt;</span><br><span class="line">    &lt;div&gt;Bot战力：&#123;&#123; bot_rating &#125;&#125;&lt;/div&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">import $ from &#x27;jquery&#x27;;</span><br><span class="line">import &#123; ref &#125; from &#x27;vue&#x27;;</span><br><span class="line"></span><br><span class="line">export default&#123;</span><br><span class="line">  name: &quot;App&quot;,</span><br><span class="line">  setup: () =&gt; &#123;</span><br><span class="line">    let bot_name = ref(&quot;&quot;);</span><br><span class="line">    let bot_rating = ref(&quot;&quot;);</span><br><span class="line"></span><br><span class="line">    $.ajax(&#123;</span><br><span class="line">      url: &quot;http://127.0.0.1:3000/pk/getbotinfo/&quot;,</span><br><span class="line">      type: &quot;get&quot;,</span><br><span class="line">      success: resp =&gt; &#123;</span><br><span class="line">        console.log(resp);</span><br><span class="line">        bot_name.value = resp.name;</span><br><span class="line">        bot_rating.value = resp.rating;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    return &#123;</span><br><span class="line">      bot_name,</span><br><span class="line">      bot_rating</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style&gt;</span><br><span class="line">body &#123;</span><br><span class="line">  background-image: url(&quot;@/assets/background.png&quot;);</span><br><span class="line">  background-size:cover;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/style&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="4-2-解决禁止跨域问题"><a href="#4-2-解决禁止跨域问题" class="headerlink" title="4.2 解决禁止跨域问题"></a>4.2 解决禁止跨域问题</h2><p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240109120154256.png" alt="image-20240109120154256">	</p>
+<p>我们回忆一下计网的知识，我们通信的一个端点实际上是ip+端口号，那么我们 127.0.0.1:8080访问 127.0.0.1:3000 那么就是跨域访问，这里是被后端默认禁止了，我们在后端那边 加一个跨域配置文件CorsConfig就可以了。</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240109120452032.png" alt="image-20240109120452032" style="zoom:67%;" />	
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zjxu.kob.backend.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.servlet.*;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CorsConfig</span> <span class="keyword">implements</span> <span class="title class_">Filter</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">doFilter</span><span class="params">(ServletRequest req, ServletResponse res, FilterChain chain)</span> <span class="keyword">throws</span> IOException, ServletException &#123;</span><br><span class="line">        <span class="type">HttpServletResponse</span> <span class="variable">response</span> <span class="operator">=</span> (HttpServletResponse) res;</span><br><span class="line">        <span class="type">HttpServletRequest</span> <span class="variable">request</span> <span class="operator">=</span> (HttpServletRequest) req;</span><br><span class="line"></span><br><span class="line">        <span class="type">String</span> <span class="variable">origin</span> <span class="operator">=</span> request.getHeader(<span class="string">&quot;Origin&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span>(origin!=<span class="literal">null</span>) &#123;</span><br><span class="line">            response.setHeader(<span class="string">&quot;Access-Control-Allow-Origin&quot;</span>, origin);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="type">String</span> <span class="variable">headers</span> <span class="operator">=</span> request.getHeader(<span class="string">&quot;Access-Control-Request-Headers&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span>(headers!=<span class="literal">null</span>) &#123;</span><br><span class="line">            response.setHeader(<span class="string">&quot;Access-Control-Allow-Headers&quot;</span>, headers);</span><br><span class="line">            response.setHeader(<span class="string">&quot;Access-Control-Expose-Headers&quot;</span>, headers);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        response.setHeader(<span class="string">&quot;Access-Control-Allow-Methods&quot;</span>, <span class="string">&quot;*&quot;</span>);</span><br><span class="line">        response.setHeader(<span class="string">&quot;Access-Control-Max-Age&quot;</span>, <span class="string">&quot;3600&quot;</span>);</span><br><span class="line">        response.setHeader(<span class="string">&quot;Access-Control-Allow-Credentials&quot;</span>, <span class="string">&quot;true&quot;</span>);</span><br><span class="line"></span><br><span class="line">        chain.doFilter(request, response);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">(FilterConfig filterConfig)</span> &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">destroy</span><span class="params">()</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<pre><code>那么这就是我们目前进度的最终效果了。
+</code></pre>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240109120943214.png" alt="image-20240109120943214"></p>
+<h1 id="五、前后端交互的逻辑总结"><a href="#五、前后端交互的逻辑总结" class="headerlink" title="五、前后端交互的逻辑总结"></a>五、前后端交互的逻辑总结</h1><p>实际上用户所看到的界面里的源码，浏览器已经全部把我们的代码全部打包到app.js里面了</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240109121119585.png" alt="image-20240109121119585"></p>
+<p>具体的运作可以大致总结如下：</p>
+<ol>
+<li>用户Client访问前端网址，我们前端会通过js里的setup()函数访问向后端backend服务器发送请求</li>
+<li>后端是怎么运作的？比如他执行看Controller下的&#x2F;pk&#x2F;路径下的getbotInfo&#x2F;路径下的对应的getBotInfo()函数<ol>
+<li>函数里面通过返回json对象，里面有两个属性，分别是name和rating</li>
+</ol>
+</li>
+<li>后端将结果resp返回给前端，前端success()后将resp赋值给我们的ref可变响应式变量</li>
+</ol>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240109122436512.png" alt="image-20240109122436512"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2024/02/17/4.Archives%F0%9F%97%91/KOB/1.%E9%85%8D%E7%BD%AEgit%E7%8E%AF%E5%A2%83%E5%92%8C%E9%A1%B9%E7%9B%AE%E6%90%AD%E5%BB%BA/">https://yuezi2048.github.io/2024/02/17/4.Archives🗑/KOB/1.配置git环境和项目搭建/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/KOB/">KOB</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2024/02/12/3.Resources%F0%9F%93%94/communication/note/" title="note"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">note</div></div><div class="info-2"><div class="info-item-1">情商：通过掌控自己的情绪，从而使智商得到最大的利用率。 由于对自我感官敏感度的提高：  感受到他人的情绪，理解对方 影响他人的情绪，影响对方的行为  </div></div></div></a><a class="pagination-related" href="/2024/02/17/4.Archives%F0%9F%97%91/KOB/2.%E8%8F%9C%E5%8D%95%E5%92%8C%E6%B8%B8%E6%88%8F%E7%95%8C%E9%9D%A2%E8%AE%BE%E8%AE%A1/" title="2.菜单和游戏界面设计"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">2.菜单和游戏界面设计</div></div><div class="info-2"><div class="info-item-1">一、导航栏界面与跳转预期目标：我们要实现如下的页面以及响应的URL跳转（304），并且要求实现访问该界面时，对应的模块高亮。  页面我们一般放到view里面，我们每个模块建一个文件夹 	 1.1 公共子组件ContentField每个Index界面的公共子组件ContentField.vue，这里有三个点  这里用到了bootstrap的card组件框起来，我们可以如下简写  	  我们待填充的部分使用的是slot标签 为了美化，我们通过content-field加上了一个上边距  &lt;template&gt;  &lt;div class=&quot;container content-field&quot;&gt;    &lt;div class=&quot;card&quot;&gt;        &lt;div class=&quot;card-body&quot;&gt;            &lt;slot&gt;&lt;/slot&gt;        &lt;/div&gt;    &lt;/div&gt; ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2024/03/07/4.Archives%F0%9F%97%91/KOB/10.Bot%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/" title="10.Bot代码执行"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-03-07</div><div class="info-item-2">10.Bot代码执行</div></div><div class="info-2"><div class="info-item-1">用docker在云端进行代码部署 设置内存上线，可以支持其他的语言。 这里用的是joor来执行java代码（BotZone里有很多参考代码）。 注：我们的整体项目逻辑是一个闭环 		 既然要实现bot代码的实现，在前面的基础上，我们需要实现bot主键的一个传递，这涉及到了各个组件的通信问题。 接下来我们逐个击破。 	 一、初始化bot微服务1.1 创建微服务入口我们首先创建一个后端BotRunningSystem。 	 可以直接沿用MatchingSystem的依赖，然后注意导入我们的joor包来编译执行我们的java代码（后续可以替换成docker执行）。 这里微服务的主要逻辑在于和next step这里进行通信的。 	 然后建立后端后，我们要创建一个入口BotRunningApplication，  package com.zjxu.kob.botrunningsystem; import org.springframework.boot.SpringApplication; import...</div></div></div></a><a class="pagination-related" href="/2024/03/07/4.Archives%F0%9F%97%91/KOB/11.%E5%88%9B%E5%BB%BA%E5%AF%B9%E6%88%98%E5%88%97%E8%A1%A8%E5%92%8C%E5%9B%9E%E6%94%BE%E7%95%8C%E9%9D%A2/" title="11.创建对战列表和回放界面"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-03-07</div><div class="info-item-2">11.创建对战列表和回放界面</div></div><div class="info-2"><div class="info-item-1">一、实现天梯积分的更新我们补充之前的一个逻辑，就是根据游戏的结果来对用户的一个积分进行更新&#x2F; 目前暂定是赢的加5分，输的减2分 	 这里更新的逻辑就是 取出Player的id，然后用set函数来对rating进行更新并最终传输过去 	 二、对局列表的实现思路：  首先后端建立一个向前端返回这些数据的api，使用json封装过去 前端部分 查看录像功能 地图界面的路由跳转 对数据解析操作   完善分页功能 页面跳转 展示前后一页      2.1 后端api这里用到了分页，我们需要10个10个传过去，是前端传来页面page参数，我们来发送对应的页面数据。 用到的工具是Mybatis里面的一个配置 @Configurationpublic class MybatisConfig &#123;    @Bean    public MybatisPlusInterceptor mybatisPlusInterceptor() &#123;        MybatisPlusInterceptor interceptor = new...</div></div></div></a><a class="pagination-related" href="/2024/02/17/4.Archives%F0%9F%97%91/KOB/2.%E8%8F%9C%E5%8D%95%E5%92%8C%E6%B8%B8%E6%88%8F%E7%95%8C%E9%9D%A2%E8%AE%BE%E8%AE%A1/" title="2.菜单和游戏界面设计"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-02-17</div><div class="info-item-2">2.菜单和游戏界面设计</div></div><div class="info-2"><div class="info-item-1">一、导航栏界面与跳转预期目标：我们要实现如下的页面以及响应的URL跳转（304），并且要求实现访问该界面时，对应的模块高亮。  页面我们一般放到view里面，我们每个模块建一个文件夹 	 1.1 公共子组件ContentField每个Index界面的公共子组件ContentField.vue，这里有三个点  这里用到了bootstrap的card组件框起来，我们可以如下简写  	  我们待填充的部分使用的是slot标签 为了美化，我们通过content-field加上了一个上边距  &lt;template&gt;  &lt;div class=&quot;container content-field&quot;&gt;    &lt;div class=&quot;card&quot;&gt;        &lt;div class=&quot;card-body&quot;&gt;            &lt;slot&gt;&lt;/slot&gt;        &lt;/div&gt;    &lt;/div&gt; ...</div></div></div></a><a class="pagination-related" href="/2024/02/05/4.Archives%F0%9F%97%91/KOB/3.%E8%9B%87%E7%9A%84%E8%AE%BE%E8%AE%A1/" title="3.蛇的设计"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-02-05</div><div class="info-item-2">3.蛇的设计</div></div><div class="info-2"><div class="info-item-1">一、前置bug解决假设有一种情况，他们下一步会进入到同一个格子，这就会对优势方不利（有路可走），造成游戏不公平的情况 	 我们这里使用了头节点同一时刻不能走到同一个格子的策略 这里给出的方式是调整地图的长宽为13*14，这样一来，每回合蛇的坐标永远不会重合。 	    那么随之会引出另外一个问题：地图不是轴对称了 我们调整为中心对称，注意canvas坐标轴的定义 	    请注意，我们生成地图应当最终是在后端生成，否则会导致玩家可以修改前端代码，目前写在前端只是方便调试。 	    二、蛇的设计2.1 初始创建蛇头初始的时候是一个点，我们规定前10回合，每回合蛇长度加一，后面每三步变长一个 我们的蛇实质上是一堆圆圈的序列，我们先定义一个这个圈圈类cell.js 我们以圆心为单位，根据canvas坐标系我们可以得知x 和y坐标和canvas的对应关系 	  export class cell &#123;    constructor(r, c) &#123;        this.r = r;        this.c = c;        this.x = c +...</div></div></div></a><a class="pagination-related" href="/2024/02/25/4.Archives%F0%9F%97%91/KOB/4.%E9%85%8D%E7%BD%AEMysql%E4%B8%8E%E6%B3%A8%E5%86%8C%E7%99%BB%E5%BD%95%E6%A8%A1%E5%9D%97%EF%BC%88%E4%B8%8A%EF%BC%89/" title="4.配置Mysql与注册登录模块（上）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-02-25</div><div class="info-item-2">4.配置Mysql与注册登录模块（上）</div></div><div class="info-2"><div class="info-item-1">一、前置配置工作1.1 项目逻辑回顾 每一个前端Client都会与后端SpringBoot交互（传递参数），而在后端的过程中，我们需要进行查询mysql来得到我们的数据 数据库里的表本质上是可以看成是一个数组，而对数据库的操作我们可以看成算法里的字符串处理  	    1.2 mysql搭建和java连接数据库安装mysql略 基本操作回顾 关闭：net stop mysql80启动：net start mysql80连接用数据库服务：mysql -uroot -p123456    show databases;：列出所有数据库create database kob;：创建数据库drop database kob;：删除数据库use kob;：使用数据库kobshow tables;：列出当前数据库的所有表create table user(id int, username varchar(100))：创建名称为user的表，表中包含id和username两个属性。drop table user;：删除表insert into user values(1,...</div></div></div></a><a class="pagination-related" href="/2024/02/28/4.Archives%F0%9F%97%91/KOB/5.%E9%85%8D%E7%BD%AEMysql%E4%B8%8E%E6%B3%A8%E5%86%8C%E7%99%BB%E5%BD%95%E6%A8%A1%E5%9D%97%EF%BC%88%E4%B8%8B%EF%BC%89/" title="5.配置Mysql与注册登录模块（下）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-02-28</div><div class="info-item-2">5.配置Mysql与注册登录模块（下）</div></div><div class="info-2"><div class="info-item-1">本次的主要任务：  将数据库中的id域变为自增 在pojo.User类中添加注解：@TableId(type &#x3D; IdType.AUTO)   实现&#x2F;user&#x2F;account&#x2F;token&#x2F;：验证用户名密码，验证成功后返回jwt token（令牌） 实现&#x2F;user&#x2F;account&#x2F;info&#x2F;：根据令牌返回用户信息 实现&#x2F;user&#x2F;account&#x2F;register&#x2F;：注册账号 实现前端的任务  一、前置工作1.1...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">603</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">61</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">85</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%B8%B8%E6%88%8F%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E6%A1%86%E6%9E%B6"><span class="toc-text">一、游戏系统设计框架</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81git%E5%9F%BA%E7%A1%80%E5%BA%94%E7%94%A8"><span class="toc-text">二、git基础应用</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%90%8E%E7%AB%AF%E5%88%9B%E5%BB%BA"><span class="toc-text">三、后端创建</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%92%8C%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-text">3.1 基本概念和环境搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-%E5%89%8D%E5%90%8E%E7%AB%AF%E4%B8%8D%E5%88%86%E7%A6%BB"><span class="toc-text">3.2 前后端不分离</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB"><span class="toc-text">3.3 前后端分离</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%89%8D%E7%AB%AF%E5%88%9B%E5%BB%BA"><span class="toc-text">四、前端创建</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-%E5%89%8D%E7%AB%AFajax%E8%AE%BF%E9%97%AE%E5%90%8E%E7%AB%AF"><span class="toc-text">4.1 前端ajax访问后端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-%E8%A7%A3%E5%86%B3%E7%A6%81%E6%AD%A2%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98"><span class="toc-text">4.2 解决禁止跨域问题</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%89%8D%E5%90%8E%E7%AB%AF%E4%BA%A4%E4%BA%92%E7%9A%84%E9%80%BB%E8%BE%91%E6%80%BB%E7%BB%93"><span class="toc-text">五、前后端交互的逻辑总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/31/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2025-10-31T04:19:26.621Z" title="发表于 2025-10-31 12:19:26">2025-10-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/31/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2025-10-31T04:19:26.102Z" title="发表于 2025-10-31 12:19:26">2025-10-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/31/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/MySQL/81.%E4%BB%80%E4%B9%88%E6%98%AF%E6%B8%B8%E6%A0%87Cursor%E5%88%86%E9%A1%B5_%E5%AF%B9%E6%AF%94%E4%BC%A0%E7%BB%9FLIMIT_OFFSET%E5%88%86%E9%A1%B5%E7%9A%84%E4%BC%98%E5%8A%BF%E6%98%AF%E4%BB%80%E4%B9%88/" title="81.什么是游标Cursor分页_对比传统LIMIT_OFFSET分页的优势是什么">81.什么是游标Cursor分页_对比传统LIMIT_OFFSET分页的优势是什么</a><time datetime="2025-10-31T04:14:27.000Z" title="发表于 2025-10-31 12:14:27">2025-10-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/31/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/MySQL/80.%E5%85%A8%E9%87%8F%E5%90%8C%E6%AD%A5%E5%92%8C%E5%A2%9E%E9%87%8F%E5%90%8C%E6%AD%A5%E5%90%84%E8%87%AA%E4%BC%98%E7%BC%BA%E7%82%B9/" title="80.全量同步和增量同步各自优缺点">80.全量同步和增量同步各自优缺点</a><time datetime="2025-10-31T04:13:32.000Z" title="发表于 2025-10-31 12:13:32">2025-10-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/10/31/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/MySQL/79.%E4%BB%80%E4%B9%88%E6%98%AF%E6%89%B9%E9%87%8F%E6%95%B0%E6%8D%AE%E5%85%A5%E5%BA%93_%E7%9B%B8%E6%AF%94%E5%8D%95%E6%9D%A1%E6%8F%92%E5%85%A5%E4%BC%98%E5%8A%BF/" title="79.什么是批量数据入库_相比单条插入优势">79.什么是批量数据入库_相比单条插入优势</a><time datetime="2025-10-31T04:03:26.000Z" title="发表于 2025-10-31 12:03:26">2025-10-31</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>
