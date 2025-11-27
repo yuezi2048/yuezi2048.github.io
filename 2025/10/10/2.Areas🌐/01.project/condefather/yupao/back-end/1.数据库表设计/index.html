@@ -1,0 +1,250 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>1.数据库表设计 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="数据库表设计标签分类（有哪些标签，怎么把标签分类） 标签表（分类表）建议用标签，不要用分类，更灵活  性别：男  &#x2F; 女 方向：Java、C++、Go、前端 目标：考研、春招、秋招、社招、考公、竞赛、转行、跳槽 段位：初级、中级、高级、王者 身份：大一、大二、大三、大四、学生、待业、已就业、研一、研二、研三 状态：乐观、丧、一般、单身、已婚、有对象   【用户可以自定义标签】 索引建议加">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1.数据库表设计">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/10/10/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/1.%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E8%AE%BE%E8%AE%A1/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="数据库表设计标签分类（有哪些标签，怎么把标签分类） 标签表（分类表）建议用标签，不要用分类，更灵活  性别：男  &#x2F; 女 方向：Java、C++、Go、前端 目标：考研、春招、秋招、社招、考公、竞赛、转行、跳槽 段位：初级、中级、高级、王者 身份：大一、大二、大三、大四、学生、待业、已就业、研一、研二、研三 状态：乐观、丧、一般、单身、已婚、有对象   【用户可以自定义标签】 索引建议加">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-10-10T12:23:37.000Z">
+<meta property="article:modified_time" content="2025-10-10T12:23:37.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="back-end">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "1.数据库表设计",
+  "url": "https://yuezi2048.github.io/2025/10/10/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/1.%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E8%AE%BE%E8%AE%A1/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-10-10T12:23:37.000Z",
+  "dateModified": "2025-10-10T12:23:37.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/10/10/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/1.%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E8%AE%BE%E8%AE%A1/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '1.数据库表设计',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">781</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">65</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">90</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">1.数据库表设计</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">1.数据库表设计</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-10-10T12:23:37.000Z" title="发表于 2025-10-10 20:23:37">2025-10-10</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-10-10T12:23:37.000Z" title="更新于 2025-10-10 20:23:37">2025-10-10</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/">01.project</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/">condefather</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/yupao/">yupao</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/yupao/back-end/">back-end</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">724</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>2分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="数据库表设计"><a href="#数据库表设计" class="headerlink" title="数据库表设计"></a>数据库表设计</h2><p>标签分类（有哪些标签，怎么把标签分类）</p>
+<h3 id="标签表（分类表）"><a href="#标签表（分类表）" class="headerlink" title="标签表（分类表）"></a>标签表（分类表）</h3><p>建议用标签，不要用分类，更灵活</p>
+<ul>
+<li>性别：男  &#x2F; 女</li>
+<li>方向：Java、C++、Go、前端</li>
+<li>目标：考研、春招、秋招、社招、考公、竞赛、转行、跳槽</li>
+<li>段位：初级、中级、高级、王者</li>
+<li>身份：大一、大二、大三、大四、学生、待业、已就业、研一、研二、研三</li>
+<li>状态：乐观、丧、一般、单身、已婚、有对象</li>
+</ul>
+<blockquote>
+<p>【用户可以自定义标签】 索引建议加到值比较多的地方</p>
+</blockquote>
+<p>字段</p>
+<ul>
+<li>id int 主键</li>
+<li>标签名 varchar 非空（<strong>必须唯一，唯一索引</strong>）</li>
+<li>上传标签用户 userId int（可加可不加，如果要根据userId查已上传标签，最好加上 普通索引）</li>
+<li>父标签id parentId int</li>
+<li>是否为父标签 isParent tinyInt（0和1，相比布尔更灵活）</li>
+<li>创建时间 createTime datetime、更新时间 updateTime datetime、是否删除 isDelete tinyint（0，1）</li>
+</ul>
+<blockquote>
+<p>如何查询所有标签，并且对标签分组？ok，根据父标签id分组</p>
+<p>根据父标签查询子标签？ok ，根据id查询</p>
+<p>SQL语言分类</p>
+<ul>
+<li>DDL：define，建表、操作表</li>
+<li>DML：manage 更新删除，影响实际的内容</li>
+<li>DCL：control  控制  权限</li>
+<li>DQL：query  查询</li>
+</ul>
+</blockquote>
+<p>把原先的user表拿过来根据设计进行修改</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create table</span> yupi.tag</span><br><span class="line">(</span><br><span class="line">    id         <span class="type">bigint</span> auto_increment comment <span class="string">&#x27;id&#x27;</span></span><br><span class="line">        <span class="keyword">primary key</span>,</span><br><span class="line">    tagName    <span class="type">varchar</span>(<span class="number">256</span>)                       <span class="keyword">null</span> comment <span class="string">&#x27;标签id&#x27;</span>,</span><br><span class="line">    userId     <span class="type">bigint</span>                             <span class="keyword">null</span> comment <span class="string">&#x27;用户id&#x27;</span>,</span><br><span class="line">    parentId   <span class="type">bigint</span>                             <span class="keyword">null</span> comment <span class="string">&#x27;父标签id&#x27;</span>,</span><br><span class="line">    isParent   tinyint                            <span class="keyword">null</span> comment <span class="string">&#x27;是否父标签 0不是 1是&#x27;</span>,</span><br><span class="line">    createTime datetime <span class="keyword">default</span> <span class="built_in">CURRENT_TIMESTAMP</span> <span class="keyword">null</span> comment <span class="string">&#x27;创建时间&#x27;</span>,</span><br><span class="line">    updateTime datetime <span class="keyword">default</span> <span class="built_in">CURRENT_TIMESTAMP</span> <span class="keyword">null</span> <span class="keyword">on</span> <span class="keyword">update</span> <span class="built_in">CURRENT_TIMESTAMP</span> comment <span class="string">&#x27;更新时间&#x27;</span>,</span><br><span class="line">    isDelete   tinyint  <span class="keyword">default</span> <span class="number">0</span>                 <span class="keyword">null</span> comment <span class="string">&#x27;是否删除&#x27;</span>,</span><br><span class="line">    <span class="keyword">constraint</span> uniidx_tagName</span><br><span class="line">        <span class="keyword">unique</span> (tagName)</span><br><span class="line">)</span><br><span class="line">    comment <span class="string">&#x27;标签&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> index idx_userId</span><br><span class="line">    <span class="keyword">on</span> yupi.tag (userId);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="修改用户表"><a href="#修改用户表" class="headerlink" title="修改用户表"></a>修改用户表</h3><p>用户有哪些标签？<strong>（根据需求来）</strong></p>
+<ul>
+<li>直接在用户表添加tag字段，存json字符串： <strong>[‘java’, ‘男’]</strong><ul>
+<li>优势：查询方便，不用新建关联表，是<strong>用户的固有属性</strong>（其他系统可能也要用到），节省开发成本<ul>
+<li>哪怕性能慢了，也可以通过缓存优化</li>
+</ul>
+</li>
+<li>缺点：用户表多一列</li>
+</ul>
+</li>
+<li>添加关联表，记录用户和标签的关系<ul>
+<li>关联表应用场景：查询灵活，可以正查反查</li>
+<li>缺点：要多维护一个表，关键是反查的时候得到id后，还要反查一遍user表</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>查询100个用户后，得到100个用户的标签id，再根据标签id查标签表</p>
+<p><strong>重点：企业大项目开发尽量减少关联查询，很影响拓展性，而且会影响查询性能</strong></p>
+<p>阿里巴巴规范：关联查询尽量超过三级</p>
+</blockquote>
+<p>选用第一种方案。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">alter table yupi.user add COLUMN tags varchar(1024) null comment &#x27;标签列表&#x27;;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>初始化项目后，把原先项目复制之后，删除.idea后，全局替换项目名称即可。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/10/10/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/1.%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E8%AE%BE%E8%AE%A1/">https://yuezi2048.github.io/2025/10/10/2.Areas🌐/01.project/condefather/yupao/back-end/1.数据库表设计/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/back-end/">back-end</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/10/10/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90/" title="需求分析"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">需求分析</div></div><div class="info-2"><div class="info-item-1">伙伴匹配系统：找到志同道合的伙伴，移动端H5网页（尽量兼容PC） 需求分析 标签：每个用户有标签，标签分类 学习方向：java &#x2F; c++ 状态：工作 &#x2F; 大学   主动搜索：允许用户根据标签搜索其他用户 Redis 缓存（本地缓存）   组队（替补机制） 创建队伍 加入队伍 根据标签查询队伍 邀请其他人   允许用户修改标签 推荐 相似度计算算法 + 本地分布式计算    技术栈前端 vue3开发框架（提高页面开发效率） Vant UI（基于Vue移动端组件库）（React版Zent） Vite打包（快） Nginx单机部署  后端 java + springboot SpringMVC + Mybatis + MyBatis Plus MySQL数据库 Redis缓存 Swagger + Knife4j 接口文档  第一期计划 前端项目初始化 前端主页 + 组件概览 数据库表设计 标签表 用户表   开发后端：根据标签搜索用户 开发前端：根据标签搜索用户  </div></div></div></a><a class="pagination-related" href="/2025/10/10/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/2.%E6%A0%B9%E6%8D%AE%E6%A0%87%E7%AD%BE%E6%90%9C%E7%B4%A2%E7%94%A8%E6%88%B7%E5%8A%9F%E8%83%BD/" title="2.根据标签搜索用户功能"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">2.根据标签搜索用户功能</div></div><div class="info-2"><div class="info-item-1">开发后端接口搜索标签实现 允许用户传入多个标签，多个标签都存在才搜索出来  and like ‘%java%’ and like ‘%C++%’ mysql的json字段   允许用户传入多个标签，有任何一个标签就能搜索出来  or like ‘%java%’ or like ‘%C++%’    两种方式：  SQL查询(实现简单，可以通过拆分查询进一步优化) 内存查询（灵活，可以通过并发进一步优化）  用户中心提供用户鉴权的功能。  快捷键：ctrl + shift + 减号，折叠，加号展开  测试sql查询/**    * 根据标签搜索用户（SQL查询）    *    * @param tagNameList 用户标签列表    * @return 用户列表    */   @Deprecated   private List&lt;User&gt; searchUsersByTagsBySQL(List&lt;String&gt; tagNameList) &#123;       QueryWrapper&lt;User&gt; queryWrapper = new...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/09/11/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/0.%E8%AE%BE%E8%AE%A1/" title="0.设计"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-11</div><div class="info-item-2">0.设计</div></div><div class="info-2"><div class="info-item-1">目标  建立一个统一管理用户的系统（集中管理的可以分离出来，如支付宝登录） 理清做项目思路  做项目的流程  需求分析 设计（概要设计、详细设计） 技术选型（理由） 初始化&#x2F;引入相关的技术 写Demo（先跑起来） 实现业务逻辑 测试（单元测试） 最左原则：尽早发现，尽早解决   代码提交 &#x2F; 代码评审 部署 ——&gt; 发布  需求分析  登录 &#x2F; 注册 用户管理（管理员） 查询、修改   用户校验（仅星球用户）  技术选型 前端：三件套 + React + 组件库 Ant Design + Umi + Ant Desin Pro（现成的管理系统）后端：  spring（依赖注入，管理java对象，集成其他内容） springmvc（web框架，提供接口访问，restful接口等） mybatis（持久层框架，jdbc的封装） mybatis-plus（mybatis增强，不用写sql就能crud） springboot（不用管理spring配置 整合框架，快速启动 &#x2F;...</div></div></div></a><a class="pagination-related" href="/2025/09/12/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/1.%E5%90%8E%E7%AB%AF%E5%88%9D%E5%A7%8B%E5%8C%96/" title="1.后端初始化"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-12</div><div class="info-item-2">1.后端初始化</div></div><div class="info-2"><div class="info-item-1">初始化后端项目 现有模板（可能有坑） springboot官方模板 ——start.spring.io IDEA开发工具 springboot初始化     引入java的包，可以去maven中心仓库找：http://mvnrepository.com  	  问题说明：没有RunWith注解之后会把空指针异常，这是因为我们引入的是junit包的原因，当引入import org.junit.jupiter.api.Test;后就不会报错   数据库设计 数据表（类比excel） java操作数据库 设计：数据库表（model）+ 字段 + 索引（书中标签）+ 表和表的关联 用户表：id*(bigint)   userName(varchar) userAccount(注意关键字冲突) avatarUrl(varchar)  gender(tinyint)  userPassword(varchar)  phone(varchar)  email(varchar)  userStatus(int)  createTime(datetime) ...</div></div></div></a><a class="pagination-related" href="/2025/09/14/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/2.%E7%99%BB%E5%BD%95%E6%B3%A8%E5%86%8C/" title="2.登录注册"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-14</div><div class="info-item-2">2.登录注册</div></div><div class="info-2"><div class="info-item-1">代码生成器创建基本目录 实现基本数据库操作（crud）  model——创建 user对象，与和数据库的字段关联 mapper——对应resources下的xml文件 service——接口+实现类 controller utils  右边数据库选中mybatisx插件，因为没有用驼峰，所以字段要设置一样的，然后选用mabatis3，lombok，service等生成即可，得到：  domain实体对象（model的下一层） mapper（数据库操作对象） + mapper.xml关联 service（常用的增删改查） + 实现类  	  在service类上通过alt+回车生成测试类  	   小技巧：solarlint检查代码不规范的点，如测试类中的public可以不用加  	   小技巧2：generateAllSet可以帮助我们生成所有set方法  	  @Test   void testAddUser() &#123;       User user = new User();       user.setUsername(&quot;yupi&quot;);    ...</div></div></div></a><a class="pagination-related" href="/2025/09/13/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/3.%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/" title="3.用户管理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-13</div><div class="info-item-2">3.用户管理</div></div><div class="info-2"><div class="info-item-1">用户管理接口注意：该接口必须使用鉴权！！！ 查询用户：根据用户名进行查询 删除用户：逻辑删除 写代码 先做设计 代码实现 持续优化！（复用代码，提取公共逻辑 &#x2F; 常量，git超过10行重复不予commit） 常量（管理员权限标识， 用户登录态） 查询用户列表后的数据脱敏（与登录逻辑返回脱敏数据逻辑一致）    常量提取 public interface UserConstant &#123;    /**     * 用户登录态键     */    String USER_LOGIN_STATE = &quot;userLoginState&quot;;    // -------------权限-------------    /**     * 普通角色     */    int DEFAULT_ROLE = 0;    /**     * 管理员角色     */    int ADMIN_ROLE = 1;&#125;  Controller @RestController@RequestMapping(&quot;/user&quot;)public...</div></div></div></a><a class="pagination-related" href="/2025/09/14/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/4.%E7%94%A8%E6%88%B7%E6%A0%A1%E9%AA%8C/" title="4.用户校验"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-14</div><div class="info-item-2">4.用户校验</div></div><div class="info-2"><div class="info-item-1"> 这里仅适用于用户可信的情况，让用户自己填编号（2-5位编号） 后台补充对编号的校验：长度、唯一性  我们在数据库中添加一个PlantCode字段，重新生成，注意逻辑删除，自增逻辑是否对应，然后在用户脱敏的set方法中进行添加对应上。 注册修改修改请求体加上字段 修改controller、service层加上plantcode字段 后端优化 通用返回对象 目的：补充业务扩展信息，告诉前端业务处理上是成功还是失败   封装全局异常处理 全局请求日志和登录校验  通用返回对象// 成功&#123;    &quot;code&quot;; 0, // 业务状态码    &quot;data&quot;: &#123;    	&quot;name&quot;: &quot;yupi&quot;	&#125;,	&quot;message&quot;: &quot;success&quot;&#125;// 错误&#123;    &quot;code&quot;; 50001, // 业务状态码    &quot;data&quot;:...</div></div></div></a><a class="pagination-related" href="/2025/09/18/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/5.%E9%83%A8%E7%BD%B2/" title="5.部署"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-18</div><div class="info-item-2">5.部署</div></div><div class="info-2"><div class="info-item-1">项目部署多环境理论 多环境：同个项目在不同的阶段（本地开发-&gt;测试调试–&gt;部署上线）需要根据情况需要部署到不同的机器上 好处（针对不同环境做不同的事情）：  每个环境互不影响； 区分不同的阶段（开发&#x2F;测试&#x2F;生产） 项目优化，有些依赖不需要放到线上 本地日志 精简依赖：lombook、接口文档 项目的环境 &#x2F; 参数调整（JVM堆内存等参数）    分类：  本地环境：localhost:8080 开发环境（远程开发）：为了开发方便，大家连同一台机器 测试环境（测试 独立数据库 独立服务器）：开发 &#x2F; 测试 &#x2F; 产品 性能测试 &#x2F; 功能测试 &#x2F;...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">781</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">65</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">90</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E8%AE%BE%E8%AE%A1"><span class="toc-text">数据库表设计</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%87%E7%AD%BE%E8%A1%A8%EF%BC%88%E5%88%86%E7%B1%BB%E8%A1%A8%EF%BC%89"><span class="toc-text">标签表（分类表）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E7%94%A8%E6%88%B7%E8%A1%A8"><span class="toc-text">修改用户表</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/27/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2025-11-27T13:50:33.883Z" title="发表于 2025-11-27 21:50:33">2025-11-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/27/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2025-11-27T13:50:33.342Z" title="发表于 2025-11-27 21:50:33">2025-11-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/mybatis/17.Mybatis%E7%BC%BA%E7%82%B9/" title="17.Mybatis缺点">17.Mybatis缺点</a><time datetime="2025-11-27T13:49:39.000Z" title="发表于 2025-11-27 21:49:39">2025-11-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/mybatis/16.Mybatis%E4%BC%98%E7%82%B9/" title="16.Mybatis优点">16.Mybatis优点</a><time datetime="2025-11-27T13:49:07.000Z" title="发表于 2025-11-27 21:49:07">2025-11-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/mybatis/15.Mybatis-plus%E7%9A%84%E4%BD%9C%E7%94%A8_%E5%8C%BA%E5%88%AB/" title="15.Mybatis-plus的作用_区别">15.Mybatis-plus的作用_区别</a><time datetime="2025-11-27T13:47:58.000Z" title="发表于 2025-11-27 21:47:58">2025-11-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>
