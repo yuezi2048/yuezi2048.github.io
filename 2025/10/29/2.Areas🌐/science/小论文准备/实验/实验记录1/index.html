@@ -1,0 +1,860 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>实验记录1 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="這是在 Baby、Sports 和 Clothing 三個數據集上，對應最佳驗證結果的最終測試集指標，並整理為表格(b&#x3D;0.8)。    數據集 (Dataset) Recall@10 Recall@20 NDCG@10 NDCG@20    Baby 0.0655 0.1014 0.0347 0.0439   Sports 0.0743 0.1129 0.0408 0.0507   C">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实验记录1">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/10/29/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E5%AE%9E%E9%AA%8C/%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%951/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="這是在 Baby、Sports 和 Clothing 三個數據集上，對應最佳驗證結果的最終測試集指標，並整理為表格(b&#x3D;0.8)。    數據集 (Dataset) Recall@10 Recall@20 NDCG@10 NDCG@20    Baby 0.0655 0.1014 0.0347 0.0439   Sports 0.0743 0.1129 0.0408 0.0507   C">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-10-29T15:12:13.000Z">
+<meta property="article:modified_time" content="2025-10-29T15:12:13.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="实验">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "实验记录1",
+  "url": "https://yuezi2048.github.io/2025/10/29/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E5%AE%9E%E9%AA%8C/%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%951/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-10-29T15:12:13.000Z",
+  "dateModified": "2025-10-29T15:12:13.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/10/29/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E5%AE%9E%E9%AA%8C/%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%951/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '实验记录1',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">780</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">65</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">90</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">实验记录1</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">实验记录1</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-10-29T15:12:13.000Z" title="发表于 2025-10-29 23:12:13">2025-10-29</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-10-29T15:12:13.000Z" title="更新于 2025-10-29 23:12:13">2025-10-29</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/">science</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/">小论文准备</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E5%AE%9E%E9%AA%8C/">实验</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>這是在 Baby、Sports 和 Clothing 三個數據集上，對應最佳驗證結果的最終測試集指標，並整理為表格(b&#x3D;0.8)。</p>
+<table>
+<thead>
+<tr>
+<th>數據集 (Dataset)</th>
+<th>Recall@10</th>
+<th>Recall@20</th>
+<th>NDCG@10</th>
+<th>NDCG@20</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Baby</strong></td>
+<td>0.0655</td>
+<td>0.1014</td>
+<td>0.0347</td>
+<td>0.0439</td>
+</tr>
+<tr>
+<td><strong>Sports</strong></td>
+<td>0.0743</td>
+<td>0.1129</td>
+<td>0.0408</td>
+<td>0.0507</td>
+</tr>
+<tr>
+<td><strong>Clothing</strong></td>
+<td>0.0647</td>
+<td>0.0960</td>
+<td>0.0351</td>
+<td>0.0430</td>
+</tr>
+</tbody></table>
+<p>下表展示了在 <code>baby</code> 数据集上，围绕先前找到的最佳点进行的 5x5 精细网格搜索的最终测试集 <code>Recall@20</code> 性能。</p>
+<table>
+<thead>
+<tr>
+<th><code>alpha_g_s</code> \ <code>lambda_graded_align</code></th>
+<th>0.3</th>
+<th>0.4</th>
+<th>0.5</th>
+<th>0.6</th>
+<th>0.7</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>0.5</strong></td>
+<td>0.1015</td>
+<td>0.1020</td>
+<td>0.1021</td>
+<td>0.1015</td>
+<td>0.1011</td>
+</tr>
+<tr>
+<td><strong>0.6</strong></td>
+<td>0.1022</td>
+<td>0.1024</td>
+<td>0.1016</td>
+<td>0.1026</td>
+<td>0.1019</td>
+</tr>
+<tr>
+<td><strong>0.7</strong></td>
+<td>0.1018</td>
+<td>0.1022</td>
+<td>0.1019</td>
+<td><strong>0.1030</strong></td>
+<td>0.1012</td>
+</tr>
+<tr>
+<td><strong>0.8</strong></td>
+<td>0.1022</td>
+<td>0.1017</td>
+<td>0.1021</td>
+<td>0.1016</td>
+<td>0.1020</td>
+</tr>
+<tr>
+<td><strong>0.9</strong></td>
+<td>0.1017</td>
+<td>0.1021</td>
+<td>0.1019</td>
+<td>0.1020</td>
+<td>0.1023</td>
+</tr>
+</tbody></table>
+<p>sports</p>
+<ul>
+<li>1.0:  0.1113</li>
+<li>0.9:   0.1134</li>
+<li>0.8:  0.1118</li>
+</ul>
+<p>clothing</p>
+<ul>
+<li>1.0:  0.0958</li>
+<li>0.9:  0.0961</li>
+<li>0.8:  0.0967</li>
+</ul>
+<p>baby</p>
+<ul>
+<li>b:1.0  1032<ul>
+<li>158  3080  10.133 15:45</li>
+</ul>
+</li>
+<li>b: 0.9  1016<ul>
+<li>158 3080 10.13 15:17</li>
+</ul>
+</li>
+<li>b:0.7  1024  <ul>
+<li>218  3080 10.13 15:17</li>
+</ul>
+</li>
+<li>b:0.8  1029<ul>
+<li>158  10.13 15:32</li>
+</ul>
+</li>
+<li>b: 0.6 1022<ul>
+<li>218  10.13 15:33</li>
+</ul>
+</li>
+<li>B: 0.5 1026</li>
+<li>0.4  1011</li>
+</ul>
+<p>tt6超参数实验：218 193  10.14 11：25</p>
+<table>
+<thead>
+<tr>
+<th><code>alpha_g_s</code> \ <code>lambda_graded_align</code></th>
+<th>0.1</th>
+<th>0.2</th>
+<th>0.3</th>
+<th>0.4</th>
+<th>0.5</th>
+<th>0.6</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>0.5</strong></td>
+<td>0.1028</td>
+<td>0.1029</td>
+<td>0.1024</td>
+<td>0.1030</td>
+<td>0.1021</td>
+<td>0.1015</td>
+</tr>
+<tr>
+<td><strong>0.6</strong></td>
+<td>0.1029</td>
+<td>0.1029</td>
+<td>0.1023</td>
+<td>0.1026</td>
+<td>0.1018</td>
+<td>0.1026</td>
+</tr>
+<tr>
+<td><strong>0.7</strong></td>
+<td>0.1026</td>
+<td>0.1029</td>
+<td>0.1027</td>
+<td>0.1027</td>
+<td>0.1019</td>
+<td>0.1030</td>
+</tr>
+<tr>
+<td><strong>0.8</strong></td>
+<td>0.1016</td>
+<td>0.1029</td>
+<td>0.1028</td>
+<td>0.1012</td>
+<td>0.1021</td>
+<td>0.1025</td>
+</tr>
+<tr>
+<td><strong>0.9</strong></td>
+<td>0.1026</td>
+<td><strong>0.1035</strong></td>
+<td>0.1018</td>
+<td>0.1031</td>
+<td>0.1019</td>
+<td>0.1020</td>
+</tr>
+<tr>
+<td><strong>1.0</strong></td>
+<td>0.1014</td>
+<td>0.1031</td>
+<td>0.1026</td>
+<td>0.1026</td>
+<td>0.1030</td>
+<td>0.1020</td>
+</tr>
+</tbody></table>
+<p>测试1</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Test: recall@5: 0.0403    recall@10: 0.0662    recall@20: 0.1026    recall@50: 0.1697    ndcg@5: 0.0269    ndcg@10: 0.0354    ndcg@20: 0.0447    ndcg@50: 0.0583    precision@5: 0.0089    precision@10: 0.0073    precision@20: 0.0057    precision@50: 0.0038    map@5: 0.0218    map@10: 0.0252    map@20: 0.0277    map@50: 0.0298    </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">█████████████ BEST ████████████████</span><br><span class="line">21 Oct 17:00    INFO    Parameters: [<span class="string">&#x27;seed&#x27;</span>, <span class="string">&#x27;reg_weight&#x27;</span>, <span class="string">&#x27;learning_rate&#x27;</span>, <span class="string">&#x27;infoNCETemp&#x27;</span>, <span class="string">&#x27;lambda_graded_align&#x27;</span>, <span class="string">&#x27;alpha_g_s&#x27;</span>]=(999, 0.0001, 0.0001, 0.4, 0.2, 0.9),</span><br><span class="line">Valid: recall@5: 0.0411    recall@10: 0.0651    recall@20: 0.1008    recall@50: 0.1644    ndcg@5: 0.0273    ndcg@10: 0.0351    ndcg@20: 0.0442    ndcg@50: 0.0569    precision@5: 0.0086    precision@10: 0.0068    precision@20: 0.0053    precision@50: 0.0035    map@5: 0.0225    map@10: 0.0257    map@20: 0.0281    map@50: 0.0301    ,</span><br><span class="line">Test: recall@5: 0.0404    recall@10: 0.0666    recall@20: 0.1026    recall@50: 0.1681    ndcg@5: 0.0269    ndcg@10: 0.0355    ndcg@20: 0.0447    ndcg@50: 0.0580    precision@5: 0.0089    precision@10: 0.0074    precision@20: 0.0057    precision@50: 0.0037    map@5: 0.0217    map@10: 0.0252    map@20: 0.0277    map@50: 0.0298    </span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>测试</p>
+<table>
+<thead>
+<tr>
+<th><strong>infoNCETemp</strong></th>
+<th><strong>recall@20 (Test)</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>0.1</strong></td>
+<td><strong><code>0.1026</code></strong></td>
+</tr>
+<tr>
+<td>0.2</td>
+<td><code>0.1019</code></td>
+</tr>
+<tr>
+<td>0.3</td>
+<td><code>0.1017</code></td>
+</tr>
+<tr>
+<td>0.4</td>
+<td><code>0.1011</code></td>
+</tr>
+<tr>
+<td>0.6</td>
+<td><code>0.1019</code></td>
+</tr>
+<tr>
+<td>0.8</td>
+<td><code>0.1018</code></td>
+</tr>
+</tbody></table>
+<p>3080最新结果</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">█████████████ BEST ████████████████</span><br><span class="line">21 Oct 18:56    INFO    Parameters: [<span class="string">&#x27;seed&#x27;</span>, <span class="string">&#x27;reg_weight&#x27;</span>, <span class="string">&#x27;learning_rate&#x27;</span>, <span class="string">&#x27;infoNCETemp&#x27;</span>, <span class="string">&#x27;lambda_graded_align&#x27;</span>, <span class="string">&#x27;alpha_g_s&#x27;</span>]=(999, 0.0001, 0.0001, 0.4, 0.2, 0.9),</span><br><span class="line">Valid: recall@5: 0.0414    recall@10: 0.0643    recall@20: 0.1009    recall@50: 0.1643    ndcg@5: 0.0276    ndcg@10: 0.0350    ndcg@20: 0.0443    ndcg@50: 0.0570    precision@5: 0.0087    precision@10: 0.0068    precision@20: 0.0053    precision@50: 0.0035    map@5: 0.0228    map@10: 0.0257    map@20: 0.0282    map@50: 0.0302    ,</span><br><span class="line">Test: recall@5: 0.0408    recall@10: 0.0661    recall@20: 0.1030    recall@50: 0.1680    ndcg@5: 0.0269    ndcg@10: 0.0352    ndcg@20: 0.0447    ndcg@50: 0.0579    precision@5: 0.0090    precision@10: 0.0073    precision@20: 0.0057    precision@50: 0.0037    map@5: 0.0216    map@10: 0.0250    map@20: 0.0275    map@50: 0.0296    </span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">21 Oct 19:14    INFO    Parameters: [<span class="string">&#x27;seed&#x27;</span>, <span class="string">&#x27;reg_weight&#x27;</span>, <span class="string">&#x27;learning_rate&#x27;</span>, <span class="string">&#x27;infoNCETemp&#x27;</span>, <span class="string">&#x27;lambda_graded_align&#x27;</span>, <span class="string">&#x27;alpha_g_s&#x27;</span>]=(999, 0.0001, 0.0001, 0.1, 0.2, 0.9),</span><br><span class="line">Valid: recall@5: 0.0421    recall@10: 0.0647    recall@20: 0.1008    recall@50: 0.1628    ndcg@5: 0.0282    ndcg@10: 0.0355    ndcg@20: 0.0447    ndcg@50: 0.0571    precision@5: 0.0088    precision@10: 0.0068    precision@20: 0.0053    precision@50: 0.0035    map@5: 0.0234    map@10: 0.0263    map@20: 0.0287    map@50: 0.0307    ,</span><br><span class="line">Test: recall@5: 0.0400    recall@10: 0.0657    recall@20: 0.1029    recall@50: 0.1673    ndcg@5: 0.0266    ndcg@10: 0.0350    ndcg@20: 0.0446    ndcg@50: 0.0576    precision@5: 0.0089    precision@10: 0.0073    precision@20: 0.0057    precision@50: 0.0037    map@5: 0.0215    map@10: 0.0249    map@20: 0.0275    map@50: 0.0295    </span><br></pre></td></tr></table></figure>
+
+
+
+<p>w&#x2F;o prototypes</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">█████████████ BEST ████████████████</span><br><span class="line">21 Oct 19:55    INFO    Parameters: [<span class="string">&#x27;seed&#x27;</span>, <span class="string">&#x27;reg_weight&#x27;</span>, <span class="string">&#x27;learning_rate&#x27;</span>, <span class="string">&#x27;infoNCETemp&#x27;</span>, <span class="string">&#x27;lambda_graded_align&#x27;</span>, <span class="string">&#x27;alpha_g_s&#x27;</span>]=(999, 0.0001, 0.0001, 0.4, 0.2, 0.9),</span><br><span class="line">Valid: recall@5: 0.0411    recall@10: 0.0644    recall@20: 0.1008    recall@50: 0.1642    ndcg@5: 0.0272    ndcg@10: 0.0348    ndcg@20: 0.0441    ndcg@50: 0.0567    precision@5: 0.0086    precision@10: 0.0068    precision@20: 0.0053    precision@50: 0.0035    map@5: 0.0224    map@10: 0.0254    map@20: 0.0279    map@50: 0.0299    ,</span><br><span class="line">Test: recall@5: 0.0404    recall@10: 0.0668    recall@20: 0.1023    recall@50: 0.1679    ndcg@5: 0.0268    ndcg@10: 0.0355    ndcg@20: 0.0446    ndcg@50: 0.0579    precision@5: 0.0089    precision@10: 0.0074    precision@20: 0.0057    precision@50: 0.0037    map@5: 0.0217    map@10: 0.0252    map@20: 0.0276    map@50: 0.0297  </span><br></pre></td></tr></table></figure>
+
+
+
+<p>当然。根据您提供的完整日志文件，以下是对您的网格搜索实验的详细分析。</p>
+<h3 id="核心结论"><a href="#核心结论" class="headerlink" title="核心结论"></a>核心结论</h3><p>找到的最佳超参数组合是 <strong><code>lambda_graded_align = 0.1</code></strong> 和 <strong><code>alpha_g_s = 0.6</code></strong> 。此设置实现了最高的测试集性能， <strong><code>recall@20</code> 为 <code>0.1034</code></strong> 。</p>
+<p>这一结果意义重大，因为它表明，在一般特征学习和特定特征学习之间采取更<strong>平衡的</strong>方法（ <code>alpha_g_s=0.6</code> ）比过分关注一般特征（ <code>alpha_g_s=0.9</code> ）更有效。</p>
+<hr>
+<h3 id="性能数据摘要"><a href="#性能数据摘要" class="headerlink" title="性能数据摘要"></a>性能数据摘要</h3><p>为了直观地展示 5x5 网格搜索的结果，我将<strong>测试集中</strong>的 <strong><code>recall@20</code></strong> 整理成下表。这让我们能够清晰地了解性能状况。</p>
+<p>This table now includes all your experimental data, combining the new column for <code>lambda_graded_align = 0.05</code> with the previous results. The values shown are <code>recall@20</code> from the test set.</p>
+<table>
+<thead>
+<tr>
+<th><strong>alpha_g_s \ lambda</strong></th>
+<th><strong>0.05</strong></th>
+<th><strong>0.1</strong></th>
+<th><strong>0.2</strong></th>
+<th><strong>0.3</strong></th>
+<th><strong>0.4</strong></th>
+<th><strong>0.5</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>0.6</strong></td>
+<td><code>0.1032</code></td>
+<td><strong><code>0.1034</code></strong></td>
+<td><code>0.1030</code></td>
+<td><code>0.1017</code></td>
+<td><code>0.1032</code></td>
+<td><strong><code>0.1034</code></strong></td>
+</tr>
+<tr>
+<td><strong>0.7</strong></td>
+<td><code>0.1026</code></td>
+<td><code>0.1025</code></td>
+<td><code>0.1020</code></td>
+<td><code>0.1023</code></td>
+<td><code>0.1027</code></td>
+<td><code>0.1021</code></td>
+</tr>
+<tr>
+<td><strong>0.8</strong></td>
+<td><strong><code>0.1034</code></strong></td>
+<td><code>0.1031</code></td>
+<td><code>0.1032</code></td>
+<td><code>0.1032</code></td>
+<td><code>0.1016</code></td>
+<td><code>0.1025</code></td>
+</tr>
+<tr>
+<td><strong>0.9</strong></td>
+<td><code>0.1023</code></td>
+<td><code>0.1029</code></td>
+<td><code>0.1030</code></td>
+<td><code>0.1026</code></td>
+<td><code>0.1032</code></td>
+<td><code>0.1022</code></td>
+</tr>
+<tr>
+<td><strong>1.0</strong></td>
+<td><code>0.1031</code></td>
+<td><code>0.1025</code></td>
+<td><code>0.1021</code></td>
+<td><code>0.1030</code></td>
+<td><code>0.1030</code></td>
+<td><code>0.1023</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="超参数实验"><a href="#超参数实验" class="headerlink" title="超参数实验"></a>超参数实验</h2><h3 id="1-测试集-recall-10"><a href="#1-测试集-recall-10" class="headerlink" title="1. 测试集 - recall@10"></a>1. 测试集 - recall@10</h3><table>
+<thead>
+<tr>
+<th>lambda_graded_align →</th>
+<th>0.05</th>
+<th>0.10</th>
+<th>0.20</th>
+<th>0.30</th>
+<th>0.40</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>infoNCETemp ↓</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>0.05</td>
+<td>0.0652</td>
+<td>0.0667</td>
+<td>0.0663</td>
+<td>0.0657</td>
+<td>0.0660</td>
+</tr>
+<tr>
+<td>0.10</td>
+<td>0.0657</td>
+<td>0.0661</td>
+<td>0.0652</td>
+<td>0.0661</td>
+<td>0.0653</td>
+</tr>
+<tr>
+<td>0.20</td>
+<td>0.0658</td>
+<td>0.0657</td>
+<td><strong>0.0659</strong></td>
+<td>0.0659</td>
+<td>0.0649</td>
+</tr>
+<tr>
+<td>0.40</td>
+<td>0.0656</td>
+<td>0.0659</td>
+<td>0.0659</td>
+<td>0.0665</td>
+<td>0.0650</td>
+</tr>
+<tr>
+<td>0.60</td>
+<td>0.0662</td>
+<td>0.0658</td>
+<td>0.0651</td>
+<td>0.0662</td>
+<td>0.0651</td>
+</tr>
+</tbody></table>
+<h3 id="2-测试集-recall-20"><a href="#2-测试集-recall-20" class="headerlink" title="2. 测试集 - recall@20"></a>2. 测试集 - recall@20</h3><table>
+<thead>
+<tr>
+<th>lambda_graded_align →</th>
+<th>0.05</th>
+<th>0.10</th>
+<th>0.20</th>
+<th>0.30</th>
+<th>0.40</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>infoNCETemp ↓</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>0.05</td>
+<td>0.1040</td>
+<td>0.1028</td>
+<td>0.1037</td>
+<td>0.1040</td>
+<td>0.1035</td>
+</tr>
+<tr>
+<td>0.10</td>
+<td>0.1042</td>
+<td>0.1036</td>
+<td>0.1038</td>
+<td>0.1034</td>
+<td>0.1040</td>
+</tr>
+<tr>
+<td>0.20</td>
+<td>0.1041</td>
+<td>0.1038</td>
+<td><strong>0.1042</strong></td>
+<td>0.1028</td>
+<td>0.1020</td>
+</tr>
+<tr>
+<td>0.40</td>
+<td>0.1032</td>
+<td>0.1031</td>
+<td>0.1032</td>
+<td>0.1026</td>
+<td>0.1019</td>
+</tr>
+<tr>
+<td>0.60</td>
+<td>0.1026</td>
+<td>0.1032</td>
+<td>0.1038</td>
+<td>0.1040</td>
+<td>0.1017</td>
+</tr>
+</tbody></table>
+<h3 id="3-测试集-ndcg-10"><a href="#3-测试集-ndcg-10" class="headerlink" title="3. 测试集 - ndcg@10"></a>3. 测试集 - ndcg@10</h3><table>
+<thead>
+<tr>
+<th>lambda_graded_align →</th>
+<th>0.05</th>
+<th>0.10</th>
+<th>0.20</th>
+<th>0.30</th>
+<th>0.40</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>infoNCETemp ↓</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>0.05</td>
+<td>0.0350</td>
+<td>0.0355</td>
+<td>0.0353</td>
+<td>0.0349</td>
+<td>0.0354</td>
+</tr>
+<tr>
+<td>0.10</td>
+<td>0.0350</td>
+<td>0.0350</td>
+<td>0.0350</td>
+<td>0.0350</td>
+<td>0.0351</td>
+</tr>
+<tr>
+<td>0.20</td>
+<td>0.0352</td>
+<td>0.0353</td>
+<td><strong>0.0352</strong></td>
+<td>0.0353</td>
+<td>0.0347</td>
+</tr>
+<tr>
+<td>0.40</td>
+<td>0.0350</td>
+<td>0.0352</td>
+<td>0.0353</td>
+<td>0.0354</td>
+<td>0.0348</td>
+</tr>
+<tr>
+<td>0.60</td>
+<td>0.0355</td>
+<td>0.0353</td>
+<td>0.0351</td>
+<td>0.0352</td>
+<td>0.0346</td>
+</tr>
+</tbody></table>
+<h3 id="4-测试集-ndcg-20"><a href="#4-测试集-ndcg-20" class="headerlink" title="4. 测试集 - ndcg@20"></a>4. 测试集 - ndcg@20</h3><table>
+<thead>
+<tr>
+<th>lambda_graded_align →</th>
+<th>0.05</th>
+<th>0.10</th>
+<th>0.20</th>
+<th>0.30</th>
+<th>0.40</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>infoNCETemp ↓</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>0.05</td>
+<td>0.0449</td>
+<td>0.0449</td>
+<td>0.0450</td>
+<td>0.0447</td>
+<td>0.0450</td>
+</tr>
+<tr>
+<td>0.10</td>
+<td>0.0449</td>
+<td>0.0446</td>
+<td>0.0449</td>
+<td>0.0446</td>
+<td>0.0450</td>
+</tr>
+<tr>
+<td>0.20</td>
+<td>0.0451</td>
+<td>0.0451</td>
+<td><strong>0.0450</strong></td>
+<td>0.0449</td>
+<td>0.0442</td>
+</tr>
+<tr>
+<td>0.40</td>
+<td>0.0447</td>
+<td>0.0448</td>
+<td>0.0449</td>
+<td>0.0447</td>
+<td>0.0442</td>
+</tr>
+<tr>
+<td>0.60</td>
+<td>0.0449</td>
+<td>0.0450</td>
+<td>0.0450</td>
+<td>0.0449</td>
+<td>0.0440</td>
+</tr>
+</tbody></table>
+<ol>
+<li><strong>最优组合参考</strong>：根据表格可快速定位最优超参数（例：recall@20 最高为 0.1042，对应组合：infoNCETemp&#x3D;0.1+lambda_graded_align&#x3D;0.05，或 infoNCETemp&#x3D;0.2+lambda_graded_align&#x3D;0.2）。</li>
+</ol>
+<p>alpha_g_s</p>
+<table>
+<thead>
+<tr>
+<th>alpha_g_s</th>
+<th>测试集 - recall@10</th>
+<th>测试集 - recall@20</th>
+<th>测试集 - ndcg@10</th>
+<th>测试集 - ndcg@20</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0.4</td>
+<td>0.0663</td>
+<td>0.1005</td>
+<td>0.0353</td>
+<td>0.0441</td>
+</tr>
+<tr>
+<td>0.5</td>
+<td>0.0648</td>
+<td>0.1037</td>
+<td>0.0351</td>
+<td>0.0451</td>
+</tr>
+<tr>
+<td>0.6</td>
+<td>0.0661</td>
+<td>0.1028</td>
+<td>0.0350</td>
+<td>0.0445</td>
+</tr>
+<tr>
+<td>0.7</td>
+<td>0.0654</td>
+<td>0.1040</td>
+<td>0.0351</td>
+<td>0.0451</td>
+</tr>
+<tr>
+<td>0.8</td>
+<td>0.0667</td>
+<td>0.1009</td>
+<td>0.0353</td>
+<td>0.0441</td>
+</tr>
+<tr>
+<td>0.9</td>
+<td>0.0653</td>
+<td>0.1032</td>
+<td>0.0352</td>
+<td>0.0450</td>
+</tr>
+</tbody></table>
+<ul>
+<li>alpha_g_s 在 <strong>0.4-0.9</strong> 全区间内，ndcg@10 波动仅 0.0003（0.0350-0.0353），ndcg@20 波动仅 0.0010（0.0441-0.0451），模型鲁棒性极强；</li>
+<li>recall@20 的最优区间为 <strong>0.5-0.9</strong>（均≥0.1032），显著高于 0.4（0.1005）和 0.8（0.1009）。</li>
+</ul>
+<h2 id="对比实验："><a href="#对比实验：" class="headerlink" title="对比实验："></a>对比实验：</h2><p>baby的结果：</p>
+<table>
+<thead>
+<tr>
+<th>infoNCETemp&#x3D;0.2, lambda_graded_align&#x3D;0.2</th>
+<th>测试集 - recall@10</th>
+<th>测试集 - recall@20</th>
+<th>测试集 - ndcg@10</th>
+<th>测试集 - ndcg@20</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>alpha_g_s&#x3D;0.7（最优组合）</td>
+<td>0.0654</td>
+<td>0.1040</td>
+<td>0.0351</td>
+<td>0.0451</td>
+</tr>
+</tbody></table>
+<p>sports的结果</p>
+<table>
+<thead>
+<tr>
+<th>infoNCETemp&#x3D;0.2, lambda_graded_align&#x3D;0.2</th>
+<th>测试集 - recall@10</th>
+<th>测试集 - recall@20</th>
+<th>测试集 - ndcg@10</th>
+<th>测试集 - ndcg@20</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>alpha_g_s&#x3D;0.7（最优组合）</td>
+<td>0.0739</td>
+<td>0.1130</td>
+<td>0.0398</td>
+<td>0.0499</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>recall@20 达到 0.1130，recall@50 达 0.1824，体现模型在 Sports 数据集中对中长尾物品的召回能力；</p>
+</li>
+<li><p>ndcg@20&#x3D;0.0499、ndcg@10&#x3D;0.0398，说明推荐结果的排序合理性较好；</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>infoNCETemp&#x3D;0.2, lambda_graded_align&#x3D;0.2</th>
+<th>测试集 - recall@10</th>
+<th>测试集 - recall@20</th>
+<th>测试集 - ndcg@10</th>
+<th>测试集 - ndcg@20</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>alpha_g_s&#x3D;0.7（最优组合）</td>
+<td>0.0650</td>
+<td>0.0947</td>
+<td>0.0351</td>
+<td>0.0426</td>
+</tr>
+</tbody></table>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/10/29/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E5%AE%9E%E9%AA%8C/%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%951/">https://yuezi2048.github.io/2025/10/29/2.Areas🌐/science/小论文准备/实验/实验记录1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AE%9E%E9%AA%8C/">实验</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/10/29/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/FITMM/" title="FITMM"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">FITMM</div></div><div class="info-2"><div class="info-item-1">...</div></div></div></a><a class="pagination-related" href="/2025/10/30/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/MySQL/53.%E5%AD%98%E5%82%A8%E9%87%91%E9%A2%9D%E6%95%B0%E6%8D%AE%E7%94%A8%E4%BB%80%E4%B9%88%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" title="53.存储金额数据用什么数据类型"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">53.存储金额数据用什么数据类型</div></div><div class="info-2"><div class="info-item-1">金额一般用：bigint（long）和decimal（BigDecimal）  bigint范围： -2^63 到 2^63 - 1（mySQL中为64号有符号整数），占用8字节 场景：精确存储整数，不支持小数，单位是分   defimal范围：精确存储数字范围和小数位数，存储空间取决于定义的精度和标度 场景：高精度小数运算，精确存储定点数，如decimal(18, 6)，18位是总位数，6是小数     一般情况下，BigDecimal更适合高精度金额场景，且更加灵活（如第三方支付的千分之三抽成的计算用bigint可能会丢失精度），大部分业务相对于bigint损失可以忽略  扩展知识项目中到底选择 Long 还是 BigDecimal？long 类型保存到分，使得小数位（厘）的数据不好处理（需要手动处理，比较麻烦），因此精度不够高。 在高精度金额计算场景下不合适，例如有些三方支付系统是需要抽成的，例如千分之三、万分之一等等，这类的抽成要求精度比较高，例如 会得到 1234.5678 这样的金额，乘以 100 后仍然无法存储为精确整数，还是小数，存储则会丢失精度。 0.0078...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">780</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">65</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">90</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E7%BB%93%E8%AE%BA"><span class="toc-text">核心结论</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E6%95%B0%E6%8D%AE%E6%91%98%E8%A6%81"><span class="toc-text">性能数据摘要</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B6%85%E5%8F%82%E6%95%B0%E5%AE%9E%E9%AA%8C"><span class="toc-text">超参数实验</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%B5%8B%E8%AF%95%E9%9B%86-recall-10"><span class="toc-text">1. 测试集 - recall@10</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%B5%8B%E8%AF%95%E9%9B%86-recall-20"><span class="toc-text">2. 测试集 - recall@20</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%B5%8B%E8%AF%95%E9%9B%86-ndcg-10"><span class="toc-text">3. 测试集 - ndcg@10</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%B5%8B%E8%AF%95%E9%9B%86-ndcg-20"><span class="toc-text">4. 测试集 - ndcg@20</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E6%AF%94%E5%AE%9E%E9%AA%8C%EF%BC%9A"><span class="toc-text">对比实验：</span></a></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/12/04/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2025-12-04T07:43:33.582Z" title="发表于 2025-12-04 15:43:33">2025-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/12/04/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2025-12-04T07:43:32.998Z" title="发表于 2025-12-04 15:43:32">2025-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/mybatis/17.Mybatis%E7%BC%BA%E7%82%B9/" title="17.Mybatis缺点">17.Mybatis缺点</a><time datetime="2025-11-27T13:49:39.000Z" title="发表于 2025-11-27 21:49:39">2025-11-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/mybatis/16.Mybatis%E4%BC%98%E7%82%B9/" title="16.Mybatis优点">16.Mybatis优点</a><time datetime="2025-11-27T13:49:07.000Z" title="发表于 2025-11-27 21:49:07">2025-11-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/mybatis/15.Mybatis-plus%E7%9A%84%E4%BD%9C%E7%94%A8_%E5%8C%BA%E5%88%AB/" title="15.Mybatis-plus的作用_区别">15.Mybatis-plus的作用_区别</a><time datetime="2025-11-27T13:47:58.000Z" title="发表于 2025-11-27 21:47:58">2025-11-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>3.swagger+knife4j接口文档 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="后端整合Swagger+Knife4j接口文档 什么是接口文档：接口信息：每个接口的请求参数、响应参数（错误码）、接口地址、接口名称、请求格式、备注 who：后端&#x2F;架构师 提供，前后端都要使用 为什么要接口文档 背书（归档），便于大家参考和查阅、便于沉淀和维护，拒绝口口相传 接口文档便于前后端开发对接，是前后端联调的介质 好的接口文档可以在线调试，可以作为工具提高开发效率   怎么做 手">
+<meta property="og:type" content="article">
+<meta property="og:title" content="3.swagger+knife4j接口文档">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/10/11/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/3.swagger+knife4j%E6%8E%A5%E5%8F%A3%E6%96%87%E6%A1%A3/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="后端整合Swagger+Knife4j接口文档 什么是接口文档：接口信息：每个接口的请求参数、响应参数（错误码）、接口地址、接口名称、请求格式、备注 who：后端&#x2F;架构师 提供，前后端都要使用 为什么要接口文档 背书（归档），便于大家参考和查阅、便于沉淀和维护，拒绝口口相传 接口文档便于前后端开发对接，是前后端联调的介质 好的接口文档可以在线调试，可以作为工具提高开发效率   怎么做 手">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-10-11T13:09:03.000Z">
+<meta property="article:modified_time" content="2025-10-11T13:09:03.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="back-end">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "3.swagger+knife4j接口文档",
+  "url": "https://yuezi2048.github.io/2025/10/11/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/3.swagger+knife4j%E6%8E%A5%E5%8F%A3%E6%96%87%E6%A1%A3/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-10-11T13:09:03.000Z",
+  "dateModified": "2025-10-11T13:09:03.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/10/11/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/3.swagger+knife4j%E6%8E%A5%E5%8F%A3%E6%96%87%E6%A1%A3/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '3.swagger+knife4j接口文档',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">780</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">65</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">90</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">3.swagger+knife4j接口文档</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">3.swagger+knife4j接口文档</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-10-11T13:09:03.000Z" title="发表于 2025-10-11 21:09:03">2025-10-11</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-10-11T13:09:03.000Z" title="更新于 2025-10-11 21:09:03">2025-10-11</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/">01.project</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/">condefather</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/yupao/">yupao</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/yupao/back-end/">back-end</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">750</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>3分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h3 id="后端整合Swagger-Knife4j接口文档"><a href="#后端整合Swagger-Knife4j接口文档" class="headerlink" title="后端整合Swagger+Knife4j接口文档"></a>后端整合Swagger+Knife4j接口文档</h3><ul>
+<li>什么是接口文档：接口信息：每个接口的请求参数、响应参数（错误码）、接口地址、接口名称、请求格式、备注</li>
+<li>who：后端&#x2F;架构师 提供，前后端都要使用</li>
+<li>为什么要接口文档<ul>
+<li>背书（归档），便于大家参考和查阅、便于沉淀和维护，拒绝口口相传</li>
+<li>接口文档便于前后端开发对接，是前后端联调的<strong>介质</strong></li>
+<li>好的接口文档可以在线调试，可以作为工具提高开发效率</li>
+</ul>
+</li>
+<li>怎么做<ul>
+<li>手写（腾讯文档、Markdown笔记）</li>
+<li>自动化文档生成：Postman（侧重接口管理）、Swagger（自动根据项目代码生成文档&#x2F;在线调试网页）；apifox、apipost、eolink</li>
+</ul>
+</li>
+<li>接口文档技巧</li>
+</ul>
+<blockquote>
+<p>Swagger原理：</p>
+<ul>
+<li>自定义Swagger配置类</li>
+<li>定义需要生成接口代码的位置（Controller）<ul>
+<li>注意：线上环境不要把接口暴露出去！</li>
+<li>todo 如何隐藏</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="spring3-5-swagger"><a href="#spring3-5-swagger" class="headerlink" title="spring3.5 swagger"></a>spring3.5 swagger</h4><p>注意jdk17+springboot3.x环境下，swagger v2和v3不能用：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/xiezhr/p/18253311">https://www.cnblogs.com/xiezhr/p/18253311</a></p>
+<p>这里SpringBoot3.5.5版本选用2.8.0版本可以正常使用</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- swagger依赖:https://www.cnblogs.com/xiezhr/p/18253311 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springdoc<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springdoc-openapi-starter-webmvc-ui<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.8.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springdoc<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springdoc-openapi-starter-webmvc-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.8.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>否则报错：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">java.lang.TypeNotPresentException: Type javax.servlet.http.HttpServletRequest not present</span><br><span class="line">Caused by: java.lang.ClassNotFoundException: javax.servlet.http.HttpServletRequest</span><br><span class="line">	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:641) java.base/jdk.internal.loader.ClassLoaders<span class="variable">$AppClassLoader</span>.loadClass(ClassLoaders.java:188)java.base/sun.reflect.generics.factory.CoreReflectionFactory.makeNamedType(CoreReflectionFactory.java:114) </span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20251011200739945.png" alt="image-20251011200739945"></p>
+<h4 id="spring-3-5-整合knife4j"><a href="#spring-3-5-整合knife4j" class="headerlink" title="spring 3.5 整合knife4j"></a>spring 3.5 整合knife4j</h4><p>视频用的是jdk1.8+springboot2.6版本，对应的坑是：springboot2 &gt;&#x3D;2.6要添加配置 </p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20251011204237320.png" alt="image-20251011204237320" style="zoom:50%;" />	
+
+<blockquote>
+<p>Spring Boot 3.x必须使用Knife4j 4.x版本（基于OpenAPI3规范），且需配合<code>springdoc-openapi</code>依赖。常见冲突场景包括：</p>
+<ul>
+<li>使用旧版<code>knife4j-spring-boot-starter</code> 2.x</li>
+<li>Spring Boot 3.5.x与Knife4j 4.5.0存在<code>NoSuchMethodError</code></li>
+</ul>
+<p>refer：<a target="_blank" rel="noopener" href="https://comate.baidu.com/zh/page/5jaa8qzh4yj">https://comate.baidu.com/zh/page/5jaa8qzh4yj</a></p>
+</blockquote>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Spring Boot 3.5正确依赖配置 --&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.github.xingfudeshi<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>knife4j-openapi3-jakarta-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.6.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springdoc<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springdoc-openapi-starter-webmvc-ui<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.8.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20251011204020931.png" alt="image-20251011204020931"></p>
+<blockquote>
+<p>注：knife4j管理能力稍差，例如一些丢弃的接口，可以在controller上添加Operation相关注解信息自定义说明。也就衍生出了apifox等工具，根据实际情况选择。</p>
+</blockquote>
+<ul>
+<li>swagger提供了获取api的docs信息，knife4j实际上就是将这些信息整合了一下美化页面。</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20251011210839990.png" alt="image-20251011210839990"></p>
+<h3 id="隐藏swagger"><a href="#隐藏swagger" class="headerlink" title="隐藏swagger"></a>隐藏swagger</h3><p>线上环境不能暴露接口！</p>
+<p>Swagger可以用profile注解 <code>@profile(&quot;dev&quot;)</code>，如果是在prod环境下，bean就不会被加载。</p>
+<p>或者根据官方文档，在配置里设置，要有这个安全意识，后续参考官方文档即可</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/10/11/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/3.swagger+knife4j%E6%8E%A5%E5%8F%A3%E6%96%87%E6%A1%A3/">https://yuezi2048.github.io/2025/10/11/2.Areas🌐/01.project/condefather/yupao/back-end/3.swagger+knife4j接口文档/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/back-end/">back-end</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/10/11/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/4.%E7%BD%91%E9%A1%B5%E5%86%85%E5%AE%B9%E6%8A%93%E5%8F%96/" title="4.网页内容抓取"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">4.网页内容抓取</div></div><div class="info-2"><div class="info-item-1"> 所有星球用户导入 将写了自我介绍的同学标签信息导入   看上某些网页信息，怎么抓  分析原网站怎么获取的？用的是哪个接口——F12（Fehelper前端辅助插件） 程序调用接口（java &#x2F;  python） 清理数据，之后写入数据库中   流程：  从excel导入全量用户数据，判重（easyexcel） 一次性代码，可以写到单独的scipt once等文件夹下   抓取写了自我介绍的信息，提取用户名称、用户唯一id、自我介绍信息 从自我介绍中提取信息，写入到数据库中  easyexcel： 两种读对象的方式：  确定表头：建立对象，和表格形成映射 不确定镖头：每一行数据映射为Map&lt;String, Object&gt;  	  读取模式：  监听器：先创建监听器，读取时绑定监听器。单独抽取处理逻辑，易于维护，一条一条处理 适合数据量大场景 同步器：无须创建监听器，要一次性获取所有数据，简单，但是数据量大会有等待时长，可能内存溢出  </div></div></div></a><a class="pagination-related" href="/2025/10/11/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/5.Session%E5%85%B1%E4%BA%AB%E5%88%86%E5%B8%83%E5%BC%8F%E7%99%BB%E5%BD%95/" title="5.Session共享分布式登录"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">5.Session共享分布式登录</div></div><div class="info-2"><div class="info-item-1">改造用户中心单机登录改为分布式session登录  spring security 可以有更细粒度的权限 注：用jwt其实也是有缺陷的：https://zhuanlan.zhihu.com/p/108999941（适合短期验证的场景） 我们使用技术要考虑需求和成本  为了演示分布式，打包项目，然后换一个端口运行后端 java -jar yupao-my-backend-0.0.1-SNAPSHOT.jar  server.port=8081  发现由于是同一个域名下，在另外一个项目运行后，sessionID会发生变化。  中session的时候要注意范围，cookie.domain（aaa.yupi.com和bbb.yupi.com）  特别注意：如果读不到内容，可能是由于域名的限制！！  如果要共享cookie，我们可以种一个更高层的公共域名，比如yupi.com 这里是设置只有localhost域名下可携带cookie server:  port: 8080  servlet:    context-path: /api    session:      cookie:  ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/09/11/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/0.%E8%AE%BE%E8%AE%A1/" title="0.设计"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-11</div><div class="info-item-2">0.设计</div></div><div class="info-2"><div class="info-item-1">目标  建立一个统一管理用户的系统（集中管理的可以分离出来，如支付宝登录） 理清做项目思路  做项目的流程  需求分析 设计（概要设计、详细设计） 技术选型（理由） 初始化&#x2F;引入相关的技术 写Demo（先跑起来） 实现业务逻辑 测试（单元测试） 最左原则：尽早发现，尽早解决   代码提交 &#x2F; 代码评审 部署 ——&gt; 发布  需求分析  登录 &#x2F; 注册 用户管理（管理员） 查询、修改   用户校验（仅星球用户）  技术选型 前端：三件套 + React + 组件库 Ant Design + Umi + Ant Desin Pro（现成的管理系统）后端：  spring（依赖注入，管理java对象，集成其他内容） springmvc（web框架，提供接口访问，restful接口等） mybatis（持久层框架，jdbc的封装） mybatis-plus（mybatis增强，不用写sql就能crud） springboot（不用管理spring配置 整合框架，快速启动 &#x2F;...</div></div></div></a><a class="pagination-related" href="/2025/09/12/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/1.%E5%90%8E%E7%AB%AF%E5%88%9D%E5%A7%8B%E5%8C%96/" title="1.后端初始化"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-12</div><div class="info-item-2">1.后端初始化</div></div><div class="info-2"><div class="info-item-1">初始化后端项目 现有模板（可能有坑） springboot官方模板 ——start.spring.io IDEA开发工具 springboot初始化     引入java的包，可以去maven中心仓库找：http://mvnrepository.com  	  问题说明：没有RunWith注解之后会把空指针异常，这是因为我们引入的是junit包的原因，当引入import org.junit.jupiter.api.Test;后就不会报错   数据库设计 数据表（类比excel） java操作数据库 设计：数据库表（model）+ 字段 + 索引（书中标签）+ 表和表的关联 用户表：id*(bigint)   userName(varchar) userAccount(注意关键字冲突) avatarUrl(varchar)  gender(tinyint)  userPassword(varchar)  phone(varchar)  email(varchar)  userStatus(int)  createTime(datetime) ...</div></div></div></a><a class="pagination-related" href="/2025/09/14/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/2.%E7%99%BB%E5%BD%95%E6%B3%A8%E5%86%8C/" title="2.登录注册"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-14</div><div class="info-item-2">2.登录注册</div></div><div class="info-2"><div class="info-item-1">代码生成器创建基本目录 实现基本数据库操作（crud）  model——创建 user对象，与和数据库的字段关联 mapper——对应resources下的xml文件 service——接口+实现类 controller utils  右边数据库选中mybatisx插件，因为没有用驼峰，所以字段要设置一样的，然后选用mabatis3，lombok，service等生成即可，得到：  domain实体对象（model的下一层） mapper（数据库操作对象） + mapper.xml关联 service（常用的增删改查） + 实现类  	  在service类上通过alt+回车生成测试类  	   小技巧：solarlint检查代码不规范的点，如测试类中的public可以不用加  	   小技巧2：generateAllSet可以帮助我们生成所有set方法  	  @Test   void testAddUser() &#123;       User user = new User();       user.setUsername(&quot;yupi&quot;);    ...</div></div></div></a><a class="pagination-related" href="/2025/09/13/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/3.%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/" title="3.用户管理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-13</div><div class="info-item-2">3.用户管理</div></div><div class="info-2"><div class="info-item-1">用户管理接口注意：该接口必须使用鉴权！！！ 查询用户：根据用户名进行查询 删除用户：逻辑删除 写代码 先做设计 代码实现 持续优化！（复用代码，提取公共逻辑 &#x2F; 常量，git超过10行重复不予commit） 常量（管理员权限标识， 用户登录态） 查询用户列表后的数据脱敏（与登录逻辑返回脱敏数据逻辑一致）    常量提取 public interface UserConstant &#123;    /**     * 用户登录态键     */    String USER_LOGIN_STATE = &quot;userLoginState&quot;;    // -------------权限-------------    /**     * 普通角色     */    int DEFAULT_ROLE = 0;    /**     * 管理员角色     */    int ADMIN_ROLE = 1;&#125;  Controller @RestController@RequestMapping(&quot;/user&quot;)public...</div></div></div></a><a class="pagination-related" href="/2025/09/14/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/4.%E7%94%A8%E6%88%B7%E6%A0%A1%E9%AA%8C/" title="4.用户校验"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-14</div><div class="info-item-2">4.用户校验</div></div><div class="info-2"><div class="info-item-1"> 这里仅适用于用户可信的情况，让用户自己填编号（2-5位编号） 后台补充对编号的校验：长度、唯一性  我们在数据库中添加一个PlantCode字段，重新生成，注意逻辑删除，自增逻辑是否对应，然后在用户脱敏的set方法中进行添加对应上。 注册修改修改请求体加上字段 修改controller、service层加上plantcode字段 后端优化 通用返回对象 目的：补充业务扩展信息，告诉前端业务处理上是成功还是失败   封装全局异常处理 全局请求日志和登录校验  通用返回对象// 成功&#123;    &quot;code&quot;; 0, // 业务状态码    &quot;data&quot;: &#123;    	&quot;name&quot;: &quot;yupi&quot;	&#125;,	&quot;message&quot;: &quot;success&quot;&#125;// 错误&#123;    &quot;code&quot;; 50001, // 业务状态码    &quot;data&quot;:...</div></div></div></a><a class="pagination-related" href="/2025/09/18/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/5.%E9%83%A8%E7%BD%B2/" title="5.部署"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-18</div><div class="info-item-2">5.部署</div></div><div class="info-2"><div class="info-item-1">项目部署多环境理论 多环境：同个项目在不同的阶段（本地开发-&gt;测试调试–&gt;部署上线）需要根据情况需要部署到不同的机器上 好处（针对不同环境做不同的事情）：  每个环境互不影响； 区分不同的阶段（开发&#x2F;测试&#x2F;生产） 项目优化，有些依赖不需要放到线上 本地日志 精简依赖：lombook、接口文档 项目的环境 &#x2F; 参数调整（JVM堆内存等参数）    分类：  本地环境：localhost:8080 开发环境（远程开发）：为了开发方便，大家连同一台机器 测试环境（测试 独立数据库 独立服务器）：开发 &#x2F; 测试 &#x2F; 产品 性能测试 &#x2F; 功能测试 &#x2F;...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">780</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">65</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">90</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8E%E7%AB%AF%E6%95%B4%E5%90%88Swagger-Knife4j%E6%8E%A5%E5%8F%A3%E6%96%87%E6%A1%A3"><span class="toc-text">后端整合Swagger+Knife4j接口文档</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#spring3-5-swagger"><span class="toc-text">spring3.5 swagger</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#spring-3-5-%E6%95%B4%E5%90%88knife4j"><span class="toc-text">spring 3.5 整合knife4j</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9A%90%E8%97%8Fswagger"><span class="toc-text">隐藏swagger</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/12/04/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2025-12-04T07:43:33.582Z" title="发表于 2025-12-04 15:43:33">2025-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/12/04/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2025-12-04T07:43:32.998Z" title="发表于 2025-12-04 15:43:32">2025-12-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/mybatis/17.Mybatis%E7%BC%BA%E7%82%B9/" title="17.Mybatis缺点">17.Mybatis缺点</a><time datetime="2025-11-27T13:49:39.000Z" title="发表于 2025-11-27 21:49:39">2025-11-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/mybatis/16.Mybatis%E4%BC%98%E7%82%B9/" title="16.Mybatis优点">16.Mybatis优点</a><time datetime="2025-11-27T13:49:07.000Z" title="发表于 2025-11-27 21:49:07">2025-11-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/mybatis/15.Mybatis-plus%E7%9A%84%E4%BD%9C%E7%94%A8_%E5%8C%BA%E5%88%AB/" title="15.Mybatis-plus的作用_区别">15.Mybatis-plus的作用_区别</a><time datetime="2025-11-27T13:47:58.000Z" title="发表于 2025-11-27 21:47:58">2025-11-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>
