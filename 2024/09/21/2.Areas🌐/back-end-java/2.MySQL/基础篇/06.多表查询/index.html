@@ -1,0 +1,386 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>06.多表查询 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="六、多表查询多表查询，也称为关联查询，指两个或更多个表一起完成查询操作。 前提条件：这些一起查询的表之间是有关系的（一对一、一对多），它们之间一定是有关联字段，这个关联字段可能建立了外键，也可能没有建立外键。比如：员工表和部门表，这两个表依靠“部门编号”进行关联。 1. 为什么要多表查询1.1 案例	 给出这三个表，我们需要查询员工名last_name为Abel的人在哪个城市中 如果按照前置知识，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="06.多表查询">
+<meta property="og:url" content="https://yuezi2048.github.io/2024/09/21/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/06.%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="六、多表查询多表查询，也称为关联查询，指两个或更多个表一起完成查询操作。 前提条件：这些一起查询的表之间是有关系的（一对一、一对多），它们之间一定是有关联字段，这个关联字段可能建立了外键，也可能没有建立外键。比如：员工表和部门表，这两个表依靠“部门编号”进行关联。 1. 为什么要多表查询1.1 案例	 给出这三个表，我们需要查询员工名last_name为Abel的人在哪个城市中 如果按照前置知识，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2024-09-21T13:25:53.000Z">
+<meta property="article:modified_time" content="2024-09-21T13:25:53.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="基础篇">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "06.多表查询",
+  "url": "https://yuezi2048.github.io/2024/09/21/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/06.%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2024-09-21T13:25:53.000Z",
+  "dateModified": "2024-09-21T13:25:53.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2024/09/21/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/06.%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '06.多表查询',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">783</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">06.多表查询</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">06.多表查询</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-09-21T13:25:53.000Z" title="发表于 2024-09-21 21:25:53">2024-09-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-09-21T13:25:53.000Z" title="更新于 2024-09-21 21:25:53">2024-09-21</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/">back-end-java</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/2-MySQL/">2.MySQL</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/2-MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/">基础篇</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>18分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="六、多表查询"><a href="#六、多表查询" class="headerlink" title="六、多表查询"></a>六、多表查询</h1><p>多表查询，也称为关联查询，指两个或更多个表一起完成查询操作。</p>
+<p>前提条件：这些一起查询的表之间是有关系的（一对一、一对多），它们之间一定是有关联字段，这个关联字段可能建立了外键，也可能没有建立外键。比如：员工表和部门表，这两个表依靠“部门编号”进行关联。</p>
+<h2 id="1-为什么要多表查询"><a href="#1-为什么要多表查询" class="headerlink" title="1. 为什么要多表查询"></a>1. 为什么要多表查询</h2><h3 id="1-1-案例"><a href="#1-1-案例" class="headerlink" title="1.1 案例"></a>1.1 案例</h3><p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814135836442.png" alt="image-20240814135836442">	</p>
+<p>给出这三个表，我们需要查询员工名last_name为Abel的人在哪个城市中</p>
+<p>如果按照前置知识，需要3个SELECT语句</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/*</span><br><span class="line">前置知识：</span><br><span class="line">SELECT ..., ..., ...</span><br><span class="line">FROM ...</span><br><span class="line">WHERE ... AND ... OR ... NOT ...</span><br><span class="line">ORDER BY ... (ASC / DESC), ...</span><br><span class="line">LIMIT ..., ...</span><br><span class="line">*/</span><br><span class="line"></span><br><span class="line"># 查询员工为Abel的人在哪个城市中</span><br><span class="line">SELECT *</span><br><span class="line">FROM employees</span><br><span class="line">WHERE last_name = &#x27;Abel&#x27;; # dept_id = 80</span><br><span class="line"></span><br><span class="line">SELECT *</span><br><span class="line">FROM departments</span><br><span class="line">WHERE department_id = 80; # loc_id = 2500</span><br><span class="line"></span><br><span class="line">SELECT *</span><br><span class="line">FROM locations</span><br><span class="line">WHERE location_id = 2500;</span><br><span class="line"></span><br><span class="line"># 引出多表查询，用户只需请求一个sql就能返回指定的内容而无需发送多个请求</span><br><span class="line"># 为什么不合成到一个表中？</span><br><span class="line">#（1）冗余：比如我只想查部门号的场景，员工表以外字段冗余；如果部门号没有，同样也是冗余；部门号有但部门没有人，location字段也浪费了</span><br><span class="line">#（2） I/O: 磁盘的数据加载到内存中，如果字段越多，加载就会更多的字段，要加载所有的记录，就需要更多的I/O</span><br><span class="line">#（3） 事务：如果放在一起，上锁了，影响并发</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="1-2-笛卡尔积问题分析"><a href="#1-2-笛卡尔积问题分析" class="headerlink" title="1.2 笛卡尔积问题分析"></a>1.2 笛卡尔积问题分析</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 2. 多表查询错误实现</span><br><span class="line"># 错误的实现（笛卡尔积cross join）：每个员工和每个部门都匹配一遍(缺少多表连接的条件)</span><br><span class="line">SELECT employee_id, department_name</span><br><span class="line">FROM employees, departments; # 查出107*27=2889条记录</span><br><span class="line"></span><br><span class="line">SELECT employee_id, department_name</span><br><span class="line">FROM employees CROSS JOIN departments; # 查出107*27=2889条记录</span><br><span class="line"></span><br><span class="line">SELECT *</span><br><span class="line">FROM employees; # 107条</span><br><span class="line"></span><br><span class="line">SELECT *</span><br><span class="line">FROM departments; # 27条</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814140434361.png" alt="image-20240814140434361">	</p>
+<p>我们一开始会很自然的将两个表连接在一起，然后查询，但这实际上是做了笛卡尔积，不是我们想要的效果，产生了很多无用的记录</p>
+<ul>
+<li>笛卡尔乘积：假设我有两个集合 X 和 Y，那么 X 和 Y 的笛卡尔积就是 X 和 Y 的所有可能组合<ul>
+<li>即第一个对象来自于 X，第二个对象来自于 Y 的所有可能</li>
+<li>组合的个数即为两个集合中元素个数的乘积数。</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814140731620.png" alt="image-20240814140731620">	</p>
+<ul>
+<li>SQL92中，笛卡尔积也称为<code>交叉连接</code>，英文是 <code>CROSS JOIN</code></li>
+<li>在 SQL99 中也是使用 CROSS JOIN表示交叉连接。它的作用就是可以把任意表进行连接，即使这两张表不相关。在MySQL中如下情况会出现笛卡尔积：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#查询员工姓名和所在部门名称</span><br><span class="line">SELECT last_name,department_name FROM employees,departments;</span><br><span class="line">SELECT last_name,department_name FROM employees CROSS JOIN departments;</span><br><span class="line">SELECT last_name,department_name FROM employees INNER JOIN departments;</span><br><span class="line">SELECT last_name,department_name FROM employees JOIN departments;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="1-3-问题解决-等值连接"><a href="#1-3-问题解决-等值连接" class="headerlink" title="1.3 问题解决(等值连接)"></a>1.3 问题解决(等值连接)</h3><ul>
+<li><p><strong>笛卡尔积的错误会在下面条件下产生</strong>：</p>
+<ul>
+<li>省略多个表的连接条件（或关联条件）</li>
+<li>连接条件（或关联条件）无效</li>
+<li>所有表中的所有行互相连接</li>
+</ul>
+</li>
+<li><p>为了避免笛卡尔积， 可以<strong>在 WHERE 加入有效的连接条件。</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT	table1.column, table2.column</span><br><span class="line">FROM	table1, table2</span><br><span class="line">WHERE	table1.column1 = table2.column2;  #连接条件</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>在表中有相同列时，在列名之前加上表名前缀。</strong></p>
+</li>
+</ul>
+<blockquote>
+<p><code>阿里开发规范</code>：</p>
+<p>【<code>强制</code>】对于数据库中表记录的查询和变更，只要涉及多个表，都需要在列名前加表的别名（或 表名）进行限定。 </p>
+<p><code>说明</code>：对多表进行查询记录、更新记录、删除记录时，如果对操作列没有限定表的别名（或表名），并且操作列在多个表中存在时，就会抛异常。 </p>
+<p><code>正例</code>：select t1.name from table_first as t1 , table_second as t2 where t1.id&#x3D;t2.id; </p>
+<p><code>反例</code>：在某业务中，由于多表关联查询语句没有加表的别名（或表名）的限制，正常运行两年后，最近在 某个表中增加一个同名字段，在预发布环境做数据库变更后，线上查询语句出现出 1052 异常：Column  ‘name’ in field list is ambiguous。****</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 3. 正确方式（关联查询）：连接条件(106条，但是部门号为null的查不出 后续使用外连接解决)</span><br><span class="line">SELECT employee_id, department_name</span><br><span class="line">FROM employees, departments</span><br><span class="line">WHERE employees.department_id = departments.department_id;</span><br><span class="line"></span><br><span class="line"># 4.注意:表公共部分的字段需要指明，否则报amibiguous错误</span><br><span class="line"># 建议：从sql优化的角度，建议每个字段前都指明所在的表(减少了查询在哪个表的时间)</span><br><span class="line">SELECT employees.employee_id, departments.department_name, employees.department_id</span><br><span class="line">FROM employees, departments</span><br><span class="line">WHERE employees.department_id = departments.department_id;</span><br><span class="line"></span><br><span class="line"># 5. 可以给表起别名，在SELECT和where中使用别名提升可读性(如t1 t2)，但是起了就必须用 否则报错unknown column错误（在from中已经完成了覆盖）</span><br><span class="line">SELECT emp.employee_id, dept.department_name, emp.department_id</span><br><span class="line">FROM employees emp, departments dept</span><br><span class="line">WHERE emp.department_id = dept.department_id;</span><br><span class="line"></span><br><span class="line"># 6. 结论：若要实现n各个表的查询，至少需要n-1个连接条件</span><br><span class="line"># 练习：查询员工的employee_id, last_name, department_name, city</span><br><span class="line">SELECT e.employee_id, e.last_name, d.department_name, l.city, d.department_id, l.location_id</span><br><span class="line">FROM employees e, departments d , locations l</span><br><span class="line">WHERE e.department_id = d.department_id</span><br><span class="line">AND d.location_id = l.location_id;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-多表查询的分类"><a href="#2-多表查询的分类" class="headerlink" title="2. 多表查询的分类"></a>2. 多表查询的分类</h2><p>启示：<code>多表查询</code>，算是MySQL基础里比较庞大且较复杂的内容，因此要系统学习多表查询，首先需要梳理一下从大的方向上有哪些，再逐个攻破。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">演绎：</span><br><span class="line">提出问题<span class="number">1</span>---&gt; 解决问题<span class="number">1</span>---&gt; 提出问题<span class="number">2</span>---&gt; 解决问题<span class="number">2.</span>..</span><br><span class="line">归纳：</span><br><span class="line">总--&gt; 分</span><br><span class="line"></span><br><span class="line"># <span class="number">7.</span> 多表查询的分类</span><br><span class="line"></span><br><span class="line">角度<span class="number">1</span>：等值连接 vs 非等值连接</span><br><span class="line"></span><br><span class="line">角度<span class="number">2</span>：自连接 vs 非自连接</span><br><span class="line"></span><br><span class="line">角度<span class="number">3</span>：内连接 vs 外连接</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2-1-等值连接-vs-非等值连接"><a href="#2-1-等值连接-vs-非等值连接" class="headerlink" title="2.1 等值连接 vs 非等值连接"></a>2.1 等值连接 vs 非等值连接</h3><ul>
+<li><p>等值连接在一开始的案例中已说明，相关的使用事项也在那里标注了。</p>
+</li>
+<li><p>给出非等值连接的案例（WHERE的连接条件不再是先前两个id对应相等了，而是salary在其成绩的范围当中，这就是非等值的理解）</p>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814142407059.png" alt="image-20240814142407059">	</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 7.1 等值连接 vs 非等值连接</span><br><span class="line"># 非等值连接的例子</span><br><span class="line">SELECT *</span><br><span class="line">FROM job_grades;</span><br><span class="line"></span><br><span class="line">SELECT e.last_name, e.salary, j.grade_level</span><br><span class="line">FROM employees e, job_grades j</span><br><span class="line">WHERE e.salary BETWEEN j.lowest_sal AND j.highest_sal</span><br><span class="line">ORDER BY e.salary DESC;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814142706515.png" alt="image-20240814142706515">	</p>
+<h3 id="2-2-自连接-vs-非自连接"><a href="#2-2-自连接-vs-非自连接" class="headerlink" title="2.2 自连接 vs 非自连接"></a>2.2 自连接 vs 非自连接</h3><ul>
+<li>当table1和table2本质上是同一张表，只是用取别名的方式虚拟成两张表以代表不同的意义。然后两个表再进行内连接，外连接等查询。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 7.2 自连接 vs 非自连接</span><br><span class="line">SELECT * FROM employees;</span><br><span class="line"># 练习：查询员工姓名和管理者的id和姓名(老大没有显示 106条)</span><br><span class="line">SELECT emp.employee_id, emp.last_name, emp.employee_id, emp.last_name</span><br><span class="line">FROM employees emp, employees mgr</span><br><span class="line">WHERE emp.manager_id = mgr.employee_id;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2-3-内连接-vs-外连接"><a href="#2-3-内连接-vs-外连接" class="headerlink" title="2.3 内连接 vs 外连接"></a>2.3 内连接 vs 外连接</h3><p>需求：除了查询满足条件的记录以外，还需要查询某一方不满足条件的记录，需要通过<code>外连接</code>（返回 内连接 + 主表不匹配的记录）实现。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814143858785.png" alt="image-20240814143858785">	</p>
+<ul>
+<li><code>内连接</code>: 合并具有同一列的两个以上的表的行, <strong>结果集中不包含一个表与另一个表不匹配的行</strong></li>
+<li><code>外连接</code>: 两个表在连接过程中除了返回满足连接条件的行以外<strong>还返回左（或右）表中不满足条件的行</strong> <strong>，这种连接称为左（或右） 外连接</strong>。没有匹配的行时, 结果表中相应的列为空(NULL)。<ul>
+<li>如果是左外连接，则连接条件中左边的表也称为<code>主表</code>，右边的表称为<code>从表</code>。</li>
+<li>如果是右外连接，则连接条件中右边的表也称为<code>主表</code>，左边的表称为<code>从表</code>。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 内连接: 合并具有同一列两个以上的表的行，结果集不包含一个表和另一个表不匹配的行</span><br><span class="line">SELECT emp.employee_id, dept.department_name, emp.department_id</span><br><span class="line">FROM employees emp, departments dept</span><br><span class="line">WHERE emp.department_id = dept.department_id;</span><br><span class="line"></span><br><span class="line"># 外连接：并具有同一列两个以上的表的行，结果集除了一个表和另一个表匹配的行以外，还包含左表/右表不匹配的行（vien图交集理解）</span><br><span class="line">-- 外连接的分类：左外连接和右外连接、满外连接</span><br><span class="line"></span><br><span class="line"># 左外连接：在内连接基础上，包含左表不匹配的行</span><br><span class="line"># 右外连接：在内连接基础上，包含右表不匹配的行</span><br><span class="line"></span><br><span class="line"># 练习：查询所有员工的last_name, department_name信息</span><br><span class="line">SELECT emp.employee_id, dept.department_name, emp.department_id</span><br><span class="line">FROM employees emp, departments dept</span><br><span class="line">WHERE emp.department_id = dept.department_id;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="SQL92使用-创建连接"><a href="#SQL92使用-创建连接" class="headerlink" title="SQL92使用(+)创建连接"></a>SQL92使用(+)创建连接</h4><ul>
+<li><p>在 SQL92 中采用（+）代表从表所在的位置。即左或右外连接中，(+) 表示哪个是从表。</p>
+</li>
+<li><p>Oracle 对 SQL92 支持较好，而 MySQL 则不支持 SQL92 的外连接。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># SQL92语法内连接： 使用 +（哪边少加那边，比如左连接右边瘸腿所以右边要加号） ————MySQL不支持SQL92的写法（Oracle可以）</span><br><span class="line"></span><br><span class="line">#左外连接</span><br><span class="line">SELECT last_name,department_name</span><br><span class="line">FROM employees ,departments</span><br><span class="line">WHERE employees.department_id = departments.department_id(+);</span><br><span class="line"></span><br><span class="line">#右外连接</span><br><span class="line">SELECT last_name,department_name</span><br><span class="line">FROM employees ,departments</span><br><span class="line">WHERE employees.department_id(+) = departments.department_id;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>而且在 SQL92 中，只有左外连接和右外连接，没有满（或全）外连接。</p>
+</li>
+</ul>
+<h2 id="3-SQL99语法实现多表查询"><a href="#3-SQL99语法实现多表查询" class="headerlink" title="3. SQL99语法实现多表查询"></a>3. SQL99语法实现多表查询</h2><h3 id="3-1-基本语法"><a href="#3-1-基本语法" class="headerlink" title="3.1 基本语法"></a>3.1 基本语法</h3><ul>
+<li><p>使用JOIN…ON子句创建连接的语法结构：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT table1.column, table2.column,table3.column</span><br><span class="line">FROM table1</span><br><span class="line">    JOIN table2 ON table1 和 table2 的连接条件</span><br><span class="line">        JOIN table3 ON table2 和 table3 的连接条件</span><br></pre></td></tr></table></figure>
+
+<p>它的嵌套逻辑类似我们使用的 FOR 循环：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">for t1 in table1:</span><br><span class="line">    for t2 in table2:</span><br><span class="line">       if condition1:</span><br><span class="line">           for t3 in table3:</span><br><span class="line">              if condition2:</span><br><span class="line">                  output t1 + t2 + t3</span><br></pre></td></tr></table></figure>
+
+<p>SQL99 采用的这种嵌套结构非常清爽、层次性更强、可读性更强，即使再多的表进行连接也都清晰可见。如果你采用 SQL92，可读性就会大打折扣。</p>
+</li>
+<li><p>语法说明：</p>
+<ul>
+<li><strong>可以使用</strong> <strong>ON</strong> <strong>子句指定额外的连接条件</strong>。</li>
+<li>这个连接条件是与其它条件分开的。</li>
+<li><strong>ON</strong> <strong>子句使语句具有更高的易读性</strong>。</li>
+<li>关键字 JOIN、INNER JOIN、CROSS JOIN 的含义是一样的，都表示内连接</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-2-内连接INNER-JOIN实现"><a href="#3-2-内连接INNER-JOIN实现" class="headerlink" title="3.2 内连接INNER JOIN实现"></a>3.2 内连接INNER JOIN实现</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># SQL92语法内连接： 见上</span><br><span class="line"># SQL99语法：Join...On，MySQL支持</span><br><span class="line"># SQL99语法如何实现多表查询</span><br><span class="line"># SQL99语法实现内连接： ... (INNER) JOIN ... ON</span><br><span class="line">SELECT emp.last_name, dept.department_name, l.city</span><br><span class="line">FROM employees emp JOIN departments dept</span><br><span class="line">ON emp.department_id = dept.department_id</span><br><span class="line">JOIN locations l</span><br><span class="line">ON dept.location_id = l.location_id;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3-3-外连接OUTER-JOIN实现"><a href="#3-3-外连接OUTER-JOIN实现" class="headerlink" title="3.3 外连接OUTER JOIN实现"></a>3.3 外连接OUTER JOIN实现</h3><ul>
+<li>需要注意的是，LEFT JOIN 和 RIGHT JOIN 只存在于 SQL99 及以后的标准中，在 SQL92 中不存在，只能用 (+) 表示。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># SQL99实现外连接（MySQL支持）:  ... LEFT/RIGHT (OUTER) JOIN ... ON</span><br><span class="line"># 左外连接：查询所有员工的信息</span><br><span class="line">SELECT employee_id, department_name</span><br><span class="line">FROM employees e LEFT JOIN departments d</span><br><span class="line">ON e.department_id = d.department_id</span><br><span class="line"></span><br><span class="line"># 右外连接：查询所有部门的信息</span><br><span class="line">SELECT employee_id, department_name</span><br><span class="line">FROM employees e RIGHT JOIN departments d</span><br><span class="line">ON e.department_id = d.department_id</span><br><span class="line"></span><br><span class="line"># 满外连接：查询所有员工和所有部门的信息（MySQL不支持FULL OUTER JOIN 后面通过LEFT UNION RIGHT合并查询结果实现）</span><br><span class="line">SELECT employee_id, department_name</span><br><span class="line">FROM employees e FULL OUTER JOIN departments d</span><br><span class="line">ON e.department_id = d.department_id</span><br></pre></td></tr></table></figure>
+
+<p>用了外连接后，我们原先提出的没有部门的Grant员工查询不到的问题，也能解决了，满足查询所有员工的需求</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814145229690.png" alt="image-20240814145229690">	</p>
+<h2 id="4-UNION使用"><a href="#4-UNION使用" class="headerlink" title="4. UNION使用"></a>4. UNION使用</h2><ul>
+<li>利用UNION关键字，可以给出多条SELECT语句，并将它们的结果组合成单个结果集。</li>
+<li>合并时，两个表对应的列数和数据类型必须相同，并且相互对应。各个SELECT语句之间使用UNION或UNION ALL关键字分隔。</li>
+<li><code>UNION</code> 合并两个集合，执行去重的操作</li>
+<li><code>UNION ALL</code> 不执行去重的操作</li>
+</ul>
+<blockquote>
+<p>注意：执行UNION ALL语句时所需要的资源比UNION语句少。</p>
+<p>如果明确知道合并数据后的结果数据不存在重复数据，或者不需要去除重复的数据，则尽量使用UNION ALL语句，以提高数据查询的效率。</p>
+</blockquote>
+<p>UNION 和 UNION ALL示意</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814145617683.png" alt="image-20240814145617683">	</p>
+<p>举例：查询部门编号&gt;90或邮箱包含a的员工信息</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#方式1</span><br><span class="line">SELECT * FROM employees WHERE email LIKE &#x27;%a%&#x27; OR department_id&gt;90;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#方式2</span><br><span class="line">SELECT * FROM employees  WHERE email LIKE &#x27;%a%&#x27;</span><br><span class="line">UNION</span><br><span class="line">SELECT * FROM employees  WHERE department_id&gt;90;</span><br></pre></td></tr></table></figure>
+
+<p>举例：查询中国用户中男性的信息以及美国用户中年男性的用户信息</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT id,cname FROM t_chinamale WHERE csex=&#x27;男&#x27;</span><br><span class="line">UNION ALL</span><br><span class="line">SELECT id,tname FROM t_usmale WHERE tGender=&#x27;male&#x27;;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="5-7种SQL-JOINS的实现"><a href="#5-7种SQL-JOINS的实现" class="headerlink" title="5. 7种SQL JOINS的实现"></a>5. 7种SQL JOINS的实现</h2><p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814145842294.png" alt="image-20240814145842294">	</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 9. 七种JOIN的实现</span><br><span class="line"></span><br><span class="line"># 中图：内连接 A∩B</span><br><span class="line">SELECT e.employee_id, e.department_id</span><br><span class="line">FROM employees e JOIN departments d</span><br><span class="line">ON e.department_id = d.department_id;</span><br><span class="line"></span><br><span class="line"># 左上：左外连接</span><br><span class="line">SELECT e.employee_id, d.department_id</span><br><span class="line">FROM employees e LEFT JOIN departments d</span><br><span class="line">ON e.department_id = d.department_id;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 右上：右外连接</span><br><span class="line">SELECT e.employee_id, d.department_id</span><br><span class="line">FROM employees e RIGHT JOIN departments d</span><br><span class="line">ON e.department_id = d.department_id;</span><br><span class="line"></span><br><span class="line"># 左中图：左外连接基础上去掉中间的（过滤出为null的） A - A∩B</span><br><span class="line">SELECT e.employee_id, d.department_id</span><br><span class="line">FROM employees e LEFT JOIN departments d</span><br><span class="line">ON e.department_id = d.department_id</span><br><span class="line">WHERE d.department_id IS NULL;</span><br><span class="line"></span><br><span class="line"># 右中图：右外连接基础上去掉中间的（过滤出为null的） B-A∩B</span><br><span class="line">SELECT e.employee_id, d.department_id</span><br><span class="line">FROM employees e RIGHT JOIN departments d</span><br><span class="line">ON e.department_id = d.department_id</span><br><span class="line">WHERE e.department_id IS NULL;</span><br><span class="line"></span><br><span class="line"># 左下图：满外连接(UNION要求列数和列字段类型要一样) </span><br><span class="line"># 方式1：左上图 UNION ALL 右中图 (A - A∩B) ∪B</span><br><span class="line">SELECT e.employee_id, d.department_id</span><br><span class="line">FROM employees e LEFT JOIN departments d</span><br><span class="line">ON e.department_id = d.department_id</span><br><span class="line">UNION ALL</span><br><span class="line">SELECT e.employee_id, d.department_id</span><br><span class="line">FROM employees e RIGHT JOIN departments d</span><br><span class="line">ON e.department_id = d.department_id</span><br><span class="line">WHERE e.department_id IS NULL;</span><br><span class="line"></span><br><span class="line"># 方式2：右上图 UNION ALL 左中图(确定没有交集建议用UNION ALL优化查询交集的时间)  A ∪ (B - A∩B)</span><br><span class="line">SELECT e.employee_id, d.department_id</span><br><span class="line">FROM employees e RIGHT JOIN departments d</span><br><span class="line">ON e.department_id = d.department_id</span><br><span class="line">UNION ALL</span><br><span class="line">SELECT e.employee_id, d.department_id</span><br><span class="line">FROM employees e LEFT JOIN departments d</span><br><span class="line">ON e.department_id = d.department_id</span><br><span class="line">WHERE d.department_id IS NULL;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 右下图：左中图 UNION ALL 右中图  (A -  A∩B) ∪ （B - A∩B）</span><br><span class="line">SELECT e.employee_id, d.department_id</span><br><span class="line">FROM employees e LEFT JOIN departments d</span><br><span class="line">ON e.department_id = d.department_id</span><br><span class="line">WHERE d.department_id IS NULL</span><br><span class="line">UNION ALL</span><br><span class="line">SELECT e.employee_id, d.department_id</span><br><span class="line">FROM employees e RIGHT JOIN departments d</span><br><span class="line">ON e.department_id = d.department_id</span><br><span class="line">WHERE e.department_id IS NULL;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="6-SQL99语法新特性"><a href="#6-SQL99语法新特性" class="headerlink" title="6. SQL99语法新特性"></a>6. SQL99语法新特性</h2><h3 id="6-1-自然连接"><a href="#6-1-自然连接" class="headerlink" title="6.1 自然连接"></a>6.1 自然连接</h3><ul>
+<li>SQL99 在 SQL92 的基础上提供了一些特殊语法， <code>NATURAL JOIN</code> 用来表示自然连接。<ul>
+<li>我们可以把自然连接理解为 SQL92 中的等值连接。它会帮你自动查询两张连接表中<code>所有相同的字段</code>，然后进行<code>等值连接</code>。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 10. SQL99新特性1：自然连接</span><br><span class="line"></span><br><span class="line">SELECT employee_id, last_name, department_name</span><br><span class="line">FROM employees e JOIN departments d</span><br><span class="line">ON e.department_id = d.department_id</span><br><span class="line">AND e.manager_id = d.manager_id;</span><br><span class="line"></span><br><span class="line">-- 等价写法（自然连接自动查询两者表相同的字段，然后进行等值连接，可读性上更简洁，缺点：不够灵活）</span><br><span class="line">SELECT employee_id, last_name, department_name</span><br><span class="line">FROM employees e NATURAL JOIN departments d;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="6-2-USING连接-自然连接优化"><a href="#6-2-USING连接-自然连接优化" class="headerlink" title="6.2 USING连接(自然连接优化)"></a>6.2 USING连接(自然连接优化)</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 11. SQL99新特性1：USING连接（自然连接优化）</span><br><span class="line">SELECT employee_id, last_name, department_name</span><br><span class="line">FROM employees e JOIN departments d</span><br><span class="line">ON e.department_id = d.department_id</span><br><span class="line"></span><br><span class="line"># 当两个表字段名相同时，自动地连接（简化了等值连接，缺点：不适用于自连接）</span><br><span class="line">SELECT employee_id, last_name, department_name</span><br><span class="line">FROM employees e JOIN departments d</span><br><span class="line">USING (department_id);</span><br><span class="line"></span><br><span class="line"># 拓展（可以多个表同时写，建议还是每加一个表，就on一个）</span><br><span class="line">SELECT last_name,job_title,department_name </span><br><span class="line">FROM employees INNER JOIN departments INNER JOIN jobs </span><br><span class="line">ON employees.department_id = departments.department_id </span><br><span class="line">AND employees.job_id = jobs.job_id;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="7-总结"><a href="#7-总结" class="headerlink" title="7. 总结"></a>7. 总结</h2><p>表连接的约束条件可以有三种方式：WHERE, ON, USING</p>
+<ul>
+<li><p>WHERE：适用于所有关联查询</p>
+</li>
+<li><p><code>ON</code>：只能和JOIN一起使用，只能写关联条件。虽然关联条件可以并到WHERE中和其他条件一起写，但分开写可读性更好。</p>
+</li>
+<li><p>USING：只能和JOIN一起使用，而且要求<strong>两个</strong>关联字段在关联表中名称一致，而且只能表示关联字段值相等</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#关联条件</span><br><span class="line">#把关联条件写在where后面</span><br><span class="line">SELECT last_name,department_name </span><br><span class="line">FROM employees,departments </span><br><span class="line">WHERE employees.department_id = departments.department_id;</span><br><span class="line"></span><br><span class="line">#把关联条件写在on后面，只能和JOIN一起使用</span><br><span class="line">SELECT last_name,department_name </span><br><span class="line">FROM employees INNER JOIN departments </span><br><span class="line">ON employees.department_id = departments.department_id;</span><br><span class="line"></span><br><span class="line">SELECT last_name,department_name </span><br><span class="line">FROM employees CROSS JOIN departments </span><br><span class="line">ON employees.department_id = departments.department_id;</span><br><span class="line"></span><br><span class="line">SELECT last_name,department_name  </span><br><span class="line">FROM employees JOIN departments </span><br><span class="line">ON employees.department_id = departments.department_id;</span><br><span class="line"></span><br><span class="line">#把关联字段写在using()中，只能和JOIN一起使用</span><br><span class="line">#而且两个表中的关联字段必须名称相同，而且只能表示=</span><br><span class="line">#查询员工姓名与基本工资</span><br><span class="line">SELECT last_name,job_title</span><br><span class="line">FROM employees INNER JOIN jobs USING(job_id);</span><br><span class="line"></span><br><span class="line">#n张表关联，需要n-1个关联条件</span><br><span class="line">#查询员工姓名，基本工资，部门名称</span><br><span class="line">SELECT last_name,job_title,department_name FROM employees,departments,jobs </span><br><span class="line">WHERE employees.department_id = departments.department_id </span><br><span class="line">AND employees.job_id = jobs.job_id;</span><br><span class="line"></span><br><span class="line">SELECT last_name,job_title,department_name </span><br><span class="line">FROM employees INNER JOIN departments INNER JOIN jobs </span><br><span class="line">ON employees.department_id = departments.department_id </span><br><span class="line">AND employees.job_id = jobs.job_id;</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：</strong></p>
+<p>我们要<code>控制连接表的数量</code>。多表连接就相当于嵌套 for 循环一样，非常消耗资源，会让 SQL 查询性能下降得很严重，因此不要连接不必要的表。在许多 DBMS 中，也都会有最大连接表的限制。</p>
+<blockquote>
+<p>【强制】超过三个表禁止 join。需要 join 的字段，数据类型保持绝对一致；多表关联查询时， 保证被关联的字段需要有索引。 </p>
+<p>说明：即使双表 join 也要注意表索引、SQL 性能。</p>
+<p>来源：阿里巴巴《Java开发手册》</p>
+</blockquote>
+<h2 id="8-课后练习"><a href="#8-课后练习" class="headerlink" title="8. 课后练习"></a>8. 课后练习</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#第06章 多表査询课后练习</span><br><span class="line"></span><br><span class="line">#1.显示所有员工的姓名，部门号和部门名称。</span><br><span class="line">SELECT e.last_name, e.department_id, d.department_name</span><br><span class="line">FROM employees e LEFT JOIN departments d</span><br><span class="line">ON e.department_id = d.department_id</span><br><span class="line"></span><br><span class="line">#2.查询90号部门员工的job id和90号部门的location id</span><br><span class="line">SELECT e.last_name, e.job_id, d.location_id</span><br><span class="line">FROM employees e JOIN departments d</span><br><span class="line">ON e.department_id = d.department_id</span><br><span class="line">WHERE e.department_id = 90;</span><br><span class="line"></span><br><span class="line">#3.选择所有有奖金的员工的last name ，department name ，location id ，city</span><br><span class="line">-- 注意涉及到所有的问题，需要考虑外连接, 注意后面也要加上left</span><br><span class="line">SELECT e.last_name, d.department_name, l.location_id, l.city</span><br><span class="line">FROM employees e LEFT JOIN departments d</span><br><span class="line">ON e.department_id = d.department_id</span><br><span class="line">LEFT JOIN locations l</span><br><span class="line">ON d.location_id = l.location_id</span><br><span class="line">WHERE e.commission_pct IS NOT NULL;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#4.选择city在Toronto工作的员工的 last name ,job id ,department id ,department name</span><br><span class="line">SELECT e.last_name, e.job_id, d.department_id, d.department_name</span><br><span class="line">FROM employees e JOIN departments d</span><br><span class="line">ON e.department_id = d.department_id</span><br><span class="line">JOIN locations l</span><br><span class="line">ON d.location_id = l.location_id</span><br><span class="line">WHERE l.city = &#x27;Toronto&#x27;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#5.查询员工所在的部门名称、部门地址、姓名、工作、工资，其中员工所在部门的部门名称为&#x27;Executive&#x27;</span><br><span class="line">-- 注意部门名称可能在多个城市，部门没有人的情况</span><br><span class="line">SELECT d.department_name, l.street_address, e.last_name, job_id, e.salary</span><br><span class="line">FROM departments d LEFT JOIN employees e</span><br><span class="line">ON e.department_id = d.department_id</span><br><span class="line">LEFT JOIN locations l</span><br><span class="line">ON d.location_id = l.location_id</span><br><span class="line">WHERE d.department_name = &#x27;Executive&#x27;;</span><br><span class="line"></span><br><span class="line">#6.选择指定员工的姓名，员工号，以及他的管理者的姓名和员工号，结果类似于下面的格式</span><br><span class="line">SELECT e1.last_name &quot;employees&quot;, e1.employee_id &quot;Emp#&quot;, e2.last_name &quot;manager&quot;, e2.employee_id &quot;Mgr#&quot;</span><br><span class="line">FROM employees e1 LEFT JOIN employees e2</span><br><span class="line">ON e1.manager_id = e2.employee_id;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#7.查询哪些部门没有员工(后续可以用子查询 not exist)</span><br><span class="line">SELECT DISTINCT d.department_id, d.department_name</span><br><span class="line">FROM employees e RIGHT JOIN departments d</span><br><span class="line">ON e.department_id = d.department_id</span><br><span class="line">WHERE e.employee_id IS NULL;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#8.查询哪个城市没有部门(后续可以用子查询 not exist)</span><br><span class="line">SELECT DISTINCT l.city</span><br><span class="line">FROM departments d RIGHT JOIN locations l</span><br><span class="line">ON d.location_id = l.location_id</span><br><span class="line">WHERE d.department_id IS NULL;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#9.查询部门名为 Sales 或 IT 的员工信息</span><br><span class="line">SELECT d.department_name, e.last_name</span><br><span class="line">FROM employees e JOIN departments d</span><br><span class="line">ON e.department_id = d.department_id</span><br><span class="line">WHERE d.department_name IN (&#x27;Sales&#x27;, &#x27;IT&#x27;);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="附录：常见SQL标准"><a href="#附录：常见SQL标准" class="headerlink" title="附录：常见SQL标准"></a>附录：常见SQL标准</h2><p>在正式开始讲连接表的种类时，我们首先需要知道 SQL 存在不同版本的标准规范，因为不同规范下的表连接操作是有区别的。</p>
+<p>SQL 有两个主要的标准，分别是 <code>SQL92</code> 和 <code>SQL99</code>。92 和 99 代表了标准提出的时间，SQL92 就是 92 年提出的标准规范。当然除了 SQL92 和 SQL99 以外，还存在 SQL-86、SQL-89、SQL:2003、SQL:2008、SQL:2011 和 SQL:2016 等其他的标准。</p>
+<p>这么多标准，到底该学习哪个呢？<strong>实际上最重要的 SQL 标准就是 SQL92 和 SQL99</strong>。一般来说 SQL92 的形式更简单，但是写的 SQL 语句会比较长，可读性较差。而 SQL99 相比于 SQL92 来说，语法更加复杂，但可读性更强。我们从这两个标准发布的页数也能看出，SQL92 的标准有 500 页，而 SQL99 标准超过了 1000 页。实际上从 SQL99 之后，很少有人能掌握所有内容，因为确实太多了。就好比我们使用 Windows、Linux 和 Office 的时候，很少有人能掌握全部内容一样。我们只需要掌握一些核心的功能，满足日常工作的需求即可。</p>
+<p>**SQL92 和 SQL99 是经典的 SQL 标准，也分别叫做 SQL-2 和 SQL-3 标准。**也正是在这两个标准发布之后，SQL 影响力越来越大，甚至超越了数据库领域。现如今 SQL 已经不仅仅是数据库领域的主流语言，还是信息领域中信息处理的主流语言。在图形检索、图像检索以及语音检索中都能看到 SQL 语言的使用。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2024/09/21/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/06.%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2/">https://yuezi2048.github.io/2024/09/21/2.Areas🌐/back-end-java/2.MySQL/基础篇/06.多表查询/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%9F%BA%E7%A1%80%E7%AF%87/">基础篇</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2024/09/15/2.Areas%F0%9F%8C%90/back-end-java/4.JavaWeb/4.%20XML_Tomcat_HTTP/" title="4. XML_Tomcat_HTTP"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">4. XML_Tomcat_HTTP</div></div><div class="info-2"><div class="info-item-1">第四章 XML_Tomcat10_HTTP1. XML XML（EXtensible Markup Lanauage 可扩展标记语言），同和HTML一样，基本语法是标签	 可扩展：含义是XML允许自定义格式 在XML语法规范基础上，第三方应用程序、框架都会通过XML约束来规定配置文件中可以写什么以及怎么写 我们只需在第三方APP或框架上定义好的配置文件基础上，根据需求加以修改即可    	 1.1...</div></div></div></a><a class="pagination-related" href="/2024/09/26/2.Areas%F0%9F%8C%90/back-end-java/4.JavaWeb/2.%20HTML_CSS/" title="2. HTML_CSS"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">2. HTML_CSS</div></div><div class="info-2"><div class="info-item-1">第二章 HTML-CSS1. HTML入门1.1 HTML_CSS_JS作用 HTML用于搭建网站主体 CSS用于对页面元素美化 JS用于对页面元素动态处理  1.2 HTML概念HTML  HTML(Hyper Test Markup Language 超文本标记语言)，搭建网站结构，显示相关元素 HTML5   HTML5 技术结合了 HTML4.01 的相关标准并革新，符合现代网络发展要求，在 2008 年正式发布。HTML5 由不同的技术构成，其在互联网中得到了非常广泛的应用，提供更多增强网络应用的标准机。 与传统的技术相比，HTML5 的语法特征更加明显，并且结合了 SVG 的内容。这些内容在网页中使用可以更加便捷地处理多媒体内容，而且 HTML5中还结合了其他元素，对原有的功能进行调整和修改，进行标准化工作。 HTML5 在 2012...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2024/08/14/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/00.%E5%9F%BA%E7%A1%80%E7%AF%87%E5%86%85%E5%AE%B9%E6%A1%86%E6%9E%B6/" title="00.基础篇内容框架"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-14</div><div class="info-item-2">00.基础篇内容框架</div></div><div class="info-2"><div class="info-item-1">MySQL数据库基础篇分为5个篇章： 1. 数据库概述与MySQL安装篇  第01章：数据库概述 第02章：MySQL环境搭建  2. SQL之SELECT使用篇  第03章：基本的SELECT语句 第04章：运算符 第05章：排序与分页 第06章：多表查询 第07章：单行函数 第08章：聚合函数 第09章：子查询  3. SQL之DDL、DML、DCL使用篇  第10章：创建和管理表 第11章：数据处理之增删改 第12章：MySQL数据类型精讲 第13章：约束  4. 其它数据库对象篇（开发用到了再学）  第14章：视图 第15章：存储过程与函数 第16章：变量、流程控制与游标 第17章：触发器  5. MySQL8 新特性篇（开发用到了再学）  第18章：MySQL8其它新特性  ps：普通开发往往积累单点技术、比如 CRUD、锁类型、索引的数据结构… 而对于技术骨干、架构师则往往需要对底层原理吃透：  数据库事务 ACID...</div></div></div></a><a class="pagination-related" href="/2024/08/14/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/01.%E6%95%B0%E6%8D%AE%E5%BA%93%E6%A6%82%E8%BF%B0/" title="01.数据库概述"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-14</div><div class="info-item-2">01.数据库概述</div></div><div class="info-2"><div class="info-item-1">一、数据库概述1. 为什么要数据库 数据的持久化：将数据保存到硬盘上，可供可掉电式的存储设备使用，大多使用关系数据库实现（也可以通过文件I&#x2F;O、XML实现）  	 2. DB 和 DBMS2.1 概述 数据库DB：存储数据的仓库，本质上是一个文件系统，保存一系列有组织的数据 数据库管理系统DBMS：管理和操纵数据库的大型软件，从而建立、使用和维护数据库。用户可以使用DBMS查询数据库的数据 结构化查询语言SQL：用于数据库交互的语言  其中，DBMS可以管理多个DB，开发中，通常针对每个应用创建一个数据库，并在一个数据库中创建多个表，从而保存实体用户的数据 	 2.2 常见DBMS常见的DBMS 参考数据库最新排名:https://db-engines.com/en/ranking 	 发展趋势：https://db-engines.com/en/ranking_trend 	 Oracle 1979 年，Oracle 2 诞生，它是第一个商用的 RDBMS（关系型数据库管理系统）。随着 Oracle 软件的名气越来越大，公司也改名叫 Oracle...</div></div></div></a><a class="pagination-related" href="/2025/05/25/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/02.MySQL%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" title="02.MySQL环境搭建"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-25</div><div class="info-item-2">02.MySQL环境搭建</div></div><div class="info-2"><div class="info-item-1">二、MySQL环境搭建1. 清除原有MySQL环境Step1：停止MySQL服务 	 Step2：软件卸载  亦可通过mysql-installer-community-8.0.26.0.msi卸载，此时安装目录也会被移除  	 Step3：残余文件清理 如果再次安装不成功，可以卸载后对残余文件进行清理后再安装。 （1）服务目录：mysql服务的安装目录 （2）数据目录：默认在C:\ProgramData\MySQL 注意：请在卸载前做好数据备份 在操作完以后，需要重启计算机，然后进行安装即可。如果仍然安装失败，需要继续操作如下步骤4。 Step4：清理注册表 在系统的搜索框中输入regedit HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\Eventlog\Application\MySQL服务 目录删除HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\MySQL服务...</div></div></div></a><a class="pagination-related" href="/2024/08/16/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/03.%E5%9F%BA%E6%9C%ACSELECT%E8%AF%AD%E5%8F%A5/" title="03.基本SELECT语句"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-16</div><div class="info-item-2">03.基本SELECT语句</div></div><div class="info-2"><div class="info-item-1">三、基本SELECT语句1. SQL概述1.1 SQL背景 1946 年，世界上第一台电脑诞生，如今，借由这台电脑发展起来的互联网已经自成江湖。在这几十年里，无数的技术、产业在这片江湖里沉浮，有的方兴未艾，有的已经几幕兴衰。但在这片浩荡的波动里，有一门技术从未消失，甚至“老当益壮”，那就是 SQL。  45 年前，也就是 1974 年，IBM 研究员发布了一篇揭开数据库技术的论文《SEQUEL：一门结构化的英语查询语言》，直到今天这门结构化的查询语言并没有太大的变化，相比于其他语言，SQL 的半衰期可以说是非常长了。   不论是前端工程师，还是后端算法工程师，都一定会和数据打交道，都需要了解如何又快又准确地提取自己想要的数据。更别提数据分析师了，他们的工作就是和数据打交道，整理不同的报告，以便指导业务决策。  SQL（Structured Query...</div></div></div></a><a class="pagination-related" href="/2025/05/28/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/05.%E6%8E%92%E5%BA%8F%E5%92%8C%E5%88%86%E9%A1%B5/" title="05.排序和分页"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-28</div><div class="info-item-2">05.排序和分页</div></div><div class="info-2"><div class="info-item-1">五、排序和分页1. 排序1.1 单列排序 使用 ORDER BY 子句排序 ASC（ascend）: 升序 DESC（descend）:降序   ORDER BY 子句在SELECT语句的结尾。 关注SELECT查询的顺序，实际场景：别名不能在where从句中使用，而可以在order by中使用  # 1. 一级排序# 如果没有使用排序操作，默认情况下查询返回的数据按照添加数据的顺序SELECT * FROM employees;-- 1.1 基本使用# 练习：按照salary从高到低显示数据(ORDER BY 通过什么来排序)# 升序:ASC(ascend) 降序：DESC(descend)SELECT employee_id, last_name, salaryFROM employeesORDER BY salary DESC;# 从低到高(没有显式写，默认升序)SELECT employee_id, last_name, salaryFROM employeesORDER BY salary ASC;-- 2. 别名# 使用列的别名进行排序SELECT...</div></div></div></a><a class="pagination-related" href="/2025/04/24/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/04.%E8%BF%90%E7%AE%97%E7%AC%A6/" title="04.运算符"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-24</div><div class="info-item-2">04.运算符</div></div><div class="info-2"><div class="info-item-1">四、运算符1. 算数运算符算术运算符主要用于数学运算，其可以连接运算符前后的两个数值或表达式，对数值或表达式进行加（+）、减（-）、乘（*）、除（&#x2F;）和取模（%）运算。 1.1 加减法# 算数运算符：+ - * / div % mod SELECT 100, 100 + 0, 100 - 0, 100 + 50, 100 + 50 - 30, 100 + 35.5, 100 - 35.5FROM DUAL;+-----+---------+---------+----------+--------------+------------+------------+| 100 | 100 + 0 | 100 - 0 | 100 + 50 | 100 + 50 -30 | 100 + 35.5 | 100 - 35.5 |+-----+---------+---------+----------+--------------+------------+------------+| 100 |     100 |     100 |      150 |         ...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">783</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2"><span class="toc-text">六、多表查询</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2"><span class="toc-text">1. 为什么要多表查询</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E6%A1%88%E4%BE%8B"><span class="toc-text">1.1 案例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E7%AC%9B%E5%8D%A1%E5%B0%94%E7%A7%AF%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90"><span class="toc-text">1.2 笛卡尔积问题分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3-%E7%AD%89%E5%80%BC%E8%BF%9E%E6%8E%A5"><span class="toc-text">1.3 问题解决(等值连接)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2%E7%9A%84%E5%88%86%E7%B1%BB"><span class="toc-text">2. 多表查询的分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E7%AD%89%E5%80%BC%E8%BF%9E%E6%8E%A5-vs-%E9%9D%9E%E7%AD%89%E5%80%BC%E8%BF%9E%E6%8E%A5"><span class="toc-text">2.1 等值连接 vs 非等值连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E8%87%AA%E8%BF%9E%E6%8E%A5-vs-%E9%9D%9E%E8%87%AA%E8%BF%9E%E6%8E%A5"><span class="toc-text">2.2 自连接 vs 非自连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E5%86%85%E8%BF%9E%E6%8E%A5-vs-%E5%A4%96%E8%BF%9E%E6%8E%A5"><span class="toc-text">2.3 内连接 vs 外连接</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#SQL92%E4%BD%BF%E7%94%A8-%E5%88%9B%E5%BB%BA%E8%BF%9E%E6%8E%A5"><span class="toc-text">SQL92使用(+)创建连接</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-SQL99%E8%AF%AD%E6%B3%95%E5%AE%9E%E7%8E%B0%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2"><span class="toc-text">3. SQL99语法实现多表查询</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95"><span class="toc-text">3.1 基本语法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%86%85%E8%BF%9E%E6%8E%A5INNER-JOIN%E5%AE%9E%E7%8E%B0"><span class="toc-text">3.2 内连接INNER JOIN实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E5%A4%96%E8%BF%9E%E6%8E%A5OUTER-JOIN%E5%AE%9E%E7%8E%B0"><span class="toc-text">3.3 外连接OUTER JOIN实现</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-UNION%E4%BD%BF%E7%94%A8"><span class="toc-text">4. UNION使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-7%E7%A7%8DSQL-JOINS%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-text">5. 7种SQL JOINS的实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-SQL99%E8%AF%AD%E6%B3%95%E6%96%B0%E7%89%B9%E6%80%A7"><span class="toc-text">6. SQL99语法新特性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-%E8%87%AA%E7%84%B6%E8%BF%9E%E6%8E%A5"><span class="toc-text">6.1 自然连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-USING%E8%BF%9E%E6%8E%A5-%E8%87%AA%E7%84%B6%E8%BF%9E%E6%8E%A5%E4%BC%98%E5%8C%96"><span class="toc-text">6.2 USING连接(自然连接优化)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E6%80%BB%E7%BB%93"><span class="toc-text">7. 总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E8%AF%BE%E5%90%8E%E7%BB%83%E4%B9%A0"><span class="toc-text">8. 课后练习</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%84%E5%BD%95%EF%BC%9A%E5%B8%B8%E8%A7%81SQL%E6%A0%87%E5%87%86"><span class="toc-text">附录：常见SQL标准</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-01-27T16:00:27.985Z" title="发表于 2026-01-28 00:00:27">2026-01-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-01-27T16:00:27.405Z" title="发表于 2026-01-28 00:00:27">2026-01-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/26/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/1.%E5%A4%A7%E6%A8%A1%E5%9E%8B%E6%8E%A5%E5%85%A5%E6%96%B9%E6%A1%88/" title="1.大模型接入方案">1.大模型接入方案</a><time datetime="2026-01-26T14:26:57.000Z" title="发表于 2026-01-26 22:26:57">2026-01-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/26/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/2.%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/" title="2.大模型应用开发">2.大模型应用开发</a><time datetime="2026-01-26T14:24:44.000Z" title="发表于 2026-01-26 22:24:44">2026-01-26</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>
