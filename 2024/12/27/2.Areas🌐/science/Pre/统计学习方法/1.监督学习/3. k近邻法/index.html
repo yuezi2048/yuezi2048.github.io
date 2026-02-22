@@ -1,0 +1,291 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>3. k近邻法 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="[TOC] 三、k近邻法 K-NN是一个基本的分类和回归方法，此处讨论基本的分类问题 输入为实例的特征向量，对应于特征空间的点，输出是实例的类别，可以取多个类 k近邻是假设给定训练数据集，其中的实例类别已定，分类时根据k个最近邻的训练实例类别通过多数表决的方式进行预测，并没有显式的学习过程 k值的选择、距离度量和分类决策规则是k近邻法的3个基本要素  3.1 k近邻算法 特殊的情况是k&#x3D;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="3. k近邻法">
+<meta property="og:url" content="https://yuezi2048.github.io/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/3.%20k%E8%BF%91%E9%82%BB%E6%B3%95/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="[TOC] 三、k近邻法 K-NN是一个基本的分类和回归方法，此处讨论基本的分类问题 输入为实例的特征向量，对应于特征空间的点，输出是实例的类别，可以取多个类 k近邻是假设给定训练数据集，其中的实例类别已定，分类时根据k个最近邻的训练实例类别通过多数表决的方式进行预测，并没有显式的学习过程 k值的选择、距离度量和分类决策规则是k近邻法的3个基本要素  3.1 k近邻算法 特殊的情况是k&#x3D;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2024-12-27T03:10:30.000Z">
+<meta property="article:modified_time" content="2024-12-27T03:10:30.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="1.监督学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "3. k近邻法",
+  "url": "https://yuezi2048.github.io/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/3.%20k%E8%BF%91%E9%82%BB%E6%B3%95/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2024-12-27T03:10:30.000Z",
+  "dateModified": "2024-12-27T03:10:30.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/3.%20k%E8%BF%91%E9%82%BB%E6%B3%95/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '3. k近邻法',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">3. k近邻法</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">3. k近邻法</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-12-27T03:10:30.000Z" title="发表于 2024-12-27 11:10:30">2024-12-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-12-27T03:10:30.000Z" title="更新于 2024-12-27 11:10:30">2024-12-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/">science</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/">Pre</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/">统计学习方法</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1-%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/">1.监督学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>6分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>[TOC]</p>
+<h1 id="三、k近邻法"><a href="#三、k近邻法" class="headerlink" title="三、k近邻法"></a>三、k近邻法</h1><ul>
+<li>K-NN是一个基本的分类和回归方法，此处讨论基本的分类问题</li>
+<li>输入为实例的特征向量，对应于特征空间的点，输出是实例的类别，可以取多个类</li>
+<li>k近邻是假设给定训练数据集，其中的实例类别已定，分类时根据k个最近邻的训练实例类别通过<code>多数表决</code>的方式进行预测，并没有显式的学习过程</li>
+<li>k值的<code>选择</code>、<code>距离度量</code>和<code>分类决策规则</code>是k近邻法的3个基本要素</li>
+</ul>
+<h2 id="3-1-k近邻算法"><a href="#3-1-k近邻算法" class="headerlink" title="3.1 k近邻算法"></a>3.1 k近邻算法</h2><ul>
+<li>特殊的情况是k&#x3D;1时，此时为最近邻算法</li>
+<li>k近邻算法没有显式的学习过程</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241005120215675.png" alt="image-20241005120215675">	</p>
+<h2 id="3-2-k近邻模型与决策规则"><a href="#3-2-k近邻模型与决策规则" class="headerlink" title="3.2 k近邻模型与决策规则"></a>3.2 k近邻模型与决策规则</h2><h3 id="3-2-1-模型"><a href="#3-2-1-模型" class="headerlink" title="3.2.1 模型"></a>3.2.1 模型</h3><ul>
+<li>k近邻模型主要有3个基本要素：距离度量、k值选择和分类决策规则，确定好上述后，给定一个输入实例，就可以唯一地确定它所属类</li>
+<li>在特征空间当中，每一个训练实例点xi，距离该点比其他点更近的所有点组成的一个区域叫做<code>单元(cell)</code>，一个单元构成对于特征空间的一个划分<ul>
+<li>最近邻算法是实例xi的类yi作为其单元中所有点的<code>类标记</code>(class label)，从而每个单元实例点的类别可以确定，见下图所示</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241005121126530.png" alt="image-20241005121126530">	</p>
+<h3 id="3-2-2-距离度量"><a href="#3-2-2-距离度量" class="headerlink" title="3.2.2 距离度量"></a>3.2.2 距离度量</h3><ul>
+<li>两个实例点的<code>距离</code>反应的是两个实例点的相似程度，k近邻特征空间一般是R^n，距离使用的是<code>欧式距离</code>，但更一般的是<code>Lp距离</code>或<code>Minkowski距离</code>，定义如下<ul>
+<li>当p&#x3D;2时，为欧式距离，当p&#x3D;1时，为曼哈顿距离，当p&#x3D;∞时，就是得到坐标距离的最大值</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241005121408621.png" alt="image-20241005121408621">	</p>
+<p>给出一个计算最近邻点的例子</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241005121556537.png" alt="image-20241005121556537">	</p>
+<ul>
+<li>这里需要注意的是，实际应用的时候我们需要进行<code>归一化</code>后，数据特征才会有意义<ul>
+<li>比如(5, 10000)和(1, 10000)的数据，直接使用距离度量比较，x的偏移特征将会微乎其微</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-2-3-k值选择"><a href="#3-2-3-k值选择" class="headerlink" title="3.2.3 k值选择"></a>3.2.3 k值选择</h3><ul>
+<li>k值是一个超参数，后续在做实验的时候，特征工程是关键一环</li>
+<li>k值如果过小，那么几何意义上就是用较小的邻域来进行预测，近似误差过小，模型会过于复杂，容易<code>过拟合</code></li>
+<li>k值如果过大，那么几何意义上就是用较大的邻域来进行预测，近似误差过大，模型会过于简单，容易<code>欠拟合</code></li>
+<li>一般我们会选择先取一个较小值，然后使用<code>交叉验证法</code>来选取最优的k值</li>
+</ul>
+<h3 id="3-2-4-分类决策规则"><a href="#3-2-4-分类决策规则" class="headerlink" title="3.2.4 分类决策规则"></a>3.2.4 分类决策规则</h3><ul>
+<li>往往采用多数表决机制，即选取k个近邻实例中多数的类别，这等价于经验风险最小化，数学解释如下</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241005122232282.png" alt="image-20241005122232282">	</p>
+<h2 id="3-3-k近邻算法实现-kd树"><a href="#3-3-k近邻算法实现-kd树" class="headerlink" title="3.3 k近邻算法实现_kd树"></a>3.3 k近邻算法实现_kd树</h2><ul>
+<li>实现k近邻算法最简单的方式是线性扫描，但需要计算输入实例和每个训练实例的距离，训练集大时，计算会很耗时，因此不可行</li>
+<li>所以提出使用k近邻算法提高k近邻搜索的效率</li>
+</ul>
+<h3 id="3-3-1-构造kd树"><a href="#3-3-1-构造kd树" class="headerlink" title="3.3.1 构造kd树"></a>3.3.1 构造kd树</h3><ul>
+<li><code>kd树</code>是一个二叉树，表示对k维空间的一个划分，构造kd树相当于不断地使用垂直于坐标轴的超平面将k维空间切分，构成一系列k维超矩形区域，kd树的一个结点对应于一个k维超矩形的区域</li>
+<li>构造kd树的方法<ul>
+<li>构造根节点，对应于包含所有实例点的超矩形区域</li>
+<li>通过下述方式进行递归，不断的对k维空间进行切分，生成子结点<ul>
+<li>选择一个坐标轴，通过选定的切分点并垂直于选定的坐标轴上的切分点，确定一个超平面，该平面能够切分为左右两个子区域<br>（通常是依次选择坐标轴，然后选择中位数切分，注意，平衡的kd树未必是最优）</li>
+<li>直至最终子区域没有节点为止，此时终止的结点为叶子节点</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241005162609554.png" alt="image-20241005162609554">	</p>
+<p>给出一个具体的例子</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241005162644745.png" alt="image-20241005162644745">	</p>
+<h3 id="3-3-2-搜索kd树"><a href="#3-3-2-搜索kd树" class="headerlink" title="3.3.2 搜索kd树"></a>3.3.2 搜索kd树</h3><h4 id="最近邻搜索"><a href="#最近邻搜索" class="headerlink" title="最近邻搜索"></a>最近邻搜索</h4><p>以最近邻为例加以描述，我们的目标是给定目标点，搜索最近邻</p>
+<ul>
+<li>首先需要找到包含目标点的叶子结点，然后从叶子节点触发，依次回退到父节点</li>
+<li>不断查找与目标点最邻近的节点，当确定不可能存在更近的结点时终止，这样搜索就会限制在空间的局部空间上，效率大幅提高</li>
+</ul>
+<p>如下图所示，包含目标点的叶子结点对应于目标点的最小超矩形区域，目标点的最邻近一定是在以目标点为中心并通过当前点的超球体的内部，分为如下情况</p>
+<ul>
+<li>如果父结点的另一节点的超矩形区域于超球体相交，那么在相交区域会寻找是否存在更近的实例点，如果存在，就将该点作为新的最近点，转到更上一级的父节点</li>
+<li>如果父结点另一结点超矩形区域与超球体不相交，那么不存在比当前点更近的点，停止搜索</li>
+</ul>
+<p>具体的算法描述如下：</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241005163858241.png" alt="image-20241005163858241">	</p>
+<p>上述图片的例子</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241005164024476.png" alt="image-20241005164024476">	</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241005163419093.png" alt="image-20241005163419093">	</p>
+<h4 id="k近邻搜索"><a href="#k近邻搜索" class="headerlink" title="k近邻搜索"></a>k近邻搜索</h4><p>对于一般情况下 k近邻的算法详细搜索过程可见：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/23966698">https://zhuanlan.zhihu.com/p/23966698</a></p>
+<p>核心算法思路：一开始我们先 设 L 为一个有 k 个空位的列表，用于保存已搜寻到的最近点。</p>
+<ul>
+<li>一、根据 p 的坐标值和每个节点的切分向下搜索（也就是说，如果树的节点是照 xr&#x3D;a 进行切分，并且 p 的 r 坐标小于 a，则向左枝进行搜索；反之则走右枝）。</li>
+<li>二、当达到一个底部节点时，将其标记为访问过，然后根据下述规则判断是否加入列表。<ul>
+<li>如果 L 里不足 k 个点，则将当前节点的特征坐标加入 L ；</li>
+<li>如果 L 不为空并且当前节点的特征与 p 的距离小于 L 里最长的距离，则用当前特征替换掉 L 中离 p 最远的点。</li>
+</ul>
+</li>
+<li>三、如果当前节点不是整棵树最顶端节点，执行 (a)；反之，输出 L，算法完成。<ul>
+<li>a. 向上爬一个节点。如果当前（向上爬之后的）节点未曾被访问过，将其标记为被访问过，然后执行 (1) 和 (2)；如果当前节点被访问过，再次执行 (a)。<ul>
+<li>\1. 首先根据列表的情况进行判断是否加入该节点<ul>
+<li>如果此时 L 里不足 k 个点，则将节点特征加入 L；</li>
+<li>如果 L 中已满 k 个点，且当前节点与 p 的距离小于 L 里最长的距离，则用节点特征替换掉 L 中离最远的点。</li>
+</ul>
+</li>
+<li>\2. 计算 p 和当前节点切分线的距离（李航老师是根据超球体是否相交的方式判断，思路相同但实现不同）。<ul>
+<li>如果该距离大于等于 L 中距离 p 最远的距离并且 L 中已有 k 个点，则在切分线另一边不会有更近的点，执行 (三)；</li>
+<li>如果该距离 小于 L 中最远的距离 或者  L 中不足 k 个点，则切分线另一边可能有更近的点，因此在当前节点的另一个枝从 (一) 开始执行。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>大概就探讨这个层面吧，暂时就不深究具体代码实现了，后续就是用现成的机器学习包 <a target="_blank" rel="noopener" href="https://zhida.zhihu.com/search?content_id=1773009&content_type=Article&match_order=1&q=scikit-learn&zhida_source=entity">scikit-learn</a> 来进行计算，<del>做一名合格的调参侠</del></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/3.%20k%E8%BF%91%E9%82%BB%E6%B3%95/">https://yuezi2048.github.io/2024/12/27/2.Areas🌐/science/Pre/统计学习方法/1.监督学习/3. k近邻法/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/1-%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/">1.监督学习</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/4.%20%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%B3%95/" title="4. 朴素贝叶斯法"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">4. 朴素贝叶斯法</div></div><div class="info-2"><div class="info-item-1">[TOC] 四、朴素贝叶斯法 朴素贝叶斯是基于贝叶斯定理和特征条件独立假设的分类方法 对于给定是训练数据集，基于特征条件独立假设学习输入输出的联合概率分布 然后基于该模型对给定的输入x使用贝叶斯定理求出后验概率最大的 输出y  4.1 朴素贝叶斯法的学习与分类4.1.1 模型——基本方法 输入空间X是n维向量集合R^n，输出空间Y是类标记集合{c1, c2, …, ck} 朴素贝叶斯首先学习联合概率分布P(X, Y)，具体需要学习先验概率分布和条件概率分布，这是我们之前提到的生成模型的做法  	  其中，条件概率分布P(X &#x3D; x | Y &#x3D; ck)的参数数量是指数级的，直接估计是不行的  假设n维输入变量，每组x值有Sj组特征，Y可能的取值有k个，根据排列组合，参数的个数就是   因此为了简化问题，朴素贝叶斯作出条件独立性假设，他可以使得X的每组特征是独立的，所以可以直接连乘起来   	 后验概率P(Y = ck | X = x)就可以计算得到如下  其中分母是P(X &#x3D; x)的全概率展开形式，表示y&#x3D;c1, c2, ..,...</div></div></div></a><a class="pagination-related" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/2.%20%E6%84%9F%E7%9F%A5%E6%9C%BA/" title="2. 感知机"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">2. 感知机</div></div><div class="info-2"><div class="info-item-1">[TOC] 二、感知机 感知机是二类分类的线性模型，输入为实例的特征向量，输出为实例的类别（取-1和+1） 感知机将实例划分为正负两类的分离超平面，属于判别模型 基于误分类的损失函数，通过梯度下降法对损失函数进行极小化得到感知机模型 感知机包括原始形式和对偶形式，是后续学习神经网络和支持向量机的基础  2.1 感知机模型 感知机模型函数表示如下  	   是一个线性分类模型，属于判别模型 假设空间是定义在特征空间中所有线性分类模型 模型的几何解释如下  	    2.2 感知机学习策略2.2.1 线性可分性 存在一个超平面，完全正确地将正实例点和负实例点划分到超平面的两侧，则称数据集T为线性可分数据集  	    2.2.2 学习策略 我们首先假设训练集线性可分，那么就是要找出这个完全正确划分的超平面，那么学习策略就是要定义经验损失函数并最小化 经验损失函数，并没有天然地选择误分类点的个数来进行判断，因为这不是连续可导，而是选择了所有误分类点到超平面S的总距离进行判断，一个点到平面的距离可以这样表示  	  对于误分类的数据来说，yi和w·xi +...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/2.%20%E6%84%9F%E7%9F%A5%E6%9C%BA/" title="2. 感知机"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-27</div><div class="info-item-2">2. 感知机</div></div><div class="info-2"><div class="info-item-1">[TOC] 二、感知机 感知机是二类分类的线性模型，输入为实例的特征向量，输出为实例的类别（取-1和+1） 感知机将实例划分为正负两类的分离超平面，属于判别模型 基于误分类的损失函数，通过梯度下降法对损失函数进行极小化得到感知机模型 感知机包括原始形式和对偶形式，是后续学习神经网络和支持向量机的基础  2.1 感知机模型 感知机模型函数表示如下  	   是一个线性分类模型，属于判别模型 假设空间是定义在特征空间中所有线性分类模型 模型的几何解释如下  	    2.2 感知机学习策略2.2.1 线性可分性 存在一个超平面，完全正确地将正实例点和负实例点划分到超平面的两侧，则称数据集T为线性可分数据集  	    2.2.2 学习策略 我们首先假设训练集线性可分，那么就是要找出这个完全正确划分的超平面，那么学习策略就是要定义经验损失函数并最小化 经验损失函数，并没有天然地选择误分类点的个数来进行判断，因为这不是连续可导，而是选择了所有误分类点到超平面S的总距离进行判断，一个点到平面的距离可以这样表示  	  对于误分类的数据来说，yi和w·xi +...</div></div></div></a><a class="pagination-related" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/1.%20%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E5%8F%8A%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0%E6%A6%82%E8%AE%BA/" title="1. 统计学习及监督学习概论"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-27</div><div class="info-item-2">1. 统计学习及监督学习概论</div></div><div class="info-2"><div class="info-item-1">[TOC] 一、统计学习及监督学习概论1.1 统计学习 统计学习是计算机系统通过运用数据及统计方法  提高系统性能的机器学习 统计学习研究的对象是数据，提取数据特征，抽象模型，而后回归到数据的分析和预测 基本假设：同类数据具有统计规律性   统计学习的方法包括：监督学习、无监督学习、强化学习 假设数据是独立同分布的，并假设学习的模型属于某个函数的集合（假设空间） 应用某个评价准则，从假设空间中选取最优模型，使他对测试数据在给定的评价准则下由最优的预测，而最优模型的选取由算法实现 因此统计学习方法的三要素：模型、策略、算法   统计学习的步骤 得到有限的训练数据集合 确定包含所有可能的模型假设空间（学习模型的集合） 确定模型选择的准则，即学习的策略 通过学习算法选择最优模型 利用学习的最优模型对新数据进行预测和分析    1.2 统计学习的分类1.2.1...</div></div></div></a><a class="pagination-related" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/4.%20%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%B3%95/" title="4. 朴素贝叶斯法"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-27</div><div class="info-item-2">4. 朴素贝叶斯法</div></div><div class="info-2"><div class="info-item-1">[TOC] 四、朴素贝叶斯法 朴素贝叶斯是基于贝叶斯定理和特征条件独立假设的分类方法 对于给定是训练数据集，基于特征条件独立假设学习输入输出的联合概率分布 然后基于该模型对给定的输入x使用贝叶斯定理求出后验概率最大的 输出y  4.1 朴素贝叶斯法的学习与分类4.1.1 模型——基本方法 输入空间X是n维向量集合R^n，输出空间Y是类标记集合{c1, c2, …, ck} 朴素贝叶斯首先学习联合概率分布P(X, Y)，具体需要学习先验概率分布和条件概率分布，这是我们之前提到的生成模型的做法  	  其中，条件概率分布P(X &#x3D; x | Y &#x3D; ck)的参数数量是指数级的，直接估计是不行的  假设n维输入变量，每组x值有Sj组特征，Y可能的取值有k个，根据排列组合，参数的个数就是   因此为了简化问题，朴素贝叶斯作出条件独立性假设，他可以使得X的每组特征是独立的，所以可以直接连乘起来   	 后验概率P(Y = ck | X = x)就可以计算得到如下  其中分母是P(X &#x3D; x)的全概率展开形式，表示y&#x3D;c1, c2, ..,...</div></div></div></a><a class="pagination-related" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/5.%20%E5%86%B3%E7%AD%96%E6%A0%91/" title="5. 决策树"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-27</div><div class="info-item-2">5. 决策树</div></div><div class="info-2"><div class="info-item-1">[TOC] 五、决策树 决策树（decision tree）是一个基本的分类和回归方法，这里主要讨论分类 决策树模型是树型结构，表示基于特征对实例进行分类的过程 被认为是if-then规则的集合（说明了可解释性） 也可以认为是定义在特征空间和类空间上的条件概率分布 有点就是可读性与分类速度快   学习时，在训练数据集上通过损失函数最小化建立决策树模型。预测时，对测试集利用决策树模型进行分类 学习包含三个步骤 特征选择 决策树的生成 决策树的修剪（防止过拟合）   决策树的算法包括：Quinlan在1986年提出的ID3方法，1993年提出的C4.5算法，Breiman等人1986年提出的CART算法  注：这里是后续学习XGBoost和GBDT等高阶决策树模型的基础，所以也需要了解基础模型。 5.1 决策树模型和学习5.1.1...</div></div></div></a><a class="pagination-related" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/6.%20%E9%80%BB%E8%BE%91%E6%96%AF%E8%92%82%E5%9B%9E%E5%BD%92%E5%92%8C%E6%9C%80%E5%A4%A7%E7%86%B5%E6%A8%A1%E5%9E%8B/" title="6. 逻辑斯蒂回归和最大熵模型"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-27</div><div class="info-item-2">6. 逻辑斯蒂回归和最大熵模型</div></div><div class="info-2"><div class="info-item-1">[TOC] 六、logistic回归和最大熵模型 logistic回归是经典分类方法，最大熵模型是概率模型学习中的重要准则，可推广到最大熵模型 maximum entropy model 之所以放在一起说，是因为logistic回归模型和最大熵模型都属于对数线性模型  6.1 logistic回归6.1.1 logistic分布	 我们可根据上述函数绘制出f(x)和F(x)的图形 	 分布函数F(x)属于logistic函数，图形是S形曲线，关于点(u, 1/2)对称s，即满足 	 从F(x)的导数f(x)图像上，我们也可以发现，两端增长速度慢，中心附近增长快 同时可以控制形状变量y，y越小，可以使得中心附近增长的速度越快 6.1.2 二项logistic回归模型二项logistic回归模型是一种分类模型，通过条件概率分布P(Y |...</div></div></div></a><a class="pagination-related" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/8.%20Boosting/" title="8. Boosting"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-27</div><div class="info-item-2">8. Boosting</div></div><div class="info-2"><div class="info-item-1">[TOC] 八、Boosting Boosting在分类问题中，通过改变训练样本的权重，学习多个分类器，将这些分类器进行线性组合，提高分类的性能 本章主要讨论的问题 Boosting思路和代表性AdaBoost算法 探讨为什么能提高学习精度，从前向分布加法模型解释AdaBoost算法 叙述Boosting具体实例——提升树    8.1 AdaBoost算法8.1.1 Boosting基本思路 思想：三个臭皮匠顶过一个诸葛亮的道理，对多个专家的判断进行综合进行判断（提高专家权重，减少普通人的权重） 在概率近似框架（PAC）框架中，一个概念可强学习的充要条件是这个概念可弱学习的，换句话说弱学习算法可以提升（boost）为强学习算法 强可学习：存在一个多项式学习算法能够学习，且正确率高 弱可学习：存在一个多项式学习算法能够学习，但正确率比随机猜测略好   对于分类问题而言，Boosting的思路就是从弱学习算法出发得到一系列弱分类器，再组合这些弱分类器（通常是改变概率分布...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81k%E8%BF%91%E9%82%BB%E6%B3%95"><span class="toc-text">三、k近邻法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-k%E8%BF%91%E9%82%BB%E7%AE%97%E6%B3%95"><span class="toc-text">3.1 k近邻算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-k%E8%BF%91%E9%82%BB%E6%A8%A1%E5%9E%8B%E4%B8%8E%E5%86%B3%E7%AD%96%E8%A7%84%E5%88%99"><span class="toc-text">3.2 k近邻模型与决策规则</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-1-%E6%A8%A1%E5%9E%8B"><span class="toc-text">3.2.1 模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-2-%E8%B7%9D%E7%A6%BB%E5%BA%A6%E9%87%8F"><span class="toc-text">3.2.2 距离度量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-3-k%E5%80%BC%E9%80%89%E6%8B%A9"><span class="toc-text">3.2.3 k值选择</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-4-%E5%88%86%E7%B1%BB%E5%86%B3%E7%AD%96%E8%A7%84%E5%88%99"><span class="toc-text">3.2.4 分类决策规则</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-k%E8%BF%91%E9%82%BB%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0-kd%E6%A0%91"><span class="toc-text">3.3 k近邻算法实现_kd树</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-1-%E6%9E%84%E9%80%A0kd%E6%A0%91"><span class="toc-text">3.3.1 构造kd树</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-2-%E6%90%9C%E7%B4%A2kd%E6%A0%91"><span class="toc-text">3.3.2 搜索kd树</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%80%E8%BF%91%E9%82%BB%E6%90%9C%E7%B4%A2"><span class="toc-text">最近邻搜索</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#k%E8%BF%91%E9%82%BB%E6%90%9C%E7%B4%A2"><span class="toc-text">k近邻搜索</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

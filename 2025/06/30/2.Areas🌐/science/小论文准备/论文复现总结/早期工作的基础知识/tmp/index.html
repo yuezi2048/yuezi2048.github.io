@@ -1,0 +1,292 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>tmp | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="整理后的问题分类与关键点 计算效率问题核心方法:    FREEDOM通过冻结图模块避免重复计算潜在问题:   错误说法：“图结构一旦冻结就不会影响模型性能”   修正：静态图无法捕捉动态偏好，需研究增量图更新机制有价值方向:   如何设计增量式图学习（如基于时间滑窗的局部重训练）？   能否结合课程学习动态调整图复杂度（冷启动期简单图→稳定期复杂图）？   噪声问题子问题1：模态融合噪声">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tmp">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/06/30/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/tmp/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="整理后的问题分类与关键点 计算效率问题核心方法:    FREEDOM通过冻结图模块避免重复计算潜在问题:   错误说法：“图结构一旦冻结就不会影响模型性能”   修正：静态图无法捕捉动态偏好，需研究增量图更新机制有价值方向:   如何设计增量式图学习（如基于时间滑窗的局部重训练）？   能否结合课程学习动态调整图复杂度（冷启动期简单图→稳定期复杂图）？   噪声问题子问题1：模态融合噪声">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-06-30T08:52:54.000Z">
+<meta property="article:modified_time" content="2025-06-30T08:52:54.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="早期工作的基础知识">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "tmp",
+  "url": "https://yuezi2048.github.io/2025/06/30/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/tmp/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-06-30T08:52:54.000Z",
+  "dateModified": "2025-06-30T08:52:54.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/06/30/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/tmp/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'tmp',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">tmp</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">tmp</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-06-30T08:52:54.000Z" title="发表于 2025-06-30 16:52:54">2025-06-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-06-30T08:52:54.000Z" title="更新于 2025-06-30 16:52:54">2025-06-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/">science</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/">小论文准备</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/">论文复现总结</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">早期工作的基础知识</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">947</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>2分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h3 id="整理后的问题分类与关键点"><a href="#整理后的问题分类与关键点" class="headerlink" title="整理后的问题分类与关键点"></a>整理后的问题分类与关键点</h3><hr>
+<h4 id="计算效率问题"><a href="#计算效率问题" class="headerlink" title="计算效率问题"></a><strong>计算效率问题</strong></h4><p><strong>核心方法</strong>:  </p>
+<ul>
+<li>FREEDOM通过冻结图模块避免重复计算<br><strong>潜在问题</strong>:  </li>
+<li>错误说法：<em>“图结构一旦冻结就不会影响模型性能”</em>  <ul>
+<li>修正：静态图无法捕捉动态偏好，需研究增量图更新机制<br><strong>有价值方向</strong>:</li>
+</ul>
+</li>
+<li>如何设计<strong>增量式图学习</strong>（如基于时间滑窗的局部重训练）？  </li>
+<li>能否结合<strong>课程学习</strong>动态调整图复杂度（冷启动期简单图→稳定期复杂图）？</li>
+</ul>
+<hr>
+<h4 id="噪声问题"><a href="#噪声问题" class="headerlink" title="噪声问题"></a><strong>噪声问题</strong></h4><p><strong>子问题1：模态融合噪声</strong>  </p>
+<ul>
+<li><strong>MENTER方法</strong>: 多级自监督对齐  </li>
+<li><strong>错误说法</strong>: <em>“多模态对齐越严格越好”</em>  <ul>
+<li>修正：过度对齐会损失模态特异性（如文本的抽象性vs图像的具象性）<br><strong>有价值方向</strong>:</li>
+</ul>
+</li>
+<li>如何量化<strong>模态对齐程度</strong>（如互信息 vs. 模态间距离）？  </li>
+<li>能否引入<strong>模态冲突检测</strong>机制（如跨模态梯度对抗）？</li>
+</ul>
+<p><strong>子问题2：模态原生噪声</strong>  </p>
+<ul>
+<li><strong>SMORE方法</strong>: 过滤器模块  </li>
+<li><strong>错误说法</strong>: <em>“所有模态噪声分布相同”</em>  <ul>
+<li>修正：视觉模态（商品图）噪声多为随机噪声，文本模态（描述）存在系统性偏见<br><strong>有价值方向</strong>:</li>
+</ul>
+</li>
+<li>如何设计<strong>模态感知的降噪器</strong>（如CNN处理图像噪声 vs. 注意力掩码处理文本噪声）？  </li>
+<li>能否利用<strong>用户行为反馈</strong>自动校准噪声阈值（如点击率高的item降低过滤强度）？</li>
+</ul>
+<hr>
+<h4 id="特征构建演进"><a href="#特征构建演进" class="headerlink" title="特征构建演进"></a><strong>特征构建演进</strong></h4><p><strong>关键方法对比</strong>:  </p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>核心创新</th>
+<th>局限</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>VBPR</td>
+<td>简单投影+拼接</td>
+<td>线性交互能力有限</td>
+</tr>
+<tr>
+<td>LATTICE</td>
+<td>双图结构+注意力融合</td>
+<td>计算复杂度高</td>
+</tr>
+<tr>
+<td>FREEDOM</td>
+<td>边修剪+冻结图</td>
+<td>静态图难以适应动态偏好</td>
+</tr>
+</tbody></table>
+<p><strong>错误说法</strong>: <em>“GNN层数越多特征越丰富”</em>  </p>
+<ul>
+<li>修正：推荐场景中GNN通常≤3层（避免过度平滑）<br><strong>有价值方向</strong>:  </li>
+<li>如何构建<strong>异构图的层次化抽象</strong>（如商品-品类-品牌的三级图）？  </li>
+<li>能否结合<strong>知识图谱</strong>增强稀疏item的特征（如利用商品类目关系）？</li>
+</ul>
+<hr>
+<h4 id="用户交互建模"><a href="#用户交互建模" class="headerlink" title="用户交互建模"></a><strong>用户交互建模</strong></h4><p><strong>关键争议</strong>:  </p>
+<ul>
+<li><strong>DSGRec观点</strong>: 需显式分离用户信号与模态信号  </li>
+<li><strong>PGL观点</strong>: 需平衡共现模式与个人偏好<br><strong>错误说法</strong>: <em>“用户历史行为能完全代表其偏好”</em>  </li>
+<li>修正：行为受情境影响（如促销导致的非理性点击）<br><strong>有价值方向</strong>:  </li>
+<li>如何建模<strong>行为意图 disentanglement</strong>（如将购买动机分解为功能需求&#x2F;情感需求）？  </li>
+<li>能否通过<strong>多任务学习</strong>联合优化长期偏好与即时兴趣？</li>
+</ul>
+<hr>
+<h4 id="其他前沿问题"><a href="#其他前沿问题" class="headerlink" title="其他前沿问题"></a><strong>其他前沿问题</strong></h4><ol>
+<li><p><strong>模态缺失处理</strong>  </p>
+<ul>
+<li>错误假设：<em>“缺失模态可用全零填充”</em>  <ul>
+<li>修正：零填充会引入误导信号（如MMBERT的插补可能生成幻觉特征）</li>
+</ul>
+</li>
+<li>方向：基于<strong>扩散模型</strong>的条件化模态生成（仅重建关键特征维度）</li>
+</ul>
+</li>
+<li><p><strong>多模态幻觉</strong>  </p>
+<ul>
+<li>典型案例：图文不匹配商品（如描述”纯棉”但图片显示化纤）  </li>
+<li>方向：构建<strong>跨模态一致性验证模块</strong>（如CLIP的对比得分作为损失项）</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="最具潜力的3个研究方向"><a href="#最具潜力的3个研究方向" class="headerlink" title="最具潜力的3个研究方向"></a>最具潜力的3个研究方向</h3><ol>
+<li><strong>因果图修剪</strong>  <ul>
+<li>关键挑战：如何定义”因果边”（如利用用户多跳推理路径）</li>
+</ul>
+</li>
+<li><strong>轻量级MoE架构</strong>  <ul>
+<li>机遇：为不同模态分配动态计算资源（如文本用BERT专家，图像用ResNet专家）</li>
+</ul>
+</li>
+<li><strong>情绪-时序建模</strong>  <ul>
+<li>突破点：结合可穿戴设备数据（如心率变异率反映购买冲动）</li>
+</ul>
+</li>
+</ol>
+<p>建议优先验证<strong>方向1+方向3的组合</strong>：通过因果推理识别情绪敏感的用户子群，针对性增强其对应模态的表示。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/06/30/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/tmp/">https://yuezi2048.github.io/2025/06/30/2.Areas🌐/science/小论文准备/论文复现总结/早期工作的基础知识/tmp/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">早期工作的基础知识</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/06/28/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/FREEDOM(LATTICE%E6%94%B9%E8%BF%9B%20%E5%86%BB%E7%BB%93+%E5%8E%BB%E5%99%AA)/" title="FREEDOM"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">FREEDOM</div></div><div class="info-2"><div class="info-item-1">一、论文总结当前领域存在的问题现有的多模态推荐系统通常将多模态特征（如图像和文本描述）与物品ID嵌入融合，以丰富物品表示。然而，这种方法未能显式捕捉物品间的潜在语义结构。虽然LATTICE模型尝试通过学习物品间的潜在结构来提升性能，但其学习过程效率低下且可能不必要。 现有做法及其问题 LATTICE模型：通过动态构建物品-物品图结构并利用图卷积网络（GCN）显式学习物品关系，取得了较好的推荐性能。   问题：动态学习物品-物品图结构计算和内存开销大（与物品数量平方成正比），且实验表明冻结该结构后性能相近甚至更好，说明动态学习可能非必要。    本文提出的方法（FREEDOM）本文提出FREEDOM模型，包含以下核心创新点： 1. 冻结物品-物品图结构（AA） 方法：   直接基于物品的多模态原始特征（如视觉和文本）构建物品-物品图，并在训练中冻结该结构。   通过k近邻（kNN）稀疏化将加权图转为无权图（仅保留相似度最高的k条边）。   作用：   避免动态更新图结构的计算开销，提升效率。   实验表明冻结后的结构仍能保留物品间的语义关联，性能与动态学习相当。    2....</div></div></div></a><a class="pagination-related" href="/2025/06/30/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95/%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0(%E8%87%AA%E7%9B%91%E7%9D%A3)/" title="对比学习(自监督)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">对比学习(自监督)</div></div><div class="info-2"><div class="info-item-1">对比学习自监督学习在医学影像领域或数据稀疏的推荐系统领域中，往往没有大规模标注的数据集，为提升模型表征能力，可通过自监督学习来完成 自监督学习(Self-supervised learning) 旨在对于无标签数据 ，通过设计辅助任务（Proxy tasks）来挖掘数据自身的表征特性作为监督信息，提升模型的特征提取能力。  其中辅助任务的指的是为达到特定训练任务⽽设计的间接任务。pretext任务的好处是为了简化原任务的求解，在深度学习中就是避免⼈⼯标记样本，实现⽆监督的语义提取。 Pretext任务可以进⼀步理解为：对⽬标任务有帮助的辅助任务。主要pretext task包括：图像旋转、图像着⾊、图像修复，即类似于数据增强的操作。  这里与其他几种学习方式做一下区分：  有监督（Supervised）： 监督学习是从给定的带标签训练数据集中学习出一个函数（模型参数），在输入新的测试数据时，可以根据这个函数预测结果； 无监督（Unsupervisedg）：...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B4%E7%90%86%E5%90%8E%E7%9A%84%E9%97%AE%E9%A2%98%E5%88%86%E7%B1%BB%E4%B8%8E%E5%85%B3%E9%94%AE%E7%82%B9"><span class="toc-text">整理后的问题分类与关键点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%95%88%E7%8E%87%E9%97%AE%E9%A2%98"><span class="toc-text">计算效率问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%99%AA%E5%A3%B0%E9%97%AE%E9%A2%98"><span class="toc-text">噪声问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E5%BE%81%E6%9E%84%E5%BB%BA%E6%BC%94%E8%BF%9B"><span class="toc-text">特征构建演进</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E4%BA%A4%E4%BA%92%E5%BB%BA%E6%A8%A1"><span class="toc-text">用户交互建模</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E5%89%8D%E6%B2%BF%E9%97%AE%E9%A2%98"><span class="toc-text">其他前沿问题</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E5%85%B7%E6%BD%9C%E5%8A%9B%E7%9A%843%E4%B8%AA%E7%A0%94%E7%A9%B6%E6%96%B9%E5%90%91"><span class="toc-text">最具潜力的3个研究方向</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

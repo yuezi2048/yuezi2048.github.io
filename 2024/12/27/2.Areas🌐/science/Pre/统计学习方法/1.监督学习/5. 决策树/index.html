@@ -1,0 +1,485 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>5. 决策树 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="[TOC] 五、决策树 决策树（decision tree）是一个基本的分类和回归方法，这里主要讨论分类 决策树模型是树型结构，表示基于特征对实例进行分类的过程 被认为是if-then规则的集合（说明了可解释性） 也可以认为是定义在特征空间和类空间上的条件概率分布 有点就是可读性与分类速度快   学习时，在训练数据集上通过损失函数最小化建立决策树模型。预测时，对测试集利用决策树模型进行分类 学习包">
+<meta property="og:type" content="article">
+<meta property="og:title" content="5. 决策树">
+<meta property="og:url" content="https://yuezi2048.github.io/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/5.%20%E5%86%B3%E7%AD%96%E6%A0%91/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="[TOC] 五、决策树 决策树（decision tree）是一个基本的分类和回归方法，这里主要讨论分类 决策树模型是树型结构，表示基于特征对实例进行分类的过程 被认为是if-then规则的集合（说明了可解释性） 也可以认为是定义在特征空间和类空间上的条件概率分布 有点就是可读性与分类速度快   学习时，在训练数据集上通过损失函数最小化建立决策树模型。预测时，对测试集利用决策树模型进行分类 学习包">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2024-12-27T03:10:01.000Z">
+<meta property="article:modified_time" content="2024-12-27T03:10:01.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="1.监督学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "5. 决策树",
+  "url": "https://yuezi2048.github.io/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/5.%20%E5%86%B3%E7%AD%96%E6%A0%91/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2024-12-27T03:10:01.000Z",
+  "dateModified": "2024-12-27T03:10:01.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/5.%20%E5%86%B3%E7%AD%96%E6%A0%91/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '5. 决策树',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">5. 决策树</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">5. 决策树</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-12-27T03:10:01.000Z" title="发表于 2024-12-27 11:10:01">2024-12-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-12-27T03:10:01.000Z" title="更新于 2024-12-27 11:10:01">2024-12-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/">science</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/">Pre</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/">统计学习方法</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1-%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/">1.监督学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">4.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>14分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>[TOC]</p>
+<h1 id="五、决策树"><a href="#五、决策树" class="headerlink" title="五、决策树"></a>五、决策树</h1><ul>
+<li><code>决策树</code>（decision tree）是一个基本的分类和回归方法，这里主要讨论分类</li>
+<li>决策树模型是树型结构，表示基于特征对实例进行分类的过程<ul>
+<li>被认为是<code>if-then</code>规则的集合（说明了可解释性）</li>
+<li>也可以认为是定义在特征空间和类空间上的条件概率分布</li>
+<li>有点就是可读性与分类速度快</li>
+</ul>
+</li>
+<li>学习时，在训练数据集上通过损失函数最小化建立决策树模型。预测时，对测试集利用决策树模型进行分类</li>
+<li>学习包含三个步骤<ul>
+<li><code>特征选择</code></li>
+<li><code>决策树的生成</code></li>
+<li><code>决策树的修剪</code>（防止过拟合）</li>
+</ul>
+</li>
+<li>决策树的算法包括：Quinlan在1986年提出的<code>ID3方法</code>，1993年提出的<code>C4.5算法</code>，Breiman等人1986年提出的<code>CART算法</code></li>
+</ul>
+<p>注：这里是后续学习XGBoost和GBDT等高阶决策树模型的基础，所以也需要了解基础模型。</p>
+<h2 id="5-1-决策树模型和学习"><a href="#5-1-决策树模型和学习" class="headerlink" title="5.1 决策树模型和学习"></a>5.1 决策树模型和学习</h2><h3 id="5-1-1-决策树模型"><a href="#5-1-1-决策树模型" class="headerlink" title="5.1.1 决策树模型"></a>5.1.1 决策树模型</h3><ul>
+<li>决策树的定义：树形结构，内部结点表示特征，叶子结点表示类</li>
+</ul>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012092856512.png" alt="image-20241012092856512" style="zoom: 67%;" />	
+
+<p>决策树进行分类，过程如下：</p>
+<ul>
+<li>首先从根节点开始，对实例的特征进行测试</li>
+<li>根据测试结果分配到对应子节点（对应一个特征取值）</li>
+<li>从该子节点递归对实例进行测试和分配</li>
+<li>直到实例被分配到叶节点的类中</li>
+</ul>
+<p>决策树模型图示如下，圆形结点是内部结点，方框是叶子结点</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012093257339.png" alt="image-20241012093257339" style="zoom:67%;" />	
+
+
+
+<h3 id="5-1-2-if-then原则"><a href="#5-1-2-if-then原则" class="headerlink" title="5.1.2 if-then原则"></a>5.1.2 if-then原则</h3><ul>
+<li>决策树实际上可看成<code>if-then规则</code>的集合，具体构建过程如下<ul>
+<li>从根节点到叶节点每条路径构建一条规则（经过内部结点的特征经对应规则的if，到达叶节点的类对应规则的then）</li>
+</ul>
+</li>
+<li>if-then的性质：互斥且完备<ul>
+<li>互斥是说每一个实例只能被一条路径（规则）覆盖</li>
+<li>完备是说每一个实例分别都能被一条路径（规则）覆盖</li>
+</ul>
+</li>
+<li><code>覆盖</code>是说特征和路径上特征一致的实例满足规则</li>
+</ul>
+<h3 id="5-1-3-条件概率分布"><a href="#5-1-3-条件概率分布" class="headerlink" title="5.1.3 条件概率分布"></a>5.1.3 条件概率分布</h3><ul>
+<li>决策树亦可看成给定特征条件下，类的<code>条件概率分布</code>。<ul>
+<li>该条件概率分布可定义为特征空间的划分，划分为互不相交的<code>单元和区域</code></li>
+<li>决策树的一条路径就对应于划分的一个单元，各个路径给定条件下的类的分布集合，就是决策树表示的条件概率分布</li>
+</ul>
+</li>
+<li>符号说明：X是表示特征的随机变量，Y是表示类的随机变量，类的条件概率就是P(Y | X)，于是我们就可以根据各叶节点（单元）条件概率偏向于某一类概率大，就判断该类属于哪一类别</li>
+</ul>
+<p>这里，我们假设特征空间只有正类+1和负类-1，我们可以看到特征空间划分的情况，以及确定划分后的条件概率分布</p>
+<p>如果某个单元c的条件概率满足P(Y &#x3D; +1 | X &#x3D; c) &gt; 0.5时，判断称为正类，即该单元实例为正类，最终的决策树如图C所示。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012094505620.png" alt="image-20241012094505620">	</p>
+<h3 id="5-1-4-决策树学习"><a href="#5-1-4-决策树学习" class="headerlink" title="5.1.4 决策树学习"></a>5.1.4 决策树学习</h3><p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012095045710.png" alt="image-20241012095045710">	</p>
+<ul>
+<li><p>目标：通过决策树从训练集中构建出一个与数据集矛盾较小的决策树的模型，并具有一定的泛化能力（也可看做是条件概率模型）。</p>
+</li>
+<li><p>策略：通常是使用<code>正则化的极大似然函数</code>来表示模型的损失函数，那么策略就是以损失函数为目标函数的最小化问题</p>
+<ul>
+<li>此时学习目标转化为损失函数意义下，最优决策树模型问题，但从所有决策树模型选择最优是<code>NP完全问题</code>，所以通常采用<code>启发式方法</code>近似求解，得到次优模型</li>
+</ul>
+</li>
+<li><p>启发式算法思想：递归选择最优特征，根据该特征对数据集分割，使得各子数据集有一个最好的分类的过程，特征的划分就对应决策树的构建，具体过程如下：</p>
+<ul>
+<li>首先构建根节点。所有数据在根节点中选择最优特征，然后分割为子集，使得各子集有一个最好分类</li>
+<li>如果子集能满足能基本正确分类的阈值，那么就构建叶节点，将该子集放入叶节点中去</li>
+<li>如果不能满足，则对子集继续进行递归，重新选择最优特征，进行分割，构建结点。直到没有特征或者能基本正确分类为止</li>
+<li>最终每个子集分配到叶节点上，都有明确的类，就生成了一颗决策树</li>
+</ul>
+</li>
+<li><p>以上是决策树的生成思路，但存在过拟合的问题，所以要进行剪枝使模型简单，具有一定泛化能力。</p>
+</li>
+<li><p>如果本身特征很多，那么在一开始的学习中，就应当选择对分类能力贡献度大的特征，去除贡献度少的特征</p>
+</li>
+<li><p>决策树的生成对应模型的<code>局部选择</code>（旨在提高训练集的信息增益），决策树的剪枝对应模型的<code>全局选择</code>（旨在优化损失函数 减少对于测试集的模型复杂度）</p>
+</li>
+</ul>
+<h2 id="5-2-特征选择"><a href="#5-2-特征选择" class="headerlink" title="5.2 特征选择"></a>5.2 特征选择</h2><ul>
+<li>我们首先要选取对训练数据具有分类贡献的特征（<code>feature importance</code>），提高决策树学习的效率</li>
+<li>选择的准则包括：<code>信息增益</code>或<code>信息增益比</code></li>
+</ul>
+<p>给出一个贷款决策问题，具体特征和类别判定如下</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012100838741.png" alt="image-20241012100838741">	</p>
+<p>从下面两个特征选择的情况图可以发现，可以构建出两个可能的决策树，我们需要选择能够更好的分类的特征（即按照该特征分割后各子集能有更好的分类）</p>
+<p>信息增益可以很好的表示这一直观的原则，我们接下来展开说这个关键的概念</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012104513278.png" alt="image-20241012104513278">	</p>
+<h3 id="5-2-1-信息增益"><a href="#5-2-1-信息增益" class="headerlink" title="5.2.1 信息增益"></a>5.2.1 信息增益</h3><p> 我们引入<code>熵</code>和<code>条件熵</code>的定义</p>
+<ul>
+<li>熵表示随机变量不确定性的度量，如果X表示取有限个值的随机变量，随机变量为<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012104753471.png" alt="image-20241012104753471" style="zoom: 50%;" /></li>
+<li>那么关于随机变量X的熵的定义为：</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012104821952.png" alt="image-20241012104821952">	</p>
+<ul>
+<li>如果pi&#x3D;0，定义0log0&#x3D;0，且log一般以2为底，熵的单位叫做比特bit或者纳特nat。	</li>
+<li>可以看到熵只依赖于X的分布，与X的取值无关，所以我们一般把H(X)也记作H(p)</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012105016072.png" alt="image-20241012105016072">	</p>
+<ul>
+<li>熵越大，随机变量不确定性越大，由熵的定义，有如下不等式成立</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012105041899.png" alt="image-20241012105041899">	</p>
+<p>给出一个例子，给定一个01取值的伯努利分布，那么熵可以得到如下：</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012105131321.png" alt="image-20241012105131321">	</p>
+<ul>
+<li>可以发现当p&#x3D;0或p&#x3D;1时，H(p) &#x3D; 0，此时完全没有不确定性，而当p&#x3D;0.5时，熵最大，随机变量不确定性最大</li>
+</ul>
+<p>给出随机变量(X, Y)，给出<code>条件熵H(Y | X)</code>的计算公式，实际上简单理解就是分情况讨论，将x的所有情况下y的不确定性进行期望计算</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012105315469.png" alt="image-20241012105315469">	</p>
+<ul>
+<li>如果熵和条件熵是通过数据估计（<code>极大似然估计</code>）得到，得到的熵我们称为<code>经验熵</code>和<code>经验条件熵</code></li>
+</ul>
+<p>ok，有了以上的基础，我们定义信息增益：</p>
+<ul>
+<li><code>信息增益</code>表示得知特征X的信息而使得Y信息不确定性减少的程度，可定义为关于数据集D的熵和条件熵的差值（<code>互信息</code>）</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012105601237.png" alt="image-20241012105601237">	</p>
+<ul>
+<li>我们正是通过信息增益来选择特征，对于信息增益大的特征来说，我们认为具有更强的分类能力</li>
+</ul>
+<h3 id="5-2-2-信息增益算法"><a href="#5-2-2-信息增益算法" class="headerlink" title="5.2.2 信息增益算法"></a>5.2.2 信息增益算法</h3><p>有了上述信息增益的变量的基础，我们可以得到信息增益准则的算法</p>
+<p>首先给出算法的思路：对数据集（子集）D计算每个特征的信息增益，选择信息增益最大的特征</p>
+<p>算法涉及到的数学符号如下：</p>
+<ul>
+<li>设数据集D的样本容量为|D| ，有K个类Ck（k&#x3D;1,2,3,…,K）|Ck|表示类Ck的样本个数</li>
+<li>特征A有n个不同取值{a1, a2, …, an}，则A将D划分为n个子集D1, D2,…Dn，|Di|表示Di的样本个数</li>
+<li>而对于子集Di来说，Di属类样本Ck的样本集合为Dik，即Di和Ck的交集，|Dik为样本的个数|</li>
+</ul>
+<p>算法描述：</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012110212884.png" alt="image-20241012110212884">	</p>
+<p>以上述贷款的案例，计算过程如下：</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012110510831.png" alt="image-20241012110510831">	</p>
+<h3 id="5-2-3-信息增益比"><a href="#5-2-3-信息增益比" class="headerlink" title="5.2.3 信息增益比"></a>5.2.3 信息增益比</h3><ul>
+<li>信息增益存在问题：<strong>信息增益划分的特征会偏向于选择取值较多的特征</strong><ul>
+<li>理解：分的子集如果多了，那么减掉的就少了，那么信息增益就大，就会偏向于选择这个</li>
+<li>给出极端的情况：如果上述案例按照ID划分，有n个取值，子集熵就为0，那么就没有意义了</li>
+</ul>
+</li>
+<li>所以用<code>信息增益比</code>来表示加入条件以后，不确定性的相对关系变化，而非<code>信息增益</code>表示的绝对关系</li>
+</ul>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012110831177.png" alt="image-20241012110831177" style="zoom:80%;" />	
+
+
+
+<h2 id="5-3-决策树生成"><a href="#5-3-决策树生成" class="headerlink" title="5.3 决策树生成"></a>5.3 决策树生成</h2><h3 id="5-3-1-ID3算法"><a href="#5-3-1-ID3算法" class="headerlink" title="5.3.1 ID3算法"></a>5.3.1 ID3算法</h3><p>ID3算法的核心思路就是我们之前天然想到的启发式生成想法：各个结点通过信息增益选择最优特征，递归构建决策树（提前告知，需区分CART算法，这不是二叉树）</p>
+<ul>
+<li>从根节点开始计算所有可能的信息增益，选取最大信息增益作为特征，由该特征不同的取值建立子节点</li>
+<li>对子节点递归调用以上方法</li>
+<li>所有特征信息增益小于某个阈值（后续会被认作为单节点树），或没有特征可以选择递归停止</li>
+</ul>
+<p>基于上述思路，我们可以得到一套递归的过程如下：</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012111838545.png" alt="image-20241012111838545">	</p>
+<p>给出先前的贷款例子，尝试使用ID3算法构建决策树</p>
+<ul>
+<li>思考：为什么要对信息增益有一个阈值0.5？即这里为什么只用两个特征，没有用上所有特征<ul>
+<li>个人理解，两个原因，一个是生成效率，一个是泛化能力</li>
+</ul>
+</li>
+<li>即使选择了强特征，因为只有生成，还是容易产生过拟合的现象，所以后续还要剪枝</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012112003881.png" alt="image-20241012112003881">	</p>
+<h3 id="5-3-2-C4-5算法"><a href="#5-3-2-C4-5算法" class="headerlink" title="5.3.2 C4.5算法"></a>5.3.2 C4.5算法</h3><p>在ID3基础上做了简单的改进，这里第三步替换为了计算D的信息增益比，其他没什么区别</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012112419426.png" alt="image-20241012112419426">	</p>
+<h2 id="5-4-决策树剪枝"><a href="#5-4-决策树剪枝" class="headerlink" title="5.4 决策树剪枝"></a>5.4 决策树剪枝</h2><p>先前根据局部最优已经生成了一颗初步的决策树，接下来就是考虑树的复杂度，对决策树进行<code>剪枝</code>（pruning），来提升整体的泛化能力。具体来说，就是在已生成的树上裁掉子树或结点，并将根节点或父节点作为新的叶节点</p>
+<p>给出一个简单的剪枝算法：</p>
+<ul>
+<li>核心思路：极小化决策树整体的损失函数（<code>代价函数 Cost function</code>）</li>
+<li>相关数学符号：|T|为树T的叶节点个数，t为树T的叶节点，该叶结点包含Nt个样本点，这些样本点中为k类样本点的个数为Ntk个（k&#x3D;1,2,…,K），Ht(T)是叶节点t的经验熵，α ≥ 0，是一个超参数</li>
+</ul>
+<p>定义的损失函数如下：通过5.14，我们就可以简单的理解为损失函数就是决策树模型拟合程度和复杂程度的加权和</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012112951818.png" alt="image-20241012112951818">	</p>
+<ul>
+<li>那么剪枝就需要确定α后（泛化能力的权重），选择损失函数最小的子树。<ul>
+<li>如果模型复杂，即子树多，测试误差小但泛化能力差了，容易造成过拟合</li>
+<li>如果模型简单，即子树少，泛化能力好些但会造成测试误差大，造成欠拟合</li>
+</ul>
+</li>
+<li>剪枝考虑了模型的复杂度，那么在这个过程中，就是在学习整体的模型（决策树的生成仅学习局部的模型）</li>
+<li>直接给出结论，这里损失函数的最小化就等价于正则化的极大似然估计，所以这里利用损失函数最小要换则剪枝就是正则化极大似然轨迹的模型选择</li>
+</ul>
+<p>剪枝算法的过程描述如下：</p>
+<ul>
+<li>简单来说，就是从叶节点开始找哪些结点如果剪掉，造成损失函数更小或者不变，那么就剪掉</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012113736746.png" alt="image-20241012113736746">	</p>
+<h2 id="5-5-CART算法"><a href="#5-5-CART算法" class="headerlink" title="5.5 CART算法"></a>5.5 CART算法</h2><p><code>分类和回归树</code>（classfication and regression tree, CART）是应用广泛的决策树学习方法，其同样由特征选择、树的生成、树的剪枝组成，既可以用于分类也可以用于回归。</p>
+<ul>
+<li><p>CART是给定输入随机变量X下输出随机变量Y的条件概率分布的方法，CART假设决策树为二叉树，内部结点的取值为true or false，左分支为true，右分支为false。</p>
+</li>
+<li><p>递归地二分每个特征， 将输入空间即特征空间划分为有限个单元，并在这些单元中预测概率分布，即输入条件下输出的条件概率分布</p>
+</li>
+<li><p>CART算法和前面一样，主要分为两步：</p>
+<ul>
+<li><p>决策树生成：基于训练数据集生成决策树，尽可能大</p>
+</li>
+<li><p>决策树剪枝：用验证数据集对已生成的树进行剪枝并选择最优子树，此时以最有函数最少作为剪枝的标准</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-5-1-CART生成"><a href="#5-5-1-CART生成" class="headerlink" title="5.5.1 CART生成"></a>5.5.1 CART生成</h3><p>那么CART就是递归构建二叉决策树的过程，对回归树采用的是<code>平方误差最小化准则</code>，对分类树采用<code>基尼指数最小化原则</code>，进行特征选择</p>
+<h4 id="回归树生成"><a href="#回归树生成" class="headerlink" title="回归树生成"></a>回归树生成</h4><p>给定数据集D，生成回归树</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012195941714.png" alt="image-20241012195941714">	</p>
+<ul>
+<li><p>首先可以明确的是，一棵回归树对应的是对输入空间的一个划分，以及在划分的单元的输出值。</p>
+</li>
+<li><p>接下来我们假设输入空间被划分为<strong>M个单元R1 R2…Rm</strong>, 并且在每个单元Rm上有一个固定的输出值cm，此时回归树的模型可表示为</p>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012200113244.png" alt="image-20241012200113244">	</p>
+<ul>
+<li><p>对输入空间确定划分后，我们使用<code>平方误差</code>来表示训练数据的预测误差，根据<code>平方误差最小原则</code>求解每个单元最优输出值。</p>
+<ul>
+<li><p>输入空间Rm上的<strong>cm的最优值cm^</strong>，就是Rm上所有输入实例xi对应输出yi的均值，数学表达式如下</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012200349670.png" alt="image-20241012200349670"></p>
+</li>
+</ul>
+</li>
+<li><p>好，确定好每个区域的输出值后，考虑如何划分区域。依然采用<code>启发式</code>的思路。</p>
+<ul>
+<li><p>对于每次划分，我们将选择第j个变量x^(j)，取它的值s，作为<code>切分变量</code>和<code>切分点</code>，这样就可以划出两个区域，数学表示如下</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012200558981.png" alt="image-20241012200558981">    </p>
+</li>
+<li><p>接下来问题就是<strong>寻找最优切分变量j和最优切分点s</strong>，根据下述公式求解（优先明确算法流程，后面我会细说这个公式什么意思，不理解没事慢慢来多看几遍）：</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012200648245.png" alt="image-20241012200648245">    </p>
+<ul>
+<li>说明：从内往外看，首先是得到划分后满足R1输入空间误差最小和R2空间输入空间最小的基础上得到最优的划分，即同时考虑两个维度上的最优损失</li>
+</ul>
+</li>
+<li><p>确定最优分割变量 最优切分点后，按照公式5.18划分的两个区域，根据公式5.17可以得到对应划分区域输入空间的最优值。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012200838764.png" alt="image-20241012200838764"></p>
+</li>
+</ul>
+</li>
+<li><p>我们遍历所有的输入变量x^(j)，找到最优的切分变量作为本次的划分。接下来对每个区域重复上述划分过程，直到满足停止条件为止</p>
+</li>
+</ul>
+<p>至此，可以得到一颗<code>最小二乘回归树</code></p>
+<p>算法描述如下</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012202214718.png" alt="image-20241012202214718">	</p>
+<h4 id="分类树生成"><a href="#分类树生成" class="headerlink" title="分类树生成"></a>分类树生成</h4><p>分类树根据<code>基尼指数</code>选择最优特征，决定该特征的最优二值切分点</p>
+<ul>
+<li>基尼指数的定义如下<ul>
+<li>对于5.24，实际上是按照大数定理，把样本估计当作总体估计了</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012202433015.png" alt="image-20241012202433015">	</p>
+<p>样本集合D根据特征A是否取某一可能值a，分割为D1和D2两个部分</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012202714512.png" alt="image-20241012202714512">	</p>
+<p>那么在特征A的条件下，集合D的基尼指数为</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012202736394.png" alt="image-20241012202736394">	</p>
+<p>基尼指数Gini(D)表示集合D的不确定性，Gimi(D, A)表示经过A&#x3D;a分割后，集合D的不确定性。</p>
+<p>基尼指数越大，表示不确定性越大，这和熵很类似，实际熵在二类分类问题中，根据下图分辨确实如此。都是可以近似的表现为误差率。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012202844984.png" alt="image-20241012202844984">	</p>
+<p>那么有了先前的ID3和C4.5基础，并且做了依据基尼指数来划分二叉树的改进后，具体的CART生成算法如下</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012202946475.png" alt="image-20241012202946475">	</p>
+<p>给出案例</p>
+<ul>
+<li>注：如果特征取值只有是或否，那么一定可以划分为一个二叉树，但依旧需要算二叉树，因为后续需要根据该参数进行特征选择</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012203122014.png" alt="image-20241012203122014">	</p>
+<h3 id="5-5-2-CART剪枝"><a href="#5-5-2-CART剪枝" class="headerlink" title="5.5.2 CART剪枝"></a>5.5.2 CART剪枝</h3><p>CART剪枝由两步组成：</p>
+<ul>
+<li><p>通过生成算法产生的决策树T0底端开始不断<code>剪枝</code>，直至T0的根节点，形成子树序列（T0, T1, T2….Tn）</p>
+</li>
+<li><p>通过<code>交叉验证法</code>在独立的验证数据集对每个子树序列进行预测，选择最优子树</p>
+</li>
+</ul>
+<p>类似地，首先计算子树的损失函数</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012203640976.png" alt="image-20241012203640976">	</p>
+<p>其中，C(T)是与训练数据的预测误差（基尼指数），|T|是子树结点个数，α≥0为超参数，Cα(T)表示参数为α时，子树T的整体损失。参数α需权衡拟合程度和模型的复杂度</p>
+<ul>
+<li>对于固定的α，是一定能找到使得整体损失函数Cα(T)最小的子树Tα，因为具有单调性，子树Tα是唯一的<ul>
+<li>当α大的时候，最优子树Tα偏小。α-&gt;∞，得到只有根节点的单节点树为最优</li>
+<li>当α小的时候，最优子树Tα偏大。α-&gt;0，此时整体树是最优的</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012204131424.png" alt="image-20241012204131424">	</p>
+<p>此时α再增大，不等式5.29就反向了。</p>
+<p>分析完对于以内部结点t为根节点（剪枝前）和单节点（剪枝后）的损失函数后，</p>
+<p>不难得出结论：当<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012204222185.png" alt="image-20241012204222185" style="zoom:80%;" />时，Tt和t具有相同的损失函数，t的结点少，因此t会更可取，对Tt进行剪枝操作</p>
+<p>基于上述，对T0的每个内部结点t，<strong>定义函数g(t)表示剪枝后整体函数减小的程度</strong>。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012204313536.png" alt="image-20241012204313536">	</p>
+<p>经过上述操作后，T0会减去g(t)中最小的Tt，将得到的子树为T1，并将最小的g(t)作为α1。此时T1为[α1，α2) 的最优子树</p>
+<p>如此不断进行剪枝，直到根节点，在这个过程中，也会不断增加α值，产生新的区间。</p>
+<p>接下来，通过<code>交叉验证法</code>选取最优子树</p>
+<p>具体做法是：</p>
+<ul>
+<li>通过独立验证数据集，测试子树T0 T1…Tn各个子树的平方误差或基尼指数，最小的被认为是最优决策树</li>
+<li>由于每颗子树对应一个参数α，因此当Tk确定时，对应的αk也会被确定，此时得到最优决策树Tα</li>
+</ul>
+<p>得到最后的算法描述</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012204712665.png" alt="image-20241012204712665"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/5.%20%E5%86%B3%E7%AD%96%E6%A0%91/">https://yuezi2048.github.io/2024/12/27/2.Areas🌐/science/Pre/统计学习方法/1.监督学习/5. 决策树/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/1-%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/">1.监督学习</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/6.%20%E9%80%BB%E8%BE%91%E6%96%AF%E8%92%82%E5%9B%9E%E5%BD%92%E5%92%8C%E6%9C%80%E5%A4%A7%E7%86%B5%E6%A8%A1%E5%9E%8B/" title="6. 逻辑斯蒂回归和最大熵模型"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">6. 逻辑斯蒂回归和最大熵模型</div></div><div class="info-2"><div class="info-item-1">[TOC] 六、logistic回归和最大熵模型 logistic回归是经典分类方法，最大熵模型是概率模型学习中的重要准则，可推广到最大熵模型 maximum entropy model 之所以放在一起说，是因为logistic回归模型和最大熵模型都属于对数线性模型  6.1 logistic回归6.1.1 logistic分布	 我们可根据上述函数绘制出f(x)和F(x)的图形 	 分布函数F(x)属于logistic函数，图形是S形曲线，关于点(u, 1/2)对称s，即满足 	 从F(x)的导数f(x)图像上，我们也可以发现，两端增长速度慢，中心附近增长快 同时可以控制形状变量y，y越小，可以使得中心附近增长的速度越快 6.1.2 二项logistic回归模型二项logistic回归模型是一种分类模型，通过条件概率分布P(Y |...</div></div></div></a><a class="pagination-related" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/4.%20%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%B3%95/" title="4. 朴素贝叶斯法"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">4. 朴素贝叶斯法</div></div><div class="info-2"><div class="info-item-1">[TOC] 四、朴素贝叶斯法 朴素贝叶斯是基于贝叶斯定理和特征条件独立假设的分类方法 对于给定是训练数据集，基于特征条件独立假设学习输入输出的联合概率分布 然后基于该模型对给定的输入x使用贝叶斯定理求出后验概率最大的 输出y  4.1 朴素贝叶斯法的学习与分类4.1.1 模型——基本方法 输入空间X是n维向量集合R^n，输出空间Y是类标记集合{c1, c2, …, ck} 朴素贝叶斯首先学习联合概率分布P(X, Y)，具体需要学习先验概率分布和条件概率分布，这是我们之前提到的生成模型的做法  	  其中，条件概率分布P(X &#x3D; x | Y &#x3D; ck)的参数数量是指数级的，直接估计是不行的  假设n维输入变量，每组x值有Sj组特征，Y可能的取值有k个，根据排列组合，参数的个数就是   因此为了简化问题，朴素贝叶斯作出条件独立性假设，他可以使得X的每组特征是独立的，所以可以直接连乘起来   	 后验概率P(Y = ck | X = x)就可以计算得到如下  其中分母是P(X &#x3D; x)的全概率展开形式，表示y&#x3D;c1, c2, ..,...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/2.%20%E6%84%9F%E7%9F%A5%E6%9C%BA/" title="2. 感知机"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-27</div><div class="info-item-2">2. 感知机</div></div><div class="info-2"><div class="info-item-1">[TOC] 二、感知机 感知机是二类分类的线性模型，输入为实例的特征向量，输出为实例的类别（取-1和+1） 感知机将实例划分为正负两类的分离超平面，属于判别模型 基于误分类的损失函数，通过梯度下降法对损失函数进行极小化得到感知机模型 感知机包括原始形式和对偶形式，是后续学习神经网络和支持向量机的基础  2.1 感知机模型 感知机模型函数表示如下  	   是一个线性分类模型，属于判别模型 假设空间是定义在特征空间中所有线性分类模型 模型的几何解释如下  	    2.2 感知机学习策略2.2.1 线性可分性 存在一个超平面，完全正确地将正实例点和负实例点划分到超平面的两侧，则称数据集T为线性可分数据集  	    2.2.2 学习策略 我们首先假设训练集线性可分，那么就是要找出这个完全正确划分的超平面，那么学习策略就是要定义经验损失函数并最小化 经验损失函数，并没有天然地选择误分类点的个数来进行判断，因为这不是连续可导，而是选择了所有误分类点到超平面S的总距离进行判断，一个点到平面的距离可以这样表示  	  对于误分类的数据来说，yi和w·xi +...</div></div></div></a><a class="pagination-related" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/1.%20%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E5%8F%8A%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0%E6%A6%82%E8%AE%BA/" title="1. 统计学习及监督学习概论"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-27</div><div class="info-item-2">1. 统计学习及监督学习概论</div></div><div class="info-2"><div class="info-item-1">[TOC] 一、统计学习及监督学习概论1.1 统计学习 统计学习是计算机系统通过运用数据及统计方法  提高系统性能的机器学习 统计学习研究的对象是数据，提取数据特征，抽象模型，而后回归到数据的分析和预测 基本假设：同类数据具有统计规律性   统计学习的方法包括：监督学习、无监督学习、强化学习 假设数据是独立同分布的，并假设学习的模型属于某个函数的集合（假设空间） 应用某个评价准则，从假设空间中选取最优模型，使他对测试数据在给定的评价准则下由最优的预测，而最优模型的选取由算法实现 因此统计学习方法的三要素：模型、策略、算法   统计学习的步骤 得到有限的训练数据集合 确定包含所有可能的模型假设空间（学习模型的集合） 确定模型选择的准则，即学习的策略 通过学习算法选择最优模型 利用学习的最优模型对新数据进行预测和分析    1.2 统计学习的分类1.2.1...</div></div></div></a><a class="pagination-related" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/3.%20k%E8%BF%91%E9%82%BB%E6%B3%95/" title="3. k近邻法"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-27</div><div class="info-item-2">3. k近邻法</div></div><div class="info-2"><div class="info-item-1">[TOC] 三、k近邻法 K-NN是一个基本的分类和回归方法，此处讨论基本的分类问题 输入为实例的特征向量，对应于特征空间的点，输出是实例的类别，可以取多个类 k近邻是假设给定训练数据集，其中的实例类别已定，分类时根据k个最近邻的训练实例类别通过多数表决的方式进行预测，并没有显式的学习过程 k值的选择、距离度量和分类决策规则是k近邻法的3个基本要素  3.1 k近邻算法 特殊的情况是k&#x3D;1时，此时为最近邻算法 k近邻算法没有显式的学习过程  	 3.2 k近邻模型与决策规则3.2.1 模型 k近邻模型主要有3个基本要素：距离度量、k值选择和分类决策规则，确定好上述后，给定一个输入实例，就可以唯一地确定它所属类 在特征空间当中，每一个训练实例点xi，距离该点比其他点更近的所有点组成的一个区域叫做单元(cell)，一个单元构成对于特征空间的一个划分 最近邻算法是实例xi的类yi作为其单元中所有点的类标记(class label)，从而每个单元实例点的类别可以确定，见下图所示    	 3.2.2...</div></div></div></a><a class="pagination-related" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/4.%20%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%B3%95/" title="4. 朴素贝叶斯法"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-27</div><div class="info-item-2">4. 朴素贝叶斯法</div></div><div class="info-2"><div class="info-item-1">[TOC] 四、朴素贝叶斯法 朴素贝叶斯是基于贝叶斯定理和特征条件独立假设的分类方法 对于给定是训练数据集，基于特征条件独立假设学习输入输出的联合概率分布 然后基于该模型对给定的输入x使用贝叶斯定理求出后验概率最大的 输出y  4.1 朴素贝叶斯法的学习与分类4.1.1 模型——基本方法 输入空间X是n维向量集合R^n，输出空间Y是类标记集合{c1, c2, …, ck} 朴素贝叶斯首先学习联合概率分布P(X, Y)，具体需要学习先验概率分布和条件概率分布，这是我们之前提到的生成模型的做法  	  其中，条件概率分布P(X &#x3D; x | Y &#x3D; ck)的参数数量是指数级的，直接估计是不行的  假设n维输入变量，每组x值有Sj组特征，Y可能的取值有k个，根据排列组合，参数的个数就是   因此为了简化问题，朴素贝叶斯作出条件独立性假设，他可以使得X的每组特征是独立的，所以可以直接连乘起来   	 后验概率P(Y = ck | X = x)就可以计算得到如下  其中分母是P(X &#x3D; x)的全概率展开形式，表示y&#x3D;c1, c2, ..,...</div></div></div></a><a class="pagination-related" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/6.%20%E9%80%BB%E8%BE%91%E6%96%AF%E8%92%82%E5%9B%9E%E5%BD%92%E5%92%8C%E6%9C%80%E5%A4%A7%E7%86%B5%E6%A8%A1%E5%9E%8B/" title="6. 逻辑斯蒂回归和最大熵模型"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-27</div><div class="info-item-2">6. 逻辑斯蒂回归和最大熵模型</div></div><div class="info-2"><div class="info-item-1">[TOC] 六、logistic回归和最大熵模型 logistic回归是经典分类方法，最大熵模型是概率模型学习中的重要准则，可推广到最大熵模型 maximum entropy model 之所以放在一起说，是因为logistic回归模型和最大熵模型都属于对数线性模型  6.1 logistic回归6.1.1 logistic分布	 我们可根据上述函数绘制出f(x)和F(x)的图形 	 分布函数F(x)属于logistic函数，图形是S形曲线，关于点(u, 1/2)对称s，即满足 	 从F(x)的导数f(x)图像上，我们也可以发现，两端增长速度慢，中心附近增长快 同时可以控制形状变量y，y越小，可以使得中心附近增长的速度越快 6.1.2 二项logistic回归模型二项logistic回归模型是一种分类模型，通过条件概率分布P(Y |...</div></div></div></a><a class="pagination-related" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/8.%20Boosting/" title="8. Boosting"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-27</div><div class="info-item-2">8. Boosting</div></div><div class="info-2"><div class="info-item-1">[TOC] 八、Boosting Boosting在分类问题中，通过改变训练样本的权重，学习多个分类器，将这些分类器进行线性组合，提高分类的性能 本章主要讨论的问题 Boosting思路和代表性AdaBoost算法 探讨为什么能提高学习精度，从前向分布加法模型解释AdaBoost算法 叙述Boosting具体实例——提升树    8.1 AdaBoost算法8.1.1 Boosting基本思路 思想：三个臭皮匠顶过一个诸葛亮的道理，对多个专家的判断进行综合进行判断（提高专家权重，减少普通人的权重） 在概率近似框架（PAC）框架中，一个概念可强学习的充要条件是这个概念可弱学习的，换句话说弱学习算法可以提升（boost）为强学习算法 强可学习：存在一个多项式学习算法能够学习，且正确率高 弱可学习：存在一个多项式学习算法能够学习，但正确率比随机猜测略好   对于分类问题而言，Boosting的思路就是从弱学习算法出发得到一系列弱分类器，再组合这些弱分类器（通常是改变概率分布...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%86%B3%E7%AD%96%E6%A0%91"><span class="toc-text">五、决策树</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#5-1-%E5%86%B3%E7%AD%96%E6%A0%91%E6%A8%A1%E5%9E%8B%E5%92%8C%E5%AD%A6%E4%B9%A0"><span class="toc-text">5.1 决策树模型和学习</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-1-%E5%86%B3%E7%AD%96%E6%A0%91%E6%A8%A1%E5%9E%8B"><span class="toc-text">5.1.1 决策树模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-2-if-then%E5%8E%9F%E5%88%99"><span class="toc-text">5.1.2 if-then原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-3-%E6%9D%A1%E4%BB%B6%E6%A6%82%E7%8E%87%E5%88%86%E5%B8%83"><span class="toc-text">5.1.3 条件概率分布</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-4-%E5%86%B3%E7%AD%96%E6%A0%91%E5%AD%A6%E4%B9%A0"><span class="toc-text">5.1.4 决策树学习</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-2-%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9"><span class="toc-text">5.2 特征选择</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-1-%E4%BF%A1%E6%81%AF%E5%A2%9E%E7%9B%8A"><span class="toc-text">5.2.1 信息增益</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-2-%E4%BF%A1%E6%81%AF%E5%A2%9E%E7%9B%8A%E7%AE%97%E6%B3%95"><span class="toc-text">5.2.2 信息增益算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-3-%E4%BF%A1%E6%81%AF%E5%A2%9E%E7%9B%8A%E6%AF%94"><span class="toc-text">5.2.3 信息增益比</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-3-%E5%86%B3%E7%AD%96%E6%A0%91%E7%94%9F%E6%88%90"><span class="toc-text">5.3 决策树生成</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-1-ID3%E7%AE%97%E6%B3%95"><span class="toc-text">5.3.1 ID3算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-2-C4-5%E7%AE%97%E6%B3%95"><span class="toc-text">5.3.2 C4.5算法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-4-%E5%86%B3%E7%AD%96%E6%A0%91%E5%89%AA%E6%9E%9D"><span class="toc-text">5.4 决策树剪枝</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-5-CART%E7%AE%97%E6%B3%95"><span class="toc-text">5.5 CART算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-5-1-CART%E7%94%9F%E6%88%90"><span class="toc-text">5.5.1 CART生成</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9B%9E%E5%BD%92%E6%A0%91%E7%94%9F%E6%88%90"><span class="toc-text">回归树生成</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E7%B1%BB%E6%A0%91%E7%94%9F%E6%88%90"><span class="toc-text">分类树生成</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-5-2-CART%E5%89%AA%E6%9E%9D"><span class="toc-text">5.5.2 CART剪枝</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>3.SpringBoot核心特性 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="核心特性一共五点：  自动配置：这是 Spring Boot 最核心的特性。它能根据项目里引入的依赖（比如引入了spring-boot-starter-web，就知道是Web项目），自动配置 Tomcat、Spring MVC 等组件。 底层是通过 @EnableAutoConfiguration + spring.factories 实现的条件装配机制，节省大量 XML 配置。   Starte">
+<meta property="og:type" content="article">
+<meta property="og:title" content="3.SpringBoot核心特性">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/11/22/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/SpringBoot/3.SpringBoot%E6%A0%B8%E5%BF%83%E7%89%B9%E6%80%A7/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="核心特性一共五点：  自动配置：这是 Spring Boot 最核心的特性。它能根据项目里引入的依赖（比如引入了spring-boot-starter-web，就知道是Web项目），自动配置 Tomcat、Spring MVC 等组件。 底层是通过 @EnableAutoConfiguration + spring.factories 实现的条件装配机制，节省大量 XML 配置。   Starte">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-11-22T13:05:12.000Z">
+<meta property="article:modified_time" content="2025-11-22T13:05:12.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="SpringBoot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "3.SpringBoot核心特性",
+  "url": "https://yuezi2048.github.io/2025/11/22/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/SpringBoot/3.SpringBoot%E6%A0%B8%E5%BF%83%E7%89%B9%E6%80%A7/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-11-22T13:05:12.000Z",
+  "dateModified": "2025-11-22T13:05:12.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/11/22/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/SpringBoot/3.SpringBoot%E6%A0%B8%E5%BF%83%E7%89%B9%E6%80%A7/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '3.SpringBoot核心特性',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">3.SpringBoot核心特性</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">3.SpringBoot核心特性</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-11-22T13:05:12.000Z" title="发表于 2025-11-22 21:05:12">2025-11-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-11-22T13:05:12.000Z" title="更新于 2025-11-22 21:05:12">2025-11-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/">02.面经记录</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/SpringBoot/">SpringBoot</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">644</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>2分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>核心特性一共五点：</p>
+<ul>
+<li><strong>自动配置</strong>：这是 Spring Boot 最核心的特性。它能根据项目里引入的依赖（比如引入了spring-boot-starter-web，就知道是Web项目），自动配置 Tomcat、Spring MVC 等组件。<ul>
+<li>底层是通过 <code>@EnableAutoConfiguration</code> + <code>spring.factories</code> 实现的条件装配机制，节省大量 XML 配置。</li>
+</ul>
+</li>
+<li><strong>Starters 依赖启动器</strong>：把常用场景的依赖打包成 starters（web–spring-boot-starter-web、数据库–spring-boot-starter-data-jpa），项目里只需引入一个 starter，就能自动拉取该场景下所有需要的依赖，避免手动管理依赖版本冲突。</li>
+<li><strong>内嵌容器</strong>：内置 Tomcat、Jetty、Undertow 等 Web 容器，可打成 jar 包直接通过 <code>java -jar</code> 启动，不需额外部署 WAR 包，简化了部署流程。</li>
+<li><strong>外部化配置</strong>：支持多环境配置（如 application.yml &#x2F; application-dev.yml），并可通过环境变量、命令行参数等方式覆盖，实现应用与配置解耦。</li>
+<li><strong>Actuator（监控与管理）</strong>：提供了一系列用于监控和管理生产级应用的端点（Endpoints），让我们能轻松查看应用健康状态、指标、日志等信息，提供应用的可观测性与生产级监控能力。</li>
+</ul>
+<blockquote>
+<p>通过starter简化依赖管理、通过自动配置简化配置、通过外部配置实现应用和配置解耦、通过内嵌容器简化部署、通过Actuator提供应用可观测性和生产级的监控</p>
+</blockquote>
+<h2 id="扩展知识"><a href="#扩展知识" class="headerlink" title="扩展知识"></a>扩展知识</h2><ul>
+<li><p><a target="_blank" rel="noopener" href="https://www.mianshiya.com/bank/1797452903309508610/question/1797866285598638082">如何理解 Spring Boot 中的 starter？</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.mianshiya.com/bank/1797452903309508610/question/1846171814407757826">9381. SpringBoot 是如何实现自动配置的？</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.mianshiya.com/bank/1797452903309508610/question/1797435138708209665">750. Spring Boot 配置文件加载优先级你知道吗？</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.mianshiya.com/bank/1797452903309508610/question/1798172017179099137">794. 什么是 Spring Actuator？它有什么优势？</a></p>
+</li>
+</ul>
+<h3 id="面试扩展"><a href="#面试扩展" class="headerlink" title="面试扩展"></a>面试扩展</h3><p>面试时可以跟面试官说说自己是如何实现一个 spring boot starter 来帮助项目简化某些通用的业务的。</p>
+<p>比如现在项目中有很多列表接口需要导出 excel。我利用自动化配置写了一个 excel 导出模块。</p>
+<p>实现思路如下：</p>
+<p>1）写一个 @ExcelExport 注解，放在列表接口上。利用切面来切列表的返回结果，拿到列表结果后写入 excel 当中。</p>
+<p>2）然后写一个配置类放在 meta&#x2F;info&#x2F;spring.factories 文件下。这样让 spring boot 自动装配我们这个写 excel 文件的处理类。</p>
+<p>3）在整个项目中有需要列表导出 excel 的地方，仅需把注解写在列表接口上即可。</p>
+<p>通过这个例子让面试官相信你有实际使用自动化装配的经验。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/11/22/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/SpringBoot/3.SpringBoot%E6%A0%B8%E5%BF%83%E7%89%B9%E6%80%A7/">https://yuezi2048.github.io/2025/11/22/2.Areas🌐/02.面经记录/SpringBoot/3.SpringBoot核心特性/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/SpringBoot/">SpringBoot</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/11/22/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/SpringBoot/2.%E4%BB%80%E4%B9%88%E6%98%AFSpringBoot/" title="2.什么是SpringBoot"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">2.什么是SpringBoot</div></div><div class="info-2"><div class="info-item-1">SpringBoot主要是用于简化Spring开发的框架，核心目标是为了减少Spring的配置和开发复杂性，更快构建、测试和部署 Spring 应用 思想：SpringBoot通过提供默认配置 + 自动化配置 + 嵌入式服务器等方式，简化传统Spring的配置过程，我们只需要引用就能开箱即用，实现快速开发  相关内容：starter、内置服务器有哪些、Spring Boot Actuator提供的断点  扩展知识Spring Boot 主要特点 简化配置：Spring Boot 通过自动配置（@EnableAutoConfiguration），根据项目中的类路径依赖、环境变量等自动为应用配置适当的 Spring 模块，避免了大量的 XML 配置。 内置服务器：Spring Boot 内置了 Tomcat、Jetty、Undertow 等服务器，应用程序可以直接通过 java -jar 方式启动，而不需要部署到外部的 Web 服务器中。 快速开发：Spring Boot...</div></div></div></a><a class="pagination-related" href="/2025/11/22/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/SpringBoot/5.SpringBoot%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE/" title="4.SpringBoot如何实现自动配置"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">4.SpringBoot如何实现自动配置</div></div><div class="info-2"><div class="info-item-1">Spring Boot 的自动配置核心思想：基于@EnableAutoConfiguration注解，这个注解内部是@Import({AutoConfigurationImportSelector.class})，导入的类负责扫描classPath下所有的META_INF&#x2F;spring.factories的文件，根据文件指定的配置类加载对应的bean自动配置 而对于bean的加载时机，则通过 @ConditionalOnClass、@ConditionalOnMissingBean、@ConditionalOnProperty 等条件注解来控制自动配置的加载条件，比如仅在类路径中存在某个类时，才加载某些配置。  场景1：这个原理在我阅读我组长写的starter源码的时候就用到了这个方法来进行自动配置 场景2：@SpringBootApplication(exclude &#x3D; {DataSourceAutoConfiguration.class})，云图库项目中开发环境下不需要分表相关的模块增加难度，我就去掉了提高测试效率。  扩展知识Spring Boot...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/11/22/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/SpringBoot/1.SpringBoot%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/" title="1.SpringBoot启动流程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-22</div><div class="info-item-2">1.SpringBoot启动流程</div></div><div class="info-2"><div class="info-item-1">main方法为入口：SpringApplication.run() 引导应用启动  new SpringApplication()：创建SpringApplication对象，推断应用类型(根据类路径依赖判断servlet&#x2F;reative)——设置初始化器——设置启动监听器——确定主应用类 run方法： 准备环境ConfigurableEnvironment：，读取application.properties、系统变量 命令行参数等配置文件 创建并刷新应用上下文ApplicationContext：加载配置类、自动配置类，刷新则进行 注册bean，依赖注入等初始化操作 对于web应用，刷新应用上下文后，自动启动嵌入式web服务器   发布started事件：启动完成后发送应用启动事件 回调函数：调用实现了CommandLineRunner或者ApplicationRunner接口的bean，执行一些初始化逻辑 发布rready事件...</div></div></div></a><a class="pagination-related" href="/2025/11/22/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/SpringBoot/10.SpringBoot%E6%89%93%E5%8C%85%E7%9A%84jar%E5%92%8C%E6%99%AE%E9%80%9Ajar%E5%8C%BA%E5%88%AB/" title="9.SpringBoot打包的jar和普通jar区别"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-22</div><div class="info-item-2">9.SpringBoot打包的jar和普通jar区别</div></div><div class="info-2"><div class="info-item-1">Spring Boot 打成的 JAR 包：应用程序源代码class + 依赖库lib + 程序需要的配置&#x2F;脚本 + 服务依赖（内嵌服务器Tomcat、类加载器等） 普通JAR包：只有源代码 + 依赖，需要外部服务器 &#x2F; 容器运行 扩展知识Spring Boot jar 结构myapp.jar|-- META-INF/|   |-- MANIFEST.MF  # JAR 的清单文件，指向主类|-- BOOT-INF/|   |-- classes/     # 应用的 .class 文件和资源文件|   |-- lib/         # 应用的依赖库|-- org/springframework/boot/loader/  # Spring Boot 的自定义类加载器|   |-- JarLauncher.class|   |-- WarLauncher.class  BOOT-INF 目录，用于存放应用的类和资源。 lib 目录，用于存放所有依赖。 META-INF&#x2F;MANIFEST.MF 文件，指定了主类和启动类。 普通 jar...</div></div></div></a><a class="pagination-related" href="/2025/11/22/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/SpringBoot/11.SpringBoot%E8%83%BD%E5%90%A6%E7%94%A8XML%E9%85%8D%E7%BD%AE/" title="10.SpringBoot能否用XML配置"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-22</div><div class="info-item-2">10.SpringBoot能否用XML配置</div></div><div class="info-2"><div class="info-item-1">虽然 Spring Boot 强调基于 Java 注解和属性文件的配置，但仍然支持传统的 XML 配置。 实现方式： @ImportResource 注解导入 XML 配置文件，让 Spring Boot 应用程序能够识别和使用这些 Bean。 场景：一般是公司在将 Spring 项目迁移到 Spring Boot 时，因为时间或工作量问题，才会在过渡期间混合使用两者。SpringBoot 项目不太会使用 XML 配置。 </div></div></div></a><a class="pagination-related" href="/2025/11/22/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/SpringBoot/12.SpringBoot%E9%BB%98%E8%AE%A4%E5%A4%84%E7%90%86%E6%9C%80%E5%A4%A7%E8%BF%9E%E6%8E%A5%E6%95%B0%E5%A4%9A%E5%B0%91/" title="11.SpringBoot默认处理最大连接数多少"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-22</div><div class="info-item-2">11.SpringBoot默认处理最大连接数多少</div></div><div class="info-2"><div class="info-item-1"> tomcat能处理的最大连接数 &#x3D; 最大连接数 8192 +  等待数 100 tomcat能处理的最大请求线程数 &#x3D; 200，核心线程数10，队列长度无限（因为是IO密集型，线程池策略区别于默认JDK线程池的机制）  拿 Spring Boot 默认的容器 Tomcat 为例，从引入的 spring-boot-autoconfigure 依赖可以看出，Tomcat 默认的最大连接数是 8192 。  但这里要注意！Tomcat 还有一个默认等待数，加上这个才是 SpringBoot 默认的最大连接数。  所以 SpringBoot 默认同时可以处理的最大连接数 &#x3D; Tomcat 默认的最大连接数 + Tomcat 默认等待数 &#x3D; 8192 + 100 &#x3D; 8292。 这个 Tomcat 配置可以用过配置文件修改，以下是一个 yml 配置的例子： server:  tomcat:    max-connections: 6000 # 最大连接数    accept-count: 100 #...</div></div></div></a><a class="pagination-related" href="/2025/11/22/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/SpringBoot/13.%E5%A6%82%E4%BD%95%E7%90%86%E8%A7%A3SpringBoot%E7%9A%84Starter/" title="12.如何理解SpringBoot的Starter"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-22</div><div class="info-item-2">12.如何理解SpringBoot的Starter</div></div><div class="info-2"><div class="info-item-1">在 Spring Boot 中，Starter定义的是一组依赖集合，简化配置的构建，通过Starter POMs提供多个功能模块的集成，开发者只需引入starter就能自动获得模块所有的依赖和配置，无需手动引入多个依赖库配置文件  类比：买电脑直接买整机，别人把所有零件打包好了，不需要一个个配件装。 注：SpringBoot3.x spring.factories废弃，使用的是imports后缀的文件，只需要放入实现类的全类名即可：com.example.starter.MyAutoConfiguration 追问：让你写一个starter，实现思路步骤？  一般先创建maven项目，添加SpringBoot和其他相关依赖  首先可以配置属性类，通过@ConfigurationProperties等注解，进行配置文件的前缀修改配置  编写业务逻辑  创建自动配置类，分析业务，通过@Configuration 和 @ConditionalOnxxx 注解来条件化的配置 Bean  src&#x2F;main&#x2F;resources&#x2F;META-INF 目录下创建...</div></div></div></a><a class="pagination-related" href="/2025/11/25/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/SpringBoot/14.%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E8%B7%A8%E5%9F%9F%E8%AF%B7%E6%B1%82CORS/" title="14.如何处理跨域请求CORS"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-25</div><div class="info-item-2">14.如何处理跨域请求CORS</div></div><div class="info-2"><div class="info-item-1">Spring Boot 处理跨域请求主要有以下几种方式：  局部配置 CORS，在 Controller 上使用 @CrossOrigin 注解。这种方式简单直接，适合对类进行跨域设置。  	  全局配置 CORS，可以通过实现 WebMvcConfigurer 接口并重写 addCorsMappings 方法，可以对整个应用程序进行统一的跨域配置。  	  还可以**添加 CorsFilter **来处理跨域请求。（或者可以自定义 Filter，但是没必要，因为本身已经提供了 CorsFilter）  	  addCorsMappings与CorsFilter 处理的区别  注：如果配置了addCorsMappings，项目里还用了Interceptor（部分接口需要iwt 权限验证），会出现问题 没有token...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A9%E5%B1%95%E7%9F%A5%E8%AF%86"><span class="toc-text">扩展知识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%A2%E8%AF%95%E6%89%A9%E5%B1%95"><span class="toc-text">面试扩展</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

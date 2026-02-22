@@ -1,0 +1,999 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>12.数据库数据类型 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="十二、数据库数据类型1. MySQL中的数据类型   类型 类型举例    整数类型 TINYINT、SMALLINT、MEDIUMINT、INT(或INTEGER)、BIGINT   浮点类型 FLOAT、DOUBLE   定点数类型 DECIMAL   位类型 BIT   日期时间类型 YEAR、TIME、DATE、DATETIME、TIMESTAMP   文本字符串类型 CHAR、VARCH">
+<meta property="og:type" content="article">
+<meta property="og:title" content="12.数据库数据类型">
+<meta property="og:url" content="https://yuezi2048.github.io/2024/08/16/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/12.%E6%95%B0%E6%8D%AE%E5%BA%93%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="十二、数据库数据类型1. MySQL中的数据类型   类型 类型举例    整数类型 TINYINT、SMALLINT、MEDIUMINT、INT(或INTEGER)、BIGINT   浮点类型 FLOAT、DOUBLE   定点数类型 DECIMAL   位类型 BIT   日期时间类型 YEAR、TIME、DATE、DATETIME、TIMESTAMP   文本字符串类型 CHAR、VARCH">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2024-08-16T01:14:17.000Z">
+<meta property="article:modified_time" content="2024-08-16T01:14:17.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="基础篇">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "12.数据库数据类型",
+  "url": "https://yuezi2048.github.io/2024/08/16/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/12.%E6%95%B0%E6%8D%AE%E5%BA%93%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2024-08-16T01:14:17.000Z",
+  "dateModified": "2024-08-16T01:14:17.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2024/08/16/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/12.%E6%95%B0%E6%8D%AE%E5%BA%93%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '12.数据库数据类型',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">12.数据库数据类型</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">12.数据库数据类型</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-08-16T01:14:17.000Z" title="发表于 2024-08-16 09:14:17">2024-08-16</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-08-16T01:14:17.000Z" title="更新于 2024-08-16 09:14:17">2024-08-16</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/">back-end-java</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/2-MySQL/">2.MySQL</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/2-MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/">基础篇</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">10.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>37分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="十二、数据库数据类型"><a href="#十二、数据库数据类型" class="headerlink" title="十二、数据库数据类型"></a>十二、数据库数据类型</h1><h2 id="1-MySQL中的数据类型"><a href="#1-MySQL中的数据类型" class="headerlink" title="1. MySQL中的数据类型"></a>1. MySQL中的数据类型</h2><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>类型举例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>整数类型</td>
+<td>TINYINT、SMALLINT、MEDIUMINT、INT(或INTEGER)、BIGINT</td>
+</tr>
+<tr>
+<td>浮点类型</td>
+<td>FLOAT、DOUBLE</td>
+</tr>
+<tr>
+<td>定点数类型</td>
+<td>DECIMAL</td>
+</tr>
+<tr>
+<td>位类型</td>
+<td>BIT</td>
+</tr>
+<tr>
+<td>日期时间类型</td>
+<td>YEAR、TIME、DATE、DATETIME、TIMESTAMP</td>
+</tr>
+<tr>
+<td>文本字符串类型</td>
+<td>CHAR、VARCHAR、TINYTEXT、TEXT、MEDIUMTEXT、LONGTEXT</td>
+</tr>
+<tr>
+<td>枚举类型</td>
+<td>ENUM</td>
+</tr>
+<tr>
+<td>集合类型</td>
+<td>SET</td>
+</tr>
+<tr>
+<td>二进制字符串类型</td>
+<td>BINARY、VARBINARY、TINYBLOB、BLOB、MEDIUMBLOB、LONGBLOB</td>
+</tr>
+<tr>
+<td>JSON类型</td>
+<td>JSON对象、JSON数组</td>
+</tr>
+<tr>
+<td>空间数据类型</td>
+<td>单值类型：GEOMETRY、POINT、LINESTRING、POLYGON；<br/>集合类型：MULTIPOINT、MULTILINESTRING、MULTIPOLYGON、GEOMETRYCOLLECTION</td>
+</tr>
+</tbody></table>
+<p>常见数据类型</p>
+<table>
+<thead>
+<tr>
+<th>MySQL关键字</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>NULL</td>
+<td>数据列可包含NULL值</td>
+</tr>
+<tr>
+<td>NOT NULL</td>
+<td>数据列不允许包含NULL值</td>
+</tr>
+<tr>
+<td>DEFAULT</td>
+<td>默认值</td>
+</tr>
+<tr>
+<td>PRIMARY KEY</td>
+<td>主键</td>
+</tr>
+<tr>
+<td>AUTO_INCREMENT</td>
+<td>自动递增，适用于整数类型</td>
+</tr>
+<tr>
+<td>UNSIGNED</td>
+<td>无符号</td>
+</tr>
+<tr>
+<td>CHARACTER SET name</td>
+<td>指定一个字符集</td>
+</tr>
+</tbody></table>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 本章内容建议使用MYSQL5.7测试（数据更详细）</span><br><span class="line"># 1. 属性：character set name</span><br><span class="line"></span><br><span class="line">SHOW VARIABLES LIKE &#x27;character_%&#x27;;</span><br><span class="line"></span><br><span class="line">-- 创建数据库时指定字符集(一般都是在这一步指明字符集)</span><br><span class="line">CREATE DATABASE IF NOT EXISTS dbtest12 CHARACTER SET &#x27;utf8&#x27;;</span><br><span class="line"></span><br><span class="line">SHOW CREATE DATABASE dbtest12;</span><br><span class="line"></span><br><span class="line">-- 创建表时指定字符集</span><br><span class="line">CREATE TABLE temp(</span><br><span class="line">id INT</span><br><span class="line">) CHARACTER SET &#x27;utf8&#x27;;</span><br><span class="line"></span><br><span class="line">SHOW CREATE TABLE temp;</span><br><span class="line"></span><br><span class="line">-- 创建表指明字段，指定字段的字符集(没有指明，往上级寻找，直到配置文件)</span><br><span class="line">CREATE TABLE temp1(</span><br><span class="line">id INT,</span><br><span class="line">NAME VARCHAR(15) CHARACTER SET &#x27;gbk&#x27;</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">SHOW CREATE TABLE temp1;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-整数类型"><a href="#2-整数类型" class="headerlink" title="2. 整数类型"></a>2. 整数类型</h2><h3 id="2-1-类型介绍"><a href="#2-1-类型介绍" class="headerlink" title="2.1 类型介绍"></a>2.1 类型介绍</h3><p>整数类型一共有 5 种，包括 TINYINT、SMALLINT、MEDIUMINT、INT（INTEGER）和 BIGINT。</p>
+<table>
+<thead>
+<tr>
+<th><strong>整数类型</strong></th>
+<th><strong>字节</strong></th>
+<th>有符号数取值范围</th>
+<th>无符号数取值范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TINYINT</td>
+<td>1</td>
+<td>-128~127</td>
+<td>0~255</td>
+</tr>
+<tr>
+<td>SMALLINT</td>
+<td>2</td>
+<td>-32768~32767</td>
+<td>0~65535</td>
+</tr>
+<tr>
+<td>MEDIUMINT</td>
+<td>3</td>
+<td>-8388608~8388607</td>
+<td>0~16777215</td>
+</tr>
+<tr>
+<td>INT、INTEGER</td>
+<td>4</td>
+<td>-2147483648~2147483647</td>
+<td>0~4294967295</td>
+</tr>
+<tr>
+<td>BIGINT</td>
+<td>8</td>
+<td>-9223372036854775808~9223372036854775807</td>
+<td>0~18446744073709551615</td>
+</tr>
+</tbody></table>
+<ul>
+<li>TINYINT有符号数和无符号数的取值范围分别为-128<del>127和0</del>255，由于负号占了一个数字位，因此TINYINT默认的显示宽度为4。</li>
+<li>同理，其他整数类型的默认显示宽度与其有符号数的最小值的宽度相同。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">+-------+--------------+------+-----+---------+-------+</span><br><span class="line">| Field | Type         | Null | Key | Default | Extra |</span><br><span class="line">+-------+--------------+------+-----+---------+-------+</span><br><span class="line">|   x   | tinyint(4)   | YES  |     | NULL    |       |</span><br><span class="line">| 　y   | smallint(6)  | YES  |     | NULL    |       |</span><br><span class="line">| 　z   | mediumint(9) | YES  |     | NULL    |       |</span><br><span class="line">| 　m   | int(11)      | YES  |     | NULL    |       |</span><br><span class="line">| 　n   | bigint(20)   | YES  |     | NULL    |       |</span><br><span class="line">+-------+--------------+------+-----+---------+-------+</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 2. 整型数据类型</span><br><span class="line">USE dbtest12;</span><br><span class="line"></span><br><span class="line">CREATE TABLE test_int1(</span><br><span class="line">f1 TINYINT,</span><br><span class="line">f2 SMALLINT,</span><br><span class="line">f3 MEDIUMINT,</span><br><span class="line">f4 INTEGER,</span><br><span class="line">f5 BIGINT</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">DESC test_int1;</span><br><span class="line"></span><br><span class="line">INSERT INTO test_int1(f1) </span><br><span class="line">VALUES (12), (-12), (-128), (127);</span><br><span class="line"></span><br><span class="line">SELECT * FROM test_int1;</span><br><span class="line"></span><br><span class="line">-- Out of range value for column &#x27;f1&#x27; at row 1</span><br><span class="line">INSERT INTO test_int1(f1) </span><br><span class="line">VALUES (128);</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2-2-可选属性"><a href="#2-2-可选属性" class="headerlink" title="2.2 可选属性"></a>2.2 可选属性</h3><h4 id="2-2-1-M"><a href="#2-2-1-M" class="headerlink" title="2.2.1 M"></a>2.2.1 M</h4><ul>
+<li><code>M</code>是<code>显示宽度</code>，范围(0,255)</li>
+<li>比如INT(5)，实际上表示的是数据宽度小于5位时，前面需要用字符填充，往往配合<code>ZEROFILL</code>使用，否则显示宽度无效</li>
+<li>需要注意的是，这个并不代表最多5个，超过了数据宽度，并不会造成截断&#x2F;插入失败，会按照类型的实际宽度保存</li>
+<li><strong>从MySQL 8.0.17开始，整数数据类型不推荐使用显示宽度属性。</strong></li>
+<li>整型数据类型可以在定义表结构时指定所需要的显示宽度，如果不指定，则系统为每一种类型指定默认的宽度值。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- 显式写宽度，配合ZEROFILL使用才有意义——对于没有满5位的数字，使用0填充</span><br><span class="line">-- MySQL8后，整数数据类型不推荐使用显示宽度属性了</span><br><span class="line">CREATE TABLE test_int2(</span><br><span class="line">f1 INT,</span><br><span class="line">f2 INT(5),</span><br><span class="line">f3 INT(5) ZEROFILL # ①显示宽度为5，当长度不足5位时 使用0填充；②使用zerofill时 自动添加unsigned</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"># f1 f2 f3</span><br><span class="line"># 123 123 NULL</span><br><span class="line"># 123456 123456 NULL</span><br><span class="line">INSERT INTO test_int2(f1,f2) </span><br><span class="line">VALUES (123, 123), (123456, 123456);</span><br><span class="line"></span><br><span class="line">SELECT * FROM test_int2;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># f1 f2 f3</span><br><span class="line"># NULL NULL 00123</span><br><span class="line"># NULL NULL 123456</span><br><span class="line">INSERT INTO test_int2(f3)</span><br><span class="line">VALUES (123), (123456);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">SHOW CREATE TABLE test_int2;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="2-2-2-UNSIGNED"><a href="#2-2-2-UNSIGNED" class="headerlink" title="2.2.2 UNSIGNED"></a>2.2.2 UNSIGNED</h4><ul>
+<li><code>UNSIGNED</code>: 无符号类型（非负），整数类型可选类型，此时最小值为0</li>
+<li>如果需要在MySQL数据库中保存<code>非负整数值</code>时，可以将整数类型设置为无符号类型。</li>
+<li>注：int类型默认显示宽度为int(11)，无符号int类型默认显示宽度为int(10)。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- 无符号unsigned(没有负数推荐)</span><br><span class="line">CREATE TABLE test_int3(</span><br><span class="line">f1 INT UNSIGNED</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">DESC test_int3;</span><br><span class="line"></span><br><span class="line">INSERT INTO test_int3</span><br><span class="line">VALUES (2412453);</span><br><span class="line"></span><br><span class="line">INSERT INTO test_int3</span><br><span class="line">VALUES (4564156151)</span><br><span class="line"></span><br><span class="line">SELECT * FROM test_int3;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="2-2-3-ZEROFILL"><a href="#2-2-3-ZEROFILL" class="headerlink" title="2.2.3 ZEROFILL"></a>2.2.3 ZEROFILL</h4><p><code>ZEROFILL</code>: 0填充,（如果某列是ZEROFILL，那么MySQL会自动为当前列添加UNSIGNED属性）</p>
+<p>如果指定了ZEROFILL只是表示不够M位时，用0在左边填充，如果超过M位，只要不超过数据存储范围即可。</p>
+<p>原来，在 int(M) 中，M 的值跟 int(M) 所占多少存储空间并无任何关系。 int(3)、int(4)、int(8) 在磁盘上都是占用 4 bytes 的存储空间。</p>
+<p>也就是说，**int(M)，必须和UNSIGNED ZEROFILL一起使用才有意义。**如果整数值超过M位，就按照实际位数存储。只是无须再用字符 0 进行填充。</p>
+<h4 id="2-2-4-适用场景"><a href="#2-2-4-适用场景" class="headerlink" title="2.2.4 适用场景"></a>2.2.4 适用场景</h4><p><code>TINYINT</code>：一般用于枚举数据，比如系统设定取值范围很小且固定的场景。</p>
+<p><code>SMALLINT</code>：可以用于较小范围的统计数据，比如统计工厂的固定资产库存数量等。</p>
+<p><code>MEDIUMINT</code>：用于较大整数的计算，比如车站每日的客流量等。</p>
+<p><code>INT、INTEGER</code>：取值范围足够大，一般情况下不用考虑超限问题，用得最多。比如商品编号。</p>
+<p><code>BIGINT</code>：只有当你处理特别巨大的整数时才会用到。比如双十一的交易量、大型门户网站点击量、证券公司衍生产品持仓等。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240815105051796.png" alt="image-20240815105051796">	</p>
+<h4 id="2-2-5-选择建议"><a href="#2-2-5-选择建议" class="headerlink" title="2.2.5 选择建议"></a>2.2.5 选择建议</h4><ul>
+<li>考虑使用哪种数据类型，从两个维度考量：<code>存储空间</code>和<code>可靠性</code><ul>
+<li>占用字节数少的节省存储空间</li>
+<li>但取值范围太小，一旦超出范围，就可能引起<code>系统错误</code>，影响可靠性</li>
+</ul>
+</li>
+<li>结论：保证现在和未来不会超过数据范围，在这个基础上，再考虑节省空间</li>
+</ul>
+<blockquote>
+<p>注意：在实际工作中，<strong>系统故障产生的成本远远超过增加几个字段存储空间所产生的成本</strong>。所以第一要素是可靠性</p>
+</blockquote>
+<h2 id="3-浮点类型"><a href="#3-浮点类型" class="headerlink" title="3. 浮点类型"></a>3. 浮点类型</h2><h3 id="3-1-类型介绍"><a href="#3-1-类型介绍" class="headerlink" title="3.1 类型介绍"></a>3.1 类型介绍</h3><ul>
+<li><p>浮点数和定点数处理小数。MySQL支持的浮点数类型，分别是<code> FLOAT、DOUBLE、REAL</code>。</p>
+<ul>
+<li><p>FLOAT 表示单精度浮点数；</p>
+</li>
+<li><p>DOUBLE 表示双精度浮点数；</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240815151446810.png" alt="image-20240815151446810">	</p>
+<ul>
+<li><p>REAL默认就是 DOUBLE。如果要调整为默认FLOAT，可以通过以下 SQL 语句实现：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SET sql_mode = “REAL_AS_FLOAT”;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>**问题1：**FLOAT 和 DOUBLE 这两种数据类型的区别是啥呢？</p>
+<ul>
+<li>单精度占用4字节，取值范围小。双精度值占用8字节，取值范围大</li>
+</ul>
+<p>**问题2：**为什么浮点数类型的无符号数取值范围，只相当于有符号数取值范围的一半，也就是只相当于有符号数取值范围大于等于零的部分呢？ </p>
+<ul>
+<li>MySQL存储浮点数包含：<code>符号(S)</code>、<code>尾数(M)</code>、<code>阶码(E)</code>，不管有无符号，符号部分都占用空间</li>
+<li>这就可以解释，无符号数并不能扩大范围，仅仅是进行了非负的约束</li>
+</ul>
+<h3 id="3-2-数据精度说明"><a href="#3-2-数据精度说明" class="headerlink" title="3.2 数据精度说明"></a>3.2 数据精度说明</h3><ul>
+<li><p>MySQL提供了<code>FLOAT(M,D)</code>，<code>DOUBLE(M,D)</code>这些<code>非标准SQL语法</code>，但不建议使用（其他数据库不一定兼容，数据迁移有问题）</p>
+<ul>
+<li><p>(M,D)中，M &#x3D; 整数位 + 小数位，D&#x3D;小数位 （D &lt;&#x3D; M &lt;&#x3D; 255, 0 &lt;&#x3D; D &lt;&#x3D; 30） </p>
+</li>
+<li><p>例如FLOAT(5, 2) 表示 [-999.99, 999.99] 的范围</p>
+</li>
+<li><p>如果没有指定 M D，默认按照实际精度（由硬件 操作系统底层决定）隐式指定</p>
+</li>
+</ul>
+</li>
+<li><p>说明：浮点类型，也可以加<code>UNSIGNED</code>，但是不会改变数据范围，例如：FLOAT(3,2) UNSIGNED仍然只能表示0-9.99的范围。</p>
+</li>
+<li><p>不管是否显式指定了精度，MySQL对于超出范围的数值的处理方案如下：</p>
+<ul>
+<li><p><code>整数部分</code>超出范围，MySQL不允许这样的值出现，报错</p>
+</li>
+<li><p><code>小数点部分</code>超出范围，MySQL会自动进行<code>四舍五入</code>，结果分成两种情况</p>
+<ul>
+<li>四舍五入后，整数部分超出范围，MySQL报错，举例：FLOAT(3, 2)插入 999.995 报错</li>
+<li>四舍五入后，整数部分没有超出范围，删除多余小数位后保存四舍五入的结果</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>从MySQL 8.0.17开始，FLOAT(M,D) 和DOUBLE(M,D)用法在官方文档中已经明确不推荐使用</strong>，将来可能被移除（同时<code>UNSIGNED</code>不推荐使用）</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 3. 浮点类型</span><br><span class="line"></span><br><span class="line">CREATE TABLE test_double1(</span><br><span class="line">f1 FLOAT,</span><br><span class="line">f2 FLOAT(5,2),</span><br><span class="line">f3 DOUBLE,</span><br><span class="line">f4 DOUBLE(5,2)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">DESC test_double1;</span><br><span class="line"></span><br><span class="line">INSERT INTO test_double1(f1,f2)</span><br><span class="line">VALUES(123.45, 123.45);</span><br><span class="line"></span><br><span class="line">-- 如果小数位超过了定义的精度，自动四舍五入，如果整数位超了会报错（包括999.995四舍五入的情况）</span><br><span class="line">-- 123.45 123.46</span><br><span class="line">INSERT INTO test_double1(f3,f4)</span><br><span class="line">VALUES(123.45, 123.456);</span><br><span class="line"></span><br><span class="line">-- Out of range value for column &#x27;f4&#x27; at row 1</span><br><span class="line">INSERT INTO test_double1(f3,f4)</span><br><span class="line">VALUES(123.45, 999.995);</span><br><span class="line"></span><br><span class="line">SELECT * FROM test_double1;   </span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3-3-精度误差说明"><a href="#3-3-精度误差说明" class="headerlink" title="3.3 精度误差说明"></a>3.3 精度误差说明</h3><ul>
+<li>浮点数是有精度误差的</li>
+<li>一旦涉及到浮点数计算值的判断，不能使用等号判断</li>
+<li>引出<code>定点数DECIMAL</code>解决该问题</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- Float Double精度误差说明</span><br><span class="line"></span><br><span class="line">CREATE TABLE test_double2(</span><br><span class="line">f1 DOUBLE</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">INSERT INTO test_double2</span><br><span class="line">VALUES(0.47),(0.44),(0.19);</span><br><span class="line"></span><br><span class="line"># 1.0999999999999999</span><br><span class="line">SELECT SUM(f1), SUM(f1) = 1.1 FROM test_double2; # 精度问题，float的误差会更大</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">-- 结论：浮点数不要用 &#x27;=&#x27; 判断两个数，引出定点数</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="4-定点数类型"><a href="#4-定点数类型" class="headerlink" title="4. 定点数类型"></a>4. 定点数类型</h2><h3 id="4-1-类型介绍"><a href="#4-1-类型介绍" class="headerlink" title="4.1 类型介绍"></a>4.1 类型介绍</h3><table>
+<thead>
+<tr>
+<th>数据类型</th>
+<th>字节数</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>DECIMAL(M,D),DEC,NUMERIC</td>
+<td>M+2字节</td>
+<td>有效范围由M和D决定</td>
+</tr>
+</tbody></table>
+<ul>
+<li><code>DECIMAL(M, D)</code>表示高精度小数。M叫精度，D叫标度（0 &lt;&#x3D; M &lt;&#x3D; 65，0 &lt;&#x3D; D &lt;&#x3D; 30，D &lt; M）<ul>
+<li>不指定时，默认DECIMAL(10, 0)</li>
+<li>如果超出了精度范围，同样四舍五入处理</li>
+<li>举例：DECIMAL(5, 2)表述取值范围为[-999.99, 999.99]</li>
+</ul>
+</li>
+<li><code>DECIMAL</code>最大取值范围和<code>DOUBLE</code>一样，当然有效范围要看具体的M D定义，即DECIMAL实际存储空间由<code>精度值M</code>决定（占用M + 2字节）<ul>
+<li>换句话说，精度要求不高的情况下，同样字节的情况下，浮点数能表达的数值范围会大一些</li>
+</ul>
+</li>
+<li><code>DECIMAL</code>计算内部是用<code>字符串</code>存储，保证精准</li>
+<li><strong>浮点数 vs 定点数</strong><ul>
+<li>浮点数的优势：同样的长度下，浮点数取值范围更大，但是不精准，适用于取值范围大但允许误差的研究-场景（计算化学 分子建模 流体动力学等）</li>
+<li>定点数的优势：取值范围相对小，但是精准，适用于精度要求极高场景（金额的计算）</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 定点数类型 DECIMAL(内部字符串存储 占用M+2字节)</span><br><span class="line"></span><br><span class="line">CREATE TABLE test_decimal1(</span><br><span class="line">f1 DECIMAL,</span><br><span class="line">f2 DECIMAL(5,2)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">-- mysql8.0中会显示数据宽度，因为是一个确定的精度</span><br><span class="line">DESC test_decimal1;</span><br><span class="line"></span><br><span class="line"># 默认DECIMAL(10, 0) 如果小数位超过精度，自动四舍五入</span><br><span class="line"># 123 124</span><br><span class="line">INSERT INTO test_decimal1(f1)</span><br><span class="line">VALUES(123), (123.5); </span><br><span class="line"></span><br><span class="line"># 整数位超了报错，和浮点数类似</span><br><span class="line">#Out of range value for column &#x27;f2&#x27; at row 1</span><br><span class="line">INSERT INTO test_decimal1(f2)</span><br><span class="line">VALUES(1234.34);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">SELECT * FROM test_decimal1;</span><br><span class="line"></span><br><span class="line"># 演示DECIMAL替换DOUBLE，解决精度问题</span><br><span class="line">ALTER TABLE test_double2</span><br><span class="line">MODIFY f1 DECIMAL(5, 2);</span><br><span class="line"></span><br><span class="line">DESC test_double2;</span><br><span class="line"></span><br><span class="line">SELECT SUM(f1), SUM(f1) = 1.1 FROM test_double2; </span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="4-2-开发经验"><a href="#4-2-开发经验" class="headerlink" title="4.2 开发经验"></a>4.2 开发经验</h3><blockquote>
+<p>“由于 DECIMAL 数据类型的精准性，在我们的项目中，除了极少数（比如商品编号）用到整数类型外，其他的数值都用的是 DECIMAL。原因就是这个项目所处的零售行业，要求精准，一分钱也不能差。 ” </p>
+<p>——来自某项目经理</p>
+</blockquote>
+<h2 id="5-位类型-BIT"><a href="#5-位类型-BIT" class="headerlink" title="5. 位类型_BIT"></a>5. 位类型_BIT</h2><table>
+<thead>
+<tr>
+<th>二进制字符串类型</th>
+<th>长度</th>
+<th>长度范围</th>
+<th>占用空间</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BIT(M)</td>
+<td>M</td>
+<td>1 &lt;&#x3D; M &lt;&#x3D; 64</td>
+<td>约为(M + 7)&#x2F;8个字节</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p><code>BIT类型</code>，这里(M)是表示二进制的位数，位数最小值为1，最大值为64。</p>
+<ul>
+<li><p>如果没有指定(M)，默认是1位。这个1位，表示只能存1位的二进制值。</p>
+</li>
+<li><p>插入数据时，对应的二进制bit位要满足M的精度</p>
+</li>
+</ul>
+</li>
+<li><p><code>二进制</code>转化成其他进制</p>
+<ul>
+<li>使用SELECT命令查询位字段时，可以用<code>BIN()</code>或<code>HEX()</code>函数进行读取二进制和十六进制。</li>
+<li>查询出存储的十进制数据的值，用<code>b+0</code>即可。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 5. 位类型BIT</span><br><span class="line"></span><br><span class="line">CREATE TABLE test_bit1(</span><br><span class="line">f1 BIT,</span><br><span class="line">f2 BIT(5),</span><br><span class="line">f3 BIT(64)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">-- 最大64位，默认1位</span><br><span class="line">DESC test_bit1;</span><br><span class="line"></span><br><span class="line">INSERT INTO test_bit1(f1)</span><br><span class="line">VALUES (0), (1);</span><br><span class="line"></span><br><span class="line">-- 占了两位(10b)，超过了</span><br><span class="line">-- Data too long for column &#x27;f1&#x27; at row 1</span><br><span class="line">INSERT INTO test_bit1(f1)</span><br><span class="line">VALUES (2);</span><br><span class="line"></span><br><span class="line">INSERT INTO test_bit1(f2)</span><br><span class="line">VALUES (31);</span><br><span class="line"></span><br><span class="line">SELECT *</span><br><span class="line">FROM test_bit1;</span><br><span class="line"></span><br><span class="line">-- 可以使用BIN() HEX()来读取数据（十进制 通过加0的方式显示）</span><br><span class="line">SELECT BIN(f1), f1 + 0, HEX(f1), BIN(f2), f2 + 0, HEX(f2)</span><br><span class="line">FROM test_bit1;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="6-日期和时间类型"><a href="#6-日期和时间类型" class="headerlink" title="6. 日期和时间类型"></a>6. 日期和时间类型</h2><p><code>日期和时间</code>几乎每个数据表都要用到，客户需要知道数据的时间标签，从而进行数据查询、统计和处理等。</p>
+<blockquote>
+<p><code>阿里开发规范</code>：</p>
+<p>【<code>强制</code>】表必备三字段：id, gmt_create, gmt_modified。 </p>
+<ul>
+<li>说明：其中 id 必为主键，类型为BIGINT UNSIGNED、单表时自增、步长为 1。</li>
+<li>gmt_create, gmt_modified 的类型均为 DATETIME 类型，前者现在时表示主动式创建，后者过去分词表示被动式更新</li>
+</ul>
+</blockquote>
+<p>MySQL支持的类型不同的版本可能有所差异。</p>
+<p>MySQL8.0版本支持的类型：YEAR类型、TIME类型、DATE类型、DATETIME类型和TIMESTAMP类型。</p>
+<ul>
+<li><code>YEAR</code>类型通常用来表示年</li>
+<li><code>DATE</code>类型通常用来表示年、月、日</li>
+<li><code>TIME</code>类型通常用来表示时、分、秒</li>
+<li><code>DATETIME</code>类型通常用来表示年、月、日、时、分、秒</li>
+<li><code>TIMESTAMP</code>类型通常用来表示带时区的年、月、日、时、分、秒</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>名称</th>
+<th>字节</th>
+<th>日期格式</th>
+<th>最小值</th>
+<th>最大值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>YEAR</td>
+<td>年</td>
+<td>1</td>
+<td>YYYY或YY</td>
+<td>1901</td>
+<td>2155</td>
+</tr>
+<tr>
+<td>TIME</td>
+<td>时间</td>
+<td>3</td>
+<td>HH:MM:SS</td>
+<td>-838:59:59</td>
+<td>838:59:59</td>
+</tr>
+<tr>
+<td>DATE</td>
+<td>日期</td>
+<td>3</td>
+<td>YYYY-MM-DD</td>
+<td>1000-01-01</td>
+<td>9999-12-03</td>
+</tr>
+<tr>
+<td>DATETIME</td>
+<td>日期时间</td>
+<td>8</td>
+<td>YYYY-MM-DD HH:MM:SS</td>
+<td>1000-01-01 00:00:00</td>
+<td>9999-12-31 23:59:59</td>
+</tr>
+<tr>
+<td>TIMESTAMP</td>
+<td>日期时间</td>
+<td>4</td>
+<td>YYYY-MM-DD HH:MM:SS</td>
+<td>1970-01-01 00:00:00 UTC</td>
+<td>2038-01-19 03:14:07UTC</td>
+</tr>
+</tbody></table>
+<p>注：不同数据类型表示的时间内容不同、取值范围不同，而且占用的字节数也不一样，需根据实际需要灵活选取。</p>
+<p><strong>为什么时间类型 TIME 的取值范围不是 -23:59:59～23:59:59 呢？</strong></p>
+<p>原因是 MySQL 设计的 TIME 类型，不光表示一天之内的时间，而且可以用来表示一个<code>时间间隔</code>，这个时间间隔可以超过 24 小时。</p>
+<h3 id="6-1-YEAR"><a href="#6-1-YEAR" class="headerlink" title="6.1 YEAR"></a>6.1 YEAR</h3><p>YEAR表示年份，占用空间最小，占用<code>1个字节</code></p>
+<p>YEAR的存储格式：</p>
+<ul>
+<li>4位字符串&#x2F;数字表示，格式为<code>YYYY</code>，范围为<code>[1901, 2155]</code></li>
+<li>2位字符串表示，范围为<code>[00, 99]</code><ul>
+<li>01 ~ 69 表示 2001 ~ 2069</li>
+<li>70 ~ 99 表示 1970 ~ 1999</li>
+<li>整数0或00 表示 0000年</li>
+<li>字符串或日期的0 表示 2000年</li>
+</ul>
+</li>
+<li><strong>从MySQL5.5.27开始，2位格式的YEAR已经不推荐使用</strong>。</li>
+<li>从MySQL 8.0.19开始，不推荐使用指定显示宽度的YEAR(4)数据类型。</li>
+<li>YEAR默认格式就是“YYYY”，没必要写成YEAR(4)，</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 6.1 YEAR</span><br><span class="line">-- MySQL5开始不推荐使用2位格式的YEAR， MySQL8开始不推荐指定显示宽度</span><br><span class="line">-- 直接写YEAR就行，稍微了解一下2位的规则</span><br><span class="line">CREATE TABLE test_year(</span><br><span class="line">f1 YEAR,</span><br><span class="line">f2 YEAR(4)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">DESC test_year;</span><br><span class="line"></span><br><span class="line">INSERT INTO test_year(f1)</span><br><span class="line">VALUES (&#x27;2021&#x27;), (2022);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">INSERT INTO test_year(f1)</span><br><span class="line">VALUES (&#x27;1901&#x27;), (&#x27;2155&#x27;);</span><br><span class="line"></span><br><span class="line">INSERT INTO test_year(f2)</span><br><span class="line">VALUES (&#x27;69&#x27;), (&#x27;70&#x27;);</span><br><span class="line"></span><br><span class="line">INSERT INTO test_year(f2)</span><br><span class="line">VALUES (0), (&#x27;00&#x27;);</span><br><span class="line"></span><br><span class="line">SELECT * FROM test_year;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="6-2-DATE"><a href="#6-2-DATE" class="headerlink" title="6.2 DATE"></a>6.2 DATE</h3><p>DATE表示日期，不包含时间部分，格式为<code>YYYY-MM-DD</code>（年-月-日），需要<code>3个字节</code>的存储空间，插入DATE类型的数据需要满足如下条件之一：</p>
+<ul>
+<li><code>YYYY-MM-DD / YYYYMMDD</code> 格式，并且范围在<code>[1000-01-01, 9999-12-03]</code>，YYYYMMDD会自动转化成前面的标准格式</li>
+<li><code>YY-MM-DD / YYMMDD</code> 格式，00 - 69 转化成 2000-2069，70 - 99 转换成 1970 - 1999</li>
+<li><code>CURRENT_DATE()</code>或者<code>NOW()</code>函数，插入当前系统的日期。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 6.2 DATE </span><br><span class="line"></span><br><span class="line">CREATE TABLE test_date1(</span><br><span class="line">f1 DATE</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">-- 标准写法，数字会隐式转化成日期 3字节（推荐）</span><br><span class="line">INSERT INTO test_date1</span><br><span class="line">VALUES (&#x27;2020-10-01&#x27;), (&#x27;20201001&#x27;),(20201001);</span><br><span class="line"></span><br><span class="line">-- 月用yy的形式，遵循70的规律</span><br><span class="line">INSERT INTO test_date1</span><br><span class="line">VALUES (&#x27;00-01-01&#x27;), (&#x27;000101&#x27;), (&#x27;69-10-01&#x27;), (&#x27;691001&#x27;), (&#x27;70-01-01&#x27;), (&#x27;700101&#x27;), (&#x27;99-01-01&#x27;), (&#x27;990101&#x27;);</span><br><span class="line"></span><br><span class="line">-- 纯数字，隐式转换</span><br><span class="line">INSERT INTO test_date1</span><br><span class="line">VALUES (000301), (690301), (700301), (990301); </span><br><span class="line"></span><br><span class="line">-- 当前日期</span><br><span class="line">INSERT INTO test_date1</span><br><span class="line">VALUES (CURDATE()), (CURRENT_DATE()), (NOW());</span><br><span class="line"></span><br><span class="line">SELECT *</span><br><span class="line">FROM test_date1;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="6-3-TIME"><a href="#6-3-TIME" class="headerlink" title="6.3 TIME"></a>6.3 TIME</h3><p>TIME表示时间，不包括日期部分，格式为<code>HH:MM:SS</code>(时：分：秒)，占用<code>3个字节</code></p>
+<p>MySQL中，向TIME类型的字段插入数据时，可以使用这几种不同的格式：</p>
+<p>（1）可以使用带有冒号的字符串，比如’<code>D HH:MM:SS&#39;</code>、’<code>HH:MM:SS</code>‘、’<code>HH:MM</code>‘、’<code>D HH:MM</code>‘、’<code>D HH</code>‘或’<code>SS</code>‘格式，都能被正确地插入TIME类型的字段中。其中D表示天，其最小值为0，最大值为34。如果使用带有D格式的字符串插入TIME类型的字段时，D会被转化为小时，计算格式为D*24+HH。当使用带有冒号并且不带D的字符串表示时间时，表示当天的时间，比如12:10表示12:10:00，而不是00:12:10。<br>（2）可以使用不带有冒号的字符串或者数字，格式为’<code>HHMMSS</code>‘或者<code>HHMMSS</code>。如果插入一个不合法的字符串或者数字，MySQL在存储数据时，会将其自动转化为00:00:00进行存储。比如1210，MySQL会将最右边的两位解析成秒，表示00:12:10，而不是12:10:00。<br>（3）使用<code>CURRENT_TIME()</code>或者<code>NOW()</code>，会插入当前系统的时间。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 6.3 TIME</span><br><span class="line"></span><br><span class="line">CREATE TABLE test_time1(</span><br><span class="line">f1 TIME</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">-- 同样占用3字节，标准格式 D hh:mm:ss（注意12:40是12:40:00的形式）</span><br><span class="line">INSERT INTO test_time1</span><br><span class="line">VALUES(&#x27;2 12:30:29&#x27;), (&#x27;12:35:29&#x27;), (&#x27;12:40&#x27;), (&#x27;2 12:40&#x27;),(&#x27;1 05&#x27;), (&#x27;45&#x27;);</span><br><span class="line"></span><br><span class="line">-- 注意1210自动转换成 00:12:10（不推荐）</span><br><span class="line">INSERT INTO test_time1</span><br><span class="line">VALUES (&#x27;123520&#x27;), (124011),(1210);</span><br><span class="line"></span><br><span class="line">-- CURTIME</span><br><span class="line">INSERT INTO test_time1</span><br><span class="line">VALUES (NOW()), (CURRENT_TIME());</span><br><span class="line"></span><br><span class="line">SELECT * FROM test_time1;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="6-4-DATETIME"><a href="#6-4-DATETIME" class="headerlink" title="6.4 DATETIME"></a>6.4 DATETIME</h3><p>DATETIME包括了日期和时间，占用存储空间最大，占用8个字节，格式上是DATE和TIME的组合，表示为<code>YYYY-MM-DD HH:MM:SS</code></p>
+<p>在向DATETIME类型的字段插入数据时，同样需要满足一定的格式条件：</p>
+<ul>
+<li>以<code>YYYY-MM-DD HH:MM:SS</code>格式或者<code>YYYYMMDDHHMMSS</code>格式的字符串插入DATETIME类型的字段时，最小值为1000-01-01 00:00:00，最大值为9999-12-03 23:59:59。<ul>
+<li>以YYYYMMDDHHMMSS格式的数字插入DATETIME类型的字段时，会被转化为YYYY-MM-DD HH:MM:SS格式。</li>
+</ul>
+</li>
+<li>以<code>YY-MM-DD HH:MM:SS</code>格式或者<code>YYMMDDHHMMSS</code>格式的字符串插入DATETIME类型的字段时，两位数的年份规则符合YEAR类型的规则，00到69表示2000到2069；70到99表示1970到1999。</li>
+<li>使用函数<code>CURRENT_TIMESTAMP()</code>和<code>NOW()</code>，可以向DATETIME类型的字段插入系统的当前日期和时间。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 6.4 DATETIME(8字节)</span><br><span class="line">CREATE TABLE test_datetime1(</span><br><span class="line">dt DATETIME</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 第一个推荐写法</span><br><span class="line">INSERT INTO test_datetime1</span><br><span class="line">VALUES (&#x27;2021-01-01 06:50:30&#x27;), (&#x27;20210101065030&#x27;);</span><br><span class="line"></span><br><span class="line">INSERT INTO test_datetime1</span><br><span class="line">VALUES (&#x27;99-01-01 00:00:00&#x27;), (&#x27;990101000000&#x27;), (&#x27;20-01-01 00:00:00&#x27;), (&#x27;200101000000&#x27;);</span><br><span class="line"></span><br><span class="line">INSERT INTO test_datetime1</span><br><span class="line">VALUES (20200101000000), (200101000000), (19990101000000), (990101000000);</span><br><span class="line"> </span><br><span class="line">INSERT INTO test_datetime1</span><br><span class="line">VALUES (CURRENT_TIMESTAMP()), (NOW());</span><br><span class="line"></span><br><span class="line">SELECT * FROM test_datetime1;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="6-5-TIMESTAMP"><a href="#6-5-TIMESTAMP" class="headerlink" title="6.5 TIMESTAMP"></a>6.5 TIMESTAMP</h3><p>TIMESTAMP类型也可以表示日期时间，其显示格式与DATETIME类型相同，都是<code>YYYY-MM-DD HH:MM:SS</code>，需要4个字节的存储空间。</p>
+<ul>
+<li><p>但是TIMESTAMP存储的时间范围比DATETIME要小很多，只能存储“1970-01-01 00:00:01 UTC”到“2038-01-19 03:14:07 UTC”之间的时间。（UTC:世界标准时间）</p>
+</li>
+<li><p><strong>存储数据的时候需要对当前时间所在的时区进行转换，查询数据的时候再将时间转换回当前的时区。因此，使用TIMESTAMP存储的同一个时间值，在不同的时区查询时会显示不同的时间。</strong></p>
+</li>
+<li><p>向TIMESTAMP类型的字段插入数据时，当插入的数据格式满足YY-MM-DD HH:MM:SS和YYMMDDHHMMSS时，两位数值的年份同样符合YEAR类型的规则条件，只不过表示的时间范围要小很多。</p>
+</li>
+<li><p>如果向TIMESTAMP类型的字段插入的时间超出了TIMESTAMP类型的范围，则MySQL会抛出错误信息。</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 6.5 TIMESTAMP</span><br><span class="line">CREATE TABLE test_timestamp1(</span><br><span class="line">ts TIMESTAMP</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">INSERT INTO test_timestamp1</span><br><span class="line">VALUES (&#x27;1999-01-01 03:04:50&#x27;), (&#x27;19990101030405&#x27;), (&#x27;99-01-01 03:04:05&#x27;), (&#x27;990101030405&#x27;);</span><br><span class="line"></span><br><span class="line">INSERT INTO test_timestamp1</span><br><span class="line">VALUES (&#x27;2020@01@01@00@00@00&#x27;), (&#x27;20@01@01@00@00@00&#x27;);</span><br><span class="line"></span><br><span class="line">INSERT INTO test_timestamp1</span><br><span class="line">VALUES (CURRENT_TIMESTAMP()), (NOW());</span><br><span class="line"></span><br><span class="line">#Incorrect datetime value</span><br><span class="line">INSERT INTO test_timestamp1</span><br><span class="line">VALUES (&#x27;2038-01-20 03:14:07&#x27;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">SELECT * FROM test_timestamp1;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="TIMESTAMP和DATETIME的区别"><a href="#TIMESTAMP和DATETIME的区别" class="headerlink" title="TIMESTAMP和DATETIME的区别"></a><strong>TIMESTAMP和DATETIME的区别</strong></h4><ul>
+<li>TIMESTAMP存储空间比较小，表示的日期时间范围也比较小</li>
+<li>底层存储方式不同，TIMESTAMP底层存储的是毫秒值，距离1970-1-1 0:0:0 0毫秒的毫秒值。</li>
+<li>两个日期比较大小或日期计算时，TIMESTAMP更方便、更快。</li>
+<li>TIMESTAMP和<code>时区</code>有关。TIMESTAMP会根据用户的时区不同，显示不同的结果。而DATETIME则只能反映出插入时当地的时区，其他时区的人查看数据必然会有误差的。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- 对比DATETIME和 TIMESTAMP（时区问题）</span><br><span class="line">CREATE TABLE temp_time(</span><br><span class="line">d1 DATETIME,</span><br><span class="line">d2 TIMESTAMP</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">INSERT INTO temp_time VALUES(&#x27;2021-9-2 14:45:52&#x27;,&#x27;2021-9-2 14:45:52&#x27;);</span><br><span class="line"></span><br><span class="line">INSERT INTO temp_time VALUES(NOW(),NOW());</span><br><span class="line"></span><br><span class="line">-- 修改时区（东9区），TIMESTAMP底层是转换成毫秒数再进行时区转换，效率较高</span><br><span class="line">SET time_zone = &#x27;+9:00&#x27;;</span><br><span class="line"></span><br><span class="line">SELECT * FROM temp_time;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="6-6-开发经验"><a href="#6-6-开发经验" class="headerlink" title="6.6 开发经验"></a>6.6 开发经验</h3><p>用得最多的日期时间类型，就是 <code>DATETIME</code>。</p>
+<p>虽然 MySQL 也支持 YEAR（年）、 TIME（时间）、DATE（日期），以及 TIMESTAMP 类型，但是在实际项目中，DATETIME 包括了完整的日期和时间信息，取值范围也最大，使用起来比较方便。毕竟，如果日期时间信息分散在好几个字段，很不容易记，而且查询的时候，SQL 语句也会更加复杂。 </p>
+<p>此外，一般存注册时间、商品发布时间等，不建议使用DATETIME存储，而是使用<code>时间戳</code>，因为DATETIME虽然直观，但不便于计算。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql&gt; SELECT UNIX_TIMESTAMP();</span><br><span class="line">+------------------+</span><br><span class="line">| UNIX_TIMESTAMP() |</span><br><span class="line">+------------------+</span><br><span class="line">|       1635932762 |</span><br><span class="line">+------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="7-文本字符串类型"><a href="#7-文本字符串类型" class="headerlink" title="7. 文本字符串类型"></a>7. 文本字符串类型</h2><p>MySQL中，文本字符串总体上分为<code>CHAR</code>、<code>VARCHAR</code>、<code>TINYTEXT</code>、<code>TEXT</code>、<code>MEDIUMTEXT</code>、<code>LONGTEXT</code>、<code>ENUM</code>、<code>SET</code>等类型。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240815162605526.png" alt="image-20240815162605526">	</p>
+<h3 id="7-1-CHAR-和-VARCHAR"><a href="#7-1-CHAR-和-VARCHAR" class="headerlink" title="7.1 CHAR 和 VARCHAR"></a>7.1 CHAR 和 VARCHAR</h3><p>CHAR和VARCHAR类型都可以存储比较短的字符串。</p>
+<table>
+<thead>
+<tr>
+<th>字符串(文本)类型</th>
+<th>特点</th>
+<th>长度</th>
+<th>长度范围</th>
+<th>占用的存储空间</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CHAR(M)</td>
+<td>固定长度</td>
+<td>M</td>
+<td>0 &lt;&#x3D; M &lt;&#x3D; 255</td>
+<td>M个字节</td>
+</tr>
+<tr>
+<td>VARCHAR(M)</td>
+<td>可变长度</td>
+<td>M</td>
+<td>0 &lt;&#x3D; M &lt;&#x3D; 65535</td>
+<td>(实际长度 + 1) 个字节</td>
+</tr>
+</tbody></table>
+<p><strong>CHAR类型：</strong></p>
+<ul>
+<li>CHAR(M) 定义<code>字符串长度M</code>（注意区别字节数），不指定默认1个字符</li>
+<li>保存时，如果实际长度小于声明长度，<code>右侧填充空格</code>，MySQL检索CHAR类型会自动去除尾部的空格（包括手工 加的空格）</li>
+<li>定义CHAR类型字段时，声明的字段长度即为CHAR类型字段所占的<code>存储空间的字节数</code>。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#7.1 CHAR（固定长度）</span><br><span class="line"></span><br><span class="line">-- 不写长度默认1</span><br><span class="line">CREATE TABLE test_char1(</span><br><span class="line">c1 CHAR,</span><br><span class="line">c2 CHAR(5)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">DESC test_char1;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">INSERT INTO test_char1(c1)</span><br><span class="line">VALUES(&#x27;a&#x27;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">-- 后面会自动加3个空格</span><br><span class="line">INSERT INTO test_char1(c2)</span><br><span class="line">VALUES(&#x27;ab&#x27;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">INSERT INTO test_char1(c2)</span><br><span class="line">VALUES(&#x27;hello&#x27;);</span><br><span class="line"></span><br><span class="line">-- 长度是字符长度，而不是字节数</span><br><span class="line">INSERT INTO test_char1(c2)</span><br><span class="line">VALUES(&#x27;尚硅谷教育&#x27;);</span><br><span class="line"></span><br><span class="line">-- Data too long for column &#x27;c2&#x27; at row 1</span><br><span class="line">INSERT INTO test_char1(c2)</span><br><span class="line">VALUES(&#x27;尚硅谷IT教育&#x27;);</span><br><span class="line"></span><br><span class="line">-- 尾部的空格会自动去掉(包括自己写的空格)</span><br><span class="line"></span><br><span class="line">INSERT INTO test_char1(c2)</span><br><span class="line">VALUES(&#x27;ab  &#x27;);</span><br><span class="line"></span><br><span class="line">SELECT CONCAT(c2, &#x27;***&#x27;), CHAR_LENGTH(c2) FROM test_char1;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>VARCHAR类型：</strong></p>
+<ul>
+<li>VARCHAR(M) 定义时，<code>必须指定</code>长度M，否则报错。</li>
+<li>MySQL4.0版本以下，varchar(20)：指的是20字节，如果存放UTF8汉字时，只能存6个（每个汉字3字节） ；MySQL5.0版本以上，<code>varchar(20)：指的是20字符</code>。</li>
+<li>检索VARCHAR类型的字段数据时，会<code>保留数据尾部的空格</code>。VARCHAR类型的字段所占用的存储空间为字符串<code>实际长度加1个字节</code>。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 7.2 VARCHAR</span><br><span class="line">-- VARCHAR必须指明长度</span><br><span class="line">CREATE TABLE test_varchar1(</span><br><span class="line">NAME VARCHAR  #错误</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">-- Column length too big for column &#x27;NAME&#x27; (max = 21845); use BLOB or TEXT instead</span><br><span class="line">-- 虽然尽管最多是65535个字符，但是考虑到汉字3个字节，那么定义的时候还是要求只有65535/3=21845个字符</span><br><span class="line">CREATE TABLE test_varchar2(</span><br><span class="line">NAME VARCHAR(65535)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">CREATE TABLE test_varchar3(</span><br><span class="line">NAME VARCHAR(5)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">-- 底层存的就是3个字符，没有空格填充，减少空间的浪费</span><br><span class="line">-- VARCHAR因为可变，会有额外的字节存储长度信息，效率会比固定长度的差一点</span><br><span class="line">INSERT INTO test_varchar3</span><br><span class="line">VALUES(&#x27;尚硅谷&#x27;),(&#x27;尚硅谷教育&#x27;);</span><br><span class="line"></span><br><span class="line">#Data too long for column &#x27;NAME&#x27; at row 1</span><br><span class="line">INSERT INTO test_varchar3</span><br><span class="line">VALUES(&#x27;尚硅谷IT教育&#x27;);</span><br><span class="line"></span><br><span class="line">SELECT * FROM test_varchar3;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="CHAR和VARCHAR的选择"><a href="#CHAR和VARCHAR的选择" class="headerlink" title="CHAR和VARCHAR的选择"></a>CHAR和VARCHAR的选择</h4><p><strong>哪些情况使用 CHAR 或 VARCHAR 更好</strong></p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>特点</th>
+<th>空间上</th>
+<th>时间上</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CHAR(M)</td>
+<td>固定长度</td>
+<td>浪费存储空间</td>
+<td>效率高</td>
+<td>存储不大，速度要求高</td>
+</tr>
+<tr>
+<td>VARCHAR(M)</td>
+<td>可变长度</td>
+<td>节省存储空间</td>
+<td>效率低</td>
+<td>非CHAR的情况</td>
+</tr>
+</tbody></table>
+<p>情况1：存储很短的信息。比如门牌号码101，201……这样很短的信息应该用char，因为varchar还要占个byte用于存储信息长度，本来打算节约存储的，结果得不偿失。</p>
+<p>情况2：固定长度的。比如使用uuid作为主键，那用char应该更合适。因为他固定长度，varchar动态根据长度的特性就消失了，而且还要占个长度信息。</p>
+<p>情况3：十分频繁改变的column。因为varchar每次存储都要有额外的计算，得到长度等工作，如果一个非常频繁改变的，那就要有很多的精力用于计算，而这些对于char来说是不需要的。</p>
+<p>情况4：具体<code>存储引擎</code>中的情况：</p>
+<ul>
+<li><p><code>MyISAM</code> 数据存储引擎和数据列：MyISAM数据表，最好使用固定长度(CHAR)的数据列代替可变长度(VARCHAR)的数据列。这样使得整个表静态化，从而使<code>数据检索更快</code>，用空间换时间。</p>
+</li>
+<li><p><code>MEMORY</code> 存储引擎和数据列：MEMORY数据表目前都使用固定长度的数据行存储，因此无论使用CHAR或VARCHAR列都没有关系，两者都是作为CHAR类型处理的。</p>
+</li>
+<li><p><code>InnoDB</code>存储引擎，建议使用<code>VARCHAR</code>类型。因为对于InnoDB数据表，内部的行存储格式并没有区分固定长度和可变长度列（所有数据行都使用指向数据列值的头指针），而且<strong>主要影响性能的因素是数据行使用的存储总量</strong>，由于char平均占用的空间多于varchar，所以除了简短并且固定长度的，其他考虑varchar。这样节省空间，对磁盘I&#x2F;O和数据存储总量比较好。</p>
+</li>
+</ul>
+<h3 id="7-2-TEXT类型"><a href="#7-2-TEXT类型" class="headerlink" title="7.2 TEXT类型"></a>7.2 TEXT类型</h3><p>在MySQL中，TEXT用来保存文本类型的字符串，总共包含4种类型，分别为<code>TINYTEXT、TEXT、MEDIUMTEXT 和 LONGTEXT </code>类型。</p>
+<p>在向TEXT类型的字段保存和查询数据时，系统自动按照实际长度存储，不需要预先定义长度。这一点和 VARCHAR类型相同。</p>
+<p>每种TEXT类型保存的数据长度和所占用的存储空间不同，如下：</p>
+<table>
+<thead>
+<tr>
+<th>文本字符串类型</th>
+<th>特点</th>
+<th>长度</th>
+<th>长度范围</th>
+<th>占用的存储空间</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TINYTEXT</td>
+<td>小文本、可变长度</td>
+<td>L</td>
+<td>0 &lt;&#x3D; L &lt;&#x3D; 255</td>
+<td>L + 2 个字节</td>
+</tr>
+<tr>
+<td>TEXT</td>
+<td>文本、可变长度</td>
+<td>L</td>
+<td>0 &lt;&#x3D; L &lt;&#x3D; 65535</td>
+<td>L + 2 个字节</td>
+</tr>
+<tr>
+<td>MEDIUMTEXT</td>
+<td>中等文本、可变长度</td>
+<td>L</td>
+<td>0 &lt;&#x3D; L &lt;&#x3D; 16777215</td>
+<td>L + 3 个字节</td>
+</tr>
+<tr>
+<td>LONGTEXT</td>
+<td>大文本、可变长度</td>
+<td>L</td>
+<td>0 &lt;&#x3D; L&lt;&#x3D; 4294967295（相当于4GB）</td>
+<td>L + 4 个字节</td>
+</tr>
+</tbody></table>
+<p><strong>由于实际存储的长度不确定，MySQL 不允许 TEXT 类型的字段做主键</strong>。遇到这种情况，你只能采用 CHAR(M)，或者 VARCHAR(M)。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 7.3 TEST</span><br><span class="line">CREATE TABLE test_text(</span><br><span class="line">tx TEXT</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">INSERT INTO test_text</span><br><span class="line">VALUES(&#x27;atguigu   &#x27;);</span><br><span class="line"></span><br><span class="line">-- 存储多少就是多少，并没有像CHAR一样删除尾巴的空格</span><br><span class="line">SELECT CHAR_LENGTH(tx)</span><br><span class="line">FROM test_text; #10</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">-- 要用这个数据类型的话，建议单独一个表，减少由于数据删除造成空洞，产生大量文件碎片的影响</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>开发经验：TEXT文本类型，可以存比较大的文本段，搜索速度稍慢，因此如果不是特别大（阿里给的阈值是5000以内）的内容，建议使用CHAR，VARCHAR来代替。还有TEXT类型不用加默认值，加了也没用。而且text和blob类型的数据删除后容易导致“空洞”，使得文件碎片比较多，所以频繁使用的表不建议包含TEXT类型字段，建议单独分出去，单独用一个表。</p>
+</blockquote>
+<h2 id="8-ENUM类型"><a href="#8-ENUM类型" class="headerlink" title="8. ENUM类型"></a>8. ENUM类型</h2><p>ENUM类型也叫作枚举类型，ENUM类型的取值范围需要在定义字段时进行指定。设置字段值时，ENUM类型只允许从成员中选取单个值，不能一次选取多个值。</p>
+<p>其所需要的存储空间由定义ENUM类型时指定的成员个数决定。</p>
+<table>
+<thead>
+<tr>
+<th>文本字符串类型</th>
+<th>长度</th>
+<th>长度范围</th>
+<th>占用的存储空间</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ENUM</td>
+<td>L</td>
+<td>1 &lt;&#x3D; L &lt;&#x3D; 65535</td>
+<td>1或2个字节</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>当ENUM类型包含1～255个成员时，需要1个字节的存储空间；</p>
+</li>
+<li><p>当ENUM类型包含256～65535个成员时，需要2个字节的存储空间。</p>
+</li>
+<li><p>ENUM类型的成员个数的上限为<code>65535</code>个。</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 8. ENUM</span><br><span class="line">CREATE TABLE test_enum(</span><br><span class="line">season ENUM(&#x27;春&#x27;,&#x27;夏&#x27;,&#x27;秋&#x27;,&#x27;冬&#x27;,&#x27;unknow&#x27;)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">INSERT INTO test_enum</span><br><span class="line">VALUES(&#x27;春&#x27;), (&#x27;秋&#x27;);</span><br><span class="line"></span><br><span class="line">-- 不能选多个 Column count doesn&#x27;t match value count at row 1</span><br><span class="line">INSERT INTO test_enum</span><br><span class="line">VALUES(&#x27;春&#x27;, &#x27;秋&#x27;);</span><br><span class="line"></span><br><span class="line">-- 不能选枚举里没有的 Data truncated for column &#x27;season&#x27; at row 1</span><br><span class="line">INSERT INTO test_enum</span><br><span class="line">VALUES(&#x27;Spring&#x27;);</span><br><span class="line"></span><br><span class="line"># 忽略大小写</span><br><span class="line">INSERT INTO test_enum</span><br><span class="line">VALUES(&#x27;UNKNOW&#x27;);</span><br><span class="line"></span><br><span class="line"># 允许按照角标的方式获取指定索引位置的枚举值(1开始)</span><br><span class="line">INSERT INTO test_enum</span><br><span class="line">VALUES(&#x27;1&#x27;),(3);</span><br><span class="line"></span><br><span class="line"># 当ENUM类型的字段没有声明为NOT NULL时，插入NULL也是有效的</span><br><span class="line">INSERT INTO test_enum</span><br><span class="line">VALUES(NULL);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">SELECT * FROM test_enum;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="9-SET类型"><a href="#9-SET类型" class="headerlink" title="9. SET类型"></a>9. SET类型</h2><p>SET表示一个字符串对象，可以包含0个或多个成员，但成员个数的上限为<code>64</code>。设置字段值时，可以取取值范围内的 0 个或多个值。</p>
+<p>当SET类型包含的成员个数不同时，其所占用的存储空间也是不同的，具体如下：</p>
+<table>
+<thead>
+<tr>
+<th>成员个数范围（L表示实际成员个数）</th>
+<th>占用的存储空间</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1 &lt;&#x3D; L &lt;&#x3D; 8</td>
+<td>1个字节</td>
+</tr>
+<tr>
+<td>9 &lt;&#x3D; L &lt;&#x3D; 16</td>
+<td>2个字节</td>
+</tr>
+<tr>
+<td>17 &lt;&#x3D; L &lt;&#x3D; 24</td>
+<td>3个字节</td>
+</tr>
+<tr>
+<td>25 &lt;&#x3D; L &lt;&#x3D; 32</td>
+<td>4个字节</td>
+</tr>
+<tr>
+<td>33 &lt;&#x3D; L &lt;&#x3D; 64</td>
+<td>8个字节</td>
+</tr>
+</tbody></table>
+<p>SET类型在存储数据时成员个数越多，其占用的存储空间越大。注意：SET类型在选取成员时，可以一次选择多个成员，这一点与ENUM类型不同。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 9. SET</span><br><span class="line"></span><br><span class="line">CREATE TABLE test_set(</span><br><span class="line">s SET (&#x27;A&#x27;, &#x27;B&#x27;, &#x27;C&#x27;)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">-- 插入多个成员，使用逗号隔开</span><br><span class="line">INSERT INTO test_set (s) VALUES (&#x27;A&#x27;), (&#x27;A,B&#x27;);</span><br><span class="line"></span><br><span class="line">#插入重复的SET类型成员时，MySQL会自动删除重复的成员</span><br><span class="line">INSERT INTO test_set (s) VALUES (&#x27;A,B,C,A&#x27;);</span><br><span class="line"></span><br><span class="line">#向SET类型的字段插入SET成员中不存在的值时，MySQL会抛出错误:Data truncated for column &#x27;s&#x27; at row 1</span><br><span class="line">INSERT INTO test_set (s) VALUES (&#x27;A,B,C,D&#x27;);</span><br><span class="line"></span><br><span class="line">SELECT *</span><br><span class="line">FROM test_set;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">-- 综合使用</span><br><span class="line">CREATE TABLE temp_mul(</span><br><span class="line">gender ENUM(&#x27;男&#x27;,&#x27;女&#x27;),</span><br><span class="line">hobby SET(&#x27;吃饭&#x27;,&#x27;睡觉&#x27;,&#x27;打豆豆&#x27;,&#x27;写代码&#x27;)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">INSERT INTO temp_mul(gender, hobby) VALUES</span><br><span class="line">(&#x27;男&#x27;, &#x27;吃饭,睡觉&#x27;);</span><br><span class="line"></span><br><span class="line">SELECT * FROM temp_mul;</span><br><span class="line"></span><br><span class="line">-- Column count doesn&#x27;t match value count at row 1</span><br><span class="line">INSERT INTO temp_mul(gender, hobby) VALUES</span><br><span class="line">(&#x27;男&#x27;, &#x27;女&#x27;, &#x27;吃饭,睡觉&#x27;);</span><br><span class="line"></span><br><span class="line">-- Data truncated for column &#x27;gender&#x27; at row 1</span><br><span class="line">INSERT INTO temp_mul(gender, hobby) VALUES</span><br><span class="line">(&#x27;男,女&#x27;, &#x27;吃饭,睡觉&#x27;);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="10-二进制字符串类型"><a href="#10-二进制字符串类型" class="headerlink" title="10. 二进制字符串类型"></a>10. 二进制字符串类型</h2><p>MySQL中的二进制字符串类型主要存储一些二进制数据，比如可以存储<code>图片、音频和视频等二进制数据</code>。</p>
+<p>MySQL中支持的二进制字符串类型主要包括<code>BINARY、VARBINARY、TINYBLOB、BLOB、MEDIUMBLOB 和 LONGBLOB类型</code>。</p>
+<h3 id="10-1-BINARY与VARBINARY"><a href="#10-1-BINARY与VARBINARY" class="headerlink" title="10.1 BINARY与VARBINARY"></a>10.1 BINARY与VARBINARY</h3><p>BINARY和VARBINARY类似于CHAR和VARCHAR，只是它们存储的是二进制字符串。</p>
+<p>BINARY (M)为固定长度的二进制字符串，M表示最多能存储的字节数，取值范围是0~255个字符。如果未指定(M)，表示只能存储<code>1个字节</code>。例如BINARY (8)，表示最多能存储8个字节，如果字段值不足(M)个字节，将在右边填充’\0’以补齐指定长度。</p>
+<p>VARBINARY (M)为可变长度的二进制字符串，M表示最多能存储的字节数，总字节数不能超过行的字节长度限制65535，另外还要考虑额外字节开销，VARBINARY类型的数据除了存储数据本身外，还需要1或2个字节来存储数据的字节数。VARBINARY类型<code>必须指定(M)</code>，否则报错。</p>
+<table>
+<thead>
+<tr>
+<th>二进制字符串类型</th>
+<th>特点</th>
+<th>值的长度</th>
+<th>占用空间</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BINARY(M)</td>
+<td>固定长度</td>
+<td>M （0 &lt;&#x3D; M &lt;&#x3D; 255）</td>
+<td>M个字节</td>
+</tr>
+<tr>
+<td>VARBINARY(M)</td>
+<td>可变长度</td>
+<td>M（0 &lt;&#x3D; M &lt;&#x3D; 65535）</td>
+<td>M+1个字节</td>
+</tr>
+</tbody></table>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 10. 二进制</span><br><span class="line"># 10. BINARY 和 VARBiNARY</span><br><span class="line">CREATE TABLE test_binary1(</span><br><span class="line">f1 BINARY,</span><br><span class="line">f2 BINARY(3),</span><br><span class="line"># f3 VARBINARY,</span><br><span class="line">f4 VARBINARY(10)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">DESC test_binary1;</span><br><span class="line"></span><br><span class="line">INSERT INTO test_binary1(f1,f2) VALUES</span><br><span class="line">(&#x27;a&#x27;, &#x27;abc&#x27;);</span><br><span class="line"></span><br><span class="line">-- Data too long for column &#x27;f1&#x27; at row 1</span><br><span class="line">INSERT INTO test_binary1(f1) VALUES</span><br><span class="line">(&#x27;ab&#x27;);</span><br><span class="line"></span><br><span class="line"># ab 3 ab 2</span><br><span class="line">INSERT INTO test_binary1(f2,f4) VALUES</span><br><span class="line">(&#x27;ab&#x27;, &#x27;ab&#x27;);</span><br><span class="line"></span><br><span class="line">-- 固定长度和可变长度</span><br><span class="line">SELECT f2,LENGTH(f2),f4,LENGTH(f4)</span><br><span class="line">FROM test_binary1;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="10-2-BLOB"><a href="#10-2-BLOB" class="headerlink" title="10.2 BLOB"></a>10.2 BLOB</h3><p>BLOB是一个<code>二进制大对象</code>，可以容纳可变数量的数据。</p>
+<p>MySQL中的BLOB类型包括TINYBLOB、BLOB、MEDIUMBLOB和LONGBLOB 4种类型，它们可容纳值的最大长度不同。可以存储一个二进制的大对象，比如<code>图片</code>、<code>音频</code>和<code>视频</code>等。</p>
+<p>需要注意的是，在实际工作中，往往不会在MySQL数据库中使用BLOB类型存储大对象数据，通常会将图片、音频和视频文件存储到<code>服务器的磁盘上</code>，并将图片、音频和视频的访问路径存储到MySQL中。</p>
+<table>
+<thead>
+<tr>
+<th>二进制字符串类型</th>
+<th>值的长度</th>
+<th>长度范围</th>
+<th>占用空间</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TINYBLOB</td>
+<td>L</td>
+<td>0 &lt;&#x3D; L &lt;&#x3D; 255</td>
+<td>L + 1 个字节</td>
+</tr>
+<tr>
+<td>BLOB</td>
+<td>L</td>
+<td>0 &lt;&#x3D; L &lt;&#x3D; 65535（相当于64KB）</td>
+<td>L + 2 个字节</td>
+</tr>
+<tr>
+<td>MEDIUMBLOB</td>
+<td>L</td>
+<td>0 &lt;&#x3D; L &lt;&#x3D; 16777215 （相当于16MB）</td>
+<td>L + 3 个字节</td>
+</tr>
+<tr>
+<td>LONGBLOB</td>
+<td>L</td>
+<td>0 &lt;&#x3D; L &lt;&#x3D; 4294967295（相当于4GB）</td>
+<td>L + 4 个字节</td>
+</tr>
+</tbody></table>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 10.2 BLOB</span><br><span class="line">-- 用的不多，开发中通常都是通过访问路径来访问文件</span><br><span class="line"></span><br><span class="line">CREATE TABLE test_blob1(</span><br><span class="line">id INT,</span><br><span class="line">img MEDIUMBLOB</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">INSERT INTO test_blob1(id)</span><br><span class="line">VALUES (1001);</span><br><span class="line"></span><br><span class="line">-- SQLyog可以直接图形化界面导入图片</span><br><span class="line"></span><br><span class="line">SELECT *</span><br><span class="line">FROM test_blob1;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="TEXT-和-BLOB使用注意事项"><a href="#TEXT-和-BLOB使用注意事项" class="headerlink" title="TEXT 和 BLOB使用注意事项"></a>TEXT 和 BLOB使用注意事项</h4><p>在使用text和blob字段类型时要注意以下几点，以便更好的发挥数据库的性能。</p>
+<p>① BLOB和TEXT值也会引起自己的一些问题，特别是执行了大量的删除或更新操作的时候。删除这种值会在数据表中留下很大的”<code>空洞</code>“，以后填入这些”空洞”的记录可能长度不同。为了提高性能，建议定期使用 OPTIMIZE TABLE 功能对这类表进行<code>碎片整理</code>。</p>
+<p>② 如果需要对大文本字段进行模糊查询，MySQL 提供了<code>前缀索引</code>。但是仍然要在不必要的时候避免检索大型的BLOB或TEXT值。例如，SELECT * 查询就不是很好的想法，除非你能够确定作为约束条件的WHERE子句只会找到所需要的数据行。否则，你可能毫无目的地在网络上传输大量的值。</p>
+<p>③ 把BLOB或TEXT列<code>分离到单独的表</code>中。在某些环境中，如果把这些数据列移动到第二张数据表中，可以让你把原数据表中的数据列转换为固定长度的数据行格式，那么它就是有意义的。这会<code>减少主表中的碎片</code>，使你得到固定长度数据行的性能优势。它还使你在主数据表上运行 SELECT * 查询的时候不会通过网络传输大量的BLOB或TEXT值。</p>
+<h2 id="11-JSON类型"><a href="#11-JSON类型" class="headerlink" title="11. JSON类型"></a>11. JSON类型</h2><p>JSON（JavaScript Object Notation）是一种轻量级的<code>数据交换格式</code>。简洁和清晰的层次结构使得 JSON 成为理想的数据交换语言。它易于人阅读和编写，同时也易于机器解析和生成，并有效地提升网络传输效率。<strong>JSON 可以将 JavaScript 对象中表示的一组数据转换为字符串，然后就可以在网络或者程序之间轻松地传递这个字符串，并在需要的时候将它还原为各编程语言所支持的数据格式。</strong></p>
+<p>在MySQL 5.7中，就已经支持JSON数据类型。在MySQL 8.x版本中，JSON类型提供了可以进行自动验证的JSON文档和优化的存储结构，使得在MySQL中存储和读取JSON类型的数据更加方便和高效。</p>
+<ul>
+<li>通过“-&gt;”和“-&gt;&gt;”符号，从JSON字段中正确查询出了指定的JSON数据的值。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 11. JSON类型</span><br><span class="line">CREATE TABLE test_json(</span><br><span class="line">js json</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">INSERT INTO test_json (js) </span><br><span class="line">VALUES (&#x27;&#123;&quot;name&quot;:&quot;songhk&quot;, &quot;age&quot;:18, &quot;address&quot;:&#123;&quot;province&quot;:&quot;beijing&quot;, &quot;city&quot;:&quot;beijing&quot;&#125;&#125;&#x27;);</span><br><span class="line"></span><br><span class="line">-- JSON本质也是字符串</span><br><span class="line">SELECT * FROM test_json;</span><br><span class="line"></span><br><span class="line">-- MYSQL中 使用箭头操作符js -&gt; &#x27;$.xxx&#x27;来解析JSON</span><br><span class="line">SELECT js -&gt; &#x27;$.name&#x27; AS NAME,js -&gt; &#x27;$.age&#x27; AS age ,js -&gt; &#x27;$.address.province&#x27; AS province, js -&gt; &#x27;$.address.city&#x27; AS city</span><br><span class="line">FROM test_json;</span><br><span class="line">+----------+------+-----------+-----------+</span><br><span class="line">| NAME     | age  | province  | city      |</span><br><span class="line">+----------+------+-----------+-----------+</span><br><span class="line">| &quot;songhk&quot; | 18   | &quot;beijing&quot; | &quot;beijing&quot; |</span><br><span class="line">+----------+------+-----------+-----------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="12-空间类型"><a href="#12-空间类型" class="headerlink" title="12. 空间类型"></a>12. 空间类型</h2><p>MySQL 空间类型扩展支持地理特征的生成、存储和分析。这里的地理特征表示世界上具有位置的任何东西，可以是一个实体，例如一座山；可以是空间，例如一座办公楼；也可以是一个可定义的位置，例如一个十字路口等等。MySQL中使用<code>Geometry（几何）</code>来表示所有地理特征。Geometry指一个点或点的集合，代表世界上任何具有位置的事物。</p>
+<p>MySQL的空间数据类型（Spatial Data Type）对应于OpenGIS类，包括单值类型：GEOMETRY、POINT、LINESTRING、POLYGON以及集合类型：MULTIPOINT、MULTILINESTRING、MULTIPOLYGON、GEOMETRYCOLLECTION 。</p>
+<ul>
+<li>Geometry是所有空间集合类型的基类，其他类型如POINT、LINESTRING、POLYGON都是Geometry的子类。<ul>
+<li>Point，顾名思义就是点，有一个坐标值。例如POINT(121.213342 31.234532)，POINT(30 10)，坐标值支持DECIMAL类型，经度（longitude）在前，维度（latitude）在后，用空格分隔。</li>
+<li>LineString，线，由一系列点连接而成。如果线从头至尾没有交叉，那就是简单的（simple）；如果起点和终点重叠，那就是封闭的（closed）。例如LINESTRING(30 10,10 30,40 40)，点与点之间用逗号分隔，一个点中的经纬度用空格分隔，与POINT格式一致。</li>
+<li>Polygon，多边形。可以是一个实心平面形，即没有内部边界，也可以有空洞，类似纽扣。最简单的就是只有一个外边界的情况，例如POLYGON((0 0,10 0,10 10, 0 10))。</li>
+</ul>
+</li>
+</ul>
+<p>下面展示几种常见的几何图形元素：</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240815164911225.png" alt="image-20240815164911225">	</p>
+<ul>
+<li>MultiPoint、MultiLineString、MultiPolygon、GeometryCollection 这4种类型都是集合类，是多个Point、LineString或Polygon组合而成。</li>
+</ul>
+<p>下面展示的是多个同类或异类几何图形元素的组合：</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240815164922795.png" alt="image-20240815164922795">	</p>
+<h2 id="13-小结和选择建议"><a href="#13-小结和选择建议" class="headerlink" title="13. 小结和选择建议"></a>13. 小结和选择建议</h2><p>在定义数据类型时，如果确定是<code>整数</code>，就用<code> INT</code>； 如果是<code>小数</code>，一定用定点数类型 <code>DECIMAL(M,D)</code>； 如果是日期与时间，就用 <code>DATETIME</code>。 </p>
+<p>这样做的好处是，首先确保你的系统不会因为数据类型定义出错。不过，凡事都是有两面的，可靠性好，并不意味着高效。比如，TEXT 虽然使用方便，但是效率不如 CHAR(M) 和 VARCHAR(M)。</p>
+<p>关于字符串的选择，建议参考如下阿里巴巴的《Java开发手册》规范：</p>
+<p><strong>阿里巴巴《Java开发手册》之MySQL数据库：</strong></p>
+<ul>
+<li>任何字段如果为非负数，必须是 UNSIGNED</li>
+<li>【<code>强制</code>】小数类型为 DECIMAL，禁止使用 FLOAT 和 DOUBLE。 <ul>
+<li>说明：在存储的时候，FLOAT 和 DOUBLE 都存在精度损失的问题，很可能在比较值的时候，得到不正确的结果。如果存储的数据范围超过 DECIMAL 的范围，建议将数据拆成整数和小数并分开存储。</li>
+</ul>
+</li>
+<li>【<code>强制</code>】如果存储的字符串长度几乎相等，使用 CHAR 定长字符串类型。 </li>
+<li>【<code>强制</code>】VARCHAR 是可变长字符串，不预先分配存储空间，长度不要超过 5000。如果存储长度大于此值，定义字段类型为 TEXT，独立出来一张表，用主键来对应，避免影响其它字段索引效率。</li>
+</ul>
+<h2 id="14-本章要求"><a href="#14-本章要求" class="headerlink" title="14. 本章要求"></a>14. 本章要求</h2><ul>
+<li>1.掌握MySQL规范的各种数据类型</li>
+<li>2.熟悉数据类型常设置的属性</li>
+<li>3.掌握不同的类型的使用场景</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2024/08/16/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/12.%E6%95%B0%E6%8D%AE%E5%BA%93%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">https://yuezi2048.github.io/2024/08/16/2.Areas🌐/back-end-java/2.MySQL/基础篇/12.数据库数据类型/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%9F%BA%E7%A1%80%E7%AF%87/">基础篇</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2024/08/16/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/03.%E5%9F%BA%E6%9C%ACSELECT%E8%AF%AD%E5%8F%A5/" title="03.基本SELECT语句"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">03.基本SELECT语句</div></div><div class="info-2"><div class="info-item-1">三、基本SELECT语句1. SQL概述1.1 SQL背景 1946 年，世界上第一台电脑诞生，如今，借由这台电脑发展起来的互联网已经自成江湖。在这几十年里，无数的技术、产业在这片江湖里沉浮，有的方兴未艾，有的已经几幕兴衰。但在这片浩荡的波动里，有一门技术从未消失，甚至“老当益壮”，那就是 SQL。  45 年前，也就是 1974 年，IBM 研究员发布了一篇揭开数据库技术的论文《SEQUEL：一门结构化的英语查询语言》，直到今天这门结构化的查询语言并没有太大的变化，相比于其他语言，SQL 的半衰期可以说是非常长了。   不论是前端工程师，还是后端算法工程师，都一定会和数据打交道，都需要了解如何又快又准确地提取自己想要的数据。更别提数据分析师了，他们的工作就是和数据打交道，整理不同的报告，以便指导业务决策。  SQL（Structured Query...</div></div></div></a><a class="pagination-related" href="/2024/08/16/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/13.%E7%BA%A6%E6%9D%9F/" title="13.约束"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">13.约束</div></div><div class="info-2"><div class="info-item-1">十三、约束1. 约束(CONSTRAINT)概述1.1 为什么要约束为什么要约束–&gt; 保证数据完整性 为了防止数据库不存在不符合语义的数据，并且防止因错误信息的输入输出造成无效操作&#x2F;错误信息，引出数据完整性的概念 数据完整性（Data Integrity）：数据的精确性（Accuracy）和可靠性（Reliability） 为了保证数据的完整性，SQL规范以约束的方式对表数据进行额外的条件限制。从以下四个方面考虑：  实体完整性（Entity Integrity）：例如，同一个表中，不能存在两条完全相同无法区分的记录 域完整性（Domain Integrity）：例如：年龄范围0-120，性别范围“男&#x2F;女” 引用完整性（Referential Integrity）：例如：员工所在部门，在部门表中要能找到这个部门 用户自定义完整性（User-defined Integrity）：例如：用户名唯一、密码不能为空等，本部门经理的工资不得高于本部门职工的平均工资的5倍。  1.2 什么是约束约束是表级的强制规定。 可以在创建表时规定约束（通过 CREATE...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2024/08/14/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/01.%E6%95%B0%E6%8D%AE%E5%BA%93%E6%A6%82%E8%BF%B0/" title="01.数据库概述"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-14</div><div class="info-item-2">01.数据库概述</div></div><div class="info-2"><div class="info-item-1">一、数据库概述1. 为什么要数据库 数据的持久化：将数据保存到硬盘上，可供可掉电式的存储设备使用，大多使用关系数据库实现（也可以通过文件I&#x2F;O、XML实现）  	 2. DB 和 DBMS2.1 概述 数据库DB：存储数据的仓库，本质上是一个文件系统，保存一系列有组织的数据 数据库管理系统DBMS：管理和操纵数据库的大型软件，从而建立、使用和维护数据库。用户可以使用DBMS查询数据库的数据 结构化查询语言SQL：用于数据库交互的语言  其中，DBMS可以管理多个DB，开发中，通常针对每个应用创建一个数据库，并在一个数据库中创建多个表，从而保存实体用户的数据 	 2.2 常见DBMS常见的DBMS 参考数据库最新排名:https://db-engines.com/en/ranking 	 发展趋势：https://db-engines.com/en/ranking_trend 	 Oracle 1979 年，Oracle 2 诞生，它是第一个商用的 RDBMS（关系型数据库管理系统）。随着 Oracle 软件的名气越来越大，公司也改名叫 Oracle...</div></div></div></a><a class="pagination-related" href="/2025/05/25/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/02.MySQL%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" title="02.MySQL环境搭建"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-25</div><div class="info-item-2">02.MySQL环境搭建</div></div><div class="info-2"><div class="info-item-1">二、MySQL环境搭建1. 清除原有MySQL环境Step1：停止MySQL服务 	 Step2：软件卸载  亦可通过mysql-installer-community-8.0.26.0.msi卸载，此时安装目录也会被移除  	 Step3：残余文件清理 如果再次安装不成功，可以卸载后对残余文件进行清理后再安装。 （1）服务目录：mysql服务的安装目录 （2）数据目录：默认在C:\ProgramData\MySQL 注意：请在卸载前做好数据备份 在操作完以后，需要重启计算机，然后进行安装即可。如果仍然安装失败，需要继续操作如下步骤4。 Step4：清理注册表 在系统的搜索框中输入regedit HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\Eventlog\Application\MySQL服务 目录删除HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\MySQL服务...</div></div></div></a><a class="pagination-related" href="/2024/08/16/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/03.%E5%9F%BA%E6%9C%ACSELECT%E8%AF%AD%E5%8F%A5/" title="03.基本SELECT语句"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-16</div><div class="info-item-2">03.基本SELECT语句</div></div><div class="info-2"><div class="info-item-1">三、基本SELECT语句1. SQL概述1.1 SQL背景 1946 年，世界上第一台电脑诞生，如今，借由这台电脑发展起来的互联网已经自成江湖。在这几十年里，无数的技术、产业在这片江湖里沉浮，有的方兴未艾，有的已经几幕兴衰。但在这片浩荡的波动里，有一门技术从未消失，甚至“老当益壮”，那就是 SQL。  45 年前，也就是 1974 年，IBM 研究员发布了一篇揭开数据库技术的论文《SEQUEL：一门结构化的英语查询语言》，直到今天这门结构化的查询语言并没有太大的变化，相比于其他语言，SQL 的半衰期可以说是非常长了。   不论是前端工程师，还是后端算法工程师，都一定会和数据打交道，都需要了解如何又快又准确地提取自己想要的数据。更别提数据分析师了，他们的工作就是和数据打交道，整理不同的报告，以便指导业务决策。  SQL（Structured Query...</div></div></div></a><a class="pagination-related" href="/2025/04/24/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/04.%E8%BF%90%E7%AE%97%E7%AC%A6/" title="04.运算符"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-24</div><div class="info-item-2">04.运算符</div></div><div class="info-2"><div class="info-item-1">四、运算符1. 算数运算符算术运算符主要用于数学运算，其可以连接运算符前后的两个数值或表达式，对数值或表达式进行加（+）、减（-）、乘（*）、除（&#x2F;）和取模（%）运算。 1.1 加减法# 算数运算符：+ - * / div % mod SELECT 100, 100 + 0, 100 - 0, 100 + 50, 100 + 50 - 30, 100 + 35.5, 100 - 35.5FROM DUAL;+-----+---------+---------+----------+--------------+------------+------------+| 100 | 100 + 0 | 100 - 0 | 100 + 50 | 100 + 50 -30 | 100 + 35.5 | 100 - 35.5 |+-----+---------+---------+----------+--------------+------------+------------+| 100 |     100 |     100 |      150 |         ...</div></div></div></a><a class="pagination-related" href="/2024/08/14/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/00.%E5%9F%BA%E7%A1%80%E7%AF%87%E5%86%85%E5%AE%B9%E6%A1%86%E6%9E%B6/" title="00.基础篇内容框架"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-14</div><div class="info-item-2">00.基础篇内容框架</div></div><div class="info-2"><div class="info-item-1">MySQL数据库基础篇分为5个篇章： 1. 数据库概述与MySQL安装篇  第01章：数据库概述 第02章：MySQL环境搭建  2. SQL之SELECT使用篇  第03章：基本的SELECT语句 第04章：运算符 第05章：排序与分页 第06章：多表查询 第07章：单行函数 第08章：聚合函数 第09章：子查询  3. SQL之DDL、DML、DCL使用篇  第10章：创建和管理表 第11章：数据处理之增删改 第12章：MySQL数据类型精讲 第13章：约束  4. 其它数据库对象篇（开发用到了再学）  第14章：视图 第15章：存储过程与函数 第16章：变量、流程控制与游标 第17章：触发器  5. MySQL8 新特性篇（开发用到了再学）  第18章：MySQL8其它新特性  ps：普通开发往往积累单点技术、比如 CRUD、锁类型、索引的数据结构… 而对于技术骨干、架构师则往往需要对底层原理吃透：  数据库事务 ACID...</div></div></div></a><a class="pagination-related" href="/2025/05/28/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/05.%E6%8E%92%E5%BA%8F%E5%92%8C%E5%88%86%E9%A1%B5/" title="05.排序和分页"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-28</div><div class="info-item-2">05.排序和分页</div></div><div class="info-2"><div class="info-item-1">五、排序和分页1. 排序1.1 单列排序 使用 ORDER BY 子句排序 ASC（ascend）: 升序 DESC（descend）:降序   ORDER BY 子句在SELECT语句的结尾。 关注SELECT查询的顺序，实际场景：别名不能在where从句中使用，而可以在order by中使用  # 1. 一级排序# 如果没有使用排序操作，默认情况下查询返回的数据按照添加数据的顺序SELECT * FROM employees;-- 1.1 基本使用# 练习：按照salary从高到低显示数据(ORDER BY 通过什么来排序)# 升序:ASC(ascend) 降序：DESC(descend)SELECT employee_id, last_name, salaryFROM employeesORDER BY salary DESC;# 从低到高(没有显式写，默认升序)SELECT employee_id, last_name, salaryFROM employeesORDER BY salary ASC;-- 2. 别名# 使用列的别名进行排序SELECT...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8D%81%E4%BA%8C%E3%80%81%E6%95%B0%E6%8D%AE%E5%BA%93%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-text">十二、数据库数据类型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-MySQL%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-text">1. MySQL中的数据类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%95%B4%E6%95%B0%E7%B1%BB%E5%9E%8B"><span class="toc-text">2. 整数类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E7%B1%BB%E5%9E%8B%E4%BB%8B%E7%BB%8D"><span class="toc-text">2.1 类型介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E5%8F%AF%E9%80%89%E5%B1%9E%E6%80%A7"><span class="toc-text">2.2 可选属性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-1-M"><span class="toc-text">2.2.1 M</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-2-UNSIGNED"><span class="toc-text">2.2.2 UNSIGNED</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-3-ZEROFILL"><span class="toc-text">2.2.3 ZEROFILL</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-4-%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-text">2.2.4 适用场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-5-%E9%80%89%E6%8B%A9%E5%BB%BA%E8%AE%AE"><span class="toc-text">2.2.5 选择建议</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%B5%AE%E7%82%B9%E7%B1%BB%E5%9E%8B"><span class="toc-text">3. 浮点类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E7%B1%BB%E5%9E%8B%E4%BB%8B%E7%BB%8D"><span class="toc-text">3.1 类型介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E6%95%B0%E6%8D%AE%E7%B2%BE%E5%BA%A6%E8%AF%B4%E6%98%8E"><span class="toc-text">3.2 数据精度说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E7%B2%BE%E5%BA%A6%E8%AF%AF%E5%B7%AE%E8%AF%B4%E6%98%8E"><span class="toc-text">3.3 精度误差说明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%AE%9A%E7%82%B9%E6%95%B0%E7%B1%BB%E5%9E%8B"><span class="toc-text">4. 定点数类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E7%B1%BB%E5%9E%8B%E4%BB%8B%E7%BB%8D"><span class="toc-text">4.1 类型介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C"><span class="toc-text">4.2 开发经验</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E4%BD%8D%E7%B1%BB%E5%9E%8B-BIT"><span class="toc-text">5. 位类型_BIT</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E6%97%A5%E6%9C%9F%E5%92%8C%E6%97%B6%E9%97%B4%E7%B1%BB%E5%9E%8B"><span class="toc-text">6. 日期和时间类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-YEAR"><span class="toc-text">6.1 YEAR</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-DATE"><span class="toc-text">6.2 DATE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-TIME"><span class="toc-text">6.3 TIME</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-4-DATETIME"><span class="toc-text">6.4 DATETIME</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-5-TIMESTAMP"><span class="toc-text">6.5 TIMESTAMP</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#TIMESTAMP%E5%92%8CDATETIME%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-text">TIMESTAMP和DATETIME的区别</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-6-%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C"><span class="toc-text">6.6 开发经验</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E6%96%87%E6%9C%AC%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%B1%BB%E5%9E%8B"><span class="toc-text">7. 文本字符串类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7-1-CHAR-%E5%92%8C-VARCHAR"><span class="toc-text">7.1 CHAR 和 VARCHAR</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#CHAR%E5%92%8CVARCHAR%E7%9A%84%E9%80%89%E6%8B%A9"><span class="toc-text">CHAR和VARCHAR的选择</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2-TEXT%E7%B1%BB%E5%9E%8B"><span class="toc-text">7.2 TEXT类型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-ENUM%E7%B1%BB%E5%9E%8B"><span class="toc-text">8. ENUM类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-SET%E7%B1%BB%E5%9E%8B"><span class="toc-text">9. SET类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%B1%BB%E5%9E%8B"><span class="toc-text">10. 二进制字符串类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#10-1-BINARY%E4%B8%8EVARBINARY"><span class="toc-text">10.1 BINARY与VARBINARY</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-2-BLOB"><span class="toc-text">10.2 BLOB</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#TEXT-%E5%92%8C-BLOB%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">TEXT 和 BLOB使用注意事项</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-JSON%E7%B1%BB%E5%9E%8B"><span class="toc-text">11. JSON类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#12-%E7%A9%BA%E9%97%B4%E7%B1%BB%E5%9E%8B"><span class="toc-text">12. 空间类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#13-%E5%B0%8F%E7%BB%93%E5%92%8C%E9%80%89%E6%8B%A9%E5%BB%BA%E8%AE%AE"><span class="toc-text">13. 小结和选择建议</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#14-%E6%9C%AC%E7%AB%A0%E8%A6%81%E6%B1%82"><span class="toc-text">14. 本章要求</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

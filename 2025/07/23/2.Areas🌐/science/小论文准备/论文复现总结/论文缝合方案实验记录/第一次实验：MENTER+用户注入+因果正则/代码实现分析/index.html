@@ -1,0 +1,362 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>代码实现分析 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="代码编写INFO AAA(  (mlp): Linear(in_features&#x3D;128, out_features&#x3D;128, bias&#x3D;True)  (image_embedding): Embedding(7050, 4096)  (image_trs): Linear(in_features&#x3D;4096, out_features&#x3D;64, bias&#x3D;True)  (text_embedding">
+<meta property="og:type" content="article">
+<meta property="og:title" content="代码实现分析">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/07/23/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="代码编写INFO AAA(  (mlp): Linear(in_features&#x3D;128, out_features&#x3D;128, bias&#x3D;True)  (image_embedding): Embedding(7050, 4096)  (image_trs): Linear(in_features&#x3D;4096, out_features&#x3D;64, bias&#x3D;True)  (text_embedding">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-07-23T14:18:53.000Z">
+<meta property="article:modified_time" content="2025-07-23T14:18:53.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="第一次实验：MENTER+用户注入+因果正则">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "代码实现分析",
+  "url": "https://yuezi2048.github.io/2025/07/23/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-07-23T14:18:53.000Z",
+  "dateModified": "2025-07-23T14:18:53.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/07/23/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '代码实现分析',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">代码实现分析</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">代码实现分析</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-07-23T14:18:53.000Z" title="发表于 2025-07-23 22:18:53">2025-07-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-07-23T14:18:53.000Z" title="更新于 2025-07-23 22:18:53">2025-07-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/">science</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/">小论文准备</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/">论文复现总结</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/">论文缝合方案实验记录</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER-%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5-%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/">第一次实验：MENTER+用户注入+因果正则</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="代码编写"><a href="#代码编写" class="headerlink" title="代码编写"></a>代码编写</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">INFO AAA(</span><br><span class="line">  (mlp): Linear(in_features=128, out_features=128, bias=True)</span><br><span class="line">  (image_embedding): Embedding(7050, 4096)</span><br><span class="line">  (image_trs): Linear(in_features=4096, out_features=64, bias=True)</span><br><span class="line">  (text_embedding): Embedding(7050, 384)</span><br><span class="line">  (text_trs): Linear(in_features=384, out_features=64, bias=True)</span><br><span class="line">  (MLP_user): Linear(in_features=128, out_features=64, bias=True)</span><br><span class="line">  (v_gcn): GCN(</span><br><span class="line">    (MLP): Sequential(</span><br><span class="line">      (0): Linear(in_features=4096, out_features=256, bias=True)</span><br><span class="line">      (1): LeakyReLU(negative_slope=0.01)</span><br><span class="line">      (2): Linear(in_features=256, out_features=64, bias=True)</span><br><span class="line">    )</span><br><span class="line">    (shared_encoder): Linear(in_features=64, out_features=64, bias=True)</span><br><span class="line">    (conv_embed_layers): ModuleList(</span><br><span class="line">      (0-1): 2 x Base_gcn(64, 64)</span><br><span class="line">    )</span><br><span class="line">  )</span><br><span class="line">  (v_gcn_n1): GCN(</span><br><span class="line">    (MLP): Sequential(</span><br><span class="line">      (0): Linear(in_features=4096, out_features=256, bias=True)</span><br><span class="line">      (1): LeakyReLU(negative_slope=0.01)</span><br><span class="line">      (2): Linear(in_features=256, out_features=64, bias=True)</span><br><span class="line">    )</span><br><span class="line">    (shared_encoder): Linear(in_features=64, out_features=64, bias=True)</span><br><span class="line">    (conv_embed_layers): ModuleList(</span><br><span class="line">      (0-1): 2 x Base_gcn(64, 64)</span><br><span class="line">    )</span><br><span class="line">  )</span><br><span class="line">  (v_gcn_n2): GCN(</span><br><span class="line">    (MLP): Sequential(</span><br><span class="line">      (0): Linear(in_features=4096, out_features=256, bias=True)</span><br><span class="line">      (1): LeakyReLU(negative_slope=0.01)</span><br><span class="line">      (2): Linear(in_features=256, out_features=64, bias=True)</span><br><span class="line">    )</span><br><span class="line">    (shared_encoder): Linear(in_features=64, out_features=64, bias=True)</span><br><span class="line">    (conv_embed_layers): ModuleList(</span><br><span class="line">      (0-1): 2 x Base_gcn(64, 64)</span><br><span class="line">    )</span><br><span class="line">  )</span><br><span class="line">  (t_gcn): GCN(</span><br><span class="line">    (MLP): Sequential(</span><br><span class="line">      (0): Linear(in_features=384, out_features=256, bias=True)</span><br><span class="line">      (1): LeakyReLU(negative_slope=0.01)</span><br><span class="line">      (2): Linear(in_features=256, out_features=64, bias=True)</span><br><span class="line">    )</span><br><span class="line">    (shared_encoder): Linear(in_features=64, out_features=64, bias=True)</span><br><span class="line">    (conv_embed_layers): ModuleList(</span><br><span class="line">      (0-1): 2 x Base_gcn(64, 64)</span><br><span class="line">    )</span><br><span class="line">  )</span><br><span class="line">  (t_gcn_n1): GCN(</span><br><span class="line">    (MLP): Sequential(</span><br><span class="line">      (0): Linear(in_features=384, out_features=256, bias=True)</span><br><span class="line">      (1): LeakyReLU(negative_slope=0.01)</span><br><span class="line">      (2): Linear(in_features=256, out_features=64, bias=True)</span><br><span class="line">    )</span><br><span class="line">    (shared_encoder): Linear(in_features=64, out_features=64, bias=True)</span><br><span class="line">    (conv_embed_layers): ModuleList(</span><br><span class="line">      (0-1): 2 x Base_gcn(64, 64)</span><br><span class="line">    )</span><br><span class="line">  )</span><br><span class="line">  (t_gcn_n2): GCN(</span><br><span class="line">    (MLP): Sequential(</span><br><span class="line">      (0): Linear(in_features=384, out_features=256, bias=True)</span><br><span class="line">      (1): LeakyReLU(negative_slope=0.01)</span><br><span class="line">      (2): Linear(in_features=256, out_features=64, bias=True)</span><br><span class="line">    )</span><br><span class="line">    (shared_encoder): Linear(in_features=64, out_features=64, bias=True)</span><br><span class="line">    (conv_embed_layers): ModuleList(</span><br><span class="line">      (0-1): 2 x Base_gcn(64, 64)</span><br><span class="line">    )</span><br><span class="line">  )</span><br><span class="line">  (id_gcn): GCN(</span><br><span class="line">    (MLP): Sequential(</span><br><span class="line">      (0): Linear(in_features=64, out_features=256, bias=True)</span><br><span class="line">      (1): LeakyReLU(negative_slope=0.01)</span><br><span class="line">      (2): Linear(in_features=256, out_features=64, bias=True)</span><br><span class="line">    )</span><br><span class="line">    (shared_encoder): Linear(in_features=64, out_features=64, bias=True)</span><br><span class="line">    (conv_embed_layers): ModuleList(</span><br><span class="line">      (0-1): 2 x Base_gcn(64, 64)</span><br><span class="line">    )</span><br><span class="line">  )</span><br><span class="line">  (shared_encoder): Linear(in_features=64, out_features=64, bias=True)</span><br><span class="line">  (image_encoder_s): Linear(in_features=4096, out_features=64, bias=True)</span><br><span class="line">  (text_encoder_s): Linear(in_features=384, out_features=64, bias=True)</span><br><span class="line">  (query_common): Linear(in_features=64, out_features=1, bias=False)</span><br><span class="line">  (softmax): Softmax(dim=-1)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>核心故事主线：CMDL</p>
+<p>目前小论文思路（只有解耦 + 用户注入过程）：</p>
+<p>大论文可以融合因果正则’’ + 模块E’</p>
+<ul>
+<li>MENTER：虽然更好地表示了模态融合过程，但是应当考虑到每个模态的特定模块。</li>
+<li>特征提取_解耦共享和特定模态：CMDL’<ul>
+<li>CMDL——自注意力模块</li>
+<li>弱模态增强：M3CSR-2024？弱模态增强模块——POWEREc</li>
+</ul>
+</li>
+<li>行为信号注入自适应图扩散模块：DiffMM’<ul>
+<li><strong>DiffMM-2024</strong> 注入解耦的用户信号</li>
+</ul>
+</li>
+<li>BPR损失函数改进<ul>
+<li>the BPR loss can only supervise the final user rating learning, but cannot optimize each modality-specific rating learning（CHOSION POWERec）</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li><strong>C (UCPDA) 优先：</strong> 原始多模态特征首先进入 UCPDA 模块。在这里，它们被解耦为模态共享和模态特定部分，并根据用户对不同模态的偏好强度进行动态组合。同时，通过多层次语义对齐和因果正则化，确保这些特征与推荐任务目标对齐，并消除虚假关联。输出的是<strong>用户个性化的、解耦且对齐的多模态物品表示</strong>。</li>
+<li><strong>B (BGGD) 增强：</strong> 接着，BGGD 模块介入，利用用户行为信号来<strong>引导扩散过程</strong>，对图上的信息进行<strong>去噪和强化</strong>。这个过程可以作用于 UCPDA 提供的精细化特征，从而使图信号的增强更具语义和偏好感知能力。</li>
+<li><strong>A (MENTOR’) 核心：</strong> 最后，MENTOR’ 作为核心 GCN 模型，接收来自 UCPDA 的<strong>个性化、解耦且对齐的多模态特征</strong>以及 ID 嵌入。GCN 在 BGGD 处理后的<strong>行为引导去噪图结构</strong>上进行信息传播，并进行最终的融合和表示学习。</li>
+</ol>
+<p>好的，我来为你详细整理一下这个创新框架的完整多模态推荐过程，并明确每个阶段中“缝入”的模块、其修改点、参考论文以及修改的理由。</p>
+<p>你提出的创新框架可以概括为：<strong>MENTER’ + BGAD + DMSP</strong>。</p>
+<p>这个框架的核心思想是：在 <strong>MENTER</strong> 这个强大的图神经网络基准模型之上，通过 <strong>DMSP</strong> 模块在<strong>特征层面</strong>进行精细化处理（解耦和个性化偏好），并通过 <strong>BGAD</strong> 模块在<strong>图结构和信息传播层面</strong>进行优化（行为引导去噪），从而实现更准确、鲁棒、个性化且可解释的多模态推荐。</p>
+<hr>
+<h3 id="整体多模态推荐过程概述"><a href="#整体多模态推荐过程概述" class="headerlink" title="整体多模态推荐过程概述"></a><strong>整体多模态推荐过程概述</strong></h3><p>一个典型的基于GNN的多模态推荐系统流程通常包括以下几个核心阶段：</p>
+<ol>
+<li><strong>原始数据输入与初步嵌入：</strong> 获取用户ID、物品ID以及物品的原始多模态数据（如图像、文本、音频）。</li>
+<li><strong>图结构构建：</strong> 基于用户-物品交互数据构建协同图，可能还包括物品-物品相似图。</li>
+<li><strong>特征融合与传播：</strong> 将多模态特征与ID嵌入结合，并通过GNN在图上传播信息，学习更丰富的用户和物品表示。</li>
+<li><strong>自监督学习（SSL）：</strong> 通常会引入SSL任务来增强表示学习，例如通过对比学习进行模态对齐或去噪。</li>
+<li><strong>预测与排序：</strong> 利用学习到的用户和物品表示，计算用户对物品的偏好分数，并进行排序推荐。</li>
+</ol>
+<hr>
+<h3 id="MENTER’-BGAD-DMSP-框架的详细分解与模块缝合"><a href="#MENTER’-BGAD-DMSP-框架的详细分解与模块缝合" class="headerlink" title="MENTER’ + BGAD + DMSP 框架的详细分解与模块缝合"></a><strong>MENTER’ + BGAD + DMSP 框架的详细分解与模块缝合</strong></h3><p>以下是你的创新框架在上述通用流程中的具体实现和修改：</p>
+<hr>
+<h4 id="阶段-1-原始数据输入与初步嵌入"><a href="#阶段-1-原始数据输入与初步嵌入" class="headerlink" title="阶段 1: 原始数据输入与初步嵌入"></a><strong>阶段 1: 原始数据输入与初步嵌入</strong></h4><ul>
+<li><strong>原始模块：</strong> 这是所有多模态推荐模型的基础步骤，不涉及直接修改。</li>
+<li><strong>缝入模块：</strong> 无。</li>
+<li><strong>修改方面：</strong> 无。</li>
+<li><strong>参考论文：</strong><ul>
+<li><strong>VBPR (2016)</strong>: 早期将视觉特征与ID嵌入结合的代表 [Initial research report].</li>
+<li><strong>MENTER-2025 &#x2F; FREEDOM-2023 &#x2F; LATTICE-2021</strong>: 这些模型都依赖于预先提取的多模态特征和ID嵌入作为输入 [Initial research report].</li>
+</ul>
+</li>
+<li><strong>具体作用：</strong><ul>
+<li>获取物品的原始多模态特征（例如，通过预训练的视觉&#x2F;文本编码器提取的特征向量）。</li>
+<li>为用户和物品生成可学习的ID嵌入。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="阶段-2-模态特定偏好学习与解耦-DMSP"><a href="#阶段-2-模态特定偏好学习与解耦-DMSP" class="headerlink" title="阶段 2: 模态特定偏好学习与解耦 (DMSP)"></a><strong>阶段 2: 模态特定偏好学习与解耦 (DMSP)</strong></h4><ul>
+<li><strong>原始模块：</strong> 在MENTER中，这部分功能由其“多层次跨模态对齐”模块（Lately Fusion增强）承担，但DMSP对其进行了<strong>根本性改进和前置</strong>。</li>
+<li><strong>缝入模块：</strong> <strong>DMSP (基于因果正则化的解耦模态特定偏好学习)</strong></li>
+<li><strong>模块在哪个阶段：</strong> 在原始多模态特征提取之后，GNN图传播之前。它负责对原始多模态特征进行<strong>精细化预处理</strong>。</li>
+<li><strong>修改的方面与参考论文：</strong><ol>
+<li><strong>模态解耦表示：</strong><ul>
+<li><strong>修改内容：</strong> DMSP会明确地将每种模态的特征分解为<strong>模态共享嵌入</strong>（捕获所有模态的共同语义）和<strong>模态特定嵌入</strong>（捕获仅在一种模态中存在的独特信息）。MENTER原有的融合可能直接对齐和融合模态，但DMSP在融合前就进行了这种结构化分解。</li>
+<li><strong>参考论文：</strong> <strong>CMDL</strong> (模态解耦表示，互信息正则化) [Initial research report]；<strong>FMMRec</strong> (公平导向的模态解耦，分离敏感和非敏感信息)。</li>
+<li><strong>为何需要：</strong> 解决多模态特征的“纠缠数值向量”问题 1，使模型能够区分共同和独特的模态贡献，为后续的个性化融合打下基础，提升可解释性。</li>
+</ul>
+</li>
+<li><strong>用户特定动态组合：</strong><ul>
+<li><strong>修改内容：</strong> 在解耦的基础上，DMSP会引入一个<strong>用户特定的注意力或门控机制</strong>。该机制根据每个用户的偏好强度，动态地权衡不同模态的共享和特定嵌入的重要性，并进行组合，生成<strong>个性化的多模态物品表示</strong>。</li>
+<li><strong>参考论文：</strong> <strong>M3CSR-2024</strong> (测量用户模态特定强度，通过成对损失解耦用户多模态兴趣) 2。</li>
+<li><strong>为何需要：</strong> 解决用户对不同模态偏好强度存在“差异”的问题 2，实现更精细的个性化推荐。同时，通过这种可学习的组合，解决了QARM中提到的“表示不可学习性”问题，使多模态特征能够通过梯度更新 4。</li>
+</ul>
+</li>
+<li><strong>因果正则化：</strong><ul>
+<li><strong>修改内容：</strong> 在解耦和组合过程中，DMSP会应用<strong>因果正则化</strong>，以确保模态特定组件和共享组件之间的统计独立性，并防止学习到虚假关联。</li>
+<li><strong>参考论文：</strong> <strong>FMMRec</strong> (因果启发式公平表示学习，通过对抗学习确保表示独立于敏感属性)；<strong>Preference Learning for AI Alignment: a Causal Perspective (2025)</strong> (将偏好学习框架置于因果范式中，解决因果误识别、偏好异质性等问题)。</li>
+<li><strong>为何需要：</strong> 确保解耦的有效性，提高可解释性，并减轻因虚假关联导致的偏差，从而提升模型的公平性。</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><strong>输出：</strong> 针对每个用户和物品的、经过解耦和个性化组合的、高质量的多模态特征表示。这些特征将作为GNN的输入。</li>
+</ul>
+<hr>
+<h4 id="阶段-3-图结构构建与行为引导扩散-BGAD"><a href="#阶段-3-图结构构建与行为引导扩散-BGAD" class="headerlink" title="阶段 3: 图结构构建与行为引导扩散 (BGAD)"></a><strong>阶段 3: 图结构构建与行为引导扩散 (BGAD)</strong></h4><ul>
+<li><p><strong>原始模块：</strong> MENTER (以及FREEDOM, LATTICE) 都有图结构构建和GCN传播模块。BGAD将<strong>增强和优化</strong>这个图传播过程。</p>
+</li>
+<li><p><strong>缝入模块：</strong> <strong>BGAD (行为引导的自适应图扩散)</strong></p>
+</li>
+<li><p><strong>模块在哪个阶段：</strong> 在GNN进行信息传播之前或过程中。它负责对图结构和信息传播进行<strong>去噪和行为引导</strong>。</p>
+</li>
+<li><p><strong>修改的方面与参考论文：</strong></p>
+<ol>
+<li><p><strong>图结构构建：</strong> 沿用MENTER的图构建方式（用户-物品二分图，物品-物品同构图）。</p>
+</li>
+<li><p><strong>行为信号注入与自适应扩散：</strong></p>
+<ul>
+<li><p><strong>修改内容：</strong> 在MENTER的GCN进行信息传播之前或过程中，引入一个<strong>扩散过程</strong>。这个扩散过程不再是通用的去噪，而是<strong>由用户历史行为信号明确引导</strong>的。它会根据行为信号的密度和质量，自适应地调整扩散步骤，优先处理与行为相关的多模态特征。</p>
+</li>
+<li><p><strong>参考论文：</strong> <strong>DiffMM-2024</strong> (多模态图扩散模块，GNN与扩散结合) [Initial research report]；<strong>GDMCF-2025</strong> (图基扩散模型，多层次噪声破坏机制，用户活跃引导扩散过程) 5；</p>
+<p><strong>LD4MRec (2023)</strong> (轻量级扩散模型，使用协同信号和个性化模态偏好信号作为引导)。</p>
+</li>
+<li><p><strong>为何需要：</strong> 解决多模态数据中的噪声和“信息漂移”问题，确保扩散过程专注于真正反映用户偏好的特征，而非统计上突出但行为上不重要的特征。这使得模型从一般的物品内容相似性转向<strong>与偏好相关</strong>的内容相似性。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>图剪枝&#x2F;细化：</strong></p>
+<ul>
+<li><p><strong>修改内容：</strong> 在扩散过程中，根据行为相关性来<strong>剪枝或细化多模态图中的边</strong>，防止不相关或嘈杂的多模态信息通过图结构传播。</p>
+</li>
+<li><p><strong>参考论文：</strong> <strong>FREEDOM-2023</strong> (去噪用户-物品交互图) 1；</p>
+<p><strong>GDMCF-2025</strong> (选择性关注最有意义的边和活跃用户) 5。</p>
+</li>
+<li><p><strong>为何需要：</strong> 解决复杂多模态图中的“噪声异构性”和“关系爆炸”问题 5，降低计算负担，同时保持拓扑完整性和信号质量，尤其有助于冷启动物品。</p>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p><strong>输出：</strong> 经过行为引导去噪和细化后的、更鲁棒和行为对齐的用户和物品图表示。</p>
+</li>
+</ul>
+<hr>
+<h4 id="阶段-4-GNN-based-协同过滤与表示学习-MENTER’核心"><a href="#阶段-4-GNN-based-协同过滤与表示学习-MENTER’核心" class="headerlink" title="阶段 4: GNN-based 协同过滤与表示学习 (MENTER’核心)"></a><strong>阶段 4: GNN-based 协同过滤与表示学习 (MENTER’核心)</strong></h4><ul>
+<li><strong>原始模块：</strong> MENTER的核心GCN编码器（继承自FREEDOM和LATTICE）。</li>
+<li><strong>缝入模块：</strong> MENTER’的GCN编码器将直接利用BGAD的输出。</li>
+<li><strong>模块在哪个阶段：</strong> 这是模型的核心学习阶段，在DMSP和BGAD处理之后。</li>
+<li><strong>修改的方面与参考论文：</strong><ul>
+<li><strong>输入特征：</strong> GCN的输入将是DMSP模块输出的<strong>个性化、解耦的多模态特征</strong>，以及原始ID嵌入。</li>
+<li><strong>图结构：</strong> GCN将在<strong>BGAD模块处理后的、行为引导的去噪图结构</strong>上进行信息传播和聚合。这意味着GCN在聚合邻居信息时，会优先考虑经过行为验证的、更相关的多模态信息。</li>
+<li><strong>参考论文：</strong> <strong>MENTER-2025 &#x2F; FREEDOM-2023 &#x2F; LATTICE-2021</strong> (GCN在双图上进行信息传播) [Initial research report]。</li>
+</ul>
+</li>
+<li><strong>具体作用：</strong> 通过GCN在优化后的图结构上进行多跳信息传播，捕获用户和物品之间的高阶协同信号，并学习到融合了多模态信息的用户和物品的最终表示。</li>
+</ul>
+<hr>
+<h4 id="阶段-5-融合与自监督学习-MENTER’核心增强"><a href="#阶段-5-融合与自监督学习-MENTER’核心增强" class="headerlink" title="阶段 5: 融合与自监督学习 (MENTER’核心增强)"></a><strong>阶段 5: 融合与自监督学习 (MENTER’核心增强)</strong></h4><ul>
+<li><strong>原始模块：</strong> MENTER的“多层次跨模态对齐”模块（Lately Fusion增强）和“混合自监督学习”模块。</li>
+<li><strong>缝入模块：</strong> MENTER’的这些模块将处理来自DMSP和BGAD的增强特征。</li>
+<li><strong>模块在哪个阶段：</strong> 在GNN表示学习之后，预测之前。</li>
+<li><strong>修改的方面与参考论文：</strong><ul>
+<li><strong>融合机制：</strong> MENTER原有的“多层次跨模态对齐”机制将作用于<strong>DMSP解耦并个性化组合后的特征</strong>，以及<strong>BGAD处理后的图表示</strong>。这使得融合过程更加精细和有效，确保最终表示的语义一致性。</li>
+<li><strong>自监督学习：</strong> MENTER原有的“混合自监督学习”（特征dropout + 图扰动）将继续用于增强表示的鲁棒性，但现在它作用于更纯净、更具语义的特征。DMSP中的因果正则化也可以视为一种高级的自监督任务，确保解耦的有效性。</li>
+<li><strong>参考论文：</strong> <strong>MENTER-2025</strong> (多层次跨模态对齐，混合SSL) [Initial research report]。</li>
+</ul>
+</li>
+<li><strong>具体作用：</strong> 进一步细化和对齐用户和物品的表示，确保它们在共享潜在空间中具有语义一致性，并提升模型的泛化能力。</li>
+</ul>
+<hr>
+<h4 id="阶段-6-预测与排序"><a href="#阶段-6-预测与排序" class="headerlink" title="阶段 6: 预测与排序"></a><strong>阶段 6: 预测与排序</strong></h4><ul>
+<li><strong>原始模块：</strong> 所有推荐模型的最终阶段。</li>
+<li><strong>缝入模块：</strong> 无。</li>
+<li><strong>修改方面：</strong> 无直接修改，使用最终学习到的用户和物品表示计算预测分数。</li>
+<li><strong>参考论文：</strong> 任何推荐系统论文。</li>
+<li><strong>具体作用：</strong> 根据学习到的用户和物品最终表示，计算用户对物品的偏好分数（例如，通过内积），并对物品进行排序，生成推荐列表。</li>
+</ul>
+<hr>
+<h3 id="代码实现思路总结"><a href="#代码实现思路总结" class="headerlink" title="代码实现思路总结"></a><strong>代码实现思路总结</strong></h3><p>你可以将这个框架理解为：</p>
+<ol>
+<li><strong>DMSP层：</strong> 在原始多模态特征输入后，先通过DMSP模块对物品的模态特征进行<strong>解耦</strong>和<strong>用户个性化组合</strong>，并施加<strong>因果正则化</strong>。这会输出一组更“干净”、更“个性化”的物品多模态嵌入。</li>
+<li><strong>图构建与BGAD层：</strong><ul>
+<li>构建MENTER所需的图结构（用户-物品二分图，物品-物品同构图）。</li>
+<li>在GCN进行图传播的<strong>内部</strong>或<strong>之前</strong>，引入BGAD模块。BGAD会利用用户行为信号来<strong>引导扩散过程</strong>，对图上的信息进行<strong>去噪和强化</strong>，确保只有与用户偏好强相关的多模态信息才有效传播。</li>
+</ul>
+</li>
+<li><strong>MENTER核心GCN与融合层：</strong><ul>
+<li>MENTER的GCN将接收DMSP输出的个性化多模态嵌入和ID嵌入。</li>
+<li>GCN在BGAD处理后的<strong>优化图结构</strong>上进行信息传播。</li>
+<li>MENTER原有的多层次融合和混合SSL机制将作用于这些经过DMSP和BGAD处理后的<strong>高质量、行为对齐的表示</strong>。</li>
+</ul>
+</li>
+<li><strong>预测层：</strong> 最后，利用MENTER输出的最终用户和物品表示进行预测。</li>
+</ol>
+<p>这个详细的分解应该能帮助你清晰地理解每个模块在整个框架中的位置、作用以及与相关论文的对应关系，从而指导你的代码实现。祝你编码顺利！</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/07/23/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90/">https://yuezi2048.github.io/2025/07/23/2.Areas🌐/science/小论文准备/论文复现总结/论文缝合方案实验记录/第一次实验：MENTER+用户注入+因果正则/代码实现分析/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER-%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5-%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/">第一次实验：MENTER+用户注入+因果正则</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/07/23/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E5%8F%AF%E8%83%BD%E4%BC%9A%E7%94%A8%E5%88%B0%E7%9A%84%E6%A8%A1%E5%9D%97/%E6%A8%A1%E5%9D%97%E6%80%BB%E7%BB%93/" title="模块总结"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">模块总结</div></div><div class="info-2"><div class="info-item-1">问题总结 在多模态领域中，语义差异限制了特征表达，影响了模型性能（BeFA:Khurana等人，2023；Rinaldi、Russo和Tommasino，2023） 多模式推荐的目标是预测用户偏好，而不是理解多模式内容（CHOSION ） BPR损失只能监督最终的用户评分学习，而不能优化每种特定模态的评分学习（CHOSION POWERec） 粗粒度属性表示项目之间的共性，而细粒度属性是影响用户购买决策的关键因素。由于显式交互特征仅通过模态项目图增强，并通过简单的聚合来表示用户模态，因此它们缺乏与用户行为（GUME）相关的信息  各模型总结基准Encoder模型选用 	 融合模态选用 		 自监督任务选用 	    LATTICE-2021LATTICE：GCN +  Encoder（user-item + item-item双图） + Lately Fusion（attention加权融合模态） 	 FREEDOM-2023FREEDOM：LATTICE + Encoder（item-item冻结） + Encoder（ user-item的边修剪dropout...</div></div></div></a><a class="pagination-related" href="/2025/07/24/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/temp/" title="temp"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">temp</div></div><div class="info-2"><div class="info-item-1">这篇论文《Contrastive Modality-Disentangled Learning for Multimodal Recommendation》提出了一种创新的多模态推荐系统框架CMDL，通过解耦模态共享知识和模态特有知识来提升推荐性能。以下是对其解耦方法的详细分析： 1. 模态解耦的核心机制论文通过三个关键步骤实现模态解耦： (1) 初始表示生成 构建视觉和文本模态的item-item语义图（G_v和G_t） 使用LightGCN生成初始模态表示： 视觉表示 h_v^r 文本表示 h_t^r    (2) 表示解耦采用自注意力机制计算各模态的重要性权重： $a_v^r &#x3D; softmax(W_2σ(W_1h_v^r + b_1))a_t^r &#x3D; softmax(W_2σ(W_1h_t^r + b_1))$ 然后生成：  模态不变表示（共享知识）： $e_m^r &#x3D; a_v^r h_v^r + a_t^r h_t^r$  模态特定表示（特有知识）： e_v^r = h_v^r - e_m^re_t^r = h_t^r -...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/09/30/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/TT4/" title="TT4"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-30</div><div class="info-item-2">TT4</div></div><div class="info-2"><div class="info-item-1">baby █████████████ BEST ████████████████Mon 29 Sep 2025 20:58:47 INFO 	Parameters: [&#x27;seed&#x27;, &#x27;reg_weight&#x27;, &#x27;learning_rate&#x27;, &#x27;dropout&#x27;, &#x27;mask_weight_f&#x27;, &#x27;mask_weight_g&#x27;, &#x27;infoNCETemp&#x27;, &#x27;lambda_graded_align&#x27;, &#x27;alpha_g_s&#x27;]=(999, 0.0001, 0.0001, 0.5, 1.5, 0.001, 0.4, 0.5, 0.5),Valid: recall@5: 0.0407    recall@10: 0.0632    recall@20: 0.0998    recall@50: 0.1666    ndcg@5: 0.0270    ndcg@10: 0.0343   ...</div></div></div></a><a class="pagination-related" href="/2025/09/27/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/TT/" title="TT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-27</div><div class="info-item-2">TT</div></div><div class="info-2"><div class="info-item-1">TT0: base + DGM解耦 - align模块： █████████████ BEST ████████████████19 Sep 12:12    INFO    Parameters: [&#x27;seed&#x27;, &#x27;reg_weight&#x27;, &#x27;learning_rate&#x27;, &#x27;dropout&#x27;, &#x27;mask_weight_f&#x27;, &#x27;mask_weight_g&#x27;, &#x27;lambda_1&#x27;, &#x27;infoNCETemp&#x27;]=(999, 0.001, 0.0001, 0.5, 1.5, 0.001, 0.5, 0.4),Valid: recall@5: 0.0407    recall@10: 0.0657    recall@20: 0.1004    recall@50: 0.1692    ndcg@5: 0.0270    ndcg@10: 0.0350    ndcg@20: 0.0438    ndcg@50:...</div></div></div></a><a class="pagination-related" href="/2025/09/30/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/TT4%E6%B6%88%E8%9E%8D/" title="TT4消融"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-30</div><div class="info-item-2">TT4消融</div></div><div class="info-2"><div class="info-item-1">好的，既然您的模型 TT4 和预处理流程 process_hierarchical_community.py 已经最终确定，我们来为您设计一套全新的、与您最终工作完全匹配的消融实验方案。 这套方案将帮助您在论文中，逻辑清晰、论证有力地证明您每一个核心创新点的价值。  消融实验设计 (Ablation Study Design)我们的核心故事是：我们提出了一种新颖的层级化社区发现方法来生成高质量的伪类别标签，并将其应用于一个先进的原型对比解耦框架中，从而提升了推荐性能。 消融实验的目的就是系统性地验证这个故事中的每一个环节。 实验模型与变体定义您需要在实验中对比以下模型，它们构成了一个清晰的逻辑链条：    模型名称 核心策略描述 目的与要论证的观点    MENTOR 强大的多模态GCN基线模型（不含任何解耦模块）。 作为所有工作的性能起点。   TT4 w&#x2F;o GradedAlign MENTOR + 基础解耦 (只有loss_club和loss_InfoNCE_G)。 证明引入基础解耦框架本身是有效的。   TT4...</div></div></div></a><a class="pagination-related" href="/2025/09/15/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/" title="实验记录"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-15</div><div class="info-item-2">实验记录</div></div><div class="info-2"><div class="info-item-1">base &#x3D; MENTOR——   recall@10: 0.0654    recall@20: 0.1028    recall@50: 0.1690    ndcg@5: 0.0272    ndcg@10: 0.0352    ndcg@20: 0.0448   █████████████ BEST ████████████████15 Sep 12:23    INFO    Parameters: [&#x27;seed&#x27;, &#x27;reg_weight&#x27;, &#x27;learning_rate&#x27;, &#x27;dropout&#x27;, &#x27;mask_weight_f&#x27;, &#x27;mask_weight_g&#x27;, &#x27;align_weight&#x27;, &#x27;temp&#x27;]=(999, 0.001, 0.0001, 0.5, 1.5, 0.001, 0.1, 0.2),Valid: recall@5: 0.0388    recall@10: 0.0647   ...</div></div></div></a><a class="pagination-related" href="/2025/09/15/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%952/" title="实验记录2"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-15</div><div class="info-item-2">实验记录2</div></div><div class="info-2"><div class="info-item-1">base &#x3D; MENTOR——   recall@10: 0.0650    recall@20: 0.1030    recall@50: 0.1689    ndcg@5: 0.0271    ndcg@10: 0.0350    ndcg@20: 0.0448    ndcg@50: 0.0581 █████████████ BEST ████████████████  Wed 18 Jun 2025 14:54:00 INFO   Parameters: [&#x27;reg_weight&#x27;, &#x27;learning_rate&#x27;, &#x27;dropout&#x27;, &#x27;mask_weight_f&#x27;, &#x27;mask_weight_g&#x27;, &#x27;align_weight&#x27;, &#x27;temp&#x27;, &#x27;seed&#x27;]=(0.001, 0.0001, 0.5, 1.5, 0.001, 0.1, 0.2, 999),  Valid: recall@5:...</div></div></div></a><a class="pagination-related" href="/2025/07/21/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/%E5%86%99%E4%BD%9C%E7%B4%A0%E6%9D%90/" title="写作素材"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-21</div><div class="info-item-2">写作素材</div></div><div class="info-2"><div class="info-item-1">多模态推荐的创新框架：基于行为引导扩散与解耦偏好学习1. 引言：深度学习与生成模型时代下的多模态推荐进展1.1 多模态推荐的必要性多模态推荐系统（MMRecs）已成为在线媒体平台的关键基础设施，它们通过整合文本、图像、音频和用户交互等多种数据类型，为用户提供个性化建议 。与依赖单一数据模态的传统推荐方法不同，多模态推荐系统能够构建更丰富、更细致的用户和物品表示，从而显著提升推荐的准确性和相关性 。这种集成对于缓解传统推荐系统中普遍存在的数据稀疏性问题尤为重要 。 ...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E7%BC%96%E5%86%99"><span class="toc-text">代码编写</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B4%E4%BD%93%E5%A4%9A%E6%A8%A1%E6%80%81%E6%8E%A8%E8%8D%90%E8%BF%87%E7%A8%8B%E6%A6%82%E8%BF%B0"><span class="toc-text">整体多模态推荐过程概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MENTER%E2%80%99-BGAD-DMSP-%E6%A1%86%E6%9E%B6%E7%9A%84%E8%AF%A6%E7%BB%86%E5%88%86%E8%A7%A3%E4%B8%8E%E6%A8%A1%E5%9D%97%E7%BC%9D%E5%90%88"><span class="toc-text">MENTER’ + BGAD + DMSP 框架的详细分解与模块缝合</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%98%B6%E6%AE%B5-1-%E5%8E%9F%E5%A7%8B%E6%95%B0%E6%8D%AE%E8%BE%93%E5%85%A5%E4%B8%8E%E5%88%9D%E6%AD%A5%E5%B5%8C%E5%85%A5"><span class="toc-text">阶段 1: 原始数据输入与初步嵌入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%98%B6%E6%AE%B5-2-%E6%A8%A1%E6%80%81%E7%89%B9%E5%AE%9A%E5%81%8F%E5%A5%BD%E5%AD%A6%E4%B9%A0%E4%B8%8E%E8%A7%A3%E8%80%A6-DMSP"><span class="toc-text">阶段 2: 模态特定偏好学习与解耦 (DMSP)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%98%B6%E6%AE%B5-3-%E5%9B%BE%E7%BB%93%E6%9E%84%E6%9E%84%E5%BB%BA%E4%B8%8E%E8%A1%8C%E4%B8%BA%E5%BC%95%E5%AF%BC%E6%89%A9%E6%95%A3-BGAD"><span class="toc-text">阶段 3: 图结构构建与行为引导扩散 (BGAD)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%98%B6%E6%AE%B5-4-GNN-based-%E5%8D%8F%E5%90%8C%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%A1%A8%E7%A4%BA%E5%AD%A6%E4%B9%A0-MENTER%E2%80%99%E6%A0%B8%E5%BF%83"><span class="toc-text">阶段 4: GNN-based 协同过滤与表示学习 (MENTER’核心)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%98%B6%E6%AE%B5-5-%E8%9E%8D%E5%90%88%E4%B8%8E%E8%87%AA%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0-MENTER%E2%80%99%E6%A0%B8%E5%BF%83%E5%A2%9E%E5%BC%BA"><span class="toc-text">阶段 5: 融合与自监督学习 (MENTER’核心增强)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%98%B6%E6%AE%B5-6-%E9%A2%84%E6%B5%8B%E4%B8%8E%E6%8E%92%E5%BA%8F"><span class="toc-text">阶段 6: 预测与排序</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93"><span class="toc-text">代码实现思路总结</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

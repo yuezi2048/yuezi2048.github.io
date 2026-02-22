@@ -1,0 +1,281 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>对比学习(自监督) | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="对比学习自监督学习在医学影像领域或数据稀疏的推荐系统领域中，往往没有大规模标注的数据集，为提升模型表征能力，可通过自监督学习来完成 自监督学习(Self-supervised learning) 旨在对于无标签数据 ，通过设计辅助任务（Proxy tasks）来挖掘数据自身的表征特性作为监督信息，提升模型的特征提取能力。  其中辅助任务的指的是为达到特定训练任务⽽设计的间接任务。pretext任务">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对比学习(自监督)">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/06/30/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95/%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0(%E8%87%AA%E7%9B%91%E7%9D%A3)/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="对比学习自监督学习在医学影像领域或数据稀疏的推荐系统领域中，往往没有大规模标注的数据集，为提升模型表征能力，可通过自监督学习来完成 自监督学习(Self-supervised learning) 旨在对于无标签数据 ，通过设计辅助任务（Proxy tasks）来挖掘数据自身的表征特性作为监督信息，提升模型的特征提取能力。  其中辅助任务的指的是为达到特定训练任务⽽设计的间接任务。pretext任务">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-06-30T09:16:15.000Z">
+<meta property="article:modified_time" content="2025-06-30T09:16:15.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="基本方法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "对比学习(自监督)",
+  "url": "https://yuezi2048.github.io/2025/06/30/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95/%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0(%E8%87%AA%E7%9B%91%E7%9D%A3)/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-06-30T09:16:15.000Z",
+  "dateModified": "2025-06-30T09:16:15.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/06/30/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95/%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0(%E8%87%AA%E7%9B%91%E7%9D%A3)/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '对比学习(自监督)',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">对比学习(自监督)</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">对比学习(自监督)</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-06-30T09:16:15.000Z" title="发表于 2025-06-30 17:16:15">2025-06-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-06-30T09:16:15.000Z" title="更新于 2025-06-30 17:16:15">2025-06-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/">science</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/">小论文准备</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/">论文复现总结</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">早期工作的基础知识</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95/">基本方法</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2.5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>8分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="对比学习"><a href="#对比学习" class="headerlink" title="对比学习"></a>对比学习</h2><h3 id="自监督学习"><a href="#自监督学习" class="headerlink" title="自监督学习"></a>自监督学习</h3><p>在医学影像领域或数据稀疏的推荐系统领域中，往往没有大规模标注的数据集，为提升模型表征能力，可通过自监督学习来完成</p>
+<p><code>自监督学习(Self-supervised learning)</code> 旨在对于无标签数据 ，通过<strong>设计辅助任务（Proxy tasks）来挖掘数据自身的表征特性作为监督信息</strong>，提升模型的特征提取能力。</p>
+<blockquote>
+<p>其中辅助任务的指的是为达到特定训练任务⽽设计的间接任务。<code>pretext</code>任务的好处是为了简化原任务的求解，在深度学习中就是避免⼈⼯标记样本，实现⽆监督的语义提取。</p>
+<p>Pretext任务可以进⼀步理解为：对⽬标任务有帮助的辅助任务。主要pretext task包括：图像旋转、图像着⾊、图像修复，即类似于<code>数据增强</code>的操作。</p>
+</blockquote>
+<p>这里与其他几种学习方式做一下区分：</p>
+<ul>
+<li>有监督（Supervised）： 监督学习是从给定的带标签训练数据集中学习出一个函数（模型参数），在输入新的测试数据时，可以根据这个函数预测结果；</li>
+<li>无监督（Unsupervisedg）： 无监督学习是从无标签数据中分析数据本身的规律性等解析特征。无监督学习算法分为两大类：<strong>基于概率密度函数估计的方法和基于样本间相似性度量的方法</strong>；</li>
+<li>半监督习（Semi-supervised）： 半监督介于监督学习和无监督之间，即训练集中只有一部分数据有标签，需要通过伪标签生成等方式完成模型训练；</li>
+<li>弱监督（Weakly-supervised）： 弱监督是指训练数据只有不确切或者不完全的标签信息，比如在目标检测任务中，训练数据只有分类的类别标签，没有包含Bounding box坐标信息。</li>
+</ul>
+<p>在上述概念中，无监督和自监督学习相似性最大，两者的训练数据都是无标签，但区别在于：自监督学习会通过构造辅助任务来获取监督信息，这个过程中有学习到新的知识；而无监督学习不会从数据中挖掘新任务的标签信息。</p>
+<h3 id="自监督和对比学习的关系"><a href="#自监督和对比学习的关系" class="headerlink" title="自监督和对比学习的关系"></a>自监督和对比学习的关系</h3><p>⾃监督学习算法分为两种：<strong>对⽐⽅法和⽣成⽅法</strong>。</p>
+<ul>
+<li>生成式：训练编码器将输入x编码成显式向量z，解码器从z重建x，最小化重建误差；（自编码器——pixel label的loss）</li>
+<li>对比式：训练编码器将输入x编码成显式向量z以度量相似性（例如互信息最大化），难点在于如何构造正负样本。</li>
+</ul>
+<p>对⽐学习属于⾃监督学习，所以对⽐学习是没有标签的。对⽐学习是通过构造正负样例来学习特征。如何构造正负样例对对⽐学习来说很重要。对于⼀个输⼊样本x来说，存在与之相似的样本x+以及与之不相似的样本x-，对⽐学习要做的就是学习⼀个编码器f，这个编码器f能够拉近x与其正样本间的距离，推远x与其负样本之间的距离。即：<br>$$<br>\text{score}(f(x), f(x^+)) \gg \text{score}(f(x), f(x^-))<br>$$</p>
+<p>​      <code>对比学习</code>是一种自监督学习方法，用于在没有标签的情况下，通过让模型学习哪些数据点相似或不同来学习数据集的一般特征。</p>
+<p>​    本质上，对比学习允许我们的机器学习模型做同样的事情。它会观察哪些数据点对“相似”和“不同”，以便在执行分类或分割等任务之前了解数据更高阶的特征。如学习猴子和老虎的分类。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250630165110583.png" alt="image-20250630165110583">	</p>
+<h3 id="alignment-and-uniformity"><a href="#alignment-and-uniformity" class="headerlink" title="alignment and uniformity"></a>alignment and uniformity</h3><p>对比学习一般会正则化，集中在一个超球面上表示。对齐性和均匀性指的是好的表示空间应该满足两个条件：</p>
+<ul>
+<li>一个是相近样例的表示尽量接近，即对齐性；</li>
+<li>而不相近样例的表示应该均匀的分布在超球面上，即均匀性。</li>
+</ul>
+<p>满足这样条件的表示空间是线性可分的，即一个线性分类器就足以用来分类</p>
+<blockquote>
+<p>由此，我们可以轻易地发现对比学习有三个重要的组成部分：<code>正负样例、对比损失以及模型结构。</code></p>
+</blockquote>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250630170219599.png" alt="image-20250630170219599">	</p>
+<h3 id="基本步骤"><a href="#基本步骤" class="headerlink" title="基本步骤"></a>基本步骤</h3><p>图像领域的自监督对比过程描述为三个基本步骤：</p>
+<ul>
+<li>对于数据集中的每个图像，我们可以执行两种增强组合（即裁剪 + 调整大小 + 重新着色、调整大小 + 重新着色、裁剪 + 重新着色等）。我们希望模型知道这两个图像是“相似的”，因为它们本质上是同一图像的不同版本。</li>
+<li>将这两个图像输入到我们的深度学习模型（Big-CNN，例如 ResNet）中，为每个图像创建向量表示。目标是训练模型输出相似图像的相似表示。</li>
+<li>最后通过最小化对比损失函数来最大化两个向量表示的相似性。</li>
+</ul>
+<blockquote>
+<p>值得注意的是，不同领域的数据增强的操作有所不同：图像领域中的扰动大致可分为两类：空间&#x2F;几何扰动和外观&#x2F;色彩扰动。空间&#x2F;几何扰动的方式包括但不限于图片翻转（flip）、图片旋转（rotation）、图片挖剪（cutout）、图片剪切并放大（crop and resize）。外观扰动包括但不限于色彩失真、加高斯噪声等</p>
+</blockquote>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250630171445653.png" alt="image-20250630171445653">	</p>
+<p>​    自然语言领域的扰动也大致可分为两类：词级别（token-level）和表示级别（embedding-level）。词级别的扰动大致有句子剪裁（crop）、删除词&#x2F;词块（span)、换序、同义词替换等。表示级别的扰动包括加高斯噪声、dropout等。</p>
+<blockquote>
+<p>不同于图像领域，对自然语言的扰动很容易改变语义，这就会引入错误正例（False Positive）从而对模型训练产生不好的影响。同时，错误负例（False Negative）也是一个不容忽视的问题，错误负例会对对比学习产生负面影响。（Ching-Yao Chuang, Joshua Robinson, Yen-Chen Lin, Antonio Torralba, and Stefanie Jegelka. Debiased contrastive learning. In Hugo Larochelle, Marc’Aurelio Ranzato, Raia Hadsell, Maria-Florina Balcan, and Hsuan-Tien Lin, editors, Advances in Neural Information Processing Systems 33: Annual Conference on Neural Information Processing Systems 2020, NeurIPS 2020.）</p>
+</blockquote>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250630165756835.png" alt="image-20250630165756835" style="zoom: 67%;" />	
+
+<h3 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h3><h4 id="原始对比损失"><a href="#原始对比损失" class="headerlink" title="原始对比损失"></a>原始对比损失</h4><blockquote>
+<p>原始对比损失：当互为正例时，距离越远损失越高；互为负例时，距离越近损失越高。</p>
+</blockquote>
+<p>$$<br>\mathcal{L}\left((x_1, x_2), y\right) &#x3D; y L_p \left( D(f_\theta(x_1), f_\theta(x_2)) \right) + (1 - y) L_n \left( D(f_\theta(x_1), f_\theta(x_2)) \right)<br>$$</p>
+<ul>
+<li>$D$ 为距离度量函数。</li>
+<li>$L_p$ 为递增函数。</li>
+<li>$L_n*$为递减函数。</li>
+</ul>
+<p><strong>常见Lp和Ln函数</strong>：<br>$$<br>L_p(x) &#x3D; \frac{1}{2} x^2, \quad L_n(x) &#x3D; \frac{1}{2} (\max{0, m-x})^2<br>$$</p>
+<p>$$<br>L_p(x) &#x3D; x^3, \quad L_n(x) &#x3D; (\max{0, m-x})^2<br>$$</p>
+<h4 id="三元组损失"><a href="#三元组损失" class="headerlink" title="三元组损失"></a>三元组损失</h4><blockquote>
+<p>三元组损失：该方法在FaceNet中被提出，主要希望通过对比使得锚点与正例的距离更近，与负例更远。</p>
+<p>但在实际操作中，我们可能会得到负样例个数远远多于正样例，由此我们引出了对比学习中主流的InfoNCE损失。</p>
+<p>FaceNet<br>Florian Schroff, Dmitry Kalenichenko, and James Philbin. Facenet: A unified embedding for face recognition and clustering. In IEEE Conference on Computer Vision and Pattern Recognition, CVPR 2015, IEEE Computer Society, 2015.</p>
+</blockquote>
+<ul>
+<li><em>D</em> 为欧几里得距离。</li>
+<li>m 是用来控制正例负例距离间的偏移量。使模型不需要考虑优化过于简单的负例。</li>
+</ul>
+<p>$$<br>\mathcal{L}(x, x^+, x^-) &#x3D; \max \left( 0, D(x, x^+)^2 - D(x, x^-)^2 + m \right)<br>$$</p>
+<h4 id="InfoNCE损失"><a href="#InfoNCE损失" class="headerlink" title="InfoNCE损失"></a>InfoNCE损失</h4><blockquote>
+<p><code>InfoNCE</code>损失</p>
+<p><code>NCE</code>全称是噪声对比估计（Noise Contrastive Estimation）, 通过引入一个噪声分布，解决多分类问题softmax分母归一化中分母难以求值的问题。具体做法是把多分类问题通过引入一个噪音分布变成一个二元分类问题，将原来构造的多分类分类器（条件概率）转化为一个二元分类器，用于判别给定样例是来源于原始分布还是噪声分布，进而更新原来多元分类器的参数。</p>
+<p>如果把噪音分布的样本想成负样例，那这个二元分类问题就可以理解为让模型对比正负样例作出区分进而学习到正样例(原始分布)的分布特征</p>
+<p>而<code>InfoNCE</code>, 又称global NCE,继承了NCE的基本思想，从一个新的分布引入负样例，构造了一个新的多元分类问题，并且证明了减小这个损失函数相当于增大互信息(mutual information)的下界。</p>
+</blockquote>
+<p>$$<br>\mathcal{L}<em>q(u, v^+, {v^-}) &#x3D; -\log \frac{\exp \left( u \cdot v^+ &#x2F; \tau \right)}{\sum</em>{v \in {v^+, v^-}} \exp \left( u \cdot v &#x2F; \tau \right)}<br>$$</p>
+<ul>
+<li>u、$v^+$、$v^-$ 分别为原样例、正样例、负样例归一化后的表示。</li>
+<li>$\tau$ 为温度超参。<ul>
+<li>温度超参是softmax中常见的超参，$\tau$越小，softmax越接近真实的max函数，$\tau$越大越接近一个均匀分布。</li>
+<li>因此，当$\tau$很小时，只有难区分的负样例才会对损失函数产生影响，同时，对错分的样例（即与原样例距离比正样例与原样例距离近）有更大的惩罚。</li>
+<li>实验结果表明，对比学习对$\tau$很敏感。</li>
+</ul>
+</li>
+</ul>
+<h3 id="refer"><a href="#refer" class="headerlink" title="refer"></a>refer</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/av764554890/?vd_source=6eb7d5c040d0810f817d5c4475a0b093">Contrastive Learning(对比学习)基础讲解_哔哩哔哩_bilibili</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_46006468/article/details/126066506">https://blog.csdn.net/qq_46006468/article/details/126066506</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43869415/article/details/120678146">对比学习（一）简介_白衣西蜀梅子酒的博客-CSDN博客_对比学习</a></li>
+<li><code>对比学习相关文献</code><ul>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2011.00362.pdf">https://arxiv.org/pdf/2011.00362.pdf</a> </li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2002.05709.pdf">https://arxiv.org/pdf/2002.05709.pdf</a></li>
+</ul>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/06/30/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95/%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0(%E8%87%AA%E7%9B%91%E7%9D%A3)/">https://yuezi2048.github.io/2025/06/30/2.Areas🌐/science/小论文准备/论文复现总结/早期工作的基础知识/基本方法/对比学习(自监督)/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95/">基本方法</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/06/30/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/tmp/" title="tmp"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">tmp</div></div><div class="info-2"><div class="info-item-1">整理后的问题分类与关键点 计算效率问题核心方法:    FREEDOM通过冻结图模块避免重复计算潜在问题:   错误说法：“图结构一旦冻结就不会影响模型性能”   修正：静态图无法捕捉动态偏好，需研究增量图更新机制有价值方向:   如何设计增量式图学习（如基于时间滑窗的局部重训练）？   能否结合课程学习动态调整图复杂度（冷启动期简单图→稳定期复杂图）？   噪声问题子问题1：模态融合噪声    MENTER方法: 多级自监督对齐   错误说法: “多模态对齐越严格越好”   修正：过度对齐会损失模态特异性（如文本的抽象性vs图像的具象性）有价值方向:   如何量化模态对齐程度（如互信息 vs. 模态间距离）？   能否引入模态冲突检测机制（如跨模态梯度对抗）？  子问题2：模态原生噪声    SMORE方法: 过滤器模块   错误说法: “所有模态噪声分布相同”   修正：视觉模态（商品图）噪声多为随机噪声，文本模态（描述）存在系统性偏见有价值方向:   如何设计模态感知的降噪器（如CNN处理图像噪声 vs. 注意力掩码处理文本噪声）？ ...</div></div></div></a><a class="pagination-related" href="/2025/06/30/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95/basic_Loss_evl/" title="basic_Loss_evl"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">basic_Loss_evl</div></div><div class="info-2"><div class="info-item-1">基本损失BPR损失论文) BPR loss核心目的：让模型学会“用户更喜欢哪个物品”的排序逻辑。类比场景：比如你陪朋友吃饭，朋友说“比起火锅，我更想吃烧烤”，BPR loss就是让模型记住这种“偏好顺序”。   快速理解三步法：    输入：用户u、用户喜欢的物品i、用户不喜欢的物品j（负样本）。   核心逻辑：模型需要让用户对i的评分（预测偏好）高于j，即score(u,i) &gt; score(u,j)。   损失计算：如果模型预测score(u,j) &gt;= score(u,i)，就惩罚它，用Sigmoid函数把评分差转化为概率，再求负对数似然（越接近真实偏好，损失越小）。  一句话总结：BPR loss像“排序裁判”，强迫模型把用户喜欢的物品排在不喜欢的前面，重点学“谁比谁更受欢迎”。   Emb loss核心目的：让用户和物品的向量表示（嵌入）能准确反映真实交互行为。类比场景：把用户和物品想象成“密码本”里的单词，Emb loss就是检查“用户密码”和“物品密码”的匹配度是否符合真实反馈（比如是否点击、评分高低）。   快速理解三步法： ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related no-desc" href="/2025/06/30/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95/InfoNCE/" title="InfoNCE"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">InfoNCE</div></div></div></a><a class="pagination-related" href="/2025/06/30/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95/basic_Loss_evl/" title="basic_Loss_evl"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">basic_Loss_evl</div></div><div class="info-2"><div class="info-item-1">基本损失BPR损失论文) BPR loss核心目的：让模型学会“用户更喜欢哪个物品”的排序逻辑。类比场景：比如你陪朋友吃饭，朋友说“比起火锅，我更想吃烧烤”，BPR loss就是让模型记住这种“偏好顺序”。   快速理解三步法：    输入：用户u、用户喜欢的物品i、用户不喜欢的物品j（负样本）。   核心逻辑：模型需要让用户对i的评分（预测偏好）高于j，即score(u,i) &gt; score(u,j)。   损失计算：如果模型预测score(u,j) &gt;= score(u,i)，就惩罚它，用Sigmoid函数把评分差转化为概率，再求负对数似然（越接近真实偏好，损失越小）。  一句话总结：BPR loss像“排序裁判”，强迫模型把用户喜欢的物品排在不喜欢的前面，重点学“谁比谁更受欢迎”。   Emb loss核心目的：让用户和物品的向量表示（嵌入）能准确反映真实交互行为。类比场景：把用户和物品想象成“密码本”里的单词，Emb loss就是检查“用户密码”和“物品密码”的匹配度是否符合真实反馈（比如是否点击、评分高低）。   快速理解三步法： ...</div></div></div></a><a class="pagination-related" href="/2025/07/01/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95/%E5%B8%B8%E8%A7%81%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0/" title="常见激活函数"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-01</div><div class="info-item-2">常见激活函数</div></div><div class="info-2"><div class="info-item-1">常见激活函数 gelu就是高斯误差线性单元，这种激活函数在激活中加入了随机正则的思想，是一种对神经元输入的概率描述。 汇总有：Identity、Sigmoid、TanH、Softmax、Softsign、Softplus、ReLU、Leaky ReLU、Randomized ReLU、SELU、GELU。 其中在推荐系统的lightGCN中取消了 使用非线性激活函数。 identity接近y&#x3D;x，导数稳定用于线性激活 	 Sigmod 方便求导，控制在[-1, 1]之间，适合前向传播 缺陷：趋近饱和时，梯度会接近0。梯度更新单调，幂运算耗时  	 tanH 优点：压缩了输出的幅度，且以0为中心，可以从图像看出输出均值为0。 缺点：...</div></div></div></a><a class="pagination-related" href="/2025/07/01/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95/%E6%B7%BB%E5%8A%A0%E9%9A%8F%E6%9C%BA%E5%99%AA%E5%A3%B0/" title="添加随机噪声"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-01</div><div class="info-item-2">添加随机噪声</div></div><div class="info-2"><div class="info-item-1">未添加噪声的原代码： emb = torch.sparse.mm(mat, emb)emb_list.append(emb)    我们的目标是向矩阵相乘后的结果emb添加随即均匀噪声，并添加到emb_ist中保存。 具体实现如下： emb = torch.sparse.mm(mat, emb)random_noise=torch.empty(emb.shape).uniform_().to(self.device)emb+=torch.mul(torch.sign(emb),torch.nn.functional.normalize(random_noise,p=2,dim=1))* self.epsemb_list.append(emb)  其中的random_noise就是生成的噪声，self.eps是噪声占比，是一个超参数，可以任意调节，  uniform_代表的是torch中的内置均匀分布函数，参数解释如下： torch.nn.functional.normalize(input, p=2.0, dim=1, eps=1e-12, out=None)   input:...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0"><span class="toc-text">对比学习</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0"><span class="toc-text">自监督学习</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E7%9B%91%E7%9D%A3%E5%92%8C%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-text">自监督和对比学习的关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#alignment-and-uniformity"><span class="toc-text">alignment and uniformity</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%AD%A5%E9%AA%A4"><span class="toc-text">基本步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="toc-text">损失函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%9F%E5%A7%8B%E5%AF%B9%E6%AF%94%E6%8D%9F%E5%A4%B1"><span class="toc-text">原始对比损失</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E5%85%83%E7%BB%84%E6%8D%9F%E5%A4%B1"><span class="toc-text">三元组损失</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#InfoNCE%E6%8D%9F%E5%A4%B1"><span class="toc-text">InfoNCE损失</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#refer"><span class="toc-text">refer</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

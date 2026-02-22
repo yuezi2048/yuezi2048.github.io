@@ -1,0 +1,318 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>2.如何解决循环依赖 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="循环依赖破局方式：提前暴露未完全创建完成的bean，具体是通过三级缓存实现：  一级缓存（Singleton Objects Map）: 存放完全初始化的单例Bean 用于存储完全初始化完成的单例Bean。 二级缓存（Early Singleton Objects Map）: 存放未完全初始化，但实例化的Bean 通过提前暴露未初始化完的实例化对象，解决循环依赖问题   三级缓存（Singleto">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2.如何解决循环依赖">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/2.%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="循环依赖破局方式：提前暴露未完全创建完成的bean，具体是通过三级缓存实现：  一级缓存（Singleton Objects Map）: 存放完全初始化的单例Bean 用于存储完全初始化完成的单例Bean。 二级缓存（Early Singleton Objects Map）: 存放未完全初始化，但实例化的Bean 通过提前暴露未初始化完的实例化对象，解决循环依赖问题   三级缓存（Singleto">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-11-14T03:03:14.000Z">
+<meta property="article:modified_time" content="2025-11-14T03:03:14.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="Spring">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "2.如何解决循环依赖",
+  "url": "https://yuezi2048.github.io/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/2.%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-11-14T03:03:14.000Z",
+  "dateModified": "2025-11-14T03:03:14.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/2.%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '2.如何解决循环依赖',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">2.如何解决循环依赖</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">2.如何解决循环依赖</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-11-14T03:03:14.000Z" title="发表于 2025-11-14 11:03:14">2025-11-14</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-11-14T03:03:14.000Z" title="更新于 2025-11-14 11:03:14">2025-11-14</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/">02.面经记录</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/">Spring</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>9分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>循环依赖破局方式：<strong>提前暴露未完全创建完成的bean</strong>，具体是通过<strong>三级缓存</strong>实现：</p>
+<ul>
+<li>一级缓存（Singleton Objects Map）: 存放完全初始化的单例Bean</li>
+<li>用于存储完全初始化完成的单例Bean。</li>
+<li>二级缓存（Early Singleton Objects Map）: 存放未完全初始化，但实例化的Bean<ul>
+<li>通过提前暴露未初始化完的实例化对象，解决循环依赖问题</li>
+</ul>
+</li>
+<li>三级缓存（Singleton Factories Map）: 存放对象工厂，工厂可以按需加载（延迟加载 基于ObjectFactory）早期Bean（特别是AOP代理对象创建）</li>
+</ul>
+<blockquote>
+<p>追问1：引入二级缓存一定能解决循环依赖问题吗？为什么？</p>
+<p>要满足两个条件：必须是单例Bean，同时严格满足优先级高的bean不能是构造器注入（不能全是构造器）</p>
+<p>因为在循环依赖场景下，有这样的情况：</p>
+<ul>
+<li>先加载的bean A没有完全初始化，构造函数需要bean B，而beanB同理也需要构造时注入A对象<ul>
+<li>但是由于A实例化后没有存入map，B找不到完整的A，</li>
+</ul>
+</li>
+<li>A通过构造函数注入bean，B即使是set注入也不能成功<ul>
+<li>此时A实例化后仍未存入map，B即使是set也找不到A</li>
+</ul>
+</li>
+<li>而如果A是通过set注入B，B通过构造注入A注入，这是可以成功的：<ul>
+<li>那么此时map中就可以实例化A了，B在构造器也就能顺利从map中注入A，也能顺利构造完成，随后A也能通过加载后的B完成初始化</li>
+</ul>
+</li>
+</ul>
+<p>追问2：那你说一下这个循环依赖场景下，从创建到初始化完成这个过程，三级缓存存放的过程是怎么样的？</p>
+<p>缓存的完整查找逻辑：</p>
+<ul>
+<li>先去一级缓存找，如果找到返回，找不到则下一步</li>
+<li>判断对应Bean是否处于创建中的状态，如果不在返回null，否则去二级缓存找Bean，找到返回，否则下一步</li>
+<li>去三级缓存找对应工厂，如果找到Bean，则通过工厂创建bean，加入到二级缓存中，如果三级缓存也没找到返回null</li>
+</ul>
+<p>bean对象的流程（循环依赖场景）：</p>
+<ul>
+<li><p>beanA先走查询三级缓存逻辑：因为beanA是未创建状态，在二级缓存判断的时候就会直接返回</p>
+</li>
+<li><p>beanA实例化：随后标记BeanA正在创建中，通过doCreateBean创建bean从头开始完整流程（实例化+DI+init），首先在singletonFactories加入工厂，后续通过该工厂getObject就能得到bean（对应三级缓存）</p>
+</li>
+<li><p>beanA属性注入：当发现A需要B的时候，B也从头开始走一遍创建流程：</p>
+<ul>
+<li>B实例化</li>
+<li>B注入：走到getBean(A)的时候，会发现A是在创建中，所以去二级缓存找，第一次找不到，就去三级缓存找工厂，在工厂找到了，就可以拿到通过工厂创建的A对象，随后这个工厂从三级缓存移除，A加入到二级缓存，此时B注入成功</li>
+<li>B初始化：通过initailizeBean初始化，返回，创建完毕后，B加到一级缓存中</li>
+</ul>
+</li>
+<li><p>beanA初始化：最后A加入到一级缓存</p>
+</li>
+</ul>
+<p>追问3：那照你这么说，我用二层缓存，一开始直接存bean对象不就可以了吗？搞一个存放工厂的缓存的用意是什么？</p>
+<p>核心是动态代理的需要，见动态代理相关内容。</p>
+</blockquote>
+<h2 id="扩展知识"><a href="#扩展知识" class="headerlink" title="扩展知识"></a>扩展知识</h2><p>在 Spring 中，只有同时满足以下两点才能解决循环依赖的问题：</p>
+<ol>
+<li>依赖的 Bean 必须都是单例</li>
+<li>依赖注入的方式，必须<strong>不全是</strong>构造器注入，且 beanName 字母序在前的不能是构造器注入</li>
+</ol>
+<h3 id="为什么必须都是单例"><a href="#为什么必须都是单例" class="headerlink" title="为什么必须都是单例"></a>为什么必须都是单例</h3><p>如果从源码来看的话，循环依赖的 Bean 是原型模式，会直接抛错：</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/3iKT1Kq0_image_mianshiya.png" alt="image.png"></p>
+<p>所以 Spring 只支持单例的循环依赖，<strong>但是为什么呢</strong>？</p>
+<p>按照理解，如果两个 Bean 都是原型模式的话，那么创建 A1 需要创建一个 B1，创建 B1 的时候要创建一个 A2，创建 A2 又要创建一个 B2，创建 B2 又要创建一个 A3，创建 A3 又要创建一个 B3…..</p>
+<p>就又卡 BUG 了，是吧，因为原型模式都需要创建新的对象，不能跟用以前的对象。</p>
+<p>如果是单例的话，创建 A 需要创建 B，而创建的 B 需要的是之前的个 A， 不然就不叫单例了，对吧？</p>
+<p>也是基于这点， Spring 就能操作操作了。</p>
+<p>具体做法就是：先创建 A，此时的 A 是不完整的（没有注入 B），用个 map 保存这个不完整的 A，再创建 B ，B 需要 A，所以从那个 map 得到“不完整”的 A，此时的 B 就完整了，然后 A 就可以注入 B，然后 A 就完整了，B 也完整了，且它们是相互依赖的。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/d4jnaHHm_image_mianshiya.png" alt="image.png"></p>
+<p>读起来好像有点绕，但是逻辑其实很清晰。</p>
+<h3 id="为什么不能全是构造器注入"><a href="#为什么不能全是构造器注入" class="headerlink" title="为什么不能全是构造器注入"></a>为什么不能全是构造器注入</h3><p>在 Spring 中创建 Bean 分三步:</p>
+<ol>
+<li>实例化，createBeanInstance，就是 new 了个对象</li>
+<li>属性注入，populateBean， 就是 set 一些属性值</li>
+<li>初始化，initializeBean，执行一些 aware 接口中的方法，initMethod，AOP代理等</li>
+</ol>
+<p>明确了上面这三点，再结合我上面说的“不完整的”，我们来理一下。</p>
+<p>如果全是构造器注入，比如<code>A(B b)</code>，那表明在 new 的时候，就需要得到 B，此时需要 new B ，但是 B 也是要在构造的时候注入 A ，即<code>B(A a)</code>，这时候 B 需要在一个 map 中找到不完整的 A ，发现找不到。</p>
+<p>为什么找不到？因为 A 还没 new 完呢，所以找不到完整的 A，<strong>因此如果全是构造器注入的话，那么 Spring 无法处理循环依赖</strong>。</p>
+<h3 id="一个set注入，一个构造器注入一定能成功？"><a href="#一个set注入，一个构造器注入一定能成功？" class="headerlink" title="一个set注入，一个构造器注入一定能成功？"></a>一个set注入，一个构造器注入一定能成功？</h3><p>假设我们 A 是通过 set 注入 B，B 通过构造函数注入 A，此时是<strong>成功的</strong>。</p>
+<p>我们来分析下：实例化 A 之后，此时可以在 map 中存入 A，开始为 A 进行属性注入，发现需要 B，此时 new B，发现构造器需要 A，此时从 map 中得到 A ，B 构造完毕，B 进行属性注入，初始化，然后 A 注入 B 完成属性注入，然后初始化 A。</p>
+<p>整个过程很顺利，没毛病。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/CBz478fq_image_mianshiya.png" alt="image.png"></p>
+<p>假设 A 是通过构造器注入 B，B 通过 set 注入 A，此时是<strong>失败的</strong>。</p>
+<p>我们来分析下：实例化 A，发现构造函数需要 B， 此时去实例化 B，然后进行 B 的属性注入，从 map 里面找不到 A，因为 A 还没 new 成功，所以 B 也卡住了，然后就 gg。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/VaS07mhy_image_mianshiya.png" alt="image.png"></p>
+<p>看到这里，仔细思考的小伙伴可能会说，可以先实例化 B 啊，往 map 里面塞入不完整的 B，这样就能成功实例化 A 了啊。</p>
+<p>确实，思路没错<strong>但是 Spring 容器是按照字母序创建 Bean 的，A 的创建永远排在 B 前面</strong>。</p>
+<p>现在我们总结一下：</p>
+<ul>
+<li>如果循环依赖都是构造器注入，则失败</li>
+<li>如果循环依赖不完全是构造器注入，则可能成功，可能失败，具体跟BeanName的字母序有关系。</li>
+</ul>
+<h3 id="Spring-解决循环依赖全流程"><a href="#Spring-解决循环依赖全流程" class="headerlink" title="Spring 解决循环依赖全流程"></a>Spring 解决循环依赖全流程</h3><p>经过上面的铺垫，我想你对 Spring 如何解决循环依赖应该已经有点感觉了，接下来我们就来看看它到底是如何实现的。</p>
+<p>明确了 Spring 创建 Bean 的三步骤之后，我们再来看看它为单例搞的三个 map：</p>
+<ol>
+<li>一级缓存，singletonObjects，存储所有已创建完毕的单例 Bean （完整的 Bean）</li>
+<li>二级缓存，earlySingletonObjects，存储所有仅完成实例化，但还未进行属性注入和初始化的 Bean</li>
+<li>三级缓存，singletonFactories，存储能建立这个 Bean 的一个工厂，通过工厂能获取这个 Bean，延迟化 Bean 的生成，工厂生成的 Bean 会塞入二级缓存</li>
+</ol>
+<p>这三个 map 是如何配合的呢？</p>
+<ol>
+<li>首先，获取单例 Bean 的时候会通过 BeanName 先去 singletonObjects（一级缓存） 查找完整的 Bean，如果找到则直接返回，否则进行步骤 2。</li>
+<li>看对应的 Bean 是否在创建中，如果不在直接返回找不到（返回null），如果是，则会去 earlySingletonObjects （二级缓存）查找 Bean，如果找到则返回，否则进行步骤 3</li>
+<li>去 singletonFactories （三级缓存）通过 BeanName 查找到对应的工厂，如果存着工厂则通过工厂创建 Bean ，并且放置到 earlySingletonObjects 中。</li>
+<li>如果三个缓存都没找到，则返回 null。</li>
+</ol>
+<p>从上面的步骤我们可以得知，如果查询发现 Bean 还未创建，到第二步就直接返回 null，不会继续查二级和三级缓存。</p>
+<p>返回 null 之后，说明这个 Bean 还未创建，这个时候会标记这个 Bean 正在创建中，然后再调用 createBean 来创建 Bean，而实际创建是调用方法 doCreateBean。</p>
+<p>doCreateBean 这个方法就会执行上面我们说的三步骤：</p>
+<ol>
+<li>实例化</li>
+<li>属性注入</li>
+<li>初始化</li>
+</ol>
+<p>在实例化 Bean 之后，<strong>会往 singletonFactories 塞入一个工厂，而调用这个工厂的 getObject 方法，就能得到这个 Bean</strong>。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">addSingletonFactory(beanName, () -&gt; getEarlyBeanReference(beanName, mbd, bean));</span><br></pre></td></tr></table></figure>
+
+<p>要注意，此时 Spring 是不知道会不会有循环依赖发生的，<strong>但是它不管</strong>，反正往 singletonFactories 塞这个工厂，这里就是<strong>提前暴露</strong>。</p>
+<p>然后就开始执行属性注入，这个时候 A 发现需要注入 B，所以去 getBean(B)，此时又会走一遍上面描述的逻辑，到了 B 的属性注入这一步。</p>
+<p>此时 B 调用 getBean(A)，这时候一级缓存里面找不到，但是发现 A 正在创建中的，于是去二级缓存找，发现没找到，于是去三级缓存找，然后找到了。</p>
+<p>并且通过上面提前在三级缓存里暴露的工厂得到 A，然后将这个工厂从三级缓存里删除，并将 A 加入到二级缓存中。</p>
+<p>然后结果就是 B 属性注入成功。</p>
+<p>紧接着 B 调用 initializeBean 初始化，最终返回，此时 B 已经被加到了一级缓存里 。</p>
+<p>这时候就回到了 A 的属性注入，此时注入了 B，接着执行初始化，最后 A 也会被加到一级缓存里，且从二级缓存中删除 A。</p>
+<p>Spring 解决依赖循环就是按照上面所述的逻辑来实现的。</p>
+<p>重点就是在对象实例化之后，都会在三级缓存里加入一个工厂，提前对外暴露还未完整的 Bean，这样如果被循环依赖了，对方就可以利用这个工厂得到一个不完整的 Bean，破坏了循环的条件。</p>
+<h3 id="Spring-Boot-2-6-0"><a href="#Spring-Boot-2-6-0" class="headerlink" title="Spring Boot 2.6.0"></a>Spring Boot 2.6.0</h3><p>这个版本之后默认禁止了循环依赖，也就是如果检测发现有循环依赖的 bean，启动则会知道报错。</p>
+<p>可以通过<code>allow-circular-references</code> 配置开启对循环依赖的支持：</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">main:</span></span><br><span class="line">    <span class="attr">allow-circular-references:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="关联面试题"><a href="#关联面试题" class="headerlink" title="关联面试题"></a>关联面试题</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://www.mianshiya.com/bank/1790683494127804418/question/1780933295387734017">579. 为什么 Spring 循环依赖需要三级缓存，二级不够吗？</a></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/2.%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/">https://yuezi2048.github.io/2025/11/14/2.Areas🌐/02.面经记录/Spring/2.如何解决循环依赖/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Spring/">Spring</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/1.%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/" title="1.循环依赖"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">1.循环依赖</div></div><div class="info-2"><div class="info-item-1">循环依赖（Circular Dependency）是说多个模块，组件之间相互依赖，形成闭环（A依赖B，B依赖A），从而无法确定加载&#x2F;初始化的顺序 扩展知识简单示例看下方的代码就知晓了 @Servicepublic class A &#123;    @Autowired    private B b;&#125;@Servicepublic class B &#123;    @Autowired    private A a;&#125;//或者自己依赖自己@Servicepublic class A &#123;    @Autowired    private A a;&#125;  上面这两种方式都是循环依赖，应该很好理解，当然也可以是三个 Bean 甚至更多 Bean 相互依赖，原理都是一样的。 	 这种循环依赖可能会产生问题，例如 A 要依赖 B，发现 B 还没创建，于是开始创建 B ，创建的过程发现 B 要依赖 A， 而 A 还没创建好呀，因为它要等 B 创建好，就这样它们俩就搁这卡 bug 了。 关联面试题 578. Spring...</div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/3.%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%E9%9C%80%E8%A6%81%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98/" title="3.为什么循环依赖需要三级缓存"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">3.为什么循环依赖需要三级缓存</div></div><div class="info-2"><div class="info-item-1">Spring 需要三级缓存的核心原因：AOP代理和Bean的早期引用问题。直接使用二级缓存会导致拿到的Bean是未代理的原始对象，所以需要工厂类通过其创建对象的方式提前暴露延迟代理对象  追问：那为什么不能在二级缓存放代理对象？ 违反了bean对象生命周期，代理过程本应该在初始化完成之后。  扩展知识进一步理解分析为什么需要三级缓存很明显，如果仅仅只是为了破解循环依赖，二级缓存够了，压根就不必要三级。 你思考一下，在实例化 Bean A 之后，我在二级 map 里面塞入这个 A，然后继续属性注入，发现 A 依赖 B 所以要创建 Bean B，这时候 B 就能从二级 map 得到 A ，完成 B 的建立之后， A 自然而然能完成。 所以为什么要搞个三级缓存，且里面存的是创建 Bean 的工厂呢？ 我们来看下调用工厂的 getObject 到底会做什么，实际会调用下面这个方法： protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, Object bean) &#123;   ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/1.%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/" title="1.循环依赖"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">1.循环依赖</div></div><div class="info-2"><div class="info-item-1">循环依赖（Circular Dependency）是说多个模块，组件之间相互依赖，形成闭环（A依赖B，B依赖A），从而无法确定加载&#x2F;初始化的顺序 扩展知识简单示例看下方的代码就知晓了 @Servicepublic class A &#123;    @Autowired    private B b;&#125;@Servicepublic class B &#123;    @Autowired    private A a;&#125;//或者自己依赖自己@Servicepublic class A &#123;    @Autowired    private A a;&#125;  上面这两种方式都是循环依赖，应该很好理解，当然也可以是三个 Bean 甚至更多 Bean 相互依赖，原理都是一样的。 	 这种循环依赖可能会产生问题，例如 A 要依赖 B，发现 B 还没创建，于是开始创建 B ，创建的过程发现 B 要依赖 A， 而 A 还没创建好呀，因为它要等 B 创建好，就这样它们俩就搁这卡 bug 了。 关联面试题 578. Spring...</div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/10.FactoryBean/" title="10.FactoryBean"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">10.FactoryBean</div></div><div class="info-2"><div class="info-item-1">FactoryBean是Spring的特殊接口，允许开发者通过实现接口来创建复杂的Bean实例（通过FactoryBean创建的Bean除了FactoryBean本身，也可以是他生产的对象）  核心概念：FactoryBean 是一个实现了 FactoryBean&lt;T&gt; 接口的 Bean，通过它可以自定义复杂对象的创建逻辑。Spring 容器会调用 getObject() 方法来获取实际的 Bean 实例。 使用场景： 通常用于需要创建复杂对象或需要使用代理模式生成 Bean 的场景。  扩展知识FactoryBean 的主要方法 getObject()：这是 FactoryBean 最重要的方法，返回实际的 Bean 实例。Spring 容器会调用这个方法来获取 Bean。 getObjectType()：返回由 getObject() 方法所返回的对象类型，Spring 可以根据这个类型进行 Bean 的类型检查。 isSingleton()：用于确定 getObject() 返回的 Bean 是否为单例。如果返回 true，那么 Spring...</div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/11.ObjectFactory/" title="11.ObjectFactory"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">11.ObjectFactory</div></div><div class="info-2"><div class="info-item-1">ObjectFactory是 Spring 框架中的一个接口，主要用于延迟获取 Bean 实例。 ObjectFactory 提供了一种延迟加载的机制，它通过 getObject() 方法返回一个 Bean 的实例。使用 ObjectFactory 可以避免在容器启动时立即创建所有 Bean，即只有在真正需要使用 Bean 时才会从 Spring 容器中获取该 Bean 实例，有助于优化性能。 扩展知识ObjectFactory 的使用场景 懒加载 Bean：当某个 Bean 的创建过程可能耗时较长或依赖的资源较重时，可以通过 ObjectFactory 进行懒加载，避免容器启动时不必要的 Bean 创建。这能有效提升系统的启动速度。 避免循环依赖：在某些情况下，两个 Bean 可能相互依赖，导致循环依赖问题。通过使用 ObjectFactory，可以延迟其中一个 Bean 的创建，避免循环依赖。  在 Spring 的循环依赖里就用到它了，三级缓存的 map 里面存储的就是 ObjectFactory，用于延迟代理对象的创建。 并且在某些需要在运行时决定动态 Bean...</div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/12.ApplicationContext/" title="12.ApplicationContext"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">12.ApplicationContext</div></div><div class="info-2"><div class="info-item-1">ApplicationContext 是多个底层接口组合后的接口。从类图中我们可以看到，它主要提供了五大功能。  核心容器 BeanFactory 国际化 MessageSource 资源获取 ResourceLoader 环境信息 EnvironmentCapable 事件发布 ApplicationEventPublisher   ApplicationContext有多个实现类，如ClassPathXmlApplicationContext和FileSystemXmlApplicationContext等，适用于不同的应用场景。通过这些实现类，开发者可以根据具体需求选择合适的ApplicationContext来实现Spring应用程序的各种功能‌。   扩展知识下面，我们使用 SpringBoot 返回的 ConfigurableApplicationContext 来进行讲解。 @SpringBootApplicationpublic class Main &#123;    public static void main(String[] args) throws...</div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/13.Bean%E4%BD%9C%E7%94%A8%E5%9F%9F/" title="13.Bean作用域"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">13.Bean作用域</div></div><div class="info-2"><div class="info-item-1">一共有六种作用域：  整体作用  singleton：默认是单例，含义不用解释了吧，一个 IOC 容器内部仅此一个 prototype：原型，多实例   分块作用  request：每个请求都会新建一个属于自己的 Bean 实例，这种作用域仅存在 Spring Web 应用中 session：一个 http session 中有一个 bean 的实例，这种作用域仅存在 Spring Web 应用中 application：整个 ServletContext 生命周期里，只有一个 bean，这种作用域仅存在 Spring Web 应用中 websocket：一个 WebSocket 生命周期内一个 bean 实例，这种作用域仅存在 Spring Web 应用中    官网最新截图：  </div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/14.spring%E6%B3%A8%E5%85%A5%E6%96%B9%E5%BC%8F/" title="14.spring注入方式"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">14.spring注入方式</div></div><div class="info-2"><div class="info-item-1"> 推荐方式  构造器注入，Spring 倡导构造函数注入，因为构造器注入返回给客户端使用的时候一定是完整的。 setter 注入，可选的注入方式，好处是在有变更的情况下，可以重新注入。   其他  字段注入，就是平日我们用 @Autowired 标记字段 方法注入，就是平日我们用 @Autowired 标记方法 接口回调注入，就是实现 Spring 定义的一些内建接口，例如 BeanFactoryAware，会进行 BeanFactory 的注入    其实官网上关于注入就写了构造器和setter ： 	 像字段注入其实官方是不推荐的使用的，因为依赖注解，后没有控制注入顺序且无法注入静态字段。 </div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A9%E5%B1%95%E7%9F%A5%E8%AF%86"><span class="toc-text">扩展知识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BF%85%E9%A1%BB%E9%83%BD%E6%98%AF%E5%8D%95%E4%BE%8B"><span class="toc-text">为什么必须都是单例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD%E5%85%A8%E6%98%AF%E6%9E%84%E9%80%A0%E5%99%A8%E6%B3%A8%E5%85%A5"><span class="toc-text">为什么不能全是构造器注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%B8%AAset%E6%B3%A8%E5%85%A5%EF%BC%8C%E4%B8%80%E4%B8%AA%E6%9E%84%E9%80%A0%E5%99%A8%E6%B3%A8%E5%85%A5%E4%B8%80%E5%AE%9A%E8%83%BD%E6%88%90%E5%8A%9F%EF%BC%9F"><span class="toc-text">一个set注入，一个构造器注入一定能成功？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring-%E8%A7%A3%E5%86%B3%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%E5%85%A8%E6%B5%81%E7%A8%8B"><span class="toc-text">Spring 解决循环依赖全流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring-Boot-2-6-0"><span class="toc-text">Spring Boot 2.6.0</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E8%81%94%E9%9D%A2%E8%AF%95%E9%A2%98"><span class="toc-text">关联面试题</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

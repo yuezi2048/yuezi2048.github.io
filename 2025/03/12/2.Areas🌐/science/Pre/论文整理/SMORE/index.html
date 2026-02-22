@@ -1,0 +1,599 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>SMORE | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="SMOREAbstract Incorporating multi-modal features as side information has recently become a trend in recommender systems. To elucidate user-item preferences, recent studies focus on fusing modalities v">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SMORE">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/03/12/2.Areas%F0%9F%8C%90/science/Pre/%E8%AE%BA%E6%96%87%E6%95%B4%E7%90%86/SMORE/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="SMOREAbstract Incorporating multi-modal features as side information has recently become a trend in recommender systems. To elucidate user-item preferences, recent studies focus on fusing modalities v">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-03-12T05:04:21.000Z">
+<meta property="article:modified_time" content="2025-03-12T05:04:21.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="论文整理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "SMORE",
+  "url": "https://yuezi2048.github.io/2025/03/12/2.Areas%F0%9F%8C%90/science/Pre/%E8%AE%BA%E6%96%87%E6%95%B4%E7%90%86/SMORE/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-03-12T05:04:21.000Z",
+  "dateModified": "2025-03-12T05:04:21.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/03/12/2.Areas%F0%9F%8C%90/science/Pre/%E8%AE%BA%E6%96%87%E6%95%B4%E7%90%86/SMORE/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'SMORE',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">SMORE</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">SMORE</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-03-12T05:04:21.000Z" title="发表于 2025-03-12 13:04:21">2025-03-12</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-03-12T05:04:21.000Z" title="更新于 2025-03-12 13:04:21">2025-03-12</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/">science</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/">Pre</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E8%AE%BA%E6%96%87%E6%95%B4%E7%90%86/">论文整理</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">5.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>19分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="SMORE"><a href="#SMORE" class="headerlink" title="SMORE"></a>SMORE</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><blockquote>
+<p>Incorporating multi-modal features as side information has recently become a trend in recommender systems. To elucidate user-item preferences, <strong>recent studies focus on fusing modalities via concatenation, element-wise sum, or attention mechanisms</strong>. Despite having notable success, existing approaches <code>do not account for the modality-specific noise encapsulated within each modality</code>. As a result, direct fusion of modalities will lead to the amplification of cross-modality noise. Moreover, the variation of noise that is unique within each modality results in noise alleviation and fusion being more challenging.</p>
+<p>近年来，将多模态特征作为辅助信息融入推荐系统已成为一种趋势。为了阐明用户对物品的偏好，近期的研究主要聚焦于<strong>通过拼接、逐元素相加或注意力机制来融合模态</strong>。尽管现有方法取得了显著成效，但它们<code>并未考虑到每个模态中所包含的特定模态噪声</code>。因此，直接融合模态会导致跨模态噪声放大。此外，每个模态中独特的噪声变化使得噪声抑制和模态融合变得更具挑战性。</p>
+<p> In this work, <strong>we propose a new Spectrum-based Modality Representation (SMORE) fusion graph recommender</strong> that aims to capture both uni-modal and fusion preferences while simultaneously suppressing modality noise. Specifically, SMORE projects the multi-modal features into the frequency domain and leverages the spectral space for fusion. To reduce dynamic contamination that is unique to each modality, we introduce a <code>filter</code> to attenuate and suppress the modality noise adaptively while capturing the universal modality patterns effectively. </p>
+<p>在这项工作中，我们提出了一种<strong>新的基于频谱的模态表示（SMORE）融合图推荐器</strong>，旨在捕捉单模态和融合偏好的同时抑制模态噪声。具体来说，SMORE 将多模态特征投影到频域，并利用频谱空间进行融合。为了减少每个模态特有的动态噪声干扰，我们引入了一个<code>滤波器</code>，在有效捕捉通用模态模式的同时，自适应地衰减和抑制模态噪声。</p>
+<p>Furthermore, we explore the item latent structures by designing<code> a new multi-modal graph learning module</code> to capture associative semantic correlations and universal fusion patterns among similar items. </p>
+<p>此外，我们通过设计一个新的<code>多模态图学习模块</code>来探索物品的潜在结构，以捕捉相似物品之间的关联语义关系和通用融合模式。</p>
+<p>Finally, we formulate <code>a new modality-aware preference module</code>, which infuses behavioral features and balances the uni- and multi-modal features for precise preference modeling. This empowers SMORE with the ability to infer both user modality-specific and fusion preferences more accurately. Experiments on three real-world datasets show the efficacy of our proposed model. The source code for this work has been made publicly available at <a target="_blank" rel="noopener" href="https://github.com/kennethorq/SMORE">https://github.com/kennethorq/SMORE</a></p>
+<p>最后，我们构建了一个<code>新的模态感知偏好模块</code>，该模块融入行为特征，平衡单模态和多模态特征，以实现精确的偏好建模。这使得 SMORE 能够更准确地推断用户的特定模态偏好和融合偏好。在三个真实世界数据集上进行的实验证明了我们所提出模型的有效性。这项工作的源代码已公开</p>
+</blockquote>
+<h2 id="Intro-Related-works"><a href="#Intro-Related-works" class="headerlink" title="Intro &#x2F; Related works"></a>Intro &#x2F; Related works</h2><h2 id="METHODOLOGY"><a href="#METHODOLOGY" class="headerlink" title="METHODOLOGY"></a>METHODOLOGY</h2><p><img src="/img/loading.gif" data-original="C:\Users\ljy\AppData\Roaming\Typora\typora-user-images\image-20250312114544432.png" alt="image-20250312114544432"></p>
+<p>符号说明</p>
+<ul>
+<li><p><code>user-item</code>：</p>
+<ul>
+<li>定义$U &#x3D; {u_{j} \mid 1 \leq j \leq M}和I &#x3D; {i_{k} \mid 1 \leq k \leq N}$分别作为用户集和物品集，来对用户的隐式交互进行建模。其中，$$M$$和$$N$$分别表示用户和物品的数量。</li>
+<li>定义一个交互矩阵$Y \in \mathbb{R}^{M \times N}$ ，其中元素$y_{ui} &#x3D; 1$表示观察到用户与物品之间存在交互，而$y_{ui} &#x3D; 0$则表示不存在交互。</li>
+</ul>
+</li>
+<li><p><code>嵌入与模态</code>：</p>
+<ul>
+<li>对于每个用户u和物品i，输入的ID嵌入矩阵表示为$E_{id} \in \mathbb{R}^{d \times (|U| + |I|)}$，其中d是嵌入维度。</li>
+<li>进一步将$e_{i}^{m} \in \mathbb{R}^{d_{m}}$表示为每个物品i的模态特征，其中$d_{m}$是模态的维度，$m \in \mathcal{M}$是模态，$\mathcal{M}$是模态集合。</li>
+<li>在这项工作中，主要关注视觉和文本模态，即$\mathcal{M} &#x3D; {v, t}$，其中$v$和$t$分别对应视觉和文本模态。</li>
+</ul>
+</li>
+<li><p>最后，给定交互数据和每个物品的多模态特征，我们的目标是通过估计用户u和物品i之间交互的可能性$\widehat{y}_{ui}$来准确预测用户偏好。</p>
+</li>
+</ul>
+<h3 id="4-1-Spectrum-Modality-Fusion"><a href="#4-1-Spectrum-Modality-Fusion" class="headerlink" title="4.1 Spectrum Modality Fusion"></a>4.1 Spectrum Modality Fusion</h3><h4 id="1-为什么选择频域？"><a href="#1-为什么选择频域？" class="headerlink" title="1. 为什么选择频域？"></a><strong>1. 为什么选择频域？</strong></h4><p>想象你在听音乐：  </p>
+<ul>
+<li><strong>空间域</strong>：直接听到的声音（包含主唱、伴奏、噪声）  </li>
+<li><strong>频域</strong>：用均衡器（EQ）分离高音、中音、低音（可单独增强&#x2F;削弱某段频率）</li>
+</ul>
+<p><strong>多模态融合同理</strong>：  </p>
+<ul>
+<li>文本模态（如“红色连衣裙”）可能含高频噪声（无关形容词）  </li>
+<li>图像模态（如模糊照片）可能含低频噪声（模糊的轮廓）  </li>
+<li><strong>频域处理</strong>：像EQ一样，针对性过滤各模态的噪声频率，再融合干净的信号</li>
+</ul>
+<h4 id="核心流程总览（5步走）"><a href="#核心流程总览（5步走）" class="headerlink" title="核心流程总览（5步走）"></a><strong>核心流程总览（5步走）</strong></h4><p>原始多模态特征 → 投影对齐 → FFT转频域 → 动态滤波 → 逆FFT回空间域 → 融合</p>
+<p><img src="/img/loading.gif" data-original="C:\Users\ljy\AppData\Roaming\Typora\typora-user-images\image-20250312114616129.png" alt="image-20250312114616129">	</p>
+<h4 id="▶-步骤1：多模态特征投影（统一“语言”）"><a href="#▶-步骤1：多模态特征投影（统一“语言”）" class="headerlink" title="▶ 步骤1：多模态特征投影（统一“语言”）"></a><strong>▶ 步骤1：多模态特征投影（统一“语言”）</strong></h4><p><strong>目标</strong>：让文本（如768维）和图像（如2048维）特征能“对话”<br><strong>公式</strong>：<br>$$<br>\tilde{h}<em>{i,m} &#x3D; \underbrace{W</em>{1,m}}<em>{\text{模态m的投影矩阵}} \cdot \underbrace{E</em>{i,m}}<em>{\text{原始特征}} + \underbrace{b</em>{1,m}}_{\text{偏置}} \quad (m \in {v,t})<br>$$</p>
+<ul>
+<li><strong>示例</strong>：  <ul>
+<li>文本“红色连衣裙”（BERT输出768维）→ MLP压缩到128维，去掉“限时包邮”等噪声词  </li>
+<li>图像红裙（ResNet输出2048维）→ MLP压缩到128维，保留轮廓，去掉模糊背景<br><strong>类比</strong>：把中文（768字）和英文（2048字母）翻译成统一的128词“世界语”<br><strong>常见误区</strong>：投影不是降维，是对齐语义空间（如“红色”在文本和图像中映射到同一维度）</li>
+</ul>
+</li>
+</ul>
+<h4 id="▶-步骤2：FFT转频域（分解信号）"><a href="#▶-步骤2：FFT转频域（分解信号）" class="headerlink" title="▶ 步骤2：FFT转频域（分解信号）"></a><strong>▶ 步骤2：FFT转频域（分解信号）</strong></h4><p><strong>目标</strong>：将空间域特征（如[1,3,5,7]）分解为不同频率成分<br><strong>公式</strong>（一维FFT）：<br>$$<br>\hat{H}<em>{i,m}[k] &#x3D; \sum</em>{j&#x3D;0}^{n-1} \tilde{h}_{i,m}[j] \cdot e^{-2\pi J jk&#x2F;n} \quad (J&#x3D;\sqrt{-1}, , k&#x3D;0\text{低频} \to n-1\text{高频})<br>$$</p>
+<ul>
+<li><strong>直观计算</strong>（n&#x3D;4）：  <ul>
+<li>输入：[1,3,5,7]（空间域）  </li>
+<li>输出：[16, -4+4i, -4, -4-4i]（频域，第0位是低频，第3位是高频）<br><strong>类比</strong>：把混合饮料（空间域）分离成水（低频）、糖（中频）、杂质（高频）<br><strong>关键观察</strong>：噪声通常在<strong>高频</strong>（如文本错别字、图像噪点变化快）</li>
+</ul>
+</li>
+</ul>
+<h4 id="▶-步骤3：动态滤波（擦掉噪声）"><a href="#▶-步骤3：动态滤波（擦掉噪声）" class="headerlink" title="▶ 步骤3：动态滤波（擦掉噪声）"></a><strong>▶ 步骤3：动态滤波（擦掉噪声）</strong></h4><p><strong>目标</strong>：用可训练滤波器抑制模态特定噪声（如文本的高频促销词、图像的低频模糊）<br><strong>公式</strong>：<br>$$<br>\hat{H}<em>{i,m}^{\text{clean}} &#x3D; \underbrace{W</em>{2,m}^c}<em>{\text{复数滤波器}} \odot \underbrace{\hat{H}</em>{i,m}}_{\text{含噪频域特征}}<br>$$</p>
+<ul>
+<li><p><strong>滤波器示例</strong>：  </p>
+<ul>
+<li><p><strong>文本模态</strong>（高频噪声）：<code>W²^c = [1, 1, 0.1, 0.05]</code>（低频保留，高频削弱）  </p>
+</li>
+<li><p><strong>图像模态</strong>（低频模糊）：<code>W²^c = [0.2, 0.5, 1, 1]</code>（低频削弱，高频保留边缘）<br><strong>操作演示</strong>：  </p>
+</li>
+<li><p>文本频域特征：[16（低频“连衣裙”）, -4+4i（高频“限时”）]  </p>
+</li>
+<li><p>滤波后：[16×1, (-4+4i)×0.05] → 保留“连衣裙”，削弱“限时”<br><strong>类比</strong>：给文本戴“高频降噪耳机”，给图像戴“低频降噪耳机”</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="▶-步骤4：频域融合（乘法即协作）"><a href="#▶-步骤4：频域融合（乘法即协作）" class="headerlink" title="▶ 步骤4：频域融合（乘法即协作）"></a><strong>▶ 步骤4：频域融合（乘法即协作）</strong></h4><p><strong>目标</strong>：通过逐元素相乘，保留多模态共同的有用频率<br><strong>公式</strong>：<br>$$<br>\hat{H}<em>{i,fusion} &#x3D; \underbrace{\hat{H}</em>{i,v}^{\text{clean}} \odot \hat{H}<em>{i,t}^{\text{clean}}}</em>{\text{逐元素相乘，非矩阵乘法}}<br>$$</p>
+<ul>
+<li><strong>物理意义</strong>：频域乘法 &#x3D; 空间域的循环卷积（数学对偶性）  </li>
+<li><strong>示例</strong>：  <ul>
+<li>文本干净频域：[16（“连衣裙”）, 0（无高频噪声）]  </li>
+<li>图像干净频域：[8（红裙轮廓）, 4（清晰边缘）]  </li>
+<li>融合后：[16×8&#x3D;128（强化“连衣裙+红裙”）, 0×4&#x3D;0（无噪声）]<br><strong>对比传统方法</strong>：  </li>
+<li>❌ 拼接：噪声叠加（如文本高频噪声+图像低频噪声）  </li>
+<li>✅ 频域乘法：仅共同有用频率保留（类似“只有同时在文本和图像出现的内容才重要”）</li>
+</ul>
+</li>
+</ul>
+<h4 id="▶-步骤5：逆FFT重构（回到现实）"><a href="#▶-步骤5：逆FFT重构（回到现实）" class="headerlink" title="▶ 步骤5：逆FFT重构（回到现实）"></a><strong>▶ 步骤5：逆FFT重构（回到现实）</strong></h4><p><strong>目标</strong>：将频域特征转回空间域，得到降噪后的融合特征<br><strong>公式</strong>（一维逆FFT）：<br>$$<br>h_{i,fusion}[j] &#x3D; \frac{1}{n} \sum_{k&#x3D;0}^{n-1} \hat{H}_{i,fusion}[k] \cdot e^{2\pi J jk&#x2F;n}<br>$$</p>
+<ul>
+<li><strong>示例</strong>（接步骤4）：  <ul>
+<li>融合频域：[128, 0]  </li>
+<li>逆FFT后：[32, 32, 32, 32]（空间域，对应“红色连衣裙”的稳定特征）<br><strong>常见误区</strong>：逆FFT不是简单的反向，而是将频率成分合成为新的空间信号（类似把分离的乐器声还原成音乐）</li>
+</ul>
+</li>
+</ul>
+<h4 id="▶-全流程可视化表（以“红裙”为例）"><a href="#▶-全流程可视化表（以“红裙”为例）" class="headerlink" title="▶ 全流程可视化表（以“红裙”为例）"></a><strong>▶ 全流程可视化表（以“红裙”为例）</strong></h4><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>文本模态（含“限时”噪声）</th>
+<th>图像模态（含模糊噪声）</th>
+<th>关键操作</th>
+<th>输出特征</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1. 投影</td>
+<td>[0.8（红）, 0.6（裙）, 0.9（限时）] → 128维</td>
+<td>[0.7（红）, 0.5（模糊轮廓）] → 128维</td>
+<td>MLP降维去冗余</td>
+<td>统一128维，噪声潜伏</td>
+</tr>
+<tr>
+<td>2. FFT转频域</td>
+<td>低频[16（红+裙）, 高频4（限时）]</td>
+<td>低频8（模糊）, 高频2（边缘）</td>
+<td>分解为频率成分</td>
+<td>频域暴露噪声位置</td>
+</tr>
+<tr>
+<td>3. 滤波</td>
+<td>低频×1，高频×0.1 → [16, 0.4]</td>
+<td>低频×0.2，高频×1 → [1.6, 2]</td>
+<td>擦掉模态特定噪声</td>
+<td>文本：保留“红+裙”；图像：保留边缘</td>
+</tr>
+<tr>
+<td>4. 融合</td>
+<td>逐元素相乘 → [16×1.6&#x3D;25.6, 0.4×2&#x3D;0.8]</td>
+<td>-</td>
+<td>强化共同频率</td>
+<td>高频0.8（边缘）+ 低频25.6（红裙）</td>
+</tr>
+<tr>
+<td>5. 逆FFT</td>
+<td>转回空间域 → [6.4, 6.4, 6.4, 6.4]</td>
+<td>-</td>
+<td>合成最终特征</td>
+<td>纯净的“红裙”特征（去限时&#x2F;模糊）</td>
+</tr>
+</tbody></table>
+<h4 id="▶-初学者必懂的3个核心直觉"><a href="#▶-初学者必懂的3个核心直觉" class="headerlink" title="▶ 初学者必懂的3个核心直觉"></a><strong>▶ 初学者必懂的3个核心直觉</strong></h4><ol>
+<li><strong>噪声是“刺”</strong>：高频噪声像信号中的尖刺（如文本错别字），低频噪声像模糊的雾（如图像模糊）  </li>
+<li><strong>滤波器是“剪刀”</strong>：可训练的复数权重像剪刀，剪掉特定频率的“刺”或“雾”  </li>
+<li><strong>融合是“共识”</strong>：只有文本和图像都认可的频率（如“红裙”的低频）才会被保留，各自的噪声（限时&#x2F;模糊）被过滤</li>
+</ol>
+<h4 id="▶-公式速查表（带中文标注）"><a href="#▶-公式速查表（带中文标注）" class="headerlink" title="▶ 公式速查表（带中文标注）"></a><strong>▶ 公式速查表（带中文标注）</strong></h4><table>
+<thead>
+<tr>
+<th>公式位置</th>
+<th>公式</th>
+<th>中文说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>步骤1投影</td>
+<td>$ \tilde{h}<em>{i,m} &#x3D; W</em>{1,m}E_{i,m} + b_{1,m} $</td>
+<td>模态m的特征投影到128维（去冗余）</td>
+</tr>
+<tr>
+<td>步骤2 FFT</td>
+<td>$ \hat{H}<em>{i,m}[k] &#x3D; \sum \tilde{h}</em>{j}e^{-2πJjk&#x2F;n} $</td>
+<td>计算第k个频率成分（k&#x3D;0是直流分量）</td>
+</tr>
+<tr>
+<td>步骤3滤波</td>
+<td>$ \hat{H}<em>{i,m}^{\text{clean}} &#x3D; W</em>{2,m}^c \odot \hat{H}_{i,m} $</td>
+<td>复数滤波器逐点乘，抑制噪声频率</td>
+</tr>
+<tr>
+<td>步骤4融合</td>
+<td>$ \hat{H}<em>{i,fusion} &#x3D; \prod</em>{m} \hat{H}_{i,m}^{\text{clean}} $</td>
+<td>多模态频域相乘，保留共同有用频率</td>
+</tr>
+<tr>
+<td>步骤5逆FFT</td>
+<td>$ h_{i,fusion}[j] &#x3D; \frac{1}{n}\sum \hat{H}_{k}e^{2πJjk&#x2F;n} $</td>
+<td>从频率成分还原空间域特征</td>
+</tr>
+</tbody></table>
+<h3 id="4-2-Multi-modal-Graph-Learning"><a href="#4-2-Multi-modal-Graph-Learning" class="headerlink" title="4.2 Multi-modal Graph Learning"></a>4.2 Multi-modal Graph Learning</h3><p><img src="/img/loading.gif" data-original="C:\Users\ljy\AppData\Roaming\Typora\typora-user-images\image-20250312123545594.png" alt="image-20250312123545594"></p>
+<p>SMORE的多模态图学习模块通过构建<strong>模态特定图</strong>和<strong>融合图</strong>，捕捉用户-物品交互的高阶协作信号与语义关联。以下是带公式说明的原理推导：</p>
+<h4 id="1-核心目标"><a href="#1-核心目标" class="headerlink" title="1. 核心目标"></a><strong>1. 核心目标</strong></h4><ul>
+<li><strong>模态解耦</strong>：分离行为交互与单模态特征的关联（如仅文本&#x2F;仅图像的偏好）  </li>
+<li><strong>融合关联</strong>：捕捉跨模态的协同信号（如图文联合语义）  </li>
+<li><strong>高阶建模</strong>：通过图卷积（GCN）挖掘多跳邻居的隐含关系</li>
+</ul>
+<h4 id="2-原理推导步骤"><a href="#2-原理推导步骤" class="headerlink" title="2. 原理推导步骤"></a><strong>2. 原理推导步骤</strong></h4><h5 id="步骤1：构建模态特定图"><a href="#步骤1：构建模态特定图" class="headerlink" title="步骤1：构建模态特定图"></a><strong>步骤1：构建模态特定图</strong></h5><ul>
+<li><p><strong>行为交互图（基础图）</strong><br>基于用户-物品交互矩阵 $ Y \in \mathbb{R}^{M \times N} $，构建二分图邻接矩阵：<br>$$<br>A^{b} \in {0,1}^{(M+N) \times (M+N)}, \quad A^{b}_{u,i} &#x3D; 1 \text{（若用户$u$与物品$i$交互）}<br>$$<br><em>说明</em>：用户节点在前$ M $维，物品节点在后$ N $维，仅用户-物品边为1。  </p>
+</li>
+<li><p><strong>模态内容图（增强图）</strong><br>对每个模态 $ m \in {v, t} $，计算物品间余弦相似度构建无向图：<br>$$<br>A^{m}_{i,j} &#x3D; \frac{e_i^m \cdot e_j^m}{|e_i^m| |e_j^m|}, \quad e_i^m \in \mathbb{R}^{d_m} \text{（物品$i$的$m$模态特征）}<br>$$<br><em>说明</em>：$ A^{m} $ 仅连接物品节点，权重反映模态内语义相似性（如文本的关键词匹配、图像的视觉相似）。</p>
+</li>
+</ul>
+<h5 id="步骤2：生成融合图"><a href="#步骤2：生成融合图" class="headerlink" title="步骤2：生成融合图"></a><strong>步骤2：生成融合图</strong></h5><ul>
+<li><strong>跨模态关联融合</strong><br>融合行为图与模态内容图，引入模态权重 $ \alpha_m $（由模态感知模块学习）：<br>$$<br>A^{fusion} &#x3D; A^{b} + \sum_{m \in \mathcal{M}} \alpha_m \cdot \left( \begin{matrix} 0_{M \times M} &amp; 0_{M \times N} \ 0_{N \times M} &amp; A^{m} \end{matrix} \right)<br>$$<br><em>说明</em>：$ A^{fusion} $ 扩展内容图为全图（用户-用户&#x2F;物品-物品边为0），保留行为边的优先级。</li>
+</ul>
+<h5 id="步骤3：图卷积层（GCN）"><a href="#步骤3：图卷积层（GCN）" class="headerlink" title="步骤3：图卷积层（GCN）"></a><strong>步骤3：图卷积层（GCN）</strong></h5><ul>
+<li><p><strong>模态特定传播</strong><br>对模态$ m $，通过GCN聚合邻居特征（含自环）：<br>$$<br>H^{m(l+1)} &#x3D; \sigma\left( \hat{D}^{-1&#x2F;2} \hat{A}^{m} \hat{D}^{-1&#x2F;2} H^{m(l)} W^{m(l)} \right)<br>$$</p>
+<ul>
+<li>$ \hat{A}^{m} &#x3D; A^{m} + I $（自环增强节点自身信息）  </li>
+<li>$ \hat{D} $ 为$ \hat{A}^{m} $的度矩阵，$ \hat{D}^{-1&#x2F;2} $ 归一化  </li>
+<li>$ H^{m(0)} &#x3D; \text{Concat}(E_{id}, \tilde{h}_m) $（初始特征：ID嵌入+模态投影特征）</li>
+</ul>
+</li>
+<li><p><strong>融合传播</strong><br>对融合图执行GCN，捕捉跨模态高阶交互：<br>$$<br>H^{f(l+1)} &#x3D; \sigma\left( \hat{D}^{fusion^{-1&#x2F;2}} \hat{A}^{fusion} \hat{D}^{fusion^{-1&#x2F;2}} H^{f(l)} W^{f(l)} \right)<br>$$<br><em>说明</em>：融合图同时包含行为和多模态语义边，支持“用户→物品A（图）→物品B（文）→用户”的多跳推理。</p>
+</li>
+</ul>
+<h5 id="步骤4：特征聚合"><a href="#步骤4：特征聚合" class="headerlink" title="步骤4：特征聚合"></a><strong>步骤4：特征聚合</strong></h5><ul>
+<li><p><strong>模态解耦表示</strong><br>保留单模态（文本&#x2F;视觉）与融合特征的独立性：<br>$$<br>h_i^{uni} &#x3D; \text{Concat}(h_i^v, h_i^t), \quad h_i^{fusion} &#x3D; h_i^f \quad \text{（$h_i^v, h_i^t$为模态特定GCN输出）}<br>$$</p>
+</li>
+<li><p><strong>动态注意力加权</strong><br>通过注意力机制平衡单模态与融合特征：<br>$$<br>\beta &#x3D; \text{Softmax}\left( W_a \cdot \text{LeakyReLU}( \text{Concat}(h_i^{uni}, h_i^{fusion}) ) \right)<br>$$<br>$$<br>h_i^{final} &#x3D; \beta \odot h_i^{uni} + (1-\beta) \odot h_i^{fusion}<br>$$<br><em>说明</em>：$ \beta \in [0,1]^d $ 为逐维度权重，适应“用户可能仅关注图像&#x2F;文本”的真实场景。</p>
+</li>
+</ul>
+<h4 id="3-关键公式对比表"><a href="#3-关键公式对比表" class="headerlink" title="3. 关键公式对比表"></a><strong>3. 关键公式对比表</strong></h4><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>公式</th>
+<th>作用说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>行为图</td>
+<td>$ A^{b}<em>{u,i} &#x3D; 1 \iff y</em>{u,i}&#x3D;1 $</td>
+<td>建模显式交互关系</td>
+</tr>
+<tr>
+<td>内容图</td>
+<td>$ A^{m}_{i,j} &#x3D; \text{cosine}(e_i^m, e_j^m) $</td>
+<td>捕捉模态内语义相似性（如文本关键词匹配）</td>
+</tr>
+<tr>
+<td>融合图</td>
+<td>$ A^{fusion} &#x3D; A^b + \sum \alpha_m \cdot \text{扩展内容图} $</td>
+<td>平衡行为与模态语义的跨模态关联</td>
+</tr>
+<tr>
+<td>GCN传播</td>
+<td>$ H^{(l+1)} &#x3D; \sigma(\hat{D}^{-1&#x2F;2} \hat{A} \hat{D}^{-1&#x2F;2} H^{(l)} W) $</td>
+<td>邻域聚合+非线性变换，挖掘高阶协作信号</td>
+</tr>
+<tr>
+<td>注意力聚合</td>
+<td>$ h_i^{final} &#x3D; \beta \odot h_i^{uni} + (1-\beta) \odot h_i^{fusion} $</td>
+<td>动态选择单模态或融合特征，抑制噪声干扰</td>
+</tr>
+</tbody></table>
+<h4 id="4-创新点总结"><a href="#4-创新点总结" class="headerlink" title="4. 创新点总结"></a><strong>4. 创新点总结</strong></h4><ul>
+<li><strong>双视图解耦</strong>：通过独立的模态图与融合图，分别建模“仅文本&#x2F;图”和“图文协同”偏好（如图1(ii)(iii)的噪声抑制）  </li>
+<li><strong>噪声鲁棒性</strong>：内容图基于余弦相似性（非原始特征直接连接），过滤模态特定噪声（如模糊图像的低相似性）  </li>
+<li><strong>高效高阶建模</strong>：GCN的$ O(E) $复杂度（$ E $为边数），优于传统协同过滤的矩阵分解复杂度</li>
+</ul>
+<h3 id="4-3-Modality-Aware-preference-Module"><a href="#4-3-Modality-Aware-preference-Module" class="headerlink" title="4.3 Modality-Aware preference Module"></a>4.3 Modality-Aware preference Module</h3><h4 id="🍵-类比：奶茶店的「顾客口味雷达」"><a href="#🍵-类比：奶茶店的「顾客口味雷达」" class="headerlink" title="🍵 类比：奶茶店的「顾客口味雷达」"></a>🍵 <strong>类比：奶茶店的「顾客口味雷达」</strong></h4><ul>
+<li><strong>场景</strong>：顾客买奶茶时，有人看<strong>配料表文字</strong>（少糖&#x2F;珍珠），有人看<strong>杯身图片</strong>（颜值&#x2F;果肉），有人听<strong>店员推荐语音</strong>（新品活动）。  </li>
+<li><strong>模块作用</strong>：  <ul>
+<li><strong>模态感知</strong>：像3个雷达分别扫描「文字偏好」「图片偏好」「语音偏好」（如顾客反复说“少糖”→文字权重高）。  </li>
+<li><strong>动态加权</strong>：根据顾客历史行为，自动调整模态重要性（如爱拍照的顾客→图片权重70%）。</li>
+</ul>
+</li>
+<li><strong>对比普通推荐</strong>：普通推荐只看“买过草莓奶茶”，而该模块知道“因为喜欢草莓的图文介绍才买”。</li>
+</ul>
+<h4 id="📌-核心定义（以图文模态为例）"><a href="#📌-核心定义（以图文模态为例）" class="headerlink" title="📌 核心定义（以图文模态为例）"></a>📌 <strong>核心定义（以图文模态为例）</strong></h4><p><strong>目标</strong>：量化用户对不同模态内容的偏好差异，解决“用户为什么喜欢这个物品”的多模态动机。<br><strong>公式化结构</strong>：<br>$$<br>p_{\text{final}} &#x3D; \alpha_T \cdot p_T + \alpha_I \cdot p_I \quad (\alpha_T + \alpha_I &#x3D; 1)<br>$$</p>
+<ul>
+<li>$ p_T $: 文本模态偏好分（如“少糖”关键词匹配度）  </li>
+<li>$ p_I $: 图像模态偏好分（如珍珠Q弹度视觉特征）  </li>
+<li>$ \alpha_T&#x2F;\alpha_I $: 模态权重（自动学习，反映用户更关注文字还是图片）</li>
+</ul>
+<h4 id="🔍-5步拆解：从输入到偏好分（附奶茶案例）"><a href="#🔍-5步拆解：从输入到偏好分（附奶茶案例）" class="headerlink" title="🔍 5步拆解：从输入到偏好分（附奶茶案例）"></a>🔍 <strong>5步拆解：从输入到偏好分（附奶茶案例）</strong></h4><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>图文模态操作细节</th>
+<th>奶茶店具象化</th>
+<th>数学公式（简化版）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>1. 模态输入</strong></td>
+<td>文本：商品标题「0卡糖草莓波波」<br>图像：杯身珍珠特写图</td>
+<td>顾客看到文字「0卡糖」和珍珠图片</td>
+<td>$ T &#x3D; \text{Tokenizer}(标题) $<br>$ I &#x3D; \text{CNN}(图片) $</td>
+</tr>
+<tr>
+<td><strong>2. 模态编码</strong></td>
+<td>- 文本：BERT提取「0卡糖」「草莓」词向量<br>- 图像：ViT提取珍珠光泽度特征</td>
+<td>文字雷达：解析“0卡糖”&#x3D;健康需求<br>图像雷达：分析珍珠饱满度</td>
+<td>$ h_T &#x3D; \text{BERT}(T) $<br>$ h_I &#x3D; \text{ViT}(I) $</td>
+</tr>
+<tr>
+<td><strong>3. 模态偏好分</strong></td>
+<td>- 文本：MLP计算“健康+口味”偏好分（0.9）<br>- 图像：MLP计算“食欲感”偏好分（0.7）</td>
+<td>文字评分：健康需求匹配度90分<br>图像评分：珍珠吸引力70分</td>
+<td>$ p_T &#x3D; \text{MLP}(h_T) $<br>$ p_I &#x3D; \text{MLP}(h_I) $</td>
+</tr>
+<tr>
+<td><strong>4. 模态权重学习</strong></td>
+<td>用注意力机制计算用户更关注文字还是图片：<br>历史点击中70%含“0卡糖”文字→$ \alpha_T&#x3D;0.7 $</td>
+<td>发现顾客常放大看配料表→文字更重要</td>
+<td>$ \alpha &#x3D; \text{Softmax}(W[h_T; h_I]) $</td>
+</tr>
+<tr>
+<td><strong>5. 融合偏好分</strong></td>
+<td>最终推荐分：0.7×0.9（文字） + 0.3×0.7（图像）&#x3D; 0.84</td>
+<td>综合判断：顾客更因健康文字购买（而非颜值）</td>
+<td>$ p_{\text{final}} &#x3D; \alpha \odot p $</td>
+</tr>
+</tbody></table>
+<h4 id="📝-关键组件详解（带奶茶案例）"><a href="#📝-关键组件详解（带奶茶案例）" class="headerlink" title="📝 关键组件详解（带奶茶案例）"></a>📝 <strong>关键组件详解（带奶茶案例）</strong></h4><ol>
+<li><p><strong>模态特定编码器</strong>  </p>
+<ul>
+<li><strong>文本分支</strong>：  <ul>
+<li>输入：“低脂&#x2F;少糖&#x2F;珍珠”搜索词  </li>
+<li>操作：BERT识别「少糖」为核心需求（词向量权重高）  </li>
+<li>输出：文本偏好分 $ p_T&#x3D;0.9 $（匹配用户健康需求）</li>
+</ul>
+</li>
+<li><strong>图像分支</strong>：  <ul>
+<li>输入：奶茶杯身的珍珠特写图  </li>
+<li>操作：CNN提取珍珠光泽度（高光泽&#x3D;Q弹）  </li>
+<li>输出：图像偏好分 $ p_I&#x3D;0.7 $（珍珠吸引力中等）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>模态权重动态分配</strong>  </p>
+<ul>
+<li><strong>数据依据</strong>：用户历史点击中，70%的商品有明确文字说明（如“0卡糖”），仅30%因图片吸引。  </li>
+<li><strong>计算方式</strong>：<br>$$<br>\alpha &#x3D; \text{Softmax}\left( W \cdot \text{Concat}(h_T, h_I) \right) &#x3D; [0.7, 0.3]<br>$$</li>
+<li><strong>结果</strong>：文字权重更高，因为用户更依赖文本信息决策。</li>
+</ul>
+</li>
+<li><p><strong>偏好融合策略</strong>  </p>
+<ul>
+<li><strong>加权求和</strong>：<br>$$<br>p_{\text{final}} &#x3D; 0.7 \times 0.9 + 0.3 \times 0.7 &#x3D; 0.84<br>$$  </li>
+<li><strong>物理意义</strong>：用户对该奶茶的偏好，70%源于文字的健康承诺，30%源于珍珠的视觉吸引力。</li>
+</ul>
+</li>
+</ol>
+<h4 id="🍦-实战案例：用户「小红」的偏好分析"><a href="#🍦-实战案例：用户「小红」的偏好分析" class="headerlink" title="🍦 实战案例：用户「小红」的偏好分析"></a>🍦 <strong>实战案例：用户「小红」的偏好分析</strong></h4><ul>
+<li><strong>历史行为</strong>：  <ul>
+<li>点击含“Q弹珍珠”文字的商品：8次（文字驱动）  </li>
+<li>点赞珍珠爆浆动图：2次（图像驱动）</li>
+</ul>
+</li>
+<li><strong>当前商品</strong>：  <ul>
+<li>文本：「爆浆珍珠，Q弹升级」  </li>
+<li>图像：珍珠爆浆瞬间截图</li>
+</ul>
+</li>
+<li><strong>模块输出</strong>：  <ul>
+<li>$ \alpha_T&#x3D;0.8 $（小红更信文字）  </li>
+<li>$ p_T&#x3D;0.95 $（Q弹关键词匹配）  </li>
+<li>$ p_I&#x3D;0.9 $（爆浆图吸引力高）  </li>
+<li>$ p_{\text{final}}&#x3D;0.8 \times 0.95 + 0.2 \times 0.9 &#x3D; 0.94 $（强推荐）</li>
+</ul>
+</li>
+</ul>
+<h4 id="🚀-应用场景对比（传统vs模态感知）"><a href="#🚀-应用场景对比（传统vs模态感知）" class="headerlink" title="🚀 应用场景对比（传统vs模态感知）"></a>🚀 <strong>应用场景对比（传统vs模态感知）</strong></h4><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>传统推荐（单模态）</th>
+<th>Modality-Aware推荐（多模态）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>图文详情页</strong></td>
+<td>只根据文字“防水”推荐（忽略图片验证）</td>
+<td>发现用户常点击“防水测试”动图→优先推荐带视频的商品</td>
+</tr>
+<tr>
+<td><strong>短视频标题</strong></td>
+<td>仅匹配标题关键词（如“治愈”）</td>
+<td>结合标题“治愈”和视频猫咪蹭头画面→判断用户偏好温暖剧情</td>
+</tr>
+<tr>
+<td><strong>跨模态搜索</strong></td>
+<td>语音“红色外套”只匹配文本标签</td>
+<td>同时匹配文本“红色”和图像毛绒质感→推荐红色毛绒外套</td>
+</tr>
+</tbody></table>
+<h4 id="💡-初学者必懂的3个核心直觉"><a href="#💡-初学者必懂的3个核心直觉" class="headerlink" title="💡 初学者必懂的3个核心直觉"></a>💡 <strong>初学者必懂的3个核心直觉</strong></h4><ol>
+<li><strong>模态权重是“注意力开关”</strong>：$ \alpha_T&#x3D;0.7 $ 表示用户70%的偏好由文本决定（类似你买手机时更看参数表还是外观图）。  </li>
+<li><strong>偏好分是“心动证据”</strong>：$ p_T&#x3D;0.9 $ 说明文本完美匹配用户需求（如“少糖”正好是用户习惯）。  </li>
+<li><strong>融合不是平均主义</strong>：动态加权避免“图文都重要但实际只看文字”的误判（比如你买奶茶时，即使图片好看，没“少糖”文字就不买）。</li>
+</ol>
+<h4 id="📌-公式速查表（带中文注释）"><a href="#📌-公式速查表（带中文注释）" class="headerlink" title="📌 公式速查表（带中文注释）"></a>📌 <strong>公式速查表（带中文注释）</strong></h4><table>
+<thead>
+<tr>
+<th>公式</th>
+<th>中文说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>$ h_T &#x3D; \text{BERT}(T) $</td>
+<td>文本特征编码（如“少糖”的词向量）</td>
+</tr>
+<tr>
+<td>$ p_T &#x3D; \text{MLP}(h_T) $</td>
+<td>文本偏好分（0~1，匹配用户需求的程度）</td>
+</tr>
+<tr>
+<td>$ \alpha &#x3D; \text{Softmax}(W[h_T; h_I]) $</td>
+<td>模态权重（自动学习，反映用户更关注哪种模态）</td>
+</tr>
+<tr>
+<td>$ p_{\text{final}} &#x3D; \alpha_T p_T + \alpha_I p_I $</td>
+<td>最终偏好分（加权融合，体现多模态动机）</td>
+</tr>
+</tbody></table>
+<h4 id="🌈-一句话总结"><a href="#🌈-一句话总结" class="headerlink" title="🌈 一句话总结"></a>🌈 <strong>一句话总结</strong></h4><p>Modality-Aware模块是你的“多模态读心术”：  </p>
+<ul>
+<li>不仅知道你买了「草莓奶茶」，还知道你是因为<strong>文字里的“0卡糖”</strong>（健康偏好），还是<strong>图片里的“爆浆珍珠”</strong>（食欲偏好）而购买。  </li>
+<li>就像贴心的奶茶店员，记住你每次看配料表的认真（文字偏好）和拍照的角度（图像偏好），下次直接推荐你最可能心动的那一杯。</li>
+</ul>
+<p>（如果联想到之前的「模态特定图」，这个模块就是用图中的模态关系，算出你对每个模态的心动指数～）</p>
+<h2 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h2></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/03/12/2.Areas%F0%9F%8C%90/science/Pre/%E8%AE%BA%E6%96%87%E6%95%B4%E7%90%86/SMORE/">https://yuezi2048.github.io/2025/03/12/2.Areas🌐/science/Pre/论文整理/SMORE/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E6%95%B4%E7%90%86/">论文整理</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/02/25/2.Areas%F0%9F%8C%90/back-end-java/7.SpringBoot/4.%20%E6%95%B4%E5%90%88%E6%95%B0%E6%8D%AE%E6%8C%81%E4%B9%85%E5%B1%82/" title="4. 整合数据持久层"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">4. 整合数据持久层</div></div><div class="info-2"><div class="info-item-1">四、整合数据持久层我们可以看到SpringBoot官方为我们提供了持久层的启动器，导入启动器后，我们可以开启场景的自动配置，因此可以通过这些启动器帮助我们自动配置。  spring-boot-starter-data开头的都是数据持久层场景相关的启动器  	 4.1 整合JDBC在pom文件导入spring-boot-starter-data-jdbc启动器即可。 &lt;!-- 导入jdbc启动器 --&gt;&lt;dependency&gt;    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;    &lt;artifactId&gt;spring-boot-starter-data-jdbc&lt;/artifactId&gt;&lt;/dependency&gt;  	 可以发现，JDBC启动器并没有为我们配置数据库驱动。因为SpringBoot不知道我们要用什么数据库，因此需要手动配置。 例如mysql &lt;!-- 导入数据库驱动 --&gt;&lt;dependency&gt;   ...</div></div></div></a><a class="pagination-related" href="/2025/03/12/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/SMORE/" title="SMORE"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">SMORE</div></div><div class="info-2"><div class="info-item-1">SMOREAbstract Incorporating multi-modal features as side information has recently become a trend in recommender systems. To elucidate user-item preferences, recent studies focus on fusing modalities via concatenation, element-wise sum, or attention mechanisms. Despite having notable success, existing approaches do not account for the modality-specific noise encapsulated within each modality. As a result, direct fusion of modalities will lead to the amplification of cross-modality noise....</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SMORE"><span class="toc-text">SMORE</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Abstract"><span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Intro-Related-works"><span class="toc-text">Intro &#x2F; Related works</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#METHODOLOGY"><span class="toc-text">METHODOLOGY</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-Spectrum-Modality-Fusion"><span class="toc-text">4.1 Spectrum Modality Fusion</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E6%8B%A9%E9%A2%91%E5%9F%9F%EF%BC%9F"><span class="toc-text">1. 为什么选择频域？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B%E6%80%BB%E8%A7%88%EF%BC%885%E6%AD%A5%E8%B5%B0%EF%BC%89"><span class="toc-text">核心流程总览（5步走）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%96%B6-%E6%AD%A5%E9%AA%A41%EF%BC%9A%E5%A4%9A%E6%A8%A1%E6%80%81%E7%89%B9%E5%BE%81%E6%8A%95%E5%BD%B1%EF%BC%88%E7%BB%9F%E4%B8%80%E2%80%9C%E8%AF%AD%E8%A8%80%E2%80%9D%EF%BC%89"><span class="toc-text">▶ 步骤1：多模态特征投影（统一“语言”）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%96%B6-%E6%AD%A5%E9%AA%A42%EF%BC%9AFFT%E8%BD%AC%E9%A2%91%E5%9F%9F%EF%BC%88%E5%88%86%E8%A7%A3%E4%BF%A1%E5%8F%B7%EF%BC%89"><span class="toc-text">▶ 步骤2：FFT转频域（分解信号）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%96%B6-%E6%AD%A5%E9%AA%A43%EF%BC%9A%E5%8A%A8%E6%80%81%E6%BB%A4%E6%B3%A2%EF%BC%88%E6%93%A6%E6%8E%89%E5%99%AA%E5%A3%B0%EF%BC%89"><span class="toc-text">▶ 步骤3：动态滤波（擦掉噪声）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%96%B6-%E6%AD%A5%E9%AA%A44%EF%BC%9A%E9%A2%91%E5%9F%9F%E8%9E%8D%E5%90%88%EF%BC%88%E4%B9%98%E6%B3%95%E5%8D%B3%E5%8D%8F%E4%BD%9C%EF%BC%89"><span class="toc-text">▶ 步骤4：频域融合（乘法即协作）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%96%B6-%E6%AD%A5%E9%AA%A45%EF%BC%9A%E9%80%86FFT%E9%87%8D%E6%9E%84%EF%BC%88%E5%9B%9E%E5%88%B0%E7%8E%B0%E5%AE%9E%EF%BC%89"><span class="toc-text">▶ 步骤5：逆FFT重构（回到现实）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%96%B6-%E5%85%A8%E6%B5%81%E7%A8%8B%E5%8F%AF%E8%A7%86%E5%8C%96%E8%A1%A8%EF%BC%88%E4%BB%A5%E2%80%9C%E7%BA%A2%E8%A3%99%E2%80%9D%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="toc-text">▶ 全流程可视化表（以“红裙”为例）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%96%B6-%E5%88%9D%E5%AD%A6%E8%80%85%E5%BF%85%E6%87%82%E7%9A%843%E4%B8%AA%E6%A0%B8%E5%BF%83%E7%9B%B4%E8%A7%89"><span class="toc-text">▶ 初学者必懂的3个核心直觉</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%96%B6-%E5%85%AC%E5%BC%8F%E9%80%9F%E6%9F%A5%E8%A1%A8%EF%BC%88%E5%B8%A6%E4%B8%AD%E6%96%87%E6%A0%87%E6%B3%A8%EF%BC%89"><span class="toc-text">▶ 公式速查表（带中文标注）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-Multi-modal-Graph-Learning"><span class="toc-text">4.2 Multi-modal Graph Learning</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%A0%B8%E5%BF%83%E7%9B%AE%E6%A0%87"><span class="toc-text">1. 核心目标</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%8E%9F%E7%90%86%E6%8E%A8%E5%AF%BC%E6%AD%A5%E9%AA%A4"><span class="toc-text">2. 原理推导步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A41%EF%BC%9A%E6%9E%84%E5%BB%BA%E6%A8%A1%E6%80%81%E7%89%B9%E5%AE%9A%E5%9B%BE"><span class="toc-text">步骤1：构建模态特定图</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A42%EF%BC%9A%E7%94%9F%E6%88%90%E8%9E%8D%E5%90%88%E5%9B%BE"><span class="toc-text">步骤2：生成融合图</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A43%EF%BC%9A%E5%9B%BE%E5%8D%B7%E7%A7%AF%E5%B1%82%EF%BC%88GCN%EF%BC%89"><span class="toc-text">步骤3：图卷积层（GCN）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A44%EF%BC%9A%E7%89%B9%E5%BE%81%E8%81%9A%E5%90%88"><span class="toc-text">步骤4：特征聚合</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%85%B3%E9%94%AE%E5%85%AC%E5%BC%8F%E5%AF%B9%E6%AF%94%E8%A1%A8"><span class="toc-text">3. 关键公式对比表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%88%9B%E6%96%B0%E7%82%B9%E6%80%BB%E7%BB%93"><span class="toc-text">4. 创新点总结</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-Modality-Aware-preference-Module"><span class="toc-text">4.3 Modality-Aware preference Module</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%F0%9F%8D%B5-%E7%B1%BB%E6%AF%94%EF%BC%9A%E5%A5%B6%E8%8C%B6%E5%BA%97%E7%9A%84%E3%80%8C%E9%A1%BE%E5%AE%A2%E5%8F%A3%E5%91%B3%E9%9B%B7%E8%BE%BE%E3%80%8D"><span class="toc-text">🍵 类比：奶茶店的「顾客口味雷达」</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%F0%9F%93%8C-%E6%A0%B8%E5%BF%83%E5%AE%9A%E4%B9%89%EF%BC%88%E4%BB%A5%E5%9B%BE%E6%96%87%E6%A8%A1%E6%80%81%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="toc-text">📌 核心定义（以图文模态为例）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%F0%9F%94%8D-5%E6%AD%A5%E6%8B%86%E8%A7%A3%EF%BC%9A%E4%BB%8E%E8%BE%93%E5%85%A5%E5%88%B0%E5%81%8F%E5%A5%BD%E5%88%86%EF%BC%88%E9%99%84%E5%A5%B6%E8%8C%B6%E6%A1%88%E4%BE%8B%EF%BC%89"><span class="toc-text">🔍 5步拆解：从输入到偏好分（附奶茶案例）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%F0%9F%93%9D-%E5%85%B3%E9%94%AE%E7%BB%84%E4%BB%B6%E8%AF%A6%E8%A7%A3%EF%BC%88%E5%B8%A6%E5%A5%B6%E8%8C%B6%E6%A1%88%E4%BE%8B%EF%BC%89"><span class="toc-text">📝 关键组件详解（带奶茶案例）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%F0%9F%8D%A6-%E5%AE%9E%E6%88%98%E6%A1%88%E4%BE%8B%EF%BC%9A%E7%94%A8%E6%88%B7%E3%80%8C%E5%B0%8F%E7%BA%A2%E3%80%8D%E7%9A%84%E5%81%8F%E5%A5%BD%E5%88%86%E6%9E%90"><span class="toc-text">🍦 实战案例：用户「小红」的偏好分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%F0%9F%9A%80-%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E5%AF%B9%E6%AF%94%EF%BC%88%E4%BC%A0%E7%BB%9Fvs%E6%A8%A1%E6%80%81%E6%84%9F%E7%9F%A5%EF%BC%89"><span class="toc-text">🚀 应用场景对比（传统vs模态感知）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%F0%9F%92%A1-%E5%88%9D%E5%AD%A6%E8%80%85%E5%BF%85%E6%87%82%E7%9A%843%E4%B8%AA%E6%A0%B8%E5%BF%83%E7%9B%B4%E8%A7%89"><span class="toc-text">💡 初学者必懂的3个核心直觉</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%F0%9F%93%8C-%E5%85%AC%E5%BC%8F%E9%80%9F%E6%9F%A5%E8%A1%A8%EF%BC%88%E5%B8%A6%E4%B8%AD%E6%96%87%E6%B3%A8%E9%87%8A%EF%BC%89"><span class="toc-text">📌 公式速查表（带中文注释）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%F0%9F%8C%88-%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%80%BB%E7%BB%93"><span class="toc-text">🌈 一句话总结</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Experiments"><span class="toc-text">Experiments</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

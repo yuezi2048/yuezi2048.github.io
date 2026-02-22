@@ -1,0 +1,240 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>17.TCP如何保证可靠传输 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="TCP是面向连接、可靠的传输层协议。如下机制保证了可靠传输：  面向连接： 数据传输前三次握手（SYN ACK+SYN ACK+SYN）保证通信连接 数据传输完毕后，四次挥手（FIN ACK FIN ACK）优雅地关闭连接，保证数据传输完成+资源释放   数组分段和重组机制 分段传输：将应用层大块的数据分割成适合网络传输的小段（作为一个TCP报文段），通过序列号管理 按序重组：接收方根据序列号将数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="17.TCP如何保证可靠传输">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/09/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/408-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/17.TCP%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="TCP是面向连接、可靠的传输层协议。如下机制保证了可靠传输：  面向连接： 数据传输前三次握手（SYN ACK+SYN ACK+SYN）保证通信连接 数据传输完毕后，四次挥手（FIN ACK FIN ACK）优雅地关闭连接，保证数据传输完成+资源释放   数组分段和重组机制 分段传输：将应用层大块的数据分割成适合网络传输的小段（作为一个TCP报文段），通过序列号管理 按序重组：接收方根据序列号将数">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-09-23T13:34:26.000Z">
+<meta property="article:modified_time" content="2025-09-23T13:34:26.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="408-计算机网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "17.TCP如何保证可靠传输",
+  "url": "https://yuezi2048.github.io/2025/09/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/408-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/17.TCP%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-09-23T13:34:26.000Z",
+  "dateModified": "2025-09-23T13:34:26.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/09/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/408-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/17.TCP%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '17.TCP如何保证可靠传输',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">17.TCP如何保证可靠传输</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">17.TCP如何保证可靠传输</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-09-23T13:34:26.000Z" title="发表于 2025-09-23 21:34:26">2025-09-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-09-23T13:34:26.000Z" title="更新于 2025-09-23 21:34:26">2025-09-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/">02.面经记录</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/408-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">408-计算机网络</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">652</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>1分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>TCP是面向连接、可靠的传输层协议。如下机制保证了可靠传输：</p>
+<ul>
+<li>面向连接：<ul>
+<li>数据传输前三次握手（SYN ACK+SYN ACK+SYN）保证通信连接</li>
+<li>数据传输完毕后，四次挥手（FIN ACK FIN ACK）优雅地关闭连接，保证数据传输完成+资源释放</li>
+</ul>
+</li>
+<li>数组分段和重组机制<ul>
+<li>分段传输：将应用层大块的数据分割成适合网络传输的小段（作为一个TCP报文段），通过序列号管理</li>
+<li>按序重组：接收方根据序列号将数据段重组，得到原始的数据流</li>
+</ul>
+</li>
+<li>ACK机制<ul>
+<li>每个发送的数据段都会被接收方确认，发送方通过对方发来的ACK就知道有没有发送成功</li>
+<li>如果发送方在一段时间内没有收到ACK，会有重传机制</li>
+</ul>
+</li>
+<li>超时重传机制<ul>
+<li>超时计时器：每个报文发送后计时器启动，如果计时器结束没有收到ACK，就认为丢失重新发送数据段</li>
+<li>动态调整超时时间：RTO机制（Retransmission Timeout），提高效率</li>
+</ul>
+</li>
+<li>流量控制<ul>
+<li>TCP有滑动窗口机制，控制发送的速率</li>
+<li>接收方通过window字段告诉发送方的可接受缓存大小，避免一口吃成个大胖子</li>
+</ul>
+</li>
+<li>拥塞控制<ul>
+<li>慢启动（1 2 4）–拥塞避免（出现网络拥塞 丢包后 降低发送速率） —— 快重传快恢复（连续3个重复ACK不等待超时，立刻重传丢失的数据段， 快恢复机制在丢包后恢复正常传输速率）</li>
+</ul>
+</li>
+<li>校验和（CheckSum）<ul>
+<li>TCP有一个校验和的字段，检测数据传输过程中是否发生错误，接收方检测如果错误则丢弃</li>
+</ul>
+</li>
+<li>序列号&#x2F;确认号<ul>
+<li>序列号：每个字节的数据都有唯一的序列号，表示数据段的顺序</li>
+<li>确认号：接受方告诉发送方自己期望的序列号，便于后续按序接收</li>
+</ul>
+</li>
+<li>连接管理机制<ul>
+<li>半关闭机制：四次挥手中，TCP连接中一方关闭发送通道，但是可以接收数据，直到对方关闭连接</li>
+<li>TIMEWAIT状态：连接关闭后，主动关闭的会进入TIME_WAIT状态，等待一段时间确保所有数据段被处理，避免旧数据干扰新连接</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250923213342403.png" alt="image-20250923213342403"></p>
+<p>扩展：</p>
+<ul>
+<li>TCP三次握手 + 四次挥手</li>
+<li>ACK中：TCP的SACK引入解决的问题是什么</li>
+<li>TCP拥塞控制步骤</li>
+<li>流量控制：TCP滑动窗口作用</li>
+<li>超时重传解决的问题是什么</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/09/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/408-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/17.TCP%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93/">https://yuezi2048.github.io/2025/09/23/2.Areas🌐/02.面经记录/408-计算机网络/17.TCP如何保证可靠传输/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/408-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">408-计算机网络</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/09/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/408-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/16.SYN%20Flood/" title="16.SYN Flood"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">16.SYN Flood</div></div><div class="info-2"><div class="info-item-1"> SYN泛洪是一种DOS拒绝式服务攻击，攻击者发送大量SYN请求，来耗尽服务器的资源，从而服务器无法响应正常用户的请求 进一步说：利用了三次握手的机制，发送大量SYN包但是不完成后续的握手步骤，导致服务器在等待未完成连接的状态下耗尽资源  拓展 攻击原理默认tcp_synack_retries=5的情况下，服务器需要耗费63s才能断开连接，即需要63s保持这个资源。坏蛋就会构造大量的client给server发SYN，server在那等63s，client故意不回。 正常的三次握手：  客户端SYN包 服务器发送ACK + SYN，同意连接并等待确认 客户端 ACK + SYN + （数据），连接建立  SYN Flood  攻击者伪造源IP地址，只发送第一步SYN，服务器无法收到正确的ACK包 服务器保持等待ACK的SYN-RECEIVE的状态  	  防御 SYN Cookies：根据第一次握手的客户端信息生成Cookie，随着第二次握手返回给客户端，最终建立连接。该过程绕过了SYN...</div></div></div></a><a class="pagination-related" href="/2025/09/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/408-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/18.TCP%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/" title="18.TCP四次挥手"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">18.TCP四次挥手</div></div><div class="info-2"><div class="info-item-1"> 第一次挥手（FIN）：客户端主动关闭连接，发送FIN包，进入FIN_WAIT_1阶段，服务器收到FIN后表示不再接收数据，但仍然发送数据（半连接状态） 第二次挥手（ACK）：服务器发送ACK，确认收到FIN，服务器进入CLOSE_WAIT状态，客户端收到后进入FIN_WAIT_2状态 第三次挥手（FIN）：服务器完成数据传输后，发送FIN包，进入LAST_ACK状态，客户端收到后则准备关闭连接 第四次挥手（ACK）：客户端发送最后ACK，进入TIME_WAIT状态，等待可能迟来的FIN包，服务器收到ACK后则进入CLOUS状态，客户端TIME_WAIT进入2MSL计时结束后，才正式关闭连接  	    追问：  为什么要四次：保证数据完整性。TCP是全双工协议要保证双方都要正常关闭，这也意味着每一方都需要FIN和ACK报文。一般客户端发起断开连接请求，而此时服务端可能还有数据要发送，那么就需要 客户端FIN+ACK 两次保证服务器明确客户端结束发送，并且服务端的FIN +...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/09/11/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/408-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/1.HTTP1.0%E5%92%8C2.0/" title="1.HTTP1.0和2.0"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-11</div><div class="info-item-2">1.HTTP1.0和2.0</div></div><div class="info-2"><div class="info-item-1">HTTP&#x2F;1.0——引入了请求头和响应头  请求头：HTTP版本号、Content-Type，提出了POST、HEAD头等 响应头：状态码  HTTP&#x2F;1.1  pipline流水线管理：无须等待第一次请求相应，就可以继续第二次请求 连接管理Keepalive + 数据分块（不指定Content-length，直到EOF标记） + 缓存控制 新增Host头：比如一个机子部署了多个虚拟主机，此时多个域名可能对应一个ip，通过指定Host更精确指定访问的主机  HTTP&#x2F;2  从纯文本协议转变为二进制协议 移除pipline，转为使用TCP连接的多请求模式，允许服务端主动发送数据 HPACK头部压缩技术，减少数据传输  （引申：1990——HTTP&#x2F;0.9时代， 提出了URL资源定位符 HTML超文本语言描述...</div></div></div></a><a class="pagination-related" href="/2025/09/17/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/408-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/10.TCP%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98/" title="10.TCP解决的问题"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-17</div><div class="info-item-2">10.TCP解决的问题</div></div><div class="info-2"><div class="info-item-1">TCP通过连接管理、可靠传输、流量控制、拥塞控制解决数据在IP层不可靠的传输问题：  连接管理：技术点——面向连接 三次握手 四次挥手。通过面向连接的机制管理会话保证了通信可靠性和状态同步 可靠传输：保证不丢失、不重复，并且按顺序到达。技术点——ACK 重传机制 序列号，从而实现在不可靠的IP网络可靠传输 流量控制：技术点——滑动窗口，根据接收方的接收窗口大小调整发送方的发送速率，防止数据过载 拥塞控制：技术点——拥塞避免算法 慢启动 拥塞避免 快重传...</div></div></div></a><a class="pagination-related" href="/2025/09/17/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/408-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/11.TCP%E5%92%8CUDP/" title="11.TCP和UDP"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-17</div><div class="info-item-2">11.TCP和UDP</div></div><div class="info-2"><div class="info-item-1"> TCP提供了可靠的、面向连接的传输，适合数据完整性和顺序的场景 UDP提供了轻量、面向保温的传输有，适用于实时性高的场景     特性 TCP UDP    连接方式 面向连接 无连接   可靠性 保证可靠性，顺序到达 不可靠，不保证顺序和完整性   流量&#x2F;拥塞控制 提供 无   顺序保证 保证 不保证   头部大小 20字节 8字节   性能 延迟高，较低 延迟小，较高   数据传输模式 字节流 数据报   场景 文件、Web、邮箱等可靠性场景 实时通讯、视频、游戏等高性能实时性场景   拓展 TCP报文  UDP报文   TCP的黏包和拆包 基于TCP的协议枚举 HTTP：超文本传输协议 HTTPS：HTTP + SSL&#x2F;TLS，进一步保证可靠性和安全性 FTP：文件传输协议 SMTP：简单邮件传输协议，发送邮件 POP3：接收邮件   基于UDP的协议 HTTP3.0的QUIC协议 DHCP：动态主机配置 DNS：域名解析系统，域名–&gt;IP    </div></div></div></a><a class="pagination-related" href="/2025/09/17/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/408-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/12.%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%8F%AA%E7%94%A8IP%E8%80%8C%E8%A6%81%E7%94%A8TCP/" title="12.为什么不只用IP而要用TCP"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-17</div><div class="info-item-2">12.为什么不只用IP而要用TCP</div></div><div class="info-2"><div class="info-item-1"> 核心点：为了分层架构设计的可扩展性和灵活性 IP负责数据路由传输，TCP提供传输层的可靠性服务，这种分离模式可以使得网络协议更加灵活 我们基于IP层传输，如果需要可靠性场景，上层可以用TCP，而实时性场景，允许数据丢失，可以使用UDP 基于这样在IP上层构建其他的协议，为不同的应用提供更加细粒度的传输服务，而无须修改IP层的实现   性能：一条数据在网络中会经过很多设备，设备通过IP寻址，如果在IP层进行控制，那么整体传输效率也会大打折扣  扩展 网络层的设计是为了通信，从链路层到网络层就可以完成通信了。（链路层负责联通链路，网络层通过Ip寻址连接）  理论上虽然不需要TCP，Ip就可以实现控制 但是由于所有设备都依靠IP来寻址，如果IP层实现TCP的机制，那么所有设备都要关系序列号、确认重传等机制，影响了传输效率 例子：A-&gt;B-&gt;C-&gt;D，中转站不需要关心快递情况，只需要进行转发即可，最终让D来检查快递，对应的逻辑就是将控制层的逻辑交给真正的接收端TCP协议来处理，进而提高网络效率    </div></div></div></a><a class="pagination-related" href="/2025/09/18/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/408-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/13.%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/" title="13.什么是三次握手"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-18</div><div class="info-item-2">13.什么是三次握手</div></div><div class="info-2"><div class="info-item-1"> 客户端发送SYN消息给服务器 服务器回复SYN-ACK（同步序列编号-确认）信息 客户端发送ACK信息确认收到SYN-ACK信息，完成三次握手   扩展 为什么不是两次握手，第三次握手的意义？（引申问法：为什么不是四次握手，为什么一定是三次握手）  避免历史错误连接的建立，减少双方不必要的通信损耗 帮助同步初始化序列号  历史错误连接rfc...</div></div></div></a><a class="pagination-related" href="/2025/09/18/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/408-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/14.%E5%88%9D%E5%A7%8B%E5%BA%8F%E5%88%97%E5%8F%B7ISN%E5%8F%96%E5%80%BC%E6%96%B9%E5%BC%8F/" title="14.初始序列号ISN取值方式"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-18</div><div class="info-item-2">14.初始序列号ISN取值方式</div></div><div class="info-2"><div class="info-item-1">初始序列号ISN是以时间戳为基础生成的。 RFC793认为ISN要和假时钟绑定在一起。ISN每四微妙 加一，当超过了2^32后，从0开始，即4个半小时后ISN回绕。  因此ISN是一个绑定了一个32位时钟的递增计数器，每4us进行计数一次，满了以后重置。一般实际应用会加上随机数，防止不法分子猜到ISN   扩展 为什么ISN不能写死，比如从0开始。  设想一种情况，建立连接后，client发送了第20个包，client网断了以后重新连接，此时序列号又从0开始了，此时传过来了一个20的ack，客户端就错乱了，无法判断是哪个包。  因此递增的特性是可以解决上述问题，并且增加了安全性，避免了ISN的预测   总结：  避免重复序列号的冲突，两个连接短时间内使用了相同的ISN，可能会误认为是前一次连接的，动态的生成可以有效避免 提高安全性：动态的ISN使得篡改和预测TCP序列号很困难，可以抵御TCP序列号预测等攻击  RFC...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

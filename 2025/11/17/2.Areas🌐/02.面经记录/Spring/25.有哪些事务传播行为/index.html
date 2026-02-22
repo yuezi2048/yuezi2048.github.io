@@ -1,0 +1,298 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>25.有哪些事务传播行为 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="从源码来看，一共有 7 种事务传播行为： 	 融入事务的策略。融入策略不同：  PROPAGATION_REQUIRED（默认 没有事务新建事务） 如果当前存在事务，则用当前事务 如果没有事务则新起一个事务   PROPAGATION_SUPPORTS 支持当前事务（但没有事务以非事务） 如果不存在，则以非事务方式执行   PROPAGATION_MANDATORY 支持当前事务（没有事务直接抛异">
+<meta property="og:type" content="article">
+<meta property="og:title" content="25.有哪些事务传播行为">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/11/17/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/25.%E6%9C%89%E5%93%AA%E4%BA%9B%E4%BA%8B%E5%8A%A1%E4%BC%A0%E6%92%AD%E8%A1%8C%E4%B8%BA/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="从源码来看，一共有 7 种事务传播行为： 	 融入事务的策略。融入策略不同：  PROPAGATION_REQUIRED（默认 没有事务新建事务） 如果当前存在事务，则用当前事务 如果没有事务则新起一个事务   PROPAGATION_SUPPORTS 支持当前事务（但没有事务以非事务） 如果不存在，则以非事务方式执行   PROPAGATION_MANDATORY 支持当前事务（没有事务直接抛异">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-11-17T14:28:58.000Z">
+<meta property="article:modified_time" content="2025-11-17T14:28:58.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="Spring">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "25.有哪些事务传播行为",
+  "url": "https://yuezi2048.github.io/2025/11/17/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/25.%E6%9C%89%E5%93%AA%E4%BA%9B%E4%BA%8B%E5%8A%A1%E4%BC%A0%E6%92%AD%E8%A1%8C%E4%B8%BA/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-11-17T14:28:58.000Z",
+  "dateModified": "2025-11-17T14:28:58.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/11/17/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/25.%E6%9C%89%E5%93%AA%E4%BA%9B%E4%BA%8B%E5%8A%A1%E4%BC%A0%E6%92%AD%E8%A1%8C%E4%B8%BA/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '25.有哪些事务传播行为',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">25.有哪些事务传播行为</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">25.有哪些事务传播行为</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-11-17T14:28:58.000Z" title="发表于 2025-11-17 22:28:58">2025-11-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-11-17T14:28:58.000Z" title="更新于 2025-11-17 22:28:58">2025-11-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/">02.面经记录</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/">Spring</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>6分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>从源码来看，一共有 7 种事务传播行为：</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/eJ7NcxDe_09fe5de4-a6ca-4b14-9cd4-8d4d06759157_mianshiya.png" alt="img">	</p>
+<p><strong>融入事务的策略。融入策略不同：</strong></p>
+<ul>
+<li><code>PROPAGATION_REQUIRED</code>（默认 没有事务新建事务）<ul>
+<li>如果当前存在事务，则用当前事务</li>
+<li>如果没有事务则新起一个事务</li>
+</ul>
+</li>
+<li><code>PROPAGATION_SUPPORTS</code> 支持当前事务（但没有事务以非事务）<ul>
+<li>如果不存在，则以非事务方式执行</li>
+</ul>
+</li>
+<li><code>PROPAGATION_MANDATORY</code> 支持当前事务（没有事务直接抛异常）<ul>
+<li>如果不存在，则抛出异常</li>
+</ul>
+</li>
+</ul>
+<p><strong>挂起事务策略</strong></p>
+<ul>
+<li><code>PROPAGATION_REQUIRES_NEW</code>创建一个新事务（挂起当前事务，调用的方法新建事务）<ul>
+<li>如果存在当前事务，则挂起当前事务</li>
+<li>不存在，则同REQUIRES，新建</li>
+</ul>
+</li>
+</ul>
+<p><strong>嵌套事务策略</strong></p>
+<ul>
+<li><code>PROPAGATION_NESTED </code>（内部依赖外部事务，但内部失败不影响外层）<ul>
+<li>如果当前事务存在，则在嵌套事务中执行，内层事务依赖外层事务，如果外层失败，则会回滚内层，内层失败不影响外层。</li>
+</ul>
+</li>
+</ul>
+<p><strong>事务禁止</strong></p>
+<ul>
+<li><p><code>PROPAGATION_NOT_SUPPORTED</code> 不支持当前事务（全部以非事务执行）</p>
+<ul>
+<li>始终以非事务方式执行</li>
+</ul>
+</li>
+<li><p><code>PROPAGATION_NEVER </code>不支持当前事务（以事务运行就报错）</p>
+<ul>
+<li>如果当前存在事务，则抛出异常</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20251117212522748.png" alt="image-20251117212522748"></p>
+<h2 id="扩展知识"><a href="#扩展知识" class="headerlink" title="扩展知识"></a>扩展知识</h2><h3 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h3><p><strong>REQUIRED</strong>：</p>
+<ul>
+<li>应用场景：常见的业务逻辑调用。比如，在订单创建时调用库存减少的方法，它们都应该共享同一个事务。</li>
+<li>优点：事务复用，性能开销较小，适用于大多数业务逻辑。</li>
+</ul>
+<p><strong>REQUIRES_NEW</strong>：</p>
+<ul>
+<li>应用场景：日志记录、通知服务等。即使主事务失败，独立事务的操作也应该成功执行。</li>
+<li>优点：事务隔离，防止主要事务的失败影响到辅助操作。</li>
+</ul>
+<p><strong>SUPPORTS</strong>：</p>
+<ul>
+<li>应用场景：可选的事务支持。比如，某个方法可以在事务外部或内部执行。</li>
+<li>优点：灵活处理事务的加入或不加入。</li>
+</ul>
+<p><strong>NOT_SUPPORTED</strong>：</p>
+<ul>
+<li>应用场景：需要明确禁止事务的场景，比如读取配置信息、不需要事务控制的数据查询。</li>
+<li>优点：避免不必要的事务开销。</li>
+</ul>
+<p><strong>MANDATORY</strong>：</p>
+<ul>
+<li>应用场景：必须在现有事务中执行的场景。常用于确保方法调用链的一致性。</li>
+<li>缺点：强依赖外部事务，如果没有事务，则会失败。</li>
+</ul>
+<p><strong>NEVER</strong>：</p>
+<ul>
+<li>应用场景：需要保证绝对没有事务的场景，比如某些不允许在事务中执行的数据库操作。</li>
+<li>缺点：与 <code>MANDATORY</code> 相反，依赖于没有事务的环境。</li>
+</ul>
+<p><strong>NESTED</strong>：</p>
+<ul>
+<li>应用场景：需要部分回滚或局部事务的业务逻辑。比如，订单中的部分操作可能会失败，但不希望整个订单回滚。</li>
+<li>优点：灵活处理子事务，局部回滚而不影响整体事务。</li>
+</ul>
+<h3 id="Spring-中使用事务传播行为"><a href="#Spring-中使用事务传播行为" class="headerlink" title="Spring 中使用事务传播行为"></a>Spring 中使用事务传播行为</h3><p>在 Spring 中，通过 <code>@Transactional</code> 注解设置事务传播行为，例如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Transactional(propagation = Propagation.REQUIRES_NEW)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">methodA</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 该方法会启动一个新事务</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="事务传播行为使用示例"><a href="#事务传播行为使用示例" class="headerlink" title="事务传播行为使用示例"></a>事务传播行为使用示例</h3><p><strong>REQUIRED（默认行为）</strong> <code>REQUIRED</code> 是 Spring 的默认事务传播行为，意味着方法会加入现有事务中，如果没有事务就创建一个新事务。通常用于大多数业务逻辑中，确保整个业务过程处于同一个事务中。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">OrderService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> InventoryService inventoryService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Transactional(propagation = Propagation.REQUIRED)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">placeOrder</span><span class="params">(Order order)</span> &#123;</span><br><span class="line">        <span class="comment">// 保存订单</span></span><br><span class="line">        saveOrder(order);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 调用库存减少操作，使用同一个事务</span></span><br><span class="line">        inventoryService.reduceInventory(order);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">saveOrder</span><span class="params">(Order order)</span> &#123;</span><br><span class="line">        <span class="comment">// 保存订单逻辑</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">InventoryService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Transactional(propagation = Propagation.REQUIRED)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">reduceInventory</span><span class="params">(Order order)</span> &#123;</span><br><span class="line">        <span class="comment">// 减少库存的逻辑</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，<code>OrderService</code> 和 <code>InventoryService</code> 使用了 <code>REQUIRED</code>，意味着 <code>reduceInventory()</code> 方法和 <code>placeOrder()</code> 方法运行在同一个事务中。如果其中一个方法抛出异常，整个事务都会回滚。</p>
+<p><strong>REQUIRES_NEW</strong> <code>REQUIRES_NEW</code> 强制启动一个新事务，无论是否存在当前事务。如果有现有事务，它将被挂起，直到新事务完成。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PaymentService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> LogService logService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Transactional(propagation = Propagation.REQUIRED)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">processPayment</span><span class="params">(Order order)</span> &#123;</span><br><span class="line">        <span class="comment">// 执行支付逻辑</span></span><br><span class="line">        process(order);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 记录日志，独立事务</span></span><br><span class="line">        logService.logPayment(order);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">process</span><span class="params">(Order order)</span> &#123;</span><br><span class="line">        <span class="comment">// 支付处理逻辑</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LogService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Transactional(propagation = Propagation.REQUIRES_NEW)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">logPayment</span><span class="params">(Order order)</span> &#123;</span><br><span class="line">        <span class="comment">// 记录支付日志逻辑，使用独立事务</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，<code>PaymentService</code> 的 <code>processPayment()</code> 和 <code>LogService</code> 的 <code>logPayment()</code> 在不同的事务中执行。如果 <code>processPayment()</code> 方法抛出异常，<code>logPayment()</code> 仍然会提交，因为它运行在独立的事务中。</p>
+<p><strong>SUPPORTS</strong> <code>SUPPORTS</code> 表示方法可以支持事务，但不强制要求。如果当前有事务，它将在事务中执行；如果没有事务，它将以非事务方式执行。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AccountService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Transactional(propagation = Propagation.REQUIRED)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">transferFunds</span><span class="params">(Account fromAccount, Account toAccount, BigDecimal amount)</span> &#123;</span><br><span class="line">        <span class="comment">// 转账逻辑</span></span><br><span class="line">        withdraw(fromAccount, amount);</span><br><span class="line">        deposit(toAccount, amount);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Transactional(propagation = Propagation.SUPPORTS)</span></span><br><span class="line">    <span class="keyword">public</span> BigDecimal <span class="title function_">getBalance</span><span class="params">(Account account)</span> &#123;</span><br><span class="line">        <span class="comment">// 获取余额，如果存在事务，则在事务中执行；否则无事务执行</span></span><br><span class="line">        <span class="keyword">return</span> account.getBalance();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">withdraw</span><span class="params">(Account fromAccount, BigDecimal amount)</span> &#123;</span><br><span class="line">        <span class="comment">// 扣款逻辑</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">deposit</span><span class="params">(Account toAccount, BigDecimal amount)</span> &#123;</span><br><span class="line">        <span class="comment">// 存款逻辑</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>getBalance()</code> 方法可以在事务内或非事务中执行。如果 <code>transferFunds()</code> 调用了 <code>getBalance()</code>，它将在 <code>REQUIRED</code> 事务中执行；否则，它以非事务方式执行。</p>
+<p><strong>NOT_SUPPORTED</strong> <code>NOT_SUPPORTED</code> 表示该方法不支持事务，如果当前有事务，它将挂起该事务，并在非事务环境中执行。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ReportService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Transactional(propagation = Propagation.REQUIRED)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">generateMonthlyReport</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 生成月度报告，支持事务</span></span><br><span class="line">        generateReportData();</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 发送报告邮件，无事务</span></span><br><span class="line">        sendReportEmail();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">generateReportData</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 生成报告数据逻辑</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Transactional(propagation = Propagation.NOT_SUPPORTED)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sendReportEmail</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 发送邮件逻辑，挂起现有事务</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，<code>generateMonthlyReport()</code> 方法中的 <code>generateReportData()</code> 运行在事务中，而 <code>sendReportEmail()</code> 运行在非事务环境中，即使 <code>generateMonthlyReport()</code> 已经有事务，它也会挂起现有事务。</p>
+<p><strong>MANDATORY</strong> <code>MANDATORY</code> 表示该方法必须在已有事务中运行，如果没有现有事务则抛出异常。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TransactionalService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Transactional(propagation = Propagation.REQUIRED)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">performAction</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 执行主要操作</span></span><br><span class="line">        performSecondaryAction();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Transactional(propagation = Propagation.MANDATORY)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">performSecondaryAction</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 必须在事务内执行</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，<code>performSecondaryAction()</code> 必须在一个事务中运行。如果它被独立调用而没有事务，则抛出异常。如果 <code>performAction()</code> 方法已经启动了一个事务，那么 <code>performSecondaryAction()</code> 可以正常运行。</p>
+<p><strong>NEVER</strong> <code>NEVER</code> 表示该方法不允许在事务中运行，如果当前存在事务，则抛出异常。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TransactionFreeService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Transactional(propagation = Propagation.NEVER)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">executeWithoutTransaction</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 执行逻辑，不能在事务中执行</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果在事务上下文中调用 <code>executeWithoutTransaction()</code> 方法，会抛出异常，因为它要求不在任何事务中执行。</p>
+<p><strong>NESTED</strong> <code>NESTED</code> 表示如果当前存在事务，则在该事务中创建一个嵌套事务（支持保存点），子事务可以独立回滚而不影响主事务。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NestedTransactionService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Transactional(propagation = Propagation.REQUIRED)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">mainOperation</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 执行主操作</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            nestedOperation();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="comment">// 嵌套事务回滚，不影响主事务</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Transactional(propagation = Propagation.NESTED)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">nestedOperation</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 嵌套事务操作</span></span><br><span class="line">        <span class="comment">// 可以在这里回滚嵌套事务</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;嵌套事务回滚&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，<code>mainOperation()</code> 是主事务，而 <code>nestedOperation()</code> 是嵌套事务。如果 <code>nestedOperation()</code> 失败，它只会回滚嵌套事务，主事务 <code>mainOperation()</code> 不会受影响。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/11/17/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/25.%E6%9C%89%E5%93%AA%E4%BA%9B%E4%BA%8B%E5%8A%A1%E4%BC%A0%E6%92%AD%E8%A1%8C%E4%B8%BA/">https://yuezi2048.github.io/2025/11/17/2.Areas🌐/02.面经记录/Spring/25.有哪些事务传播行为/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Spring/">Spring</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/11/17/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/32.Spring%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D%E7%9A%84%E6%96%B9%E5%BC%8F/" title="32.Spring自动装配的方式"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">32.Spring自动装配的方式</div></div><div class="info-2"><div class="info-item-1">自动装配指的是 Spring 可以根据一些特定的规则比如注解或者配置，自动在各个组件之间建立关联，完成依赖注入。主要有以下四类： 1）no（默认）：不自动装配，需要显式地定义依赖。  2）byName：通过 Bean 名称进行自动装配。  对应注解：@AutoWired + @Qualifer(&quot;userServiceImpl&quot;)  &#x2F; @Resource   3）byType：通过 Bean 类型进行自动装配。  对应注解：@AutoWired   4）constructor：通过构造函数进行自动装配。 扩展知识示例官网显示有以下四种：  1）no 自动装配 默认方式，不进行自动装配。依赖关系必须显式定义，适用于需要完全控制依赖注入过程的情况。 &lt;bean id=&quot;myBean&quot; class=&quot;com.example.MyBean&quot;&gt;    &lt;property name=&quot;myDependency&quot;...</div></div></div></a><a class="pagination-related" href="/2025/11/18/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/35.@Component_Controller_Repository_Service%E5%8C%BA%E5%88%AB/" title="35.@Component_Controller_Repository_Service区别"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">35.@Component_Controller_Repository_Service区别</div></div><div class="info-2"><div class="info-item-1">它们本质上都是@Component，即其它三个都是 @Component 的衍生注解，之所以做了这些划分主要是为了更好地组织和管理应用的各个层次，提高代码的可读性和可维护性。 1）@Component：这是一个通用的注解，用于将任意类注册为 Spring 容器中的 Bean。它没有特定的语义，适用于任何需要 Spring 管理的类。 2）@Controller：这是一个专门用于 Spring MVC 中的控制器（Controller）层的注解。用于处理 HTTP 请求，并将结果返回给客户端。 3）@Service：用于标识业务逻辑层的类。它具有明确的语义，表明该类承担业务操作，主要用于编写服务类。 4）@Repository：用于数据访问层（DAO）的类，与数据库交互。 区别总结：  @Component：通用注解，用于将任何类标记为 Spring Bean。 @Controller：特定于 Spring MVC，处理 Web...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/1.%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/" title="1.循环依赖"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">1.循环依赖</div></div><div class="info-2"><div class="info-item-1">循环依赖（Circular Dependency）是说多个模块，组件之间相互依赖，形成闭环（A依赖B，B依赖A），从而无法确定加载&#x2F;初始化的顺序 扩展知识简单示例看下方的代码就知晓了 @Servicepublic class A &#123;    @Autowired    private B b;&#125;@Servicepublic class B &#123;    @Autowired    private A a;&#125;//或者自己依赖自己@Servicepublic class A &#123;    @Autowired    private A a;&#125;  上面这两种方式都是循环依赖，应该很好理解，当然也可以是三个 Bean 甚至更多 Bean 相互依赖，原理都是一样的。 	 这种循环依赖可能会产生问题，例如 A 要依赖 B，发现 B 还没创建，于是开始创建 B ，创建的过程发现 B 要依赖 A， 而 A 还没创建好呀，因为它要等 B 创建好，就这样它们俩就搁这卡 bug 了。 关联面试题 578. Spring...</div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/10.FactoryBean/" title="10.FactoryBean"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">10.FactoryBean</div></div><div class="info-2"><div class="info-item-1">FactoryBean是Spring的特殊接口，允许开发者通过实现接口来创建复杂的Bean实例（通过FactoryBean创建的Bean除了FactoryBean本身，也可以是他生产的对象）  核心概念：FactoryBean 是一个实现了 FactoryBean&lt;T&gt; 接口的 Bean，通过它可以自定义复杂对象的创建逻辑。Spring 容器会调用 getObject() 方法来获取实际的 Bean 实例。 使用场景： 通常用于需要创建复杂对象或需要使用代理模式生成 Bean 的场景。  扩展知识FactoryBean 的主要方法 getObject()：这是 FactoryBean 最重要的方法，返回实际的 Bean 实例。Spring 容器会调用这个方法来获取 Bean。 getObjectType()：返回由 getObject() 方法所返回的对象类型，Spring 可以根据这个类型进行 Bean 的类型检查。 isSingleton()：用于确定 getObject() 返回的 Bean 是否为单例。如果返回 true，那么 Spring...</div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/11.ObjectFactory/" title="11.ObjectFactory"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">11.ObjectFactory</div></div><div class="info-2"><div class="info-item-1">ObjectFactory是 Spring 框架中的一个接口，主要用于延迟获取 Bean 实例。 ObjectFactory 提供了一种延迟加载的机制，它通过 getObject() 方法返回一个 Bean 的实例。使用 ObjectFactory 可以避免在容器启动时立即创建所有 Bean，即只有在真正需要使用 Bean 时才会从 Spring 容器中获取该 Bean 实例，有助于优化性能。 扩展知识ObjectFactory 的使用场景 懒加载 Bean：当某个 Bean 的创建过程可能耗时较长或依赖的资源较重时，可以通过 ObjectFactory 进行懒加载，避免容器启动时不必要的 Bean 创建。这能有效提升系统的启动速度。 避免循环依赖：在某些情况下，两个 Bean 可能相互依赖，导致循环依赖问题。通过使用 ObjectFactory，可以延迟其中一个 Bean 的创建，避免循环依赖。  在 Spring 的循环依赖里就用到它了，三级缓存的 map 里面存储的就是 ObjectFactory，用于延迟代理对象的创建。 并且在某些需要在运行时决定动态 Bean...</div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/12.ApplicationContext/" title="12.ApplicationContext"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">12.ApplicationContext</div></div><div class="info-2"><div class="info-item-1">ApplicationContext 是多个底层接口组合后的接口。从类图中我们可以看到，它主要提供了五大功能。  核心容器 BeanFactory 国际化 MessageSource 资源获取 ResourceLoader 环境信息 EnvironmentCapable 事件发布 ApplicationEventPublisher   ApplicationContext有多个实现类，如ClassPathXmlApplicationContext和FileSystemXmlApplicationContext等，适用于不同的应用场景。通过这些实现类，开发者可以根据具体需求选择合适的ApplicationContext来实现Spring应用程序的各种功能‌。   扩展知识下面，我们使用 SpringBoot 返回的 ConfigurableApplicationContext 来进行讲解。 @SpringBootApplicationpublic class Main &#123;    public static void main(String[] args) throws...</div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/13.Bean%E4%BD%9C%E7%94%A8%E5%9F%9F/" title="13.Bean作用域"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">13.Bean作用域</div></div><div class="info-2"><div class="info-item-1">一共有六种作用域：  整体作用  singleton：默认是单例，含义不用解释了吧，一个 IOC 容器内部仅此一个 prototype：原型，多实例   分块作用  request：每个请求都会新建一个属于自己的 Bean 实例，这种作用域仅存在 Spring Web 应用中 session：一个 http session 中有一个 bean 的实例，这种作用域仅存在 Spring Web 应用中 application：整个 ServletContext 生命周期里，只有一个 bean，这种作用域仅存在 Spring Web 应用中 websocket：一个 WebSocket 生命周期内一个 bean 实例，这种作用域仅存在 Spring Web 应用中    官网最新截图：  </div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/14.spring%E6%B3%A8%E5%85%A5%E6%96%B9%E5%BC%8F/" title="14.spring注入方式"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">14.spring注入方式</div></div><div class="info-2"><div class="info-item-1"> 推荐方式  构造器注入，Spring 倡导构造函数注入，因为构造器注入返回给客户端使用的时候一定是完整的。 setter 注入，可选的注入方式，好处是在有变更的情况下，可以重新注入。   其他  字段注入，就是平日我们用 @Autowired 标记字段 方法注入，就是平日我们用 @Autowired 标记方法 接口回调注入，就是实现 Spring 定义的一些内建接口，例如 BeanFactoryAware，会进行 BeanFactory 的注入    其实官网上关于注入就写了构造器和setter ： 	 像字段注入其实官方是不推荐的使用的，因为依赖注解，后没有控制注入顺序且无法注入静态字段。 </div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A9%E5%B1%95%E7%9F%A5%E8%AF%86"><span class="toc-text">扩展知识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-text">应用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring-%E4%B8%AD%E4%BD%BF%E7%94%A8%E4%BA%8B%E5%8A%A1%E4%BC%A0%E6%92%AD%E8%A1%8C%E4%B8%BA"><span class="toc-text">Spring 中使用事务传播行为</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1%E4%BC%A0%E6%92%AD%E8%A1%8C%E4%B8%BA%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B"><span class="toc-text">事务传播行为使用示例</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

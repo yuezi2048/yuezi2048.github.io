@@ -1,0 +1,208 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>20.IdentityHashMap | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="IdentityHashMap是Map的一种实现，与普通的HashMap不一样，判断key的时候是判断引用相等（reference equality），即只用&#x3D;&#x3D;比较键值，而不是equals方法。 场景：  对象身份：基于对象身份的同一个引用需要进行区分，比如跟踪对象实例，而不是逻辑的键值相等 特殊缓存：构建进一步要求的缓存或内存映射，特点为不同的对象当作不同的键 在一些框架中">
+<meta property="og:type" content="article">
+<meta property="og:title" content="20.IdentityHashMap">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/09/24/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E9%9B%86%E5%90%88/20.IdentityHashMap/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="IdentityHashMap是Map的一种实现，与普通的HashMap不一样，判断key的时候是判断引用相等（reference equality），即只用&#x3D;&#x3D;比较键值，而不是equals方法。 场景：  对象身份：基于对象身份的同一个引用需要进行区分，比如跟踪对象实例，而不是逻辑的键值相等 特殊缓存：构建进一步要求的缓存或内存映射，特点为不同的对象当作不同的键 在一些框架中">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-09-24T03:44:44.000Z">
+<meta property="article:modified_time" content="2025-09-24T03:44:44.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="Java集合">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "20.IdentityHashMap",
+  "url": "https://yuezi2048.github.io/2025/09/24/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E9%9B%86%E5%90%88/20.IdentityHashMap/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-09-24T03:44:44.000Z",
+  "dateModified": "2025-09-24T03:44:44.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/09/24/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E9%9B%86%E5%90%88/20.IdentityHashMap/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '20.IdentityHashMap',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">20.IdentityHashMap</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">20.IdentityHashMap</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-09-24T03:44:44.000Z" title="发表于 2025-09-24 11:44:44">2025-09-24</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-09-24T03:44:44.000Z" title="更新于 2025-09-24 11:44:44">2025-09-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/">02.面经记录</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E9%9B%86%E5%90%88/">Java集合</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">410</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>1分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p><code>IdentityHashMap</code>是Map的一种实现，与普通的HashMap不一样，判断key的时候是判断引用相等（<code>reference equality</code>），即只用&#x3D;&#x3D;比较键值，而不是equals方法。</p>
+<p>场景：</p>
+<ul>
+<li>对象身份：基于对象身份的同一个引用需要进行区分，比如跟踪对象实例，而不是逻辑的键值相等</li>
+<li>特殊缓存：构建进一步要求的缓存或内存映射，特点为不同的对象当作不同的键</li>
+<li>在一些框架中，代理对象需要对实际对象实例进行映射，而不是逻辑相等的对象，则可以应用IdentityHashMap</li>
+</ul>
+<p><strong>拓展</strong></p>
+<ul>
+<li>引用相等：通过&#x3D;&#x3D;比较键的相等性，适合基于对象身份（引用）的场景</li>
+<li>哈希实现：使用的并不是对象的<code>HashCode</code>方法，而是强制依赖<code>System.identityHashCode()</code>计算基于对象引用的哈希值</li>
+<li>HashMap类似的特性：允许null键和null值（但注意比较的是null的引用）、非线程安全</li>
+</ul>
+<p>源码</p>
+<p>来看他的hash计算方式：<code>System.identityHashCode()</code>覆盖了hashCode方法，不管对象是否重写都无效。最终返回<strong>对象内存地址转换成整数值</strong></p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250924114132454.png" alt="image-20250924114132454"></p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250924114139423.png" alt="image-20250924114139423"></p>
+<p>来看get方法，可以看到确实是&#x3D;&#x3D;判断对象引用是否相等的，你伪造了个对象，值相等也没用，put之后的效果只能是新增一副键值对。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Map&lt;String, String&gt; identityHashMap = <span class="keyword">new</span> <span class="title class_">IdentityHashMap</span>&lt;&gt;();</span><br><span class="line">identityHashMap.put(<span class="keyword">new</span> <span class="title class_">Yes</span>(<span class="string">&quot;1&quot;</span>), <span class="string">&quot;1&quot;</span>);</span><br><span class="line">identityHashMap.put(<span class="keyword">new</span> <span class="title class_">Yes</span>(<span class="string">&quot;1&quot;</span>), <span class="string">&quot;2&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250924114248264.png" alt="image-20250924114248264">	</p>
+<p>注：之所以返回的是tab[i + 1]，因为identity是基于线性探测法，value在key 的后面。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250924114403734.png" alt="image-20250924114403734"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/09/24/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E9%9B%86%E5%90%88/20.IdentityHashMap/">https://yuezi2048.github.io/2025/09/24/2.Areas🌐/02.面经记录/Java集合/20.IdentityHashMap/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java%E9%9B%86%E5%90%88/">Java集合</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/09/24/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E9%9B%86%E5%90%88/19.TreeMap/" title="19.TreeMap"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">19.TreeMap</div></div><div class="info-2"><div class="info-item-1">TreeMap的底层是通过红黑树实现的。可以让实现Comparable接口或者自定义comparator传入构造函数定义排序规则。 特性：  基于红黑树数据结构：自平衡的BST，保证插入、删除和查找的时间复杂度为O(log n) 键有序：键是有序的，默认是自然排序（键的Comparable实现），也可以构造时提供Comparator自定义排序 不允许null键：键不允许为空，值可以  应用场景：加密的时候，有些加密需要根据字母顺序排，然后再拼接成字符串排序，业务上就可以统一交给TreeMap维护，每次取出来的时候就可以保证有序。 使用示例 import java.util.Comparator;import java.util.TreeMap;public class TreeMapExample &#123;    public static void main(String[] args) &#123;        // 使用自然顺序        TreeMap&lt;Integer, String&gt; treeMap = new...</div></div></div></a><a class="pagination-related" href="/2025/09/24/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/408-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/20.%E9%99%A4%E4%BA%86%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B%E6%96%AD%E5%BC%80%E8%BF%9E%E6%8E%A5%E7%9A%84%E6%96%B9%E5%BC%8F/" title="20.除了四次挥手断开连接的方式"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">20.除了四次挥手断开连接的方式</div></div><div class="info-2"><div class="info-item-1"> RST： TCP RST标志可以强制终止连接，发送方带有RST标志的TCP报文后，通知对方立刻断开连接 举例：三次握手第一次发送的SYN超时了，发送第二次SYN后，发送方此时如果接收到的是老连接的ACK，则会发送RST复位信号   Timeout：如果超过超时时间后，没有数据包传输，连接双方可以根据超时时间自动端口连接  扩展 RST场景：  异常关闭：程序异常或受到攻击，可以不经过四次握手立即中断连接。比如IPS入侵检测系统 防火墙：一些防火墙或安全设备通过RST强制结束不允许的连接  超时机制：  TCP Keepalive：TCP配置Keepalive参数，定期发送探测报文检查连接是否存活，如果对方没有响应多次探测，则自动断开 应用层超时：应用层（HTTP FTP）自身也有超时机制，如果长时间无响应则关闭连接，以节省资源  说说四次握手和Tine_wait的作用？ </div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/04/26/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E9%9B%86%E5%90%88/1.HashMap%E7%9A%84%E5%8E%9F%E7%90%86/" title="1.HashMap的原理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-26</div><div class="info-item-2">1.HashMap的原理</div></div><div class="info-2"><div class="info-item-1"> HashMap基于哈希表的存储结构，主要存储键值对。Java8以前使用数组+链表，Java8及以后数组+链表+红黑树实现 HashMap是计算key的hashCode()得到哈希值，映射到对应的数组位置（Jdk7使用indexFor方法，Jdk8采用（n-1）&amp; hash)，哈希值会经过扰动处理，使得分布不均匀，减少冲突出现的概率，找到下标以后，如果对应下标没元素，直接添加，否则判断该元素key与待添加的key是否相等 如果相等，就替换val 否则进一步对链表&#x2F;红黑树的后续结点 逐个进行判断 如果没有找到，就加入新元素(容量不够需扩容resize)   HashMap默认初始容量capacity16，负载因子loadFactor为0.75，到达12个后触发扩容机制（capacity 16–&gt;32），扩容操作会有性能开销。 16(12)-&gt;32(24)-&gt;64(48)…    	 拓展点HashMap红黑树Java8以后，为了优化多个映射到同一个哈希桶的查找性能。这个结构会使得最坏的查找时间复杂度...</div></div></div></a><a class="pagination-related" href="/2025/09/16/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E9%9B%86%E5%90%88/10.HashMap%E5%92%8CHashTable%E5%8C%BA%E5%88%AB/" title="10.HashMap和HashTable区别"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-16</div><div class="info-item-2">10.HashMap和HashTable区别</div></div><div class="info-2"><div class="info-item-1"> 线程安全：HashMap非线程安全，多线程可能会数据不一致；HashTable线程安全，内部通过synchronized关键字同步，保证多线程并发  性能差异：HashMap没有线程同步开销，单线程下性能优；HashTable性能低于HashMap，并采用了全局锁的机制，即使是不同的操作也会异步化  空值：HashMap允许一个null键和多个null值；而HashTable不允许null键和值，否则报NullPointerExcetpion  迭代器  HashMap采用了快速失败的iterator，迭代过程中如果出现map的结构性更改，报错ConcurrentModificationException HashTable使用的是弱一致性d...</div></div></div></a><a class="pagination-related" href="/2025/09/25/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E9%9B%86%E5%90%88/11.ConcurrentHashMap%E5%92%8CHashTable/" title="11.ConcurrentHashMap和HashTable"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-25</div><div class="info-item-2">11.ConcurrentHashMap和HashTable</div></div><div class="info-2"><div class="info-item-1">...</div></div></div></a><a class="pagination-related" href="/2025/09/17/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E9%9B%86%E5%90%88/13.HashMap%E7%9A%84%E6%89%A9%E5%AE%B9%E6%9C%BA%E5%88%B6/" title="13.HashMap的扩容机制"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-17</div><div class="info-item-2">13.HashMap的扩容机制</div></div><div class="info-2"><div class="info-item-1">HashMap内部基于负载因子 Load Factor来进行扩容，默认0.75，即当存储数量超过75%后，触发扩容机制  以默认情况举例，初始容量16，负载因子0.75情况下，那么元素达到12以后，就会将容量扩容到32 扩容时，会进行rehashing的操作，即将所有元素重新发配到哈希桶里，存储位置将根据新的容量重新计算，并迁移到新的数组中  扩展 正常理解的话，扩容时是通过hash的索引位置一个个搬迁过去。（1.7的做法） 到了1.8以后，根据每次扩容两倍的特性，做了优化：  按照上面的默认情况，那么数组的容量变化用二进制表示：010000 –&gt; 100000，可以看到高位上细微的差别 再看通过key定位hash的计算： (数组长度 - 1) &amp; hash 减去1以后的情况为：001111 —-&gt; 011111   此时只需要判断key的hash值倒数第5位是否为1： 如果是1，那么需要搬迁到新位置，且为原位置的下标 + 16...</div></div></div></a><a class="pagination-related" href="/2025/09/17/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E9%9B%86%E5%90%88/12.HashSet%E5%92%8CHashMap/" title="12.HashSet和HashMap"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-17</div><div class="info-item-2">12.HashSet和HashMap</div></div><div class="info-2"><div class="info-item-1"> HashSet是基于HashMap的集合类，不允许重复元素，存储一组无须的唯一元素 实际上内部就是HashMap来实现的，其元素存储在HashMap的键中，而值存储的是一个常量PRESENT，即仅操作 key部分   HashMap是基于哈希表的数据结构，存储的是key-value，键唯一，但值可以重复  扩展 HashSet内部依赖HashMap：从初始化中可以看出来，实际上创建的就是一个HashMap  在添加元素的时候，值都统一用一个常量PRESENT表示，实际上内部逻辑都是HashMap的逻辑   </div></div></div></a><a class="pagination-related" href="/2025/09/18/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E9%9B%86%E5%90%88/14.%E4%B8%BA%E4%BB%80%E4%B9%88HashMap%E6%89%A9%E5%AE%B92%5En%E5%80%8D/" title="14.为什么HashMap扩容2^n倍"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-18</div><div class="info-item-2">14.为什么HashMap扩容2^n倍</div></div><div class="info-2"><div class="info-item-1">2^n倍的设计，两个好处：提高哈希值计算效率、使得哈希值分布均匀  HashMap的索引计算方法是(n - 1) &amp; hash，这种位运算，保证数组容量是2^n方才能保证均匀分布，且位运算效率高于模运算，效率更高 同时扩容后，容量由于是2^n，扩容时只需要通过位运算即可判断是否需要迁移，减少了重新计算索引的开销，提高rehash的效率  拓展 哈希分布的均匀性 2^n的容量下（16，10000），那么 n - 1后对应的二进制低位全是1（011111），此时进行&amp;运算后，可以保证最低几位均匀分布（随机性更高，因为结果是由与运算的后者对象决定）。  假设01000 与 哈希码进行&amp;运算，那么低位全部都是0了，随机性很差，冲突多  位运算和取模  正常我们想到的是通过下标取模 的操作来得到哈希码，但是位运算的效率会更高。用(n - 1) &amp; hash的方式，此时n必须是2^n【a % b等价操作 a &amp; (b - 1)】  </div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

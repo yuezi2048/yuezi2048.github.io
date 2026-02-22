@@ -1,0 +1,788 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>1. SpringBoot自动装配基础 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一、SpringBoot自动装配基础1.1 Sping基本介绍 springboot的好处：  定义大量第三方依赖的版本号，使用这些依赖时无需自己再额外指定版本号 少数依赖，官方仲裁的版本号不一定合适我们的项目，此时我们就需要自定义依赖的版本号（version标签或者properties标签指定）    而在web启动器中，内部定义了一组依赖：包含json tomcat springMVC的相关依">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1. SpringBoot自动装配基础">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/02/18/2.Areas%F0%9F%8C%90/back-end-java/7.SpringBoot/1.%20SpringBoot%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="一、SpringBoot自动装配基础1.1 Sping基本介绍 springboot的好处：  定义大量第三方依赖的版本号，使用这些依赖时无需自己再额外指定版本号 少数依赖，官方仲裁的版本号不一定合适我们的项目，此时我们就需要自定义依赖的版本号（version标签或者properties标签指定）    而在web启动器中，内部定义了一组依赖：包含json tomcat springMVC的相关依">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-02-18T07:31:37.000Z">
+<meta property="article:modified_time" content="2025-02-18T07:31:37.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="7.SpringBoot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "1. SpringBoot自动装配基础",
+  "url": "https://yuezi2048.github.io/2025/02/18/2.Areas%F0%9F%8C%90/back-end-java/7.SpringBoot/1.%20SpringBoot%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D%E5%9F%BA%E7%A1%80/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-02-18T07:31:37.000Z",
+  "dateModified": "2025-02-18T07:31:37.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/02/18/2.Areas%F0%9F%8C%90/back-end-java/7.SpringBoot/1.%20SpringBoot%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D%E5%9F%BA%E7%A1%80/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '1. SpringBoot自动装配基础',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">1. SpringBoot自动装配基础</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">1. SpringBoot自动装配基础</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-02-18T07:31:37.000Z" title="发表于 2025-02-18 15:31:37">2025-02-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-02-18T07:31:37.000Z" title="更新于 2025-02-18 15:31:37">2025-02-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/">back-end-java</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/7-SpringBoot/">7.SpringBoot</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">7.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>30分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="一、SpringBoot自动装配基础"><a href="#一、SpringBoot自动装配基础" class="headerlink" title="一、SpringBoot自动装配基础"></a>一、SpringBoot自动装配基础</h1><h2 id="1-1-Sping基本介绍"><a href="#1-1-Sping基本介绍" class="headerlink" title="1.1 Sping基本介绍"></a>1.1 Sping基本介绍</h2><blockquote>
+<p><code>springboot</code>的好处：</p>
+<ul>
+<li>定义大量第三方依赖的版本号，使用这些依赖时无需自己再额外指定版本号<ul>
+<li>少数依赖，官方仲裁的版本号不一定合适我们的项目，此时我们就需要自定义依赖的版本号（version标签或者properties标签指定）</li>
+</ul>
+</li>
+</ul>
+<p>而在web启动器中，内部定义了一组依赖：包含json tomcat springMVC的相关依赖</p>
+<ul>
+<li>如果我们需要这些功能，只需导入web启动器即可，无需手动导入这些依赖，因为启动器已经自动将这些依赖集成好了</li>
+<li>启动器的分类<ul>
+<li>官方的启动器，命名规则 spring-boot-starter-*</li>
+<li>第三方启动器，但不能以spring-boot开头命名，即xxx-spring-boot-starter</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h3 id="1-1-1-Spring生态介绍"><a href="#1-1-1-Spring生态介绍" class="headerlink" title="1.1.1 Spring生态介绍"></a>1.1.1 Spring生态介绍</h3><p><a target="_blank" rel="noopener" href="https://spring.io/">官网地址</a></p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241218160813388.png" alt="image-20241218160813388" style="zoom: 80%;" />	
+
+<p><a target="_blank" rel="noopener" href="https://spring.io/projects/spring-boot#overview">Spring生态</a></p>
+<p>可以看到Spring为我们提供了若干问题的快速解决方案，有以下Feature：</p>
+<ul>
+<li>创建独立Spring应用 </li>
+<li>内嵌<code>web服务器</code> </li>
+<li>自动<code>starter</code>依赖，简化构建配置 </li>
+<li><code>自动配置Spring</code>以及第三方功能 </li>
+<li>提供生产级别的<code>监控</code>、健康检查及外部化配置 </li>
+<li>无代码生成、无需编写<code>XML</code></li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241218161056865.png" alt="image-20241218161056865">	</p>
+<blockquote>
+<p>综上，SpringBoot是一个整合了Spring技术栈的框架，简化开发的脚手架，也可以发现：封装的层级非常深 + 更新迭代非常快。</p>
+</blockquote>
+<h3 id="1-1-2-微服务与分布式"><a href="#1-1-2-微服务与分布式" class="headerlink" title="1.1.2 微服务与分布式"></a>1.1.2 微服务与分布式</h3><p>SpringBoot的诞生实际上也是为了这微服务和分布式提供了解决方案。</p>
+<p>最早2014年就提出了微服务的概念：</p>
+<ul>
+<li>微服务是一种架构风格</li>
+<li>一个应用拆分为一组小型服务</li>
+<li>每个服务运行在自己的进程内，也就是可独立部署和升级</li>
+<li>服务之间使用轻量级HTTP交互</li>
+<li>服务围绕业务功能拆分</li>
+<li>可以由全自动部署机制独立部署 </li>
+<li>去中心化，服务自治。服务可以使用不同的语言、不同的存储技术</li>
+</ul>
+<blockquote>
+<p>In short, the microservice architectural style is an approach to developing a single application as a suite of small services, each running in its own process and communicating with lightweight mechanisms, often an HTTP resource API. These services are built around business capabilities and independently deployable by fully automated deployment machinery. There is a bare minimum of centralized management of these services, which may be written in different programming languages and use different data storage technologies.– <a target="_blank" rel="noopener" href="https://martinfowler.com/articles/microservices.html">James Lewis and Martin Fowler (2014)</a></p>
+</blockquote>
+<p>而对于大型应用，免不了使用到分布式，但随之也会衍生出新的问题</p>
+<ul>
+<li>远程调用</li>
+<li>服务发现</li>
+<li>负载均衡</li>
+<li>服务容错</li>
+<li>配置管理</li>
+<li>服务监控</li>
+<li>链路追踪</li>
+<li>日志管理</li>
+<li>任务调度</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241218161604437.png" alt="image-20241218161604437">	</p>
+<p>Spring则是为上述问题提供解决方案：</p>
+<ul>
+<li>SpringBoot快速构建应用</li>
+<li>SpringCloud解决微服务带来的问题<ul>
+<li>例如微服务架构下的大量数据通过SpringCloud data flow做响应式数据流来整合</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-1-3-Spring如何查看文档"><a href="#1-1-3-Spring如何查看文档" class="headerlink" title="1.1.3 Spring如何查看文档"></a>1.1.3 Spring如何查看文档</h3><p>在OverView中，我们可以进入到<a target="_blank" rel="noopener" href="https://github.com/spring-projects/spring-boot/wiki#release-notes">github发行页面</a>，查看每一个版本详细的版本新特性</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241218161927148.png" alt="image-20241218161927148" style="zoom:80%;" />	
+
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241218162012957.png" alt="image-20241218162012957">	</p>
+<p>例如要查看SpringBoot2.7的文档，也可以在learn中选择<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-boot/docs/2.7.18/reference/html/">Reference doc</a>一栏，进而查阅文档</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://docs.spring.io/spring-boot/docs/2.7.18/reference/html/getting-started.html#getting-started">快速开始</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://docs.spring.io/spring-boot/docs/2.7.18/reference/html/using.html#using">SpringBoot的基本使用</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://docs.spring.io/spring-boot/docs/2.7.18/reference/html/web.html#web.servlet.spring-mvc">Web文档</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://docs.spring.io/spring-boot/docs/2.7.18/reference/html/application-properties.html#appendix.application-properties">Application Properties</a>- 提供配置信息</p>
+</li>
+</ul>
+<h3 id="1-1-4-SpringBoot项目快速构建"><a href="#1-1-4-SpringBoot项目快速构建" class="headerlink" title="1.1.4 SpringBoot项目快速构建"></a>1.1.4 SpringBoot项目快速构建</h3><p>首先确定版本是否对应：该文档选用SpringBoot2.7.18，采用Maven3.9.9，jdk1.8构建</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241218162510715.png" alt="image-20241218162510715">	</p>
+<blockquote>
+<p>接下来实现需求：发送&#x2F;hello请求，响应 HelloWorld，Spring Boot</p>
+</blockquote>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241218162756595.png" alt="image-20241218162756595">	</p>
+<ul>
+<li>创建maven工程，在pom.xml中导入相关依赖</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.7.18<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>编写启动类App<ul>
+<li>加上注解<code>@SpringBootApplication</code></li>
+<li>添加main方法</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span> <span class="comment">// 表示当前类是启动类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">App</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        SpringApplication.run(App.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>编写controller<ul>
+<li><code>@RestController</code> 等价于 @Controller + @ResponseBody</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span> <span class="comment">// @Controller + @ResponseBody</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloController</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;hello&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">hello</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;hello, SpringBoot!&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>运行springBoot项目<ul>
+<li>直接启动<code>main方法</code></li>
+</ul>
+</li>
+<li>部署SpringBoot项目<ul>
+<li>引入maven插件将SpringBoot打成jar包，命令行运行<code>java -jar</code>的命令启动，导入的jar包构建插件如下</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>具体地：在maven中通过package打包后，执行jar包即可（如果运行不成功，请取消掉cmd的快速编辑模式。在cmd窗口，右键-&gt; 属性 即可设置。）</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241218163029513.png" alt="image-20241218163029513">	</p>
+<blockquote>
+<p>注：如有必要修改配置，可以定义SpringBoot的配置文件<code>application.properties</code> &#x2F; <code>application.yml</code>（参照官方文档<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-boot/docs/2.7.18/reference/html/application-properties.html#appendix.application-properties">Application Properties</a>部分）</p>
+<p>例如application.properties配置如下，则接下来测试时访问<a target="_blank" rel="noopener" href="http://localhost:8888/hello">localhost:8888&#x2F;hello</a>，即可访问到Controller</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="attr">server.port</span>=<span class="string">8888</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">## 1.2 SpringBoot自动装配</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">### 1.2.1 依赖管理</span></span><br><span class="line"></span><br><span class="line"><span class="attr">-</span> <span class="string">定义大量第三方依赖的版本号，使用这些依赖时无需自己再额外指定版本号</span></span><br><span class="line"></span><br><span class="line"><span class="attr">-</span> <span class="string">少数依赖，官方仲裁的版本号不一定合适我们的项目，此时我们就需要自定义依赖的版本号（version标签或者properties标签指定）</span></span><br><span class="line"></span><br><span class="line"><span class="attr">我们知道，我们在构架SpringBoot的时候，pom.xml导入了依赖</span></span><br><span class="line"></span><br><span class="line"><span class="attr">```xml</span></span><br><span class="line"><span class="attr">&lt;parent&gt;</span></span><br><span class="line">   <span class="attr">&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span></span><br><span class="line">   <span class="attr">&lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;</span></span><br><span class="line">   <span class="attr">&lt;version&gt;2.2.0.RELEASE&lt;/version&gt;</span></span><br><span class="line"><span class="attr">&lt;/parent&gt;</span></span><br></pre></td></tr></table></figure></blockquote>
+<p>基于Maven的知识，我们知道这是一个父工程，在该工程中，为我们定义了大量的依赖（包含版本控制），这在SpringBoot中也不例外。</p>
+<p>可以在<code>spring-boot-starter-parent</code>中发现，其配置还有一个父工程，在这里面正是定义了大量的依赖管理（版本控制）</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-dependencies<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.7.18<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">packaging</span>&gt;</span>pom<span class="tag">&lt;/<span class="name">packaging</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">name</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241218164133193.png" alt="image-20241218164133193">	</p>
+<blockquote>
+<p>综上，spring-boot-starter-parent就是定义了开发常用的依赖，以及引入自动版本仲裁机制</p>
+</blockquote>
+<p>而如果我们实际开发中，与官方仲裁的版本不一致时，我们则可以自行定义版本（properties标签或者version标签的方式）</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">    mysql驱动依赖：无需填写版本号，springboot已经帮助我们进行版本的仲裁</span></span><br><span class="line"><span class="comment">    注：官方仲裁的版本未必是合适的，比如mysql数据库驱动版本</span></span><br><span class="line"><span class="comment">    如果不想使用官方仲裁的版本，我们可以自定义依赖的版本号，或者在properties中编写</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.1.6<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>另外，我们也定义了<code>spring-boot-starter-web</code>这个web启动器</p>
+<ul>
+<li><p>该启动器已帮助我们自动集成<code>json tomcat springMVC</code>的相关依赖，需要这些功能时，只需导入web启动器即可，无需手动导入这些依赖</p>
+</li>
+<li><p>启动器的分类</p>
+<ul>
+<li>官方的启动器，命名规则 spring-boot-starter-*</li>
+<li>第三方启动器，但不能以spring-boot开头命名，即xxx-spring-boot-starter（比如alibaba的druid，或者mybatis就不是Spring官方启动器）</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241218164653438.png" alt="image-20241218164653438">	</p>
+<p>具体来看spring-boot-starter-web配置中，可以发现该依赖又依赖于spring-boot-starter组件，所有官方的依赖亦是如此 。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241218164842664.png" alt="image-20241218164842664">	</p>
+<h3 id="1-2-2-springBoot自动配置"><a href="#1-2-2-springBoot自动配置" class="headerlink" title="1.2.2 springBoot自动配置"></a>1.2.2 springBoot自动配置</h3><blockquote>
+<ul>
+<li>如果定义了某个场景的启动器，那么在项目加载的时候，会开启对启动器的自动配置<ul>
+<li>会对启动器所属依赖里面相关的组件全部交由IOC容器管理<ul>
+<li><code>multipartResolver</code> 文件上传解析器</li>
+<li><code>viewResolver</code> 视图解析器</li>
+<li><code>dispatcherServlet</code> 前端控制器</li>
+<li><code>characterEncodingFilter</code> 编码过滤器</li>
+<li>…</li>
+</ul>
+</li>
+<li>如果我们自己写的组件，HelloController，是通过<code>@ComponentScan</code>进行包扫描，该组件位于<code>@SpringBootApplication</code>核心注解内部，扫描规则是当前注解所属类（启动类）的目录及其子目录</li>
+</ul>
+</li>
+<li>SpringBoot并不会一次性全部加载所有的启动器，而是<code>按需加载</code>的策略，即只有手动导入对应场景的启动器后，相关的启动器组件才会被管理到IOC容器中</li>
+</ul>
+</blockquote>
+<h4 id="1-2-2-1-启动器自动配置"><a href="#1-2-2-1-启动器自动配置" class="headerlink" title="1.2.2.1 启动器自动配置"></a>1.2.2.1 启动器自动配置</h4><p>以引入的<code>spring-boot-starter-web</code>启动器为例来说明，进去以后会发现，它为我们定义了很多其他的启动器：</p>
+<ul>
+<li>spring-boot-starter-json</li>
+<li>spring-boot-starter-tomcat</li>
+<li>spring-webmvc  spring-web</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241220111543050.png" alt="image-20241220111543050">	</p>
+<blockquote>
+<p>测试</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span> <span class="comment">// 表示当前类是启动类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">App</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 帮助我们初始化一个IOC容器</span></span><br><span class="line">        <span class="type">ConfigurableApplicationContext</span> <span class="variable">context</span> <span class="operator">=</span> SpringApplication.run(App.class, args);</span><br><span class="line">        <span class="comment">// 获取IOC容器里的组件名称</span></span><br><span class="line">        String[] beanDefinitionNames = context.getBeanDefinitionNames();</span><br><span class="line">        <span class="keyword">for</span> (String name : beanDefinitionNames) &#123;</span><br><span class="line">            System.out.println(name);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>大致可以看到我们所熟悉：<code>前端控制器、视图解析器、编码过滤器、文件上传解析器</code>等组件，这在我们传统SSM整合都是需要手动配置的</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241220111942189.png" alt="image-20241220111942189">	</p>
+</blockquote>
+<p>注：还会提供默认配置，例如MultipartProperties的最大文件大小默认为1MB，我们可以在配置文件中修改值，作为最终bean对象绑定的属性：</p>
+<blockquote>
+<p>spring.servlet.multipart.max-file-size&#x3D;1MB</p>
+</blockquote>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241220112731658.png" alt="image-20241220112731658">	</p>
+<h4 id="1-2-2-2-包扫描自动配置"><a href="#1-2-2-2-包扫描自动配置" class="headerlink" title="1.2.2.2 包扫描自动配置"></a>1.2.2.2 包扫描自动配置</h4><p>传统做法中，我们会配置包扫描的规则，或者使用<code>@ComponentScan</code>注解</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">&quot;com.xq.controller&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>SpringBoot为我们规定好包扫描的规则：<font style="color:red">主程序所在包及其所有子包的组件会被默认扫描进来</font></p>
+<ul>
+<li>如果不是所在包或者子包的注解，则会报404异常。</li>
+<li>虽然可以自定义配置，但一般都默认遵循SpringBoot默认规则</li>
+</ul>
+<h4 id="1-2-2-3-自动配置细节——按需加载"><a href="#1-2-2-3-自动配置细节——按需加载" class="headerlink" title="1.2.2.3 自动配置细节——按需加载"></a>1.2.2.3 自动配置细节——按需加载</h4><p>即我们引入什么启动器，springboot只针对启动器的场景来进行自动配置。</p>
+<ul>
+<li>每个启动器一定会有一个<code>spring-boot-start</code>组件，而进去以后里面有一个<code>spring-boot-autoconfigure</code>负责自动配置的依赖<ul>
+<li>可以看到已经预先定义好了各种场景下的依赖</li>
+<li>通过引入响应的启动器，即可实现按需加载</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241220113257014.png" alt="image-20241220113257014">	</p>
+<p>例如在项目中的pom.xml中引入rabbitmq的启动器</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-amqp<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>再通过App.java测试所有的组件，即可看到springboot为我们按需导入了相关的依赖</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241220113456039.png" alt="image-20241220113456039">	</p>
+<blockquote>
+<p>注：自动配置的<code>底层原理</code>见源码分析部分</p>
+</blockquote>
+<h3 id="1-2-3-【底层源码】自动配置原理"><a href="#1-2-3-【底层源码】自动配置原理" class="headerlink" title="1.2.3 【底层源码】自动配置原理"></a>1.2.3 【底层源码】自动配置原理</h3><h4 id="1-2-3-1-自动包规则原理"><a href="#1-2-3-1-自动包规则原理" class="headerlink" title="1.2.3.1 自动包规则原理"></a>1.2.3.1 自动包规则原理</h4><blockquote>
+<p>springBoot包扫描规则：当前启动类所在的目录及其子目录</p>
+<ul>
+<li><code>@SpringBootApplication</code><ul>
+<li><code>@SpringBootConfiguration</code> 标识当前启动类是一个配置类</li>
+<li><code>@EnableAutoConfiguration</code> 开启自动配置的注解</li>
+<li><code>@ComponentScan</code>    开启包扫描</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@AutoConfigurationPackage</span></span><br><span class="line"><span class="meta">@Import(&#123;AutoConfigurationImportSelector.class&#125;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> EnableAutoConfiguration &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>@AutoConfigurationPackage</code>：开启自动配置包</p>
+<blockquote>
+<p> 该注解内部内部通过@Import注解，导入了Registrar组件</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Import(&#123;AutoConfigurationPackages.Registrar.class&#125;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> AutoConfigurationPackage &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在<code>Registrar</code>类里面，定义了方法，是向IOC容器导入组件的方法</p>
+<ul>
+<li>而导入组件的时候，导入的是启动类所在目录下面的包</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250218153053572.png" alt="image-20250218153053572">	</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Registrar</span> <span class="keyword">implements</span> <span class="title class_">ImportBeanDefinitionRegistrar</span>, DeterminableImports &#123;</span><br><span class="line">        Registrar() &#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">registerBeanDefinitions</span><span class="params">(AnnotationMetadata metadata, BeanDefinitionRegistry registry)</span> &#123;</span><br><span class="line">            AutoConfigurationPackages.register(registry, (String[])(<span class="keyword">new</span> <span class="title class_">PackageImports</span>(metadata)).getPackageNames().toArray(<span class="keyword">new</span> <span class="title class_">String</span>[<span class="number">0</span>]));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></blockquote>
+<p>来到启动类的核心注解<code>@SpringBootApplication</code></p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223093841166.png" alt="image-20241223093841166">	</p>
+<p>在这个核心注解中，我们需要关注以下三个注解</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223093923699.png" alt="image-20241223093923699">	</p>
+<ul>
+<li><code>@SpringBootConfiguration</code>：其实就是标识该类是一个配置类，可以看到其注解被@Configuration修饰</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223094101702.png" alt="image-20241223094101702">	</p>
+<ul>
+<li><code>@ComponentScan</code>：开启包扫描</li>
+<li><code>@EnableAutoConfiguration</code></li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223094208569.png" alt="image-20241223094208569">	</p>
+<p>而在<code>@EnableAutoConfiguration</code>注解当中，包含了<code>@AutoConfigurationPackage</code>和<code>@Import</code>注解</p>
+<p>可以看到在@<code>AutoConfigurationPackage</code>中导入了Registar类</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223094355042.png" alt="image-20241223094355042">	</p>
+<p>进入该类后，发现它就是将启动类包下面的组件及进行自动装配。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223094628374.png" alt="image-20241223094628374"></p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223094619446.png" alt="image-20241223094619446">	</p>
+<h4 id="1-2-3-2-初始加载配置类"><a href="#1-2-3-2-初始加载配置类" class="headerlink" title="1.2.3.2 初始加载配置类"></a>1.2.3.2 初始加载配置类</h4><blockquote>
+<p>springBoot加载初始信息</p>
+<p>入口：@SpringBootApplication</p>
+<p>这个注解下包含@EnableAutoConfiguration注解</p>
+<ul>
+<li>EnableAutoConfiguration注解又通过@Import注解向容器中导入了<code>AutoConfigurationImportSelector</code>组件（自动配置信息导入选择器）</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Import(&#123;AutoConfigurationImportSelector.class&#125;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> EnableAutoConfiguration &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在该组件内部，有一个加载候选配置信息的方法getAutoConfigurationEntry</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; configurations = <span class="built_in">this</span>.getCandidateConfigurations(annotationMetadata, attributes);</span><br></pre></td></tr></table></figure>
+
+<p>加载过程：就是找WEB-INF目录下的spring.factories文件以及org.springframework.boot.autoconfigure.AutoConfiguration.imports（144项包含各个场景的配置类）</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250218153116134.png" alt="image-20250218153116134">	</p>
+<p>最后排除一些用不到的配置类，按需加载。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250218153128493.png" alt="image-20250218153128493">	</p>
+<p>注意到<code>@EnableAutoConfiguration</code>注解中还包括<code>@Import({AutoConfigurationImportSelector.class})</code> 注解，那么这个就主要负责初始配置类的加载</p>
+</blockquote>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223094208569.png" alt="image-20241223094208569">	</p>
+<p>进入到<code>AutoConfigurationImportSelector</code>类后，在<code>selectImports</code>方法中来看看他是怎么帮我们导入的</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223095215364.png" alt="image-20241223095215364">	</p>
+<p>step into后，可以看到里面有一个<code>getCandidateConfigurations</code>方法导入候选配置信息</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223095406240.png" alt="image-20241223095406240">	</p>
+<p>打下断点，发现加载了148项的初始配置信息，大致可以在截图中看到热部署插件、缓存、AOP等等配置</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223095526181.png" alt="image-20241223095526181">	</p>
+<p>我们step into进入到<code>getCandidateConfigurations</code>方法内部</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223095747338.png" alt="image-20241223095747338"></p>
+<p>我们关心这些配置类信息怎么加载的，继续step into进入<code>loadFactoryNames</code>方法内部</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223095847779.png" alt="image-20241223095847779"></p>
+<p>看来是通过工厂来加载，step into看<code>loadSpringFactories</code>到底是怎么搭建的工厂</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223100101806.png" alt="image-20241223100101806">	</p>
+<p>看来是从<code>META-INF/spring.factories</code>中加载到缓存的一个过程。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223100234914.png" alt="image-20241223100234914">	</p>
+<p>那么这些配置信息真的全部加载到容器里了吗？其实是一个按需加载的过程，我们在下一小节当中继续说明。</p>
+<h4 id="1-2-3-3-按需加载自动配置流程"><a href="#1-2-3-3-按需加载自动配置流程" class="headerlink" title="1.2.3.3 按需加载自动配置流程"></a>1.2.3.3 按需加载自动配置流程</h4><blockquote>
+<p><strong>springBoot对自动配置类的加载过程</strong></p>
+<ul>
+<li>自动配置类的名称：xxxAutoConfiguration</li>
+<li>自动配置类会开启配置信息的自动绑定，将定义的自动配置信息绑定到xxxProperties上（@EnableConfigurationProperties）</li>
+<li>自动配置类：@Bean注解，装配很多组件到IOC容器中去（条件装配@ConditionalXxx）</li>
+<li>SpringBoot永远以用户的配置为准，如果用户没有配置，则采用springBoot默认配置为准（@ConditionalOnMissingBean）</li>
+<li>SpringBoot很多配置信息都设置了默认值，用户没有修改，以默认值为准，否则以用户设置的值为准（server.port）</li>
+</ul>
+</blockquote>
+<p>给出了三个具体的配置案例</p>
+<h5 id="AOP配置类"><a href="#AOP配置类" class="headerlink" title="AOP配置类"></a>AOP配置类</h5><p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223101134944.png" alt="image-20241223101134944">	</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223101432459.png" alt="image-20241223101432459">	</p>
+<p>另外值得注意的是，AOP组件里面还有一些子组件：该配置类要求必须存在Advice类（<code>org.aspectj.weaver.Advice</code>），但是目前没有，所以并不会加载<code>AspectJAutoProxyingConfiguration</code>这个bean</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223101522606.png" alt="image-20241223101522606">	</p>
+<h5 id="验证缓存加载配置类"><a href="#验证缓存加载配置类" class="headerlink" title="验证缓存加载配置类"></a>验证缓存加载配置类</h5><p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223101631733.png" alt="image-20241223101631733">	</p>
+<p>我们在上一节刚提到，候选配置信息实际上已经有cache相关的配置了，那么我们来看看springboot是否已经导入了这个组件，那么到源码中关键就是看条件装配。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223101802819.png" alt="image-20241223101802819"></p>
+<p>ctrl + N 搜索一下CacheManager是否存在，发现是存在的</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223101922592.png" alt="image-20241223101922592">	</p>
+<p>接下来测试容器中是否存在<code>CacheAspectSupport</code>这个bean，发现不存在</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">App</span> &#123;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">    <span class="comment">//获得ioc容器</span></span><br><span class="line">    <span class="type">ConfigurableApplicationContext</span> <span class="variable">context</span> <span class="operator">=</span></span><br><span class="line">    SpringApplication.run(App.class, args);</span><br><span class="line">    <span class="comment">//根据bean的类型，获取容器中bean的名称</span></span><br><span class="line">    String[] beanNamesForType = context.getBeanNamesForType(CacheAspectSupport.class);</span><br><span class="line">    System.out.println(beanNamesForType.length); <span class="comment">// 0</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>那么就不用往下看了，由于不满足<code>@ConditionalOnBean({CacheAspectSupport.class})</code>这个条件装配注解里的条件，因此不会把CacheAutoConfiguration装配。</p>
+<h5 id="验证SpringMVC相关配置类"><a href="#验证SpringMVC相关配置类" class="headerlink" title="验证SpringMVC相关配置类"></a>验证SpringMVC相关配置类</h5><p><code>DispatcherServletAutoConfiguration</code>配置类</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223104315360.png" alt="image-20241223104315360" style="zoom:67%;" />	
+
+<p>可以看到<code>DispatcherServlet</code>确实存在，然后我们springboot确实是web工程（因为导入了web启动器）</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223104838481.png" alt="image-20241223104838481">	</p>
+<p>再验证<code>ServletWebServerFactoryAutoConfiguration</code>配置类是否生效，确实是存在的，因此<code>DispatcherServletAutoConfiguration</code>这个配置类是装载进来的</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">App</span> &#123;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">    <span class="comment">//获得ioc容器</span></span><br><span class="line">    <span class="type">ConfigurableApplicationContext</span> <span class="variable">context</span> <span class="operator">=</span></span><br><span class="line">    SpringApplication.run(App.class, args);</span><br><span class="line">    <span class="comment">//根据bean的类型，获取容器中bean的名称</span></span><br><span class="line">    String[] beanNamesForType =</span><br><span class="line">    context.getBeanNamesForType(ServletWebServerFactoryAutoConfiguration.class);</span><br><span class="line">    System.out.println(beanNamesForType.length); <span class="comment">//值为1 说明ioc容器中存在这个配置类的bean</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在<code>DispatcherServletAutoConfiguration</code>配置类内部也可以看到为我们注入了DispatcherServletRegistration、前端控制器、文件上传解析器组件</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223105322799.png" alt="image-20241223105322799"></p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223105239858.png" alt="image-20241223105239858">	</p>
+<p>以文件上传解析器为例</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="meta">@ConditionalOnBean(MultipartResolver.class)</span> <span class="comment">//容器中有这个类型组件</span></span><br><span class="line"><span class="meta">@ConditionalOnMissingBean(name = DispatcherServlet.MULTIPART_RESOLVER_BEAN_NAME)</span> <span class="comment">//容器中没有这个名multipartResolver 的组件</span></span><br><span class="line"><span class="keyword">public</span> MultipartResolver <span class="title function_">multipartResolver</span><span class="params">(MultipartResolver resolver)</span> &#123;</span><br><span class="line">    <span class="comment">//给@Bean标注的方法传入了对象参数，这个参数的值就会从容器中找。</span></span><br><span class="line">    <span class="comment">//SpringMVC multipartResolver。防止有些用户配置的文件上传解析器不符合规范</span></span><br><span class="line">    <span class="comment">// Detect if the user has created a MultipartResolver but named it incorrectly</span></span><br><span class="line">    <span class="keyword">return</span> resolver;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>另外，我们在springboot项目中响应中文信息发现并没有乱码（并没有像MVC一样配置编码过滤器）</p>
+<p>来看看<code>HttpEncodingAutoConfiguration</code>自动配置类是不是加载进来了</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223105548843.png" alt="image-20241223105548843">	</p>
+<p>来看内部的配置信息，<code>CharacterEncodingFilter</code>，看来是底层有一个默认配置，然后如果用户配置了则以用户的优先。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223105708920.png" alt="image-20241223105708920"></p>
+<p>注入过程</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223105807272.png" alt="image-20241223105807272">		</p>
+<p>来看一下具体的<code>ServerProperties</code>类，看来是server开头</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223105907782.png" alt="image-20241223105907782">	</p>
+<p>我们在配置文件中如果自行定义，按照这个前缀规则即可配置</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241223105946414.png" alt="image-20241223105946414" style="zoom:67%;" />	
+
+<h4 id="1-2-3-4-动手实践-举一反三"><a href="#1-2-3-4-动手实践-举一反三" class="headerlink" title="1.2.3.4 动手实践 举一反三"></a>1.2.3.4 动手实践 举一反三</h4><ul>
+<li><p>引入场景依赖 <a target="_blank" rel="noopener" href="https://docs.spring.io/spring-boot/docs/current/reference/html/using.html#using.build-systems.starters">https://docs.spring.io/spring-boot/docs/current/reference/html/using.html#using.build-systems.starters</a></p>
+</li>
+<li><p>查看自动配置了哪些（选做）</p>
+<ul>
+<li>自己分析，引入场景对应的自动配置一般都生效了</li>
+<li>配置文件中debug&#x3D;true开启自动配置报告。Negative（不生效）\Positive（生效）</li>
+<li>是否需要修改</li>
+<li>参照文档修改配置项<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html#appendix.application-properties">https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html#appendix.application-properties</a></li>
+<li>自己分析。xxxxProperties绑定了配置文件的哪些</li>
+</ul>
+<blockquote>
+<p>比如我们想修改springboot启动图标，我们可以参考官方提供的配置信息<br>spring.banner.image.location&#x3D;classpath:abc.jpg</p>
+</blockquote>
+</li>
+<li><p>自定义加入或者替换组件@Bean、@Component。。。</p>
+</li>
+<li><p>自定义器 XXXXXCustomizer；</p>
+</li>
+</ul>
+<h2 id="1-3-常用注解"><a href="#1-3-常用注解" class="headerlink" title="1.3 常用注解"></a>1.3 常用注解</h2><h3 id="1-3-1-Configuration"><a href="#1-3-1-Configuration" class="headerlink" title="1.3.1 @Configuration"></a>1.3.1 @Configuration</h3><blockquote>
+<p>在Springboot中，通过配置类来管理bean</p>
+<ul>
+<li>定义一个类，使用@Configuration注解来修饰这个类<ul>
+<li><code>@Configuration</code>：告诉SpringBoot这个类就是配置类，等同于spring项目的XML配置文件</li>
+<li><code>@Bean</code>，向IOC容器添加组件，修饰的是方法，组件的类型就是返回值的类型，名称默认是方法名，作用等同于Bean标签</li>
+</ul>
+</li>
+<li>配置类本省也交给IOC容器管理<ul>
+<li>因为@Configuration内部集成了<code>@Component</code>注解修饰</li>
+<li>配置类所属bean，输出：<code>com.xq.config.MyConfig$$EnhancerBySpringCGLIB$$c50dac44@5c089b2f</code>，可以看到该bean是基于CGLIB字节码增强的代理对象</li>
+</ul>
+</li>
+</ul>
+<p><code>proxyBeanMethods</code>：代理bean的方法</p>
+<ul>
+<li>Full(proxyBeanMethods &#x3D; true)、【保证每个@Bean方法被调用多少次返回的组件都是单实例的】</li>
+<li>Lite(proxyBeanMethods &#x3D; false)【每个@Bean方法被调用多少次返回的组件都是新创建的】</li>
+<li>组件依赖必须使用Full模式默认</li>
+</ul>
+</blockquote>
+<p>管理bean对象，我们已知有三种方法：XML、注解、配置类，springboot中大量采用了配置类来管理bean</p>
+<p>为了演示该案例，定义两个pojo类 User 和 Cat，get set toString方法略</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">User</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> String username;</span><br><span class="line">    <span class="keyword">private</span> Integer age;</span><br><span class="line">    <span class="keyword">private</span> Cat cat;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Cat</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> String color;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后通过配置类来管理这两个bean对象</p>
+<ul>
+<li><code>@Configuration</code>就是告诉springboot这是一个配置类</li>
+<li><code>@Bean</code>则是添加组件，作用类比于XML中定义bean对象，方法名相当于bean的id，返回的值相当于IOC容器的实例</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration(proxyBeanMethods = true)</span> <span class="comment">// 标识当前类是一个配置类，它的作用类似于原生spring的XML配置文件</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyConfig</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span> <span class="comment">// 类似于XML配置文件的bean标签，默认情况下bean的id就是方法的名称</span></span><br><span class="line">    <span class="keyword">public</span> User <span class="title function_">user</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">User</span>();</span><br><span class="line">        user.setUsername(<span class="string">&quot;Aric&quot;</span>);</span><br><span class="line">        user.setAge(<span class="number">18</span>);</span><br><span class="line">        user.setCat(cat());</span><br><span class="line">        <span class="keyword">return</span> user;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// @Bean</span></span><br><span class="line">    <span class="keyword">public</span> Cat <span class="title function_">cat</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">Cat</span> <span class="variable">cat</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Cat</span>();</span><br><span class="line">        cat.setName(<span class="string">&quot;大橘&quot;</span>);</span><br><span class="line">        cat.setColor(<span class="string">&quot;橙色&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> cat;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>测试</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span> <span class="comment">// 表示当前类是启动类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">App</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="type">ConfigurableApplicationContext</span> <span class="variable">context</span> <span class="operator">=</span> SpringApplication.run(App.class, args);</span><br><span class="line">        <span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> context.getBean(<span class="string">&quot;user&quot;</span>, User.class);</span><br><span class="line">        <span class="type">Cat</span> <span class="variable">cat</span> <span class="operator">=</span> context.getBean(<span class="string">&quot;cat&quot;</span>, Cat.class);</span><br><span class="line">        System.out.println(user);</span><br><span class="line">        System.out.println(cat);</span><br><span class="line">        </span><br><span class="line">        String[] beanDefinitionNames = context.getBeanDefinitionNames();</span><br><span class="line">        <span class="keyword">for</span> (String name : beanDefinitionNames) &#123;</span><br><span class="line">            System.out.println(name);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241220114910020.png" alt="image-20241220114910020">	</p>
+</blockquote>
+<h4 id="1-3-1-1-细节1——配置类代理对象"><a href="#1-3-1-1-细节1——配置类代理对象" class="headerlink" title="1.3.1.1 细节1——配置类代理对象"></a>1.3.1.1 细节1——配置类代理对象</h4><p>实际上，配置类也是组件，交由IOC管理，进入<code>@Configuration</code>的源码也不难发现里面定义了<code>@Component</code></p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241220115221186.png" alt="image-20241220115221186">	</p>
+<p>而当我们获取这个bean以后，发现输出结果为<code>com.xq.config.MyConfig$$EnhancerBySpringCGLIB$$6064970@3e681bc</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">MyConfig</span> <span class="variable">myConfig</span> <span class="operator">=</span> context.getBean(MyConfig.class);</span><br><span class="line">System.out.println(myConfig);</span><br></pre></td></tr></table></figure>
+
+<p>由此可知，这是基于Cglib字节码增强的代理对象，spring中管理的bean本质上是这个配置类的代理对象</p>
+<h4 id="1-3-1-2-细节2——proxyBeanMethods"><a href="#1-3-1-2-细节2——proxyBeanMethods" class="headerlink" title="1.3.1.2 细节2——proxyBeanMethods"></a>1.3.1.2 细节2——proxyBeanMethods</h4><p>在上面的源码中，注意到proxyBeanMethods默认为true，这个属性是为了解决<code>组件依赖</code>的问题</p>
+<p>如果我们故意设置为false，进行测试，会发现下面这个返回false，可以发现创建Cat和User变为了多例创建。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 在容器中获取bean</span></span><br><span class="line"><span class="type">Cat</span> <span class="variable">cat1</span> <span class="operator">=</span> context.getBean(<span class="string">&quot;cat&quot;</span>, Cat.class);</span><br><span class="line"><span class="type">Cat</span> <span class="variable">cat2</span> <span class="operator">=</span> context.getBean(<span class="string">&quot;cat&quot;</span>, Cat.class);</span><br><span class="line">System.out.println(cat1 == cat2);</span><br><span class="line"></span><br><span class="line"><span class="type">User</span> <span class="variable">user1</span> <span class="operator">=</span> myConfig.user();</span><br><span class="line"><span class="type">User</span> <span class="variable">user2</span> <span class="operator">=</span> myConfig.user();</span><br><span class="line"><span class="comment">// 默认情况下是单例的bean，但是如果在@Configuration配置属性proxyBeanMethods为false，那么就是多例的</span></span><br><span class="line">System.out.println(user1 == user2);</span><br></pre></td></tr></table></figure>
+
+<p>那么为什么说是这个属性为了解决<code>组件依赖</code>呢？回到一开始的案例</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration(proxyBeanMethods = false)</span> <span class="comment">// 标识当前类是一个配置类，它的作用类似于原生spring的XML配置文件</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyConfig</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span> <span class="comment">// 类似于XML配置文件的bean标签，默认情况下bean的id就是方法的名称</span></span><br><span class="line">    <span class="keyword">public</span> User <span class="title function_">user</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">User</span>();</span><br><span class="line">        user.setUsername(<span class="string">&quot;Aric&quot;</span>);</span><br><span class="line">        user.setAge(<span class="number">18</span>);</span><br><span class="line">        user.setCat(cat());</span><br><span class="line">        <span class="keyword">return</span> user;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// @Bean</span></span><br><span class="line">    <span class="keyword">public</span> Cat <span class="title function_">cat</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">Cat</span> <span class="variable">cat</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Cat</span>();</span><br><span class="line">        cat.setName(<span class="string">&quot;大橘&quot;</span>);</span><br><span class="line">        cat.setColor(<span class="string">&quot;橙色&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> cat;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时假设没有配置proxyBeanMethods，那么输出user的时候，会由于cat的变化，导致user注入的Cat依赖不再是原先的Cat，破坏了组件依赖关系。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> context.getBean(<span class="string">&quot;user&quot;</span>, User.class);</span><br><span class="line"><span class="type">Cat</span> <span class="variable">cat</span> <span class="operator">=</span> context.getBean(<span class="string">&quot;cat&quot;</span>, Cat.class);</span><br><span class="line">System.out.println(cat == user.getCat());</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-2-Import"><a href="#1-3-2-Import" class="headerlink" title="1.3.2 @Import"></a>1.3.2 @Import</h3><blockquote>
+<ul>
+<li><p>从<code>@Import</code>源码中不难发现：该注解仅定义了<code>value</code>属性，类型为<code>Class类数组</code></p>
+<ul>
+<li><p>因此可以导入多个<code>@Configuration</code>、<code>ImportSelector</code>、<code>ImportBeanDefinitionRegistrar</code>实现类和<code>普通类</code>（4.2版本后支持）</p>
+</li>
+<li><p>与传统的XML文件中<code>&lt;import/&gt;</code>等价，如果要导入XML文件等其他非bean资源，使用<code>@ImportResource</code>注解</p>
+</li>
+<li><p>该注解只修饰类作为元注释</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241220184001282.png" alt="image-20241220184001282">	</p>
+<ul>
+<li><p>@Import的作用：向容器中导入一个组件，具体方式有四种（前两种常用）</p>
+<ul>
+<li>导入<code>普通类</code>组件 @Import(value &#x3D; {Animal.class})：向容器中导入Animal类型的组件，组件的名称就是Animal的全限定名</li>
+</ul>
+</li>
+<li><p>导入<code>@Configuration</code>修饰的类</p>
+<ul>
+<li>实现<code>ImportSelector</code>接口类</li>
+</ul>
+</li>
+<li><p>实现<code>ImportBeanDefinitionRegistrar</code>接口类</p>
+</li>
+</ul>
+</blockquote>
+<h4 id="1-3-2-1-导入普通类"><a href="#1-3-2-1-导入普通类" class="headerlink" title="1.3.2.1 导入普通类"></a>1.3.2.1 导入普通类</h4><p>定义Animal类</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Animal</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>在配置类中导入</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration(proxyBeanMethods = true)</span> <span class="comment">// 标识当前类是一个配置类，它的作用类似于原生spring的XML配置文件</span></span><br><span class="line"><span class="meta">@Import(value = &#123;Animal.class&#125;)</span> <span class="comment">// 向容器中导入一个组件，bean的名称默认是类的全限定名</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyConfig</span> &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试查看所有bean名称，即可找到对应的Animal类为对应类的<code>全限定名</code></p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241220184540766.png" alt="image-20241220184540766" style="zoom:67%;" />	
+
+<h4 id="1-3-2-2-导入配置类"><a href="#1-3-2-2-导入配置类" class="headerlink" title="1.3.2.2 导入配置类"></a>1.3.2.2 导入配置类</h4><p>定义一个配置类</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">StudentConfig</span> &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为@Import注解里面的value属性定义的是class数组，<strong>配置类在原先基础上加入配置类即可</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration(proxyBeanMethods = true)</span> <span class="comment">// 标识当前类是一个配置类，它的作用类似于原生spring的XML配置文件</span></span><br><span class="line"><span class="meta">@Import(value = &#123;Animal.class, StudentConfig.class&#125;)</span> <span class="comment">// 向容器中导入一个组件，bean的名称默认是类的全限定名</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyConfig</span> &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从上一小节也可以知道，最终导入到IOC容器中配置类的bean名称为<code>com.xq.pojo.Student$$EnhancerBySpringCGLIB$$231b5261@5f574cc2</code>，即基于CGLIB生成的代理对象</p>
+<h4 id="1-3-2-3-导入ImportSelector接口实现类"><a href="#1-3-2-3-导入ImportSelector接口实现类" class="headerlink" title="1.3.2.3 导入ImportSelector接口实现类"></a>1.3.2.3 导入ImportSelector接口实现类</h4><p>定义一个需要被导入的bean</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ObjectA</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">objectA</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;object A&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建一个<code>ImportSelector接口</code>实现类，里面重写selectImports方法，返回导入类的全限定名数组</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyImportSelector</span> <span class="keyword">implements</span> <span class="title class_">ImportSelector</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String[] selectImports(AnnotationMetadata importingClassMetadata) &#123;</span><br><span class="line">        <span class="comment">// 需要被导入类的全限定名的数组</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">String</span>[]&#123;ObjectA.class.getName()&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在最终的配置类中导入该MyImportSelector的class类</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration(proxyBeanMethods = true)</span> <span class="comment">// 标识当前类是一个配置类，它的作用类似于原生spring的XML配置文件</span></span><br><span class="line"><span class="meta">@Import(value = &#123;MyImportSelector.class&#125;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyConfig</span> &#123;</span><br></pre></td></tr></table></figure>
+
+<p>经过测试，确实得到了ObjectA的对象</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">com.xq.pojo.ObjectA@55a8dc49</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-3-2-4-导入ImportBeanDefinitionRegistrar接口实现类"><a href="#1-3-2-4-导入ImportBeanDefinitionRegistrar接口实现类" class="headerlink" title="1.3.2.4 导入ImportBeanDefinitionRegistrar接口实现类"></a>1.3.2.4 导入ImportBeanDefinitionRegistrar接口实现类</h4><p>类似地，导入需要被导入的Bean</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ObjectB</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">objectB</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;object B&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后创建一个实现<code>ImportBeanDefinitionRegistrar </code>接口的实现类：在registry仓库中判断 +注册</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ImportConfig</span> <span class="keyword">implements</span> <span class="title class_">ImportBeanDefinitionRegistrar</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">registerBeanDefinitions</span><span class="params">(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry)</span> &#123;</span><br><span class="line">        <span class="type">boolean</span> <span class="variable">flag</span> <span class="operator">=</span> registry.containsBeanDefinition(ObjectB.class.getName());<span class="comment">// 判断容器中是否有bean</span></span><br><span class="line">        <span class="keyword">if</span> (!flag) &#123;</span><br><span class="line">            <span class="type">RootBeanDefinition</span> <span class="variable">beanDefinition</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RootBeanDefinition</span>(ObjectB.class);</span><br><span class="line">            <span class="comment">// 执行注册操作 参数1：bean的名称，参数2：bean的定义信息</span></span><br><span class="line">            registry.registerBeanDefinition(<span class="string">&quot;objectB&quot;</span>, beanDefinition);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>在最终的配置类中导入该MyImportSelector的class类</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration(proxyBeanMethods = true)</span> <span class="comment">// 标识当前类是一个配置类，它的作用类似于原生spring的XML配置文件</span></span><br><span class="line"><span class="meta">@Import(value = &#123;MyImportSelector.class, ImportConfig.class&#125;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyConfig</span> &#123;</span><br></pre></td></tr></table></figure>
+
+<p>经过测试，确实得到了ObjectB的对象</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">com.xq.pojo.ObjectB@38d5b107</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-3-Conditional"><a href="#1-3-3-Conditional" class="headerlink" title="1.3.3 @Conditional"></a>1.3.3 @Conditional</h3><blockquote>
+<p><code>@Conditionalxxx</code>，条件装配的注解，即满足条件才将某个bean加载到应用的上下文中（Spring4提供）</p>
+</blockquote>
+<p>具体的规则条件已经为我们细化成如下，13个注解：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@ConditionalOnBean</span></span><br><span class="line">仅仅在当前上下文中存在某个对象时，才会实例化一个Bean</span><br><span class="line">    </span><br><span class="line"><span class="meta">@ConditionalOnClass</span></span><br><span class="line">某个class位于类路径上，才会实例化一个Bean</span><br><span class="line">    </span><br><span class="line"><span class="meta">@ConditionalOnExpression</span></span><br><span class="line">当表达式为<span class="literal">true</span>的时候，才会实例化一个Bean</span><br><span class="line">    </span><br><span class="line"><span class="meta">@ConditionalOnMissingBean</span></span><br><span class="line">仅仅在当前上下文中不存在某个对象时，才会实例化一个Bean</span><br><span class="line">    </span><br><span class="line"><span class="meta">@ConditionalOnMissingClass</span></span><br><span class="line">某个class类路径上不存在的时候，才会实例化一个Bean</span><br><span class="line">    </span><br><span class="line"><span class="meta">@ConditionalOnNotWebApplication</span></span><br><span class="line">不是web应用</span><br><span class="line">    </span><br><span class="line"><span class="meta">@ConditionalOnProperty</span></span><br><span class="line">指在配置里配置的属性是否为<span class="literal">true</span>,才会实例化一个Bean)</span><br><span class="line"></span><br><span class="line"><span class="meta">@ConditionalOnResource</span></span><br><span class="line">如果我们要加载的 bean 依赖指定资源是否存在于 classpath 中，那么我们就可以使用这个注解</span><br><span class="line">    </span><br><span class="line"><span class="meta">@ConditionalOnJndi</span></span><br><span class="line">只有指定的资源通过 JNDI 加载后才加载 bean</span><br><span class="line">    </span><br><span class="line"><span class="meta">@ConditionalOnCloudPlatform</span></span><br><span class="line">只有运行在指定的云平台上才加载指定的 bean，CloudPlatform 是org.springframework.boot.cloud 下一个 <span class="keyword">enum</span> 类型的类</span><br></pre></td></tr></table></figure>
+
+<p>这些注解的元注解如下，要点：</p>
+<ul>
+<li>修饰类（@Configuration @Component等都可以通过该类进行条件加载）</li>
+<li>也可以修饰方法，对@Bean标记的方法来应用注解</li>
+<li>不同的注解的后缀只是做了更进一层的条件封装，本质一样</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241220185546465.png" alt="image-20241220185546465">	</p>
+<blockquote>
+<p>测试</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration(proxyBeanMethods = true)</span> <span class="comment">// 标识当前类是一个配置类，它的作用类似于原生spring的XML配置文件</span></span><br><span class="line"><span class="comment">// @Import(value = &#123;Animal.class, StudentConfig.class&#125;) // 向容器中导入一个组件，bean的名称默认是类的全限定名</span></span><br><span class="line"><span class="meta">@Import(value = &#123;MyImportSelector.class, ImportConfig.class&#125;)</span></span><br><span class="line"><span class="meta">@ConditionalOnBean(name = &quot;cat&quot;)</span> <span class="comment">// 容器中如果存在Cat这个bean，@Bean注释修饰的组件才会被装配到IOC容器中</span></span><br><span class="line"><span class="comment">// @ConditionalOnMissingBean(name = &quot;cat&quot;) // 容器中如果没有Cat这个bean，则把name中修饰的组件装配到IOC容器中</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyConfig</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span> <span class="comment">// 类似于XML配置文件的bean标签，默认情况下bean的id就是方法的名称</span></span><br><span class="line">    <span class="keyword">public</span> User <span class="title function_">user</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">User</span>();</span><br><span class="line">        user.setUsername(<span class="string">&quot;Aric&quot;</span>);</span><br><span class="line">        user.setAge(<span class="number">18</span>);</span><br><span class="line">        user.setCat(cat());</span><br><span class="line">        <span class="keyword">return</span> user;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> Cat <span class="title function_">cat</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">Cat</span> <span class="variable">cat</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Cat</span>();</span><br><span class="line">        cat.setName(<span class="string">&quot;大橘&quot;</span>);</span><br><span class="line">        cat.setColor(<span class="string">&quot;橙色&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> cat;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>检查是否记载了该类的@Bean注解修饰的对象</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">ConfigurableApplicationContext</span> <span class="variable">context</span> <span class="operator">=</span> SpringApplication.run(App.class, args);</span><br><span class="line"><span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> context.getBean(<span class="string">&quot;user&quot;</span>, User.class);</span><br><span class="line"><span class="type">Cat</span> <span class="variable">cat</span> <span class="operator">=</span> context.getBean(<span class="string">&quot;cat&quot;</span>, Cat.class);</span><br><span class="line">System.out.println(user);</span><br><span class="line">System.out.println(cat);</span><br></pre></td></tr></table></figure>
+
+<p>由于存在Cat的Bean对象，因此加载所有Bean修饰的对象，否则如果没有Cat的Bean对象，那么就不会加载该类所有的@Bean对象</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">User&#123;username=<span class="string">&#x27;Aric&#x27;</span>, age=<span class="number">18</span>, cat=Cat&#123;name=<span class="string">&#x27;大橘&#x27;</span>, color=<span class="string">&#x27;橙色&#x27;</span>&#125;&#125;</span><br><span class="line">Cat&#123;name=<span class="string">&#x27;大橘&#x27;</span>, color=<span class="string">&#x27;橙色&#x27;</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注：使用@ConditionalOnMissingBean注解，并去掉Cat的@Bean注解后，因为满足条件，User依然可以加载出来</p>
+</blockquote>
+<h3 id="1-3-4-ImportResource"><a href="#1-3-4-ImportResource" class="headerlink" title="1.3.4 @ImportResource"></a>1.3.4 @ImportResource</h3><blockquote>
+<p><code>@ImportResource</code>注解，导入原生的XML配置文件到springBoot项目中</p>
+</blockquote>
+<p>例如定义一个Service和其实现类</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">UserService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addUser</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">UserService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addUser</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;新增用户的方法实现了...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>XML中导入实现类的bean对象</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;userService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xq.service.impl.UserServiceImpl&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在<code>启动类</code>中通过<code>@ImportResource</code>注解导入XML的配置</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span> <span class="comment">// 表示当前类是启动类</span></span><br><span class="line"><span class="meta">@ImportResource(&quot;classpath:bean.xml&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">App</span> &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>访问<a target="_blank" rel="noopener" href="http://localhost:8888/user/add%E5%90%8E%E4%B9%9F%E8%83%BD%E6%AD%A3%E5%B8%B8%E8%AE%BF%E9%97%AE%E6%8E%A5%E5%8F%A3">http://localhost:8888/user/add后也能正常访问接口</a></p>
+<h3 id="1-3-5-ConfigurationProperties"><a href="#1-3-5-ConfigurationProperties" class="headerlink" title="1.3.5 @ConfigurationProperties"></a>1.3.5 @ConfigurationProperties</h3><h4 id="配置属性自动绑定"><a href="#配置属性自动绑定" class="headerlink" title="配置属性自动绑定"></a>配置属性自动绑定</h4><blockquote>
+<p><strong>配置属性的自动绑定</strong>：</p>
+<ul>
+<li>@Value注解手动绑定</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Value(&quot;$&#123;car.name&#125;&quot;)</span></span><br><span class="line"><span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Value(&quot;$&#123;car.price&#125;&quot;)</span></span><br><span class="line"><span class="keyword">private</span> Integer price;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>@Component + @ConfigurationProperties实现属性自动绑定</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;car&quot;)</span> <span class="comment">// 批量属性绑定</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Car</span> &#123;</span><br><span class="line">  <span class="comment">// 属性略</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>@Configuration + @EnableConfigurationProperties在配置类上实现属性自动绑定</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration(proxyBeanMethods = true)</span> <span class="comment">// 标识当前类是一个配置类，它的作用类似于原生spring的XML配置文件</span></span><br><span class="line"><span class="meta">@EnableConfigurationProperties(Car.class)</span> <span class="comment">// 开启对car这个bean的属性配置功能，将car放到IOC容器中，就是容器管理的事情让配置类做了而不是用@Component注解</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyConfig</span> &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>关于属性的注入，spring中也可以通过原生XML注入，springboot中则是通过<code>@ConfigurationProperties</code>注解</p>
+<p>定义Car类</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Car</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> Integer price;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>方法1：直接在<code>application.properties</code>中对Car类bean对象进行依赖注入</p>
+</blockquote>
+<p>首先对Car类交给IOC容器管理</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;car&quot;)</span> <span class="comment">// 批量属性绑定</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Car</span> &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在配置文件中进行bean对象依赖绑定</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="attr">car.name</span>=<span class="string">BMW540I</span></span><br><span class="line"><span class="attr">car.price</span>=<span class="string">300000</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>方法2：<code>@ConfigurationProperties </code>+ <code>@EnableConfigurationProperties</code> 间接通过配置类的做法</p>
+</blockquote>
+<p>Car类bean对象此时交由配置类管理，去掉<code>@Component</code>注解，只留下属性绑定的前缀规则</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;car&quot;)</span> <span class="comment">// 批量属性绑定</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Car</span> &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在配置类中定义属性配置</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 开启对car这个bean的属性配置功能，将car放到IOC容器中，就是容器管理的事情让配置类做了而不是用@Component注解</span></span><br><span class="line"><span class="meta">@EnableConfigurationProperties(Car.class)</span> </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyConfig</span> &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="1-4-开发插件"><a href="#1-4-开发插件" class="headerlink" title="1.4 开发插件"></a>1.4 开发插件</h2><h3 id="1-4-1-Lombok插件"><a href="#1-4-1-Lombok插件" class="headerlink" title="1.4.1 Lombok插件"></a>1.4.1 Lombok插件</h3><ul>
+<li>Idea中，安装lombok插件，<font style="color:red">重启Idea</font></li>
+<li>引入lombok相关依赖（springboot已经帮我们仲裁版本号了）</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.projectlombok<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lombok<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>愉快的使用</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Data</span> <span class="comment">// get set toString</span></span><br><span class="line"><span class="meta">@AllArgsConstructor</span> <span class="comment">// 所有参数构造函数</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span> <span class="comment">// 无参构造函数</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Emp</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String username;</span><br><span class="line">    <span class="keyword">private</span> Integer age;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此外，使用<code>slf4j</code>日志开发</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@Slf4j</span> <span class="comment">// log注解</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserController</span> &#123;</span><br><span class="line">    <span class="meta">@RequestMapping(&quot;hello&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">hello</span><span class="params">()</span> &#123;</span><br><span class="line">        log.info(<span class="string">&quot;hello方法执行了&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;大家好...&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241220194410399.png" alt="image-20241220194410399">	</p>
+<h3 id="1-4-2-dev-tools热部署工具"><a href="#1-4-2-dev-tools热部署工具" class="headerlink" title="1.4.2 dev-tools热部署工具"></a>1.4.2 dev-tools热部署工具</h3><p>热部署依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-devtools<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>插件引入</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">fork</span>&gt;</span>true<span class="tag">&lt;/<span class="name">fork</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">addResources</span>&gt;</span>true<span class="tag">&lt;/<span class="name">addResources</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>修改IDEA配置</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241220194631381.png" alt="image-20241220194631381" style="zoom:80%;" />	
+
+<p>shift + ctrl + alt + &#x2F; 四个按键一块按，选择Reg项</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241220194648135.png" alt="image-20241220194648135" style="zoom:67%;" />	
+
+<p>ctrl+f9或者构建重新热部署即可愉快的使用</p>
+<h3 id="1-4-3-Spring-Initializr"><a href="#1-4-3-Spring-Initializr" class="headerlink" title="1.4.3 Spring Initializr"></a>1.4.3 Spring Initializr</h3><p>帮助我们构建项目架构，阿里云提供了1.8的依赖镜像</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241220194728475.png" alt="image-20241220194728475" style="zoom:67%;" />	
+
+<p>可以直接在创建的时候选择启动器</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241220194742655.png" alt="image-20241220194742655" style="zoom:67%;" />	
+
+<p>直接就可以创建好了一个Springboot的骨架</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241220194825339.png" alt="image-20241220194825339" style="zoom:67%;" /></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/02/18/2.Areas%F0%9F%8C%90/back-end-java/7.SpringBoot/1.%20SpringBoot%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D%E5%9F%BA%E7%A1%80/">https://yuezi2048.github.io/2025/02/18/2.Areas🌐/back-end-java/7.SpringBoot/1. SpringBoot自动装配基础/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/7-SpringBoot/">7.SpringBoot</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/02/15/2.Areas%F0%9F%8C%90/03.algorithm/01/2.%20%E5%89%8D%E7%BC%80%E5%92%8C_%E5%B7%AE%E5%88%86/" title="2. 前缀和_差分"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">2. 前缀和_差分</div></div><div class="info-2"><div class="info-item-1"> 本章数组假设从下标1开始存储  差分数组上的单点修改，对应的前缀和就会进行对应的区间修改 差分标记数组不要用y1 y2变量 </div></div></div></a><a class="pagination-related" href="/2025/02/20/2.Areas%F0%9F%8C%90/03.algorithm/01/3.%20%E5%B0%BA%E5%8F%96%E6%B3%95/" title="3. 尺取法"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">3. 尺取法</div></div><div class="info-2"><div class="info-item-1">（滑动窗口 &#x2F; 双指针）：利用双指针遍历，获得满足条件区间（滑动窗口）的算法  如果没有硬性要求，建议从1开始遍历数组，防止下标越界  优化的 关键在于单调性，所以两个端点只需O(n)的时间复杂度就能遍历得到满足条件的答案。 </div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/02/21/2.Areas%F0%9F%8C%90/back-end-java/7.SpringBoot/2.%20SpringBoot2%E6%A0%B8%E5%BF%83%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF/" title="2. SpringBoot2核心开发技术"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-02-21</div><div class="info-item-2">2. SpringBoot2核心开发技术</div></div><div class="info-2"><div class="info-item-1">二、SpringBoot2核心开发技术2.1 YML文件语法在SpringBoot中，全局配置文件的配置文件名是固定的：application.properties &#x2F; application.yml  k:(空格)v：表示一对键值对（空格必须有）； 以缩进来控制层级关系；只要是左对齐的一列数据，都是同一个层级的； 属性和值也是大小写敏感； #表示注释； 字符串无需加引号，如果要加，’ ‘与” “表示字符串内容 会被转义&#x2F;不转义  server:  port: 8088 # 修改项目的端口号# 注：定义字符串数据时，不需要加双引号，引号有其他的作用uname: lisiage: 12  2.1.1 普通数据类型 普通数据类型  定义pojo类Demo1 @Component@Data@NoArgsConstructor@AllArgsConstructorpublic class Demo1 &#123;    @Value(&quot;$&#123;uname&#125;&quot;)    private String username;   ...</div></div></div></a><a class="pagination-related" href="/2025/02/25/2.Areas%F0%9F%8C%90/back-end-java/7.SpringBoot/4.%20%E6%95%B4%E5%90%88%E6%95%B0%E6%8D%AE%E6%8C%81%E4%B9%85%E5%B1%82/" title="4. 整合数据持久层"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-02-25</div><div class="info-item-2">4. 整合数据持久层</div></div><div class="info-2"><div class="info-item-1">四、整合数据持久层我们可以看到SpringBoot官方为我们提供了持久层的启动器，导入启动器后，我们可以开启场景的自动配置，因此可以通过这些启动器帮助我们自动配置。  spring-boot-starter-data开头的都是数据持久层场景相关的启动器  	 4.1 整合JDBC在pom文件导入spring-boot-starter-data-jdbc启动器即可。 &lt;!-- 导入jdbc启动器 --&gt;&lt;dependency&gt;    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;    &lt;artifactId&gt;spring-boot-starter-data-jdbc&lt;/artifactId&gt;&lt;/dependency&gt;  	 可以发现，JDBC启动器并没有为我们配置数据库驱动。因为SpringBoot不知道我们要用什么数据库，因此需要手动配置。 例如mysql &lt;!-- 导入数据库驱动 --&gt;&lt;dependency&gt;   ...</div></div></div></a><a class="pagination-related" href="/2025/04/12/2.Areas%F0%9F%8C%90/back-end-java/7.SpringBoot/5.%20%E6%95%B4%E5%90%88JUnit/" title="5. 整合JUnit"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-12</div><div class="info-item-2">5. 整合JUnit</div></div><div class="info-2"><div class="info-item-1">五、整合JUnit5.1 Junit5简介Junit5的框架主要有三个部分组成分别是：Junit Platform + Junit Jupiter + Junit Vintage3  Junit Platform : 其主要作用是在 JVM 上启动测试框架。它定义了一个抽象的 TestEngine API 来定义运行在平台上的测试框架；也就是说其他的自动 化测试引擎或开发人员自己定制的引擎都可以接入 Junit 实现对接和执 行。同时还支持通过命令行、Gradle 和 Maven 来运行平台（这对于我 们做自动化测试至关重要）  Junit Jupiter: 这是 Junit5 的核心，可以看作是承载 Junit4 原有功能的演进，包含了 JUnit 5 最新的编程模型和扩展机制；很多丰富的新特性使 JUnit 自动化 测试更加方便、功能更加丰富和强大。也是测试需要重点学习的地方； Jupiter 本身也是一一个基于 Junit Platform 的引擎实现，对 JUnit 5 而 言，JUnit Jupiter API 只是另一个 API！。 Junit Vintage3...</div></div></div></a><a class="pagination-related" href="/2025/04/12/2.Areas%F0%9F%8C%90/back-end-java/7.SpringBoot/6.%20%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7/" title="6. 指标监控"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-12</div><div class="info-item-2">6. 指标监控</div></div><div class="info-2"><div class="info-item-1">六、指标监控6.1 Actuator和endpoint在生产环境中，每一个微服务在部署以后，我们都需要对其进行监控、追踪、审计、控制等。SpringBoot就抽取了Actuator场景，使得我们每个微服务快速引用即可获得生产级别的应用监控、审计等功能 首先导入Actuator启动依赖 &lt;!-- actuator启动器 --&gt; &lt;dependency&gt;     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;     &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt; &lt;/dependency&gt;  导入后对actuator监控的端点进行暴露 # acturator配置management:  endpoints:    enabled-by-default: true # 暴露所有端点    web:      exposure:        include: &#x27;*&#x27;...</div></div></div></a><a class="pagination-related" href="/2025/04/12/2.Areas%F0%9F%8C%90/back-end-java/7.SpringBoot/7.%20%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" title="7. 高级特性"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-12</div><div class="info-item-2">7. 高级特性</div></div><div class="info-2"><div class="info-item-1">七、高级特性7.1 Profile环境切换7.1.1 配置文件环境切换实际工作，我们会分为开发环境，测试环境，生产环境。 不同的环境，我们项目的配置文件是不一样的，比如我们数据库的配置信息。 因此我们需要切换配置文件环境，不过springBoot已经集成该功能了。  导入依赖后编写启动器  @SpringBootApplicationpublic class SpringbootDay04Demo4Application &#123;    public static void main(String[] args) &#123;        SpringApplication.run(SpringbootDay04Demo4Application.class, args);    &#125;&#125;   编写控制器动态获取不同环境下的name值  @RestControllerpublic class HelloController &#123;    @Value(&quot;$&#123;person.name:李四&#125;&quot;) //...</div></div></div></a><a class="pagination-related" href="/2025/05/07/2.Areas%F0%9F%8C%90/back-end-java/7.SpringBoot/3.%20%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8Ethymeleaf/" title="3. 模板引擎thymeleaf"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-07</div><div class="info-item-2">3. 模板引擎thymeleaf</div></div><div class="info-2"><div class="info-item-1">三、模板引擎thymeleaf3.1 简介和基本语法3.1.1 简介springboot支持第三方的模板引擎技术，我们在官方文档中的启动器中可以看到一些相关的模板引擎 	  thymeleaf官网: https://www.thymeleaf.org/  Thymeleaf is a modern server-side Java template engine for both web and standalone environments. Thymeleaf’s main goal is to bring elegant natural templates to your development workflow — HTML that can be correctly displayed in browsers and also work as static prototypes, allowing for stronger collaboration in development teams. With modules for Spring Framework, a...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81SpringBoot%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D%E5%9F%BA%E7%A1%80"><span class="toc-text">一、SpringBoot自动装配基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-Sping%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D"><span class="toc-text">1.1 Sping基本介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-1-Spring%E7%94%9F%E6%80%81%E4%BB%8B%E7%BB%8D"><span class="toc-text">1.1.1 Spring生态介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-2-%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B8%8E%E5%88%86%E5%B8%83%E5%BC%8F"><span class="toc-text">1.1.2 微服务与分布式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-3-Spring%E5%A6%82%E4%BD%95%E6%9F%A5%E7%9C%8B%E6%96%87%E6%A1%A3"><span class="toc-text">1.1.3 Spring如何查看文档</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-4-SpringBoot%E9%A1%B9%E7%9B%AE%E5%BF%AB%E9%80%9F%E6%9E%84%E5%BB%BA"><span class="toc-text">1.1.4 SpringBoot项目快速构建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-2-springBoot%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="toc-text">1.2.2 springBoot自动配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-2-1-%E5%90%AF%E5%8A%A8%E5%99%A8%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="toc-text">1.2.2.1 启动器自动配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-2-2-%E5%8C%85%E6%89%AB%E6%8F%8F%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="toc-text">1.2.2.2 包扫描自动配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-2-3-%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E7%BB%86%E8%8A%82%E2%80%94%E2%80%94%E6%8C%89%E9%9C%80%E5%8A%A0%E8%BD%BD"><span class="toc-text">1.2.2.3 自动配置细节——按需加载</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-3-%E3%80%90%E5%BA%95%E5%B1%82%E6%BA%90%E7%A0%81%E3%80%91%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E5%8E%9F%E7%90%86"><span class="toc-text">1.2.3 【底层源码】自动配置原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-3-1-%E8%87%AA%E5%8A%A8%E5%8C%85%E8%A7%84%E5%88%99%E5%8E%9F%E7%90%86"><span class="toc-text">1.2.3.1 自动包规则原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-3-2-%E5%88%9D%E5%A7%8B%E5%8A%A0%E8%BD%BD%E9%85%8D%E7%BD%AE%E7%B1%BB"><span class="toc-text">1.2.3.2 初始加载配置类</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-3-3-%E6%8C%89%E9%9C%80%E5%8A%A0%E8%BD%BD%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E6%B5%81%E7%A8%8B"><span class="toc-text">1.2.3.3 按需加载自动配置流程</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#AOP%E9%85%8D%E7%BD%AE%E7%B1%BB"><span class="toc-text">AOP配置类</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81%E7%BC%93%E5%AD%98%E5%8A%A0%E8%BD%BD%E9%85%8D%E7%BD%AE%E7%B1%BB"><span class="toc-text">验证缓存加载配置类</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81SpringMVC%E7%9B%B8%E5%85%B3%E9%85%8D%E7%BD%AE%E7%B1%BB"><span class="toc-text">验证SpringMVC相关配置类</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-3-4-%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5-%E4%B8%BE%E4%B8%80%E5%8F%8D%E4%B8%89"><span class="toc-text">1.2.3.4 动手实践 举一反三</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3-%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3"><span class="toc-text">1.3 常用注解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-1-Configuration"><span class="toc-text">1.3.1 @Configuration</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-1-1-%E7%BB%86%E8%8A%821%E2%80%94%E2%80%94%E9%85%8D%E7%BD%AE%E7%B1%BB%E4%BB%A3%E7%90%86%E5%AF%B9%E8%B1%A1"><span class="toc-text">1.3.1.1 细节1——配置类代理对象</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-1-2-%E7%BB%86%E8%8A%822%E2%80%94%E2%80%94proxyBeanMethods"><span class="toc-text">1.3.1.2 细节2——proxyBeanMethods</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-2-Import"><span class="toc-text">1.3.2 @Import</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-2-1-%E5%AF%BC%E5%85%A5%E6%99%AE%E9%80%9A%E7%B1%BB"><span class="toc-text">1.3.2.1 导入普通类</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-2-2-%E5%AF%BC%E5%85%A5%E9%85%8D%E7%BD%AE%E7%B1%BB"><span class="toc-text">1.3.2.2 导入配置类</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-2-3-%E5%AF%BC%E5%85%A5ImportSelector%E6%8E%A5%E5%8F%A3%E5%AE%9E%E7%8E%B0%E7%B1%BB"><span class="toc-text">1.3.2.3 导入ImportSelector接口实现类</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-2-4-%E5%AF%BC%E5%85%A5ImportBeanDefinitionRegistrar%E6%8E%A5%E5%8F%A3%E5%AE%9E%E7%8E%B0%E7%B1%BB"><span class="toc-text">1.3.2.4 导入ImportBeanDefinitionRegistrar接口实现类</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-3-Conditional"><span class="toc-text">1.3.3 @Conditional</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-4-ImportResource"><span class="toc-text">1.3.4 @ImportResource</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-5-ConfigurationProperties"><span class="toc-text">1.3.5 @ConfigurationProperties</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E8%87%AA%E5%8A%A8%E7%BB%91%E5%AE%9A"><span class="toc-text">配置属性自动绑定</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-4-%E5%BC%80%E5%8F%91%E6%8F%92%E4%BB%B6"><span class="toc-text">1.4 开发插件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-1-Lombok%E6%8F%92%E4%BB%B6"><span class="toc-text">1.4.1 Lombok插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-2-dev-tools%E7%83%AD%E9%83%A8%E7%BD%B2%E5%B7%A5%E5%85%B7"><span class="toc-text">1.4.2 dev-tools热部署工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-3-Spring-Initializr"><span class="toc-text">1.4.3 Spring Initializr</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

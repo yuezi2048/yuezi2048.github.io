@@ -1,0 +1,255 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>A survey on causal infer... | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Treatment effect estimation 用于 policy evaluation 用药领域，如果我们想要评估一个药对寿命的影响那么要回答一个问题：如果强制复用该药物，患者在L年内存活的可能性是多少一个比较好的方式是大规模随机对照实验（large-scale randomized controlled trial）  但是有成本乃至道德上的问题  因此我们只能从非随机观测数据中估计结">
+<meta property="og:type" content="article">
+<meta property="og:title" content="A survey on causal infer...">
+<meta property="og:url" content="https://yuezi2048.github.io/2024/12/31/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/A%20survey%20on%20causal%20infer.../index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="Treatment effect estimation 用于 policy evaluation 用药领域，如果我们想要评估一个药对寿命的影响那么要回答一个问题：如果强制复用该药物，患者在L年内存活的可能性是多少一个比较好的方式是大规模随机对照实验（large-scale randomized controlled trial）  但是有成本乃至道德上的问题  因此我们只能从非随机观测数据中估计结">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2024-12-31T09:45:22.000Z">
+<meta property="article:modified_time" content="2024-12-31T09:45:22.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="综述">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "A survey on causal infer...",
+  "url": "https://yuezi2048.github.io/2024/12/31/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/A%20survey%20on%20causal%20infer.../",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2024-12-31T09:45:22.000Z",
+  "dateModified": "2024-12-31T09:45:22.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2024/12/31/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/A%20survey%20on%20causal%20infer.../index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'A survey on causal infer...',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">A survey on causal infer...</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">A survey on causal infer...</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-12-31T09:45:22.000Z" title="发表于 2024-12-31 17:45:22">2024-12-31</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-12-31T09:45:22.000Z" title="更新于 2024-12-31 17:45:22">2024-12-31</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/">science</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/">Pre</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/">综述</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>8分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p><strong>Treatment effect estimation 用于 policy evaluation</strong></p>
+<p>用药领域，如果我们想要评估一个药对寿命的影响<br>那么要回答一个问题：如果强制复用该药物，患者在L年内存活的可能性是多少<br>一个比较好的方式是大规模随机对照实验（large-scale randomized controlled trial）</p>
+<ul>
+<li>但是有成本乃至道德上的问题</li>
+</ul>
+<p>因此我们只能从非随机观测数据中估计结果：</p>
+<ul>
+<li>药物与生存的相关性并不意味着有因果关系，比如年龄、性别、疾病等严重程度等因素可能影响结果</li>
+</ul>
+<p><strong>推荐系统中的因果关系，也被用于评估策略估计的一个提升模型</strong><br>最近几年，才倾向于应用因果推断来进行模型的训练</p>
+<p>因果推理可以应用到CTR，点击后指标预测、以及RS各个阶段：数据搜集、用户的表示学习、无偏嵌入，以及目标优化和在线&#x2F;离线策略评估</p>
+<p>具有的优势：</p>
+<ul>
+<li><code>模型中的因果</code>。推荐系统主要也是依赖于统计方法，着重关注变量之间的相关性，但是在应用中，应当更加关注因果关系而不是相关性<ul>
+<li>传统推荐系统学习到的虚假关联<code>spurious correlation</code>可能会导致用户体验降级：比如电影推荐平台记录了完整看完动作片的女性用户，得出他喜欢该类的错误结论，然而她可能只是基于受欢迎程度而不是她的固有偏好</li>
+<li>相比之下，因果推荐可以了解用户个人兴趣。首先会测量偏见的源变量（受欢迎程度 暴露程度）对用户交互的影响，从而有效的去偏，这是目前最常见的因果推断的引用</li>
+<li>通过变量的因果效应分解与推断来更好的控制RS，以此来提高RS的准确性</li>
+</ul>
+</li>
+<li><code>回答反事实问题</code>“：数据增强、分布外泛化(Out-of-Distribution Generalization, OOD)，策略评估都是重要的反事实问题（存在因果变量的值和实际存在差异的情况）<ul>
+<li>数据增强：是观察数据的重要补充资源，反事实回答就需要回答”如果推荐的物品不同，会发生什么“之类的问题，”如果某个物品已被推荐给以前没有被推荐过的用户，那么点击的可能性有多大“</li>
+<li>OOD问题是训练和测试阶段之间相互作用的独立同分布（IID）的假设。传统的推荐可能会学习用户与物品的错误关联，而因果推荐系统则采用反事实手段来寻找推荐任务中不变或者不可改变的变量&#x2F;因果关系，并在分布发生变化时，重新使用并进行概括<ul>
+<li>比如怀孕女性怀孕前购买了红色高跟鞋，传统的推荐系统会继续推荐高跟鞋，但是因果推理系统可以通过因果图等，了解到高跟鞋而后怀孕状态的因果关系。因此当用户状态发生变化（比如购买了婴儿产品），则不再推荐高跟鞋，而是保留红色的偏好，转而推荐红色服装</li>
+</ul>
+</li>
+<li>策略评估 &#x2F; 提升估计。也是反事实问题，需要估计一个项目两个相互排斥的结果之间的差异（推荐物品i or  没有推荐）</li>
+<li>优化准确性的目标（公平性 可解释性）。反事实空间中修改性别等敏感特征，并且可以现实世界与反事实世界进行比较来影响用户的交互获得可解释性</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>分布外泛化(Out-of-Distribution Generalization, OOD)是<strong>深度学习领域的一个关键挑战</strong>，尤其是在现实世界的应用中，训练数据与测试数据的分布往往不完全相同，即非独立同分布(i.i.d.)假设通常无法满足</p>
+</blockquote>
+<p>![[Pasted image 20241231163912.png]]</p>
+<p>演变轨迹<br>![[Pasted image 20241231170713.png]]</p>
+<p>![[Pasted image 20241231171010.png]]</p>
+<h2 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h2><h3 id="因果发现和贝叶斯推理"><a href="#因果发现和贝叶斯推理" class="headerlink" title="因果发现和贝叶斯推理"></a>因果发现和贝叶斯推理</h3><blockquote>
+<p>因果发现[115]：因果发现是因果关系中的一项关键技术。因果关系是关于因果关系的科学[114]。在珀尔的理论中，因果关系包含两个基本问题：第一个问题是证明一个变量是另一个变量的原因或找到另一个变量的原因，第二个问题是得出结论，如果改变一个变量的值可能会产生什么影响。前者对应于<code>因果发现</code>，也称为因果结构学习，试图从基于一些因果假设的数据中发现因果关系，这些因果关系本质上是稳定的物理机制，并在变量之间确定的函数关系中表现出来[111]。后者对应于<code>因果推理</code>，它估计在具有给定因果关系(通常是通过因果发现或基于经验的假设获得的因果结构)的干预之后的结果[110,114,194]。换句话说，<code>前者是后者的基础</code>，因为如果没有因果结构，就不可能判断干预会影响哪些变量，因此无法实施干预和反事实。例如，如果我们不知道雨伞和雨伞之间的因果关系，我们就不能确定雨伞对雨的影响，因为它们总是重合。请注意，大多数因果发现方法依赖于SCM框架[103]。</p>
+</blockquote>
+<blockquote>
+<p>贝叶斯推理：贝叶斯推理是一种流行的基于贝叶斯定理的数据分析方法，所有观测和未观测的参数都被赋予一个<code>联合概率分布</code>，即先验分布和数据分布，以推断先验分布[161]。贝叶斯推理被认为是PO和SCM中的关键技术和组成部分：在PO中，通过分配机制和潜在结果的定义，贝叶斯模型可以用来连接现实世界或反事实世界中的治疗和潜在结果；在<code>SCM中，贝叶斯网络被广泛用作因果关系图来表示变量之间的因果关系</code>。然而，贝叶斯推理和因果推理之间有一个主要的区别。<code>贝叶斯推理是一种无因果关系的统计量</code>，它侧重于相关性、似然性等可以用分布函数表示的关联性。然而，因果推理的独特之处在于，因果概念不能仅从统计关联来定义。正如上面提到的例子，从统计数据中无法判断是不是下雨导致了这种行为打开雨伞，反之亦然。这一核心区别导致了Bayesian推理和因果推理在其<strong>具体表现形式（包括假设和符号）上的两个差异</strong>。1)Bayesian推理基于<code>关联假设</code>，即使未经测试，原则上也是可测试的[111]。然而，对于因果推理，相比之下，因果假设即使在原则上也无法得到验证，除非我们主动影响观察到的数据，即，  诉诸实验控制。一般来说，对Bayesian统计数据中先验的敏感性（例如IID假设）会随着样本量的增加而降低，而对<code>先验因果假设（例如雨伞是否不影响天气）的敏感性仍然很大</code>，无论样本量如何。2)与Bayesian统计相比，<code>因果推理引入了新的符号，作为因果表达</code>，第3节详细介绍了这一点。</p>
+</blockquote>
+<h3 id="潜在结果框架"><a href="#潜在结果框架" class="headerlink" title="潜在结果框架"></a>潜在结果框架</h3><p>进行一个干预后，其干预效果定义为同一个单位在控制下潜在结果的差异。</p>
+<ul>
+<li>定义1 <code>单位（Unit）</code>。单位是指潜在框架中的研究对象。<ul>
+<li>推荐系统中，一对user-item常被定义为一个单元</li>
+<li>用户在不同的时间接触物品会受到各种因素，从而做出不同的决策，因此同一个物品在不同的时间下是不同的单元</li>
+</ul>
+</li>
+<li>定义2 &#96;&#96; 干预（Treatment）&#96; ：定义为应用于单位的动作<ul>
+<li>该文重点关注二元处理（是否推荐）。T&#x3D;1 ？ 0</li>
+</ul>
+</li>
+</ul>
+<p>-<code> 潜在结果 Potential Outcome</code>：对于每个治疗单位对，潜在结果是治疗应用于该单位的结果，表示为Y（T &#x3D; t）（忽略单位）。<br>	对于一个单位，只有与实际接受的治疗相对应的潜在结果才会被观察，称为<code>观察结果</code>，而其他结果则被称为<code>反事实结果</code>。<br>	PO框架中因果推理的根本问题是，我们永远无法为一个单位同时获得观察到的和反事实的结果：不可能实现所有治疗并观察到相应的结果。</p>
+<ul>
+<li><code>干预效果 / 因果效应Treatment Effect/ Causal effect.</code> 治疗效果由同一单位治疗和控制下的潜在结果之间的差异来表示，公式为<br>![[Pasted image 20241231173838.png]]</li>
+</ul>
+<p><code>Average Treatment Effect (ATE)</code>是ITE的期望</p>
+<p>![[Pasted image 20241231174043.png]]</p>
+<p>具有相同特征X&#x3D;x的单位条件 平均干预效应<code> Conditional Average Treatment  Effect, CATE</code>定义为<br>![[Pasted image 20241231174146.png]]</p>
+<p>假设Assumptions：因果推理中的根本问题， 数据缺失问题是估计因果效应的主要障碍。因此，做出额外的假设至关重要</p>
+<ul>
+<li>假设1(SUTVA)。任何单位的潜在结果都不会因分配给其他单位的治疗方法而有所不同。对于每个单元，每个治疗级别没有不同的形式或版本，这会导致不同的潜在结果。稳定的单元治疗值假设，或SUTVA[60]是因果推断中最基本的假设，它既包含了对一个单元应用的治疗不会影响另一个单元的结果的无干扰概念，也包含了对于每个单元每个处理水平只有一个版本的处理的无隐藏变化的概念。第二个假设，可忽略或不混淆[129]，指出治疗分配不依赖于潜在的结果。</li>
+<li>假设2(清晰性&#x2F;可理解性)。治疗分配W与潜在结果无关，即T⊥Y(T&#x3D;0)，Y(T&#x3D;1)|X，也记为Pr(T&#x3D;1|X，Y(T&#x3D;0)，Y(T&#x3D;1))&#x3D;Pr(T&#x3D;1|X)，其中X表示背景变量。换句话说，在由观察到的背景变量或协变量的值定义的子总体内，治疗分配是随机的。可忽略假设排除了不可测量的混杂因素，这些混杂因素对治疗T和结果Y(T)都有因果影响。PR(T&#x3D;1|X)称为倾向性分数[125]。</li>
+<li>最后一个假设是积极的，或重叠的：假设3(积极)。0&lt;Pr(T&#x3D;t|X&#x3D;x)&lt;1，∀t，x。在大数据样本中，正性要求协变量的所有值都有处理单位和控制单位。与不可测试的可忽略假设[60]相反，可以从观察数据中测试正性。清晰性和积极的结合被称为“强烈的无知[125]”。</li>
+</ul>
+<h3 id="结构性因果模型框架"><a href="#结构性因果模型框架" class="headerlink" title="结构性因果模型框架"></a>结构性因果模型框架</h3><p>最显着的优势是其基于图形模型的现实世界因果依赖关系的直观结构，以及反事实和图形方法之间明智而友好的共生。</p>
+<p>![[Pasted image 20241231174442.png]]</p>
+<p>待补充…</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2024/12/31/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/A%20survey%20on%20causal%20infer.../">https://yuezi2048.github.io/2024/12/31/2.Areas🌐/science/Pre/综述/A survey on causal infer.../</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%BB%BC%E8%BF%B0/">综述</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/1.%20%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E5%8F%8A%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0%E6%A6%82%E8%AE%BA/" title="1. 统计学习及监督学习概论"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">1. 统计学习及监督学习概论</div></div><div class="info-2"><div class="info-item-1">[TOC] 一、统计学习及监督学习概论1.1 统计学习 统计学习是计算机系统通过运用数据及统计方法  提高系统性能的机器学习 统计学习研究的对象是数据，提取数据特征，抽象模型，而后回归到数据的分析和预测 基本假设：同类数据具有统计规律性   统计学习的方法包括：监督学习、无监督学习、强化学习 假设数据是独立同分布的，并假设学习的模型属于某个函数的集合（假设空间） 应用某个评价准则，从假设空间中选取最优模型，使他对测试数据在给定的评价准则下由最优的预测，而最优模型的选取由算法实现 因此统计学习方法的三要素：模型、策略、算法   统计学习的步骤 得到有限的训练数据集合 确定包含所有可能的模型假设空间（学习模型的集合） 确定模型选择的准则，即学习的策略 通过学习算法选择最优模型 利用学习的最优模型对新数据进行预测和分析    1.2 统计学习的分类1.2.1...</div></div></div></a><a class="pagination-related" href="/2025/01/02/2.Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/7.%20%E6%9F%A5%E6%89%BE/" title="7. 查找"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">7. 查找</div></div><div class="info-2"><div class="info-item-1">连地址法链地址法（拉链法 链接法）：一个地址处只能存放同义词，不存放非同义词，将同义词组成链表，存在对应的地址处即可 不同情况下的ASL：查找一个数据的比较次数 ASL平均查找长度：查找n个数查找长度和 &#x2F; n 开放地址法  ASL成功查找长度 ASL失败查找长度  链地址法  ASL成功查找长度  #include&lt;stdio.h&gt;#include&lt;stdlib.h&gt;#define size 13// 链表的节点结构typedef struct Node &#123;    int data;    struct Node *next;&#125;HNode, *HLink;int Hash(int k) &#123;    return k % 13;&#125;void Insert(HLink hash[], int k) &#123;    int i = Hash(k);        // 申请链表节点    HNode* p = (HNode*)malloc(sizeof(HNode));    p-&gt;data = k; ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2024/11/20/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/%E5%9F%BA%E4%BA%8E%E5%9B%A0%E6%9E%9C%E6%8E%A8%E6%96%AD%E7%9A%84%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" title="基于因果推断的推荐系统"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-20</div><div class="info-item-2">基于因果推断的推荐系统</div></div><div class="info-2"><div class="info-item-1">基于因果推断的推荐系统去偏研究综述作者：杨新新、刘真、卢思博、袁亚凡、孙永奇发表刊物：《计算机学报》2024 年第 47 卷第 10...</div></div></div></a><a class="pagination-related" href="/2024/10/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/%E7%BB%BC%E8%BF%B0/" title="综述"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-27</div><div class="info-item-2">综述</div></div><div class="info-2"><div class="info-item-1">abstract what: related work summarize the latest advancement in the field of RS   why: The objective of this study provide the current state-of-the-art highlight the latest trends in the development of RS   how: specific context the main taxonomy of RS, including personalized and group RS delves into the category of knowledge-based RS Summarizing evaluation metrics to asses the performance of systems ：the robustness, data bias and fairness issues in RS    Ⅰ. introduction To address the issue...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5"><span class="toc-text">相关概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%A0%E6%9E%9C%E5%8F%91%E7%8E%B0%E5%92%8C%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%8E%A8%E7%90%86"><span class="toc-text">因果发现和贝叶斯推理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BD%9C%E5%9C%A8%E7%BB%93%E6%9E%9C%E6%A1%86%E6%9E%B6"><span class="toc-text">潜在结果框架</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E6%80%A7%E5%9B%A0%E6%9E%9C%E6%A8%A1%E5%9E%8B%E6%A1%86%E6%9E%B6"><span class="toc-text">结构性因果模型框架</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

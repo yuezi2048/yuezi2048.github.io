@@ -1,0 +1,217 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>4.spring源码层面由哪些构成 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Core Container（核心容器）：  Spring Core：提供DI和IOC实现，是其他Spring的基础，别的模块依赖于此 Spring Beans：管理Bean定义和生命周期，基于IOC完成Bena的创建、依赖注入、初始化、销毁等操作 Spring Context：基于core和Bean提供类似JNDI的上下文，提供国际化、事件传播、资源访问等功能 Spring Expression">
+<meta property="og:type" content="article">
+<meta property="og:title" content="4.spring源码层面由哪些构成">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/4.spring%E6%BA%90%E7%A0%81%E5%B1%82%E9%9D%A2%E7%94%B1%E5%93%AA%E4%BA%9B%E6%9E%84%E6%88%90/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="Core Container（核心容器）：  Spring Core：提供DI和IOC实现，是其他Spring的基础，别的模块依赖于此 Spring Beans：管理Bean定义和生命周期，基于IOC完成Bena的创建、依赖注入、初始化、销毁等操作 Spring Context：基于core和Bean提供类似JNDI的上下文，提供国际化、事件传播、资源访问等功能 Spring Expression">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-11-14T03:38:48.000Z">
+<meta property="article:modified_time" content="2025-11-14T03:38:48.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="Spring">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "4.spring源码层面由哪些构成",
+  "url": "https://yuezi2048.github.io/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/4.spring%E6%BA%90%E7%A0%81%E5%B1%82%E9%9D%A2%E7%94%B1%E5%93%AA%E4%BA%9B%E6%9E%84%E6%88%90/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-11-14T03:38:48.000Z",
+  "dateModified": "2025-11-14T03:38:48.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/4.spring%E6%BA%90%E7%A0%81%E5%B1%82%E9%9D%A2%E7%94%B1%E5%93%AA%E4%BA%9B%E6%9E%84%E6%88%90/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '4.spring源码层面由哪些构成',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">4.spring源码层面由哪些构成</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">4.spring源码层面由哪些构成</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-11-14T03:38:48.000Z" title="发表于 2025-11-14 11:38:48">2025-11-14</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-11-14T03:38:48.000Z" title="更新于 2025-11-14 11:38:48">2025-11-14</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/">02.面经记录</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/">Spring</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">689</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>2分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p><strong>Core Container（核心容器）</strong>：</p>
+<ul>
+<li><strong>Spring Core</strong>：提供DI和IOC实现，是其他Spring的基础，别的模块依赖于此</li>
+<li><strong>Spring Beans</strong>：管理Bean定义和生命周期，基于IOC完成Bena的创建、依赖注入、初始化、销毁等操作</li>
+<li><strong>Spring Context</strong>：基于core和Bean提供类似JNDI的上下文，提供国际化、事件传播、资源访问等功能</li>
+<li><strong>Spring Expression Language（SpEL）</strong>：表达式语言，在运行时操作和查询对象值</li>
+</ul>
+<p><strong>AOP（面向切面编程）</strong>：</p>
+<ul>
+<li><strong>Spring AOP</strong>：提供面向切面编程功能，在方法执行前后&#x2F;抛出异常 时动态插入额外逻辑（日志记录 权限验证 事务管理等）</li>
+</ul>
+<p><strong>Data Access（数据访问）</strong>：</p>
+<ul>
+<li><strong>Spring JDBC</strong>：原生JDBC基础上进一步简化，提供模板方法管理连接、资源释放和异常处理</li>
+<li><strong>Spring ORM</strong>：与主流ORM框架（如Hibernate、JPA、MyBatis等）集成，简化持久层开发。</li>
+<li><strong>Spring Transaction（事务管理）</strong>：提供声明式和编程式的事务管理机制，与数据库操作密切结合。</li>
+</ul>
+<p><strong>Web层</strong>：</p>
+<ul>
+<li><strong>Spring Web</strong>：基础的Web支持，如Servlet的API，用于构建MVC架构</li>
+<li><strong>Spring MVC</strong>：基于Model-View-Controller（MVC）框架，用于构建基于HTTP请求的Web应用。它是一个常用的模块，支持注解驱动的Web开发。</li>
+<li><strong>Spring WebFlux</strong>：提供基于Reactive Streams的响应式编程模型，专为高并发的异步非阻塞请求设计。</li>
+</ul>
+<p>主要回答下核心模块，然后带一下切面、数据访问或者 web 相关的即可。</p>
+<h2 id="扩展知识"><a href="#扩展知识" class="headerlink" title="扩展知识"></a>扩展知识</h2><h3 id="Spring的扩展模块"><a href="#Spring的扩展模块" class="headerlink" title="Spring的扩展模块"></a><strong>Spring的扩展模块</strong></h3><p>除了核心模块外，Spring还提供了许多扩展模块，以支持不同的技术需求：</p>
+<ul>
+<li><strong>Spring Batch</strong>：用于批处理的框架，支持大规模数据的处理与分块执行。</li>
+<li><strong>Spring Integration</strong>：提供消息驱动的应用程序集成方案，适用于构建企业集成架构（EAI）。</li>
+<li><strong>Spring Cloud</strong>：用于构建微服务架构的模块集合，支持分布式系统中的服务注册、配置管理、服务调用等功能。</li>
+</ul>
+<h3 id="模块化设计的灵活性"><a href="#模块化设计的灵活性" class="headerlink" title="模块化设计的灵活性"></a><strong>模块化设计的灵活性</strong></h3><p>Spring 的模块化设计使得开发者可以按需选择需要的模块，而不是强制加载整个框架。例如，如果你只需要依赖注入功能，可以只使用Spring Core和Beans模块，而不引入Web、Security等模块。这种设计确保了Spring的灵活性和可扩展性。</p>
+<h3 id="Spring-Boot-与-Spring-Framework-的关系"><a href="#Spring-Boot-与-Spring-Framework-的关系" class="headerlink" title="Spring Boot 与 Spring Framework 的关系"></a><strong>Spring Boot 与 Spring Framework 的关系</strong></h3><p>Spring Boot是基于Spring Framework的简化开发方式。它自动配置了常用的Spring模块，极大地简化了Spring应用的初始化和配置工作。通过Spring Boot，开发者不再需要手动配置XML或Java配置类，很多默认配置能够让开发者快速上手。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/4.spring%E6%BA%90%E7%A0%81%E5%B1%82%E9%9D%A2%E7%94%B1%E5%93%AA%E4%BA%9B%E6%9E%84%E6%88%90/">https://yuezi2048.github.io/2025/11/14/2.Areas🌐/02.面经记录/Spring/4.spring源码层面由哪些构成/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Spring/">Spring</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/3.%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%E9%9C%80%E8%A6%81%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98/" title="3.为什么循环依赖需要三级缓存"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">3.为什么循环依赖需要三级缓存</div></div><div class="info-2"><div class="info-item-1">Spring 需要三级缓存的核心原因：AOP代理和Bean的早期引用问题。直接使用二级缓存会导致拿到的Bean是未代理的原始对象，所以需要工厂类通过其创建对象的方式提前暴露延迟代理对象  追问：那为什么不能在二级缓存放代理对象？ 违反了bean对象生命周期，代理过程本应该在初始化完成之后。  扩展知识进一步理解分析为什么需要三级缓存很明显，如果仅仅只是为了破解循环依赖，二级缓存够了，压根就不必要三级。 你思考一下，在实例化 Bean A 之后，我在二级 map 里面塞入这个 A，然后继续属性注入，发现 A 依赖 B 所以要创建 Bean B，这时候 B 就能从二级 map 得到 A ，完成 B 的建立之后， A 自然而然能完成。 所以为什么要搞个三级缓存，且里面存的是创建 Bean 的工厂呢？ 我们来看下调用工厂的 getObject 到底会做什么，实际会调用下面这个方法： protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, Object bean) &#123;   ...</div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/5.Spring_IOC/" title="5.Spring_IOC"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">5.Spring_IOC</div></div><div class="info-2"><div class="info-item-1">Spring IOC（Inversion of Control，控制反转）是Spirng核心概念。具体通过依赖注入（Dependency Injection） 实现。  之所以叫控制反转，是因为IOC 让对象的创建与管理职责由容器负责，而不是由对象自身控制。   核心思想：控制反转意味着对象创建和依赖关系交给Spring容器管理，而不是代码控制，使程序更灵活和解耦，提高可维护性和拓展性 依赖注入：通过构造器注入、setter 注入或接口注入，将对象所需的依赖传递给它，而不是让对象自行创建依赖。  扩展知识理解控制和反转IOC，即 Inversion of Control，控制反转。 首先要明确 IOC 是一种思想，而不是一个具体的技术，其次 IOC 这个思想也不是 Spring 创造的。 然后我们要理解到底控制的是什么，其实就是控制对象的创建，IOC 容器根据配置文件来创建对象，在对象的生命周期内，在不同时期根据不同配置进行对象的创建和改造。 那什么被反转了？其实就是关于创建对象且注入依赖对象的这个动作，本来这个动作是由我们程序员在代码里面指定的，例如对象 A 依赖对象...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/1.%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/" title="1.循环依赖"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">1.循环依赖</div></div><div class="info-2"><div class="info-item-1">循环依赖（Circular Dependency）是说多个模块，组件之间相互依赖，形成闭环（A依赖B，B依赖A），从而无法确定加载&#x2F;初始化的顺序 扩展知识简单示例看下方的代码就知晓了 @Servicepublic class A &#123;    @Autowired    private B b;&#125;@Servicepublic class B &#123;    @Autowired    private A a;&#125;//或者自己依赖自己@Servicepublic class A &#123;    @Autowired    private A a;&#125;  上面这两种方式都是循环依赖，应该很好理解，当然也可以是三个 Bean 甚至更多 Bean 相互依赖，原理都是一样的。 	 这种循环依赖可能会产生问题，例如 A 要依赖 B，发现 B 还没创建，于是开始创建 B ，创建的过程发现 B 要依赖 A， 而 A 还没创建好呀，因为它要等 B 创建好，就这样它们俩就搁这卡 bug 了。 关联面试题 578. Spring...</div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/10.FactoryBean/" title="10.FactoryBean"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">10.FactoryBean</div></div><div class="info-2"><div class="info-item-1">FactoryBean是Spring的特殊接口，允许开发者通过实现接口来创建复杂的Bean实例（通过FactoryBean创建的Bean除了FactoryBean本身，也可以是他生产的对象）  核心概念：FactoryBean 是一个实现了 FactoryBean&lt;T&gt; 接口的 Bean，通过它可以自定义复杂对象的创建逻辑。Spring 容器会调用 getObject() 方法来获取实际的 Bean 实例。 使用场景： 通常用于需要创建复杂对象或需要使用代理模式生成 Bean 的场景。  扩展知识FactoryBean 的主要方法 getObject()：这是 FactoryBean 最重要的方法，返回实际的 Bean 实例。Spring 容器会调用这个方法来获取 Bean。 getObjectType()：返回由 getObject() 方法所返回的对象类型，Spring 可以根据这个类型进行 Bean 的类型检查。 isSingleton()：用于确定 getObject() 返回的 Bean 是否为单例。如果返回 true，那么 Spring...</div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/11.ObjectFactory/" title="11.ObjectFactory"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">11.ObjectFactory</div></div><div class="info-2"><div class="info-item-1">ObjectFactory是 Spring 框架中的一个接口，主要用于延迟获取 Bean 实例。 ObjectFactory 提供了一种延迟加载的机制，它通过 getObject() 方法返回一个 Bean 的实例。使用 ObjectFactory 可以避免在容器启动时立即创建所有 Bean，即只有在真正需要使用 Bean 时才会从 Spring 容器中获取该 Bean 实例，有助于优化性能。 扩展知识ObjectFactory 的使用场景 懒加载 Bean：当某个 Bean 的创建过程可能耗时较长或依赖的资源较重时，可以通过 ObjectFactory 进行懒加载，避免容器启动时不必要的 Bean 创建。这能有效提升系统的启动速度。 避免循环依赖：在某些情况下，两个 Bean 可能相互依赖，导致循环依赖问题。通过使用 ObjectFactory，可以延迟其中一个 Bean 的创建，避免循环依赖。  在 Spring 的循环依赖里就用到它了，三级缓存的 map 里面存储的就是 ObjectFactory，用于延迟代理对象的创建。 并且在某些需要在运行时决定动态 Bean...</div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/12.ApplicationContext/" title="12.ApplicationContext"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">12.ApplicationContext</div></div><div class="info-2"><div class="info-item-1">ApplicationContext 是多个底层接口组合后的接口。从类图中我们可以看到，它主要提供了五大功能。  核心容器 BeanFactory 国际化 MessageSource 资源获取 ResourceLoader 环境信息 EnvironmentCapable 事件发布 ApplicationEventPublisher   ApplicationContext有多个实现类，如ClassPathXmlApplicationContext和FileSystemXmlApplicationContext等，适用于不同的应用场景。通过这些实现类，开发者可以根据具体需求选择合适的ApplicationContext来实现Spring应用程序的各种功能‌。   扩展知识下面，我们使用 SpringBoot 返回的 ConfigurableApplicationContext 来进行讲解。 @SpringBootApplicationpublic class Main &#123;    public static void main(String[] args) throws...</div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/13.Bean%E4%BD%9C%E7%94%A8%E5%9F%9F/" title="13.Bean作用域"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">13.Bean作用域</div></div><div class="info-2"><div class="info-item-1">一共有六种作用域：  整体作用  singleton：默认是单例，含义不用解释了吧，一个 IOC 容器内部仅此一个 prototype：原型，多实例   分块作用  request：每个请求都会新建一个属于自己的 Bean 实例，这种作用域仅存在 Spring Web 应用中 session：一个 http session 中有一个 bean 的实例，这种作用域仅存在 Spring Web 应用中 application：整个 ServletContext 生命周期里，只有一个 bean，这种作用域仅存在 Spring Web 应用中 websocket：一个 WebSocket 生命周期内一个 bean 实例，这种作用域仅存在 Spring Web 应用中    官网最新截图：  </div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/14.spring%E6%B3%A8%E5%85%A5%E6%96%B9%E5%BC%8F/" title="14.spring注入方式"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">14.spring注入方式</div></div><div class="info-2"><div class="info-item-1"> 推荐方式  构造器注入，Spring 倡导构造函数注入，因为构造器注入返回给客户端使用的时候一定是完整的。 setter 注入，可选的注入方式，好处是在有变更的情况下，可以重新注入。   其他  字段注入，就是平日我们用 @Autowired 标记字段 方法注入，就是平日我们用 @Autowired 标记方法 接口回调注入，就是实现 Spring 定义的一些内建接口，例如 BeanFactoryAware，会进行 BeanFactory 的注入    其实官网上关于注入就写了构造器和setter ： 	 像字段注入其实官方是不推荐的使用的，因为依赖注解，后没有控制注入顺序且无法注入静态字段。 </div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A9%E5%B1%95%E7%9F%A5%E8%AF%86"><span class="toc-text">扩展知识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring%E7%9A%84%E6%89%A9%E5%B1%95%E6%A8%A1%E5%9D%97"><span class="toc-text">Spring的扩展模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97%E5%8C%96%E8%AE%BE%E8%AE%A1%E7%9A%84%E7%81%B5%E6%B4%BB%E6%80%A7"><span class="toc-text">模块化设计的灵活性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring-Boot-%E4%B8%8E-Spring-Framework-%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-text">Spring Boot 与 Spring Framework 的关系</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

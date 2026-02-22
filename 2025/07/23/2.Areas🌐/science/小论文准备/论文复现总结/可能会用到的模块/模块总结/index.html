@@ -1,0 +1,267 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>模块总结 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="问题总结 在多模态领域中，语义差异限制了特征表达，影响了模型性能（BeFA:Khurana等人，2023；Rinaldi、Russo和Tommasino，2023） 多模式推荐的目标是预测用户偏好，而不是理解多模式内容（CHOSION ） BPR损失只能监督最终的用户评分学习，而不能优化每种特定模态的评分学习（CHOSION POWERec） 粗粒度属性表示项目之间的共性，而细粒度属性是影响用户购">
+<meta property="og:type" content="article">
+<meta property="og:title" content="模块总结">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/07/23/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E5%8F%AF%E8%83%BD%E4%BC%9A%E7%94%A8%E5%88%B0%E7%9A%84%E6%A8%A1%E5%9D%97/%E6%A8%A1%E5%9D%97%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="问题总结 在多模态领域中，语义差异限制了特征表达，影响了模型性能（BeFA:Khurana等人，2023；Rinaldi、Russo和Tommasino，2023） 多模式推荐的目标是预测用户偏好，而不是理解多模式内容（CHOSION ） BPR损失只能监督最终的用户评分学习，而不能优化每种特定模态的评分学习（CHOSION POWERec） 粗粒度属性表示项目之间的共性，而细粒度属性是影响用户购">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-07-23T07:00:27.000Z">
+<meta property="article:modified_time" content="2025-07-23T07:00:27.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="可能会用到的模块">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "模块总结",
+  "url": "https://yuezi2048.github.io/2025/07/23/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E5%8F%AF%E8%83%BD%E4%BC%9A%E7%94%A8%E5%88%B0%E7%9A%84%E6%A8%A1%E5%9D%97/%E6%A8%A1%E5%9D%97%E6%80%BB%E7%BB%93/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-07-23T07:00:27.000Z",
+  "dateModified": "2025-07-23T07:00:27.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/07/23/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E5%8F%AF%E8%83%BD%E4%BC%9A%E7%94%A8%E5%88%B0%E7%9A%84%E6%A8%A1%E5%9D%97/%E6%A8%A1%E5%9D%97%E6%80%BB%E7%BB%93/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '模块总结',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">模块总结</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">模块总结</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-07-23T07:00:27.000Z" title="发表于 2025-07-23 15:00:27">2025-07-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-07-23T07:00:27.000Z" title="更新于 2025-07-23 15:00:27">2025-07-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/">science</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/">小论文准备</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/">论文复现总结</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E5%8F%AF%E8%83%BD%E4%BC%9A%E7%94%A8%E5%88%B0%E7%9A%84%E6%A8%A1%E5%9D%97/">可能会用到的模块</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>3分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="问题总结"><a href="#问题总结" class="headerlink" title="问题总结"></a>问题总结</h2><ul>
+<li>在多模态领域中，语义差异限制了特征表达，影响了模型性能（BeFA:Khurana等人，2023；Rinaldi、Russo和Tommasino，2023）</li>
+<li>多模式推荐的目标是预测用户偏好，而不是理解多模式内容（CHOSION ）</li>
+<li>BPR损失只能监督最终的用户评分学习，而不能优化每种特定模态的评分学习（CHOSION POWERec）</li>
+<li>粗粒度属性表示项目之间的共性，而细粒度属性是影响用户购买决策的关键因素。由于显式交互特征仅通过模态项目图增强，并通过简单的聚合来表示用户模态，因此它们缺乏与用户行为（GUME）相关的信息</li>
+</ul>
+<h2 id="各模型总结"><a href="#各模型总结" class="headerlink" title="各模型总结"></a>各模型总结</h2><p>基准Encoder模型选用</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250714121010770.png" alt="image-20250714121010770">	</p>
+<p>融合模态选用</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250714123251159.png" alt="image-20250714123251159">		</p>
+<p>自监督任务选用</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250714124630069.png" alt="image-20250714124630069" style="zoom:150%;" />	
+
+
+
+<h3 id="LATTICE-2021"><a href="#LATTICE-2021" class="headerlink" title="LATTICE-2021"></a>LATTICE-2021</h3><p>LATTICE：GCN +  Encoder（user-item + item-item双图） + Lately Fusion（attention加权融合模态）</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250716113436724.png" alt="image-20250716113436724">	</p>
+<h3 id="FREEDOM-2023"><a href="#FREEDOM-2023" class="headerlink" title="FREEDOM-2023"></a>FREEDOM-2023</h3><p>FREEDOM：LATTICE + Encoder（item-item冻结） + Encoder（ user-item的边修剪dropout 去噪模块）</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250620145450862.png" alt="image-20250620145450862">	</p>
+<h3 id="PGL-2025"><a href="#PGL-2025" class="headerlink" title="PGL-2025"></a>PGL-2025</h3><p>PGL：LATTICE + Encoder（全局感知+局部感知） +  structure-based SSL增强（特征dropout） </p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250716111148037.png" alt="image-20250716111148037">	</p>
+<h3 id="MENTER-2025"><a href="#MENTER-2025" class="headerlink" title="MENTER-2025"></a>MENTER-2025</h3><p>MENTER：FREEDOM +  Lately Fusion增强（多层次跨模态对齐 feature-based SSL） +  SSL混合增强（特征dropout + 图扰动） </p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250716112814378.png" alt="image-20250716112814378">	</p>
+<h3 id="SMORE-2025"><a href="#SMORE-2025" class="headerlink" title="SMORE-2025"></a>SMORE-2025</h3><p>SMORE：LATTICE + Lately Fusion（基于频谱） + feature-based SSL（注意力+注入行为信号对比学习）</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250312114544432.png" alt="image-20250312114544432">	</p>
+<h3 id="MGCN-2023"><a href="#MGCN-2023" class="headerlink" title="MGCN-2023"></a>MGCN-2023</h3><p>MGCN：LATTICE’（基于ID引导过滤模态噪声）+ Encoder（多视图编码）+ Lately Fusion（ID引导下提取模态偏好权重+ feature-based SSL辅助任务最大化多模态特征和ID特征的互信息）</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250713121225829.png" alt="image-20250713121225829">	</p>
+<h3 id="DSGRec-2025（四区）"><a href="#DSGRec-2025（四区）" class="headerlink" title="DSGRec-2025（四区）"></a>DSGRec-2025（四区）</h3><p>DSGRec（4区）：MGCN + Encoder（ID信号+多模态信号）+ structure-based  SSL（超边）</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250703125907438.png" alt="image-20250703125907438">	</p>
+<h3 id="DGM-2025"><a href="#DGM-2025" class="headerlink" title="DGM-2025"></a>DGM-2025</h3><p>DGM： LATTICE + Encoder（跨模态通用编码器+特定模块编码器）+ 模态生成模块（特征重建+双特征生成+refine graph）</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250716111353307.png" alt="image-20250716111353307">	</p>
+<h3 id="CMDL"><a href="#CMDL" class="headerlink" title="CMDL"></a>CMDL</h3><p>MGCN+自注意力（特有+共享）+互信息解耦</p>
+<ol>
+<li><strong>模态解耦表示</strong>：明确区分模态共享和特有知识，解决现有方法无法区分的问题</li>
+<li><strong>互信息正则化</strong>：通过统计约束确保解耦有效性，解决简单约束不足的问题</li>
+<li><strong>动态组合机制</strong>：根据协同信息自适应组合不同表示，解决简单聚合的局限性</li>
+</ol>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250717110607063.png" alt="image-20250717110607063">	</p>
+<p>​		</p>
+<h3 id="CHOESION"><a href="#CHOESION" class="headerlink" title="CHOESION"></a>CHOESION</h3><p>MGCN’（残差网络）+双阶段融合+BPR注意力</p>
+<p>​	<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250717144255789.png" alt="image-20250717144255789">	</p>
+<h3 id="DGVAE"><a href="#DGVAE" class="headerlink" title="DGVAE"></a>DGVAE</h3><p>CLIP&#x2F;Sentence-Transformer(多模态预处理) + Res-GCN’(简化残差图卷积网络) + 解耦潜在原型表示模块 + 互信息最大化对齐模块</p>
+<ol>
+<li><strong>可解释性提升</strong>：通过将图像等转换为文本描述，使推荐结果可以用自然语言解释</li>
+<li><strong>性能保证</strong>：图结构捕捉高阶关系，解耦表示学习更丰富的语义信息</li>
+<li><strong>对齐验证</strong>：互信息最大化确保数字交互可以与文本偏好对应</li>
+</ol>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250719111508799.png" alt="image-20250719111508799">		</p>
+<h3 id="DiffMM-2024"><a href="#DiffMM-2024" class="headerlink" title="DiffMM-2024"></a>DiffMM-2024</h3><p>GNN’(基础协同过滤) + 多模态图扩散模块(含前向&#x2F;反向过程和模态感知信号注入) + 跨模态对比学习框架(含两种对比范式)</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250721151012278.png" alt="image-20250721151012278">	</p>
+<h3 id="BeFA"><a href="#BeFA" class="headerlink" title="BeFA"></a>BeFA</h3><p>预训练模型 + 基于行为特征解耦 + 行为引导的特征重构</p>
+<p>通过行为信息引导，可以识别并强化真正反映用户偏好的内容特征，同时抑制无关信息，从而解决信息漂移和遗漏问题。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250717113952163.png" alt="image-20250717113952163">	</p>
+<h3 id="FMMRec"><a href="#FMMRec" class="headerlink" title="FMMRec"></a>FMMRec</h3><p>LATTICE’(基准推荐模型) + 公平导向的模态解耦模块 + 关系感知的公平学习模块(公平&#x2F;不公平关系挖掘 + 角色指示嵌入)</p>
+<ol>
+<li><strong>模态解耦</strong>：明确分离多模态内容中的敏感和非敏感信息，控制因果关系</li>
+<li><strong>关系挖掘</strong>：利用解耦后的嵌入构建用户关系图，调整因果影响</li>
+<li><strong>对抗学习</strong>：确保学习到的表示独立于敏感属性，实现反事实公平</li>
+</ol>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250721152114956.png" alt="image-20250721152114956">	</p>
+<h3 id="GUIDER"><a href="#GUIDER" class="headerlink" title="GUIDER"></a>GUIDER</h3><p>噪声识别 + 正负样本增强 + 知识蒸馏</p>
+<ol>
+<li><strong>AMSC</strong>：通过模态内相似性和跨模态一致性校准样本，解决了多模态空间中噪声交互难以检测的问题。</li>
+<li><strong>DBPR</strong>：直接利用校准后的样本优化推荐模型，避免了传统方法在多模态空间中的失效。</li>
+<li><strong>OT-based KD</strong>：通过教师模型的去噪知识指导学生模型，解决了直接应用去噪损失函数到MMRecs的困难。</li>
+</ol>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250717175205086.png" alt="image-20250717175205086">	</p>
+<h3 id="GUME"><a href="#GUME" class="headerlink" title="GUME"></a>GUME</h3><ol>
+<li><strong>图增强</strong>：通过多模态相似性添加边，长尾物品能获得更多信息传播路径，缓解冷启动问题。</li>
+<li><strong>用户模态增强</strong>：通过对比学习整合历史偏好和潜在兴趣，用户模态表示更全面。</li>
+<li><strong>模态对齐</strong>：去除噪声后，模态特征更纯净，推荐更准确。</li>
+</ol>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250719154805174.png" alt="image-20250719154805174">	</p>
+<h3 id="MoDiCF"><a href="#MoDiCF" class="headerlink" title="MoDiCF"></a>MoDiCF</h3><p>DDPM + 扩散数据补全 + 反事实多模态推荐</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250721152805791.png" alt="image-20250721152805791">	</p>
+<h3 id="POWERec"><a href="#POWERec" class="headerlink" title="POWERec"></a>POWERec</h3><p>基于提示的多模态用户兴趣学习 + 弱模态增强</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250719151959436.png" alt="image-20250719151959436">	</p>
+<h2 id="各Sota的性能表"><a href="#各Sota的性能表" class="headerlink" title="各Sota的性能表"></a>各Sota的性能表</h2><p>PGL</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250716111214857.png" alt="image-20250716111214857">	</p>
+<p>MENTER</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250716112831111.png" alt="image-20250716112831111">	</p>
+<h2 id="方法表"><a href="#方法表" class="headerlink" title="方法表"></a>方法表</h2><p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250714111626374.png" alt="image-20250714111626374"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/07/23/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E5%8F%AF%E8%83%BD%E4%BC%9A%E7%94%A8%E5%88%B0%E7%9A%84%E6%A8%A1%E5%9D%97/%E6%A8%A1%E5%9D%97%E6%80%BB%E7%BB%93/">https://yuezi2048.github.io/2025/07/23/2.Areas🌐/science/小论文准备/论文复现总结/可能会用到的模块/模块总结/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%8F%AF%E8%83%BD%E4%BC%9A%E7%94%A8%E5%88%B0%E7%9A%84%E6%A8%A1%E5%9D%97/">可能会用到的模块</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/07/21/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/%E6%80%9D%E8%B7%AF/" title="思路"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">思路</div></div><div class="info-2"><div class="info-item-1">缝合思路你提出的创新框架可以概括为：MENTER’ + BGAD + DMSP。 其中：  MENTER’：表示对MENTER模型进行改进和增强。 BGAD：是基于DiffMM扩散模型进行改进的“行为引导的自适应图扩散”模块。 DMSP：是基于FMMRec模型进行改进的“基于因果正则化的解耦模态特定偏好学习”模块。  这个思路的核心在于，在MENTER这个强大的图神经网络基准模型之上，引入了两个关键的创新点：一个用于鲁棒地处理多模态噪声和信息传播（BGAD），另一个用于细致地理解和利用用户对不同模态的偏好（DMSP），并通过因果正则化确保解耦的有效性。  1. 基准模型：MENTER’ (MENTER的改进与增强)对应论文：  MENTER-2025 FREEDOM-2023 (MENTER的基准模型) LATTICE-2021 (FREEDOM的基准模型)  MENTER核心能力： MENTER模型在FREEDOM的基础上，通过以下方式增强了多模态推荐能力：  多层次跨模态对齐 (Lately Fusion增强)：...</div></div></div></a><a class="pagination-related" href="/2025/07/23/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90/" title="代码实现分析"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">代码实现分析</div></div><div class="info-2"><div class="info-item-1">代码编写INFO AAA(  (mlp): Linear(in_features=128, out_features=128, bias=True)  (image_embedding): Embedding(7050, 4096)  (image_trs): Linear(in_features=4096, out_features=64, bias=True)  (text_embedding): Embedding(7050, 384)  (text_trs): Linear(in_features=384, out_features=64, bias=True)  (MLP_user): Linear(in_features=128, out_features=64, bias=True)  (v_gcn): GCN(    (MLP): Sequential(      (0): Linear(in_features=4096, out_features=256, bias=True)      (1): LeakyReLU(negative_slope=0.01) ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/07/17/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E5%8F%AF%E8%83%BD%E4%BC%9A%E7%94%A8%E5%88%B0%E7%9A%84%E6%A8%A1%E5%9D%97/%E5%A4%9A%E6%A8%A1%E6%80%81%E7%9A%84SSL%E6%80%BB%E7%BB%93/" title="多模态的SSL总结"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-17</div><div class="info-item-2">多模态的SSL总结</div></div><div class="info-2"><div class="info-item-1">在多模态推荐系统中，自监督学习（Self-Supervised Learning, SSL）的 feature-based 和 model-based 方法是两种不同的模态特征学习范式，其核心区别在于监督信号的来源和建模方式：  1. Feature-based...</div></div></div></a><a class="pagination-related" href="/2025/07/19/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E5%8F%AF%E8%83%BD%E4%BC%9A%E7%94%A8%E5%88%B0%E7%9A%84%E6%A8%A1%E5%9D%97/%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/" title="问题总结"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-19</div><div class="info-item-2">问题总结</div></div><div class="info-2"><div class="info-item-1"> In multimodal domains, semantic differences limit feature expressiveness, impacting model performance (BeFA：Khurana et al. 2023; Rinaldi, Russo, and Tommasino 2023) the goal of multimodal recommendation is to predict user preferences instead of understanding multimodal content（CHOESION） the BPR loss can only supervise the final user rating learning, but cannot optimize each modality-specific rating learning（CHOSION POWERec） The coarse-grained attributes represent commonalities among items,...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93"><span class="toc-text">问题总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%84%E6%A8%A1%E5%9E%8B%E6%80%BB%E7%BB%93"><span class="toc-text">各模型总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#LATTICE-2021"><span class="toc-text">LATTICE-2021</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FREEDOM-2023"><span class="toc-text">FREEDOM-2023</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PGL-2025"><span class="toc-text">PGL-2025</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MENTER-2025"><span class="toc-text">MENTER-2025</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SMORE-2025"><span class="toc-text">SMORE-2025</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MGCN-2023"><span class="toc-text">MGCN-2023</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DSGRec-2025%EF%BC%88%E5%9B%9B%E5%8C%BA%EF%BC%89"><span class="toc-text">DSGRec-2025（四区）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DGM-2025"><span class="toc-text">DGM-2025</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CMDL"><span class="toc-text">CMDL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CHOESION"><span class="toc-text">CHOESION</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DGVAE"><span class="toc-text">DGVAE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DiffMM-2024"><span class="toc-text">DiffMM-2024</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BeFA"><span class="toc-text">BeFA</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FMMRec"><span class="toc-text">FMMRec</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GUIDER"><span class="toc-text">GUIDER</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GUME"><span class="toc-text">GUME</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MoDiCF"><span class="toc-text">MoDiCF</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#POWERec"><span class="toc-text">POWERec</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%84Sota%E7%9A%84%E6%80%A7%E8%83%BD%E8%A1%A8"><span class="toc-text">各Sota的性能表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E8%A1%A8"><span class="toc-text">方法表</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

@@ -1,0 +1,473 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>5.部署 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="项目部署多环境理论 多环境：同个项目在不同的阶段（本地开发-&gt;测试调试–&gt;部署上线）需要根据情况需要部署到不同的机器上 好处（针对不同环境做不同的事情）：  每个环境互不影响； 区分不同的阶段（开发&#x2F;测试&#x2F;生产） 项目优化，有些依赖不需要放到线上 本地日志 精简依赖：lombook、接口文档 项目的环境 &#x2F; 参数调整（JVM堆内存等参数）    分类：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="5.部署">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/09/18/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/5.%E9%83%A8%E7%BD%B2/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="项目部署多环境理论 多环境：同个项目在不同的阶段（本地开发-&gt;测试调试–&gt;部署上线）需要根据情况需要部署到不同的机器上 好处（针对不同环境做不同的事情）：  每个环境互不影响； 区分不同的阶段（开发&#x2F;测试&#x2F;生产） 项目优化，有些依赖不需要放到线上 本地日志 精简依赖：lombook、接口文档 项目的环境 &#x2F; 参数调整（JVM堆内存等参数）    分类：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-09-18T12:09:13.000Z">
+<meta property="article:modified_time" content="2025-09-18T12:09:13.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="back-end">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "5.部署",
+  "url": "https://yuezi2048.github.io/2025/09/18/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/5.%E9%83%A8%E7%BD%B2/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-09-18T12:09:13.000Z",
+  "dateModified": "2025-09-18T12:09:13.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/09/18/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/5.%E9%83%A8%E7%BD%B2/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '5.部署',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">5.部署</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">5.部署</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-09-18T12:09:13.000Z" title="发表于 2025-09-18 20:09:13">2025-09-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-09-18T12:09:13.000Z" title="更新于 2025-09-18 20:09:13">2025-09-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/">01.project</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/">condefather</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/user-center/">user-center</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/user-center/back-end/">back-end</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="项目部署"><a href="#项目部署" class="headerlink" title="项目部署"></a>项目部署</h2><h3 id="多环境理论"><a href="#多环境理论" class="headerlink" title="多环境理论"></a>多环境理论</h3><blockquote>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_41701290/article/details/120173283">多环境</a>：同个项目在不同的阶段（本地开发-&gt;测试调试–&gt;部署上线）需要根据情况需要部署到不同的机器上</p>
+<p>好处（针对不同环境做不同的事情）：</p>
+<ul>
+<li>每个环境互不影响；</li>
+<li>区分不同的阶段（开发&#x2F;测试&#x2F;生产）</li>
+<li>项目优化，有些依赖不需要放到线上<ul>
+<li>本地日志</li>
+<li>精简依赖：lombook、接口文档</li>
+<li>项目的环境 &#x2F; 参数调整（JVM堆内存等参数）</li>
+</ul>
+</li>
+</ul>
+<p>分类：</p>
+<ul>
+<li>本地环境：localhost:8080</li>
+<li>开发环境（远程开发）：为了开发方便，大家连同一台机器</li>
+<li>测试环境（测试 独立数据库 独立服务器）：开发 &#x2F; 测试 &#x2F; 产品<ul>
+<li>性能测试 &#x2F; 功能测试 &#x2F; 系统集成测试</li>
+<li>沙箱环境（实验环境）：完全隔离的环境，做实验</li>
+</ul>
+</li>
+<li>预发布环境（内测）：基本和正式一致，正式数据库，可以查出更多问题</li>
+<li>正式环境（线上，公开对外访问）：不要改动，保证正常运行</li>
+</ul>
+</blockquote>
+<h4 id="前端多环境"><a href="#前端多环境" class="headerlink" title="前端多环境"></a>前端多环境</h4><p>请求地址：</p>
+<ul>
+<li>开发环境：localhost:8000</li>
+<li>线上环境：user-backend.code-nav.cn</li>
+</ul>
+<p>前端区分环境，通过env变量传递。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title function_">startFront</span>(<span class="params">env</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (env === <span class="string">&#x27;prod&#x27;</span>) &#123;</span><br><span class="line">        <span class="comment">// 项目优化</span></span><br><span class="line">        <span class="comment">// 修改请求地址</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 保持本地开发...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>原项目使用了umi框架，build的时候自动传入<code>NODE ENV === PRODUCTION</code>参数，START通过process.env取到环境变量，可以通过<code>alert(process.env.NODE_ENV)</code>校验</p>
+<ul>
+<li>启动方式<ul>
+<li>开发环境：npm run start 本地启动</li>
+<li>线上环境：npm run build 项目构建打包，可以使用<code>serve</code>命令（npm i -g serve）在本地启动正式环境</li>
+</ul>
+</li>
+</ul>
+<p>在<code>request.ts</code>中，后续可以考虑打包后怎么更小一些</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> myAxios = axios.<span class="title function_">create</span>(&#123;</span><br><span class="line">  <span class="attr">baseURL</span>: <span class="string">&quot;http://localhost:8080&quot;</span>,</span><br><span class="line">  <span class="comment">// process.env.NODE_ENV === &quot;development&quot;</span></span><br><span class="line">  <span class="comment">//   ? &quot;http://localhost:8080&quot;</span></span><br><span class="line">  <span class="comment">//   : &quot;http://127.0.0.1:8080&quot;,</span></span><br><span class="line">  <span class="attr">timeout</span>: <span class="number">10000</span>,</span><br><span class="line">  <span class="attr">withCredentials</span>: <span class="literal">true</span>,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>项目配置</p>
+<ul>
+<li><p>不同的框架有不同的配置文件，比如umi框架的开发环境在<code>config/config.dev.ts</code>和<code>config/config.prod.ts</code> （配置文件后缀区分 config.ts是公共配置），建议多看文档（可以知道优化方法）</p>
+</li>
+<li><p>在这个配置文件下就可以实现在不同的环境下有不同的效果（如按需加载，静态化实现线上环境优化）。</p>
+<ul>
+<li><code>exportStatic</code>：使得页面静态化（如果遇到问题了查看umi文档）<ul>
+<li>开启后就是根据页面的路由，每个路由都会对应静态文件</li>
+<li>如果不静态化，只有一个index.html，后续根据js加载其他页面，此时如果直接访问其他的路由就会报404（要么配nginix，要么静态化解决）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="后端多环境"><a href="#后端多环境" class="headerlink" title="后端多环境"></a>后端多环境</h4><p><code>application.yml（</code>公共配置）添加不同的后缀来区分</p>
+<blockquote>
+<p>习惯：建表语句保存到项目目录中，由于jdbcDriver的问题，可以禁用SSL协议解决</p>
+</blockquote>
+<p>建立application-prod.yaml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">user-center-my-backend</span></span><br><span class="line">  <span class="comment"># DataSource Config</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">driver-class-name:</span> <span class="string">com.mysql.jdbc.Driver</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://127.0.0.1:3306/yupi?useSSL=false</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">password:</span> <span class="string">*****</span></span><br><span class="line">  <span class="comment"># session失效时间1天</span></span><br><span class="line">  <span class="attr">session:</span></span><br><span class="line">    <span class="attr">timeout:</span> <span class="number">86400</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>可以在启动项目时传入环境变量，打包时如果不要执行测试，可以选中这个按钮</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250916203331878.png" alt="image-20250916203331878" style="zoom:50%;" />	
+
+<p>启动java，即可启动prod的配置文件</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/home/ljy/.jdks/ms-17.0.16/bin/java -jar ./user-center-my-backend-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="1-原生部署"><a href="#1-原生部署" class="headerlink" title="1. 原生部署"></a>1. 原生部署</h3><blockquote>
+<p> <a target="_blank" rel="noopener" href="https://www.bilibili.com/opus/650021069734805524">https://www.bilibili.com/opus/650021069734805524</a></p>
+<p>建议CentOS8&#x2F;7.6</p>
+</blockquote>
+<h4 id="前端"><a href="#前端" class="headerlink" title="前端"></a>前端</h4><p><strong>ngnix</strong>、apache、tomcat</p>
+<p>安装nginx服务器</p>
+<ul>
+<li>系统自带软件包安装 yum、apt等</li>
+<li>到官网下载stable的版本</li>
+</ul>
+<blockquote>
+<p>小技巧：使用linux下载文件可以节省上传的操作</p>
+</blockquote>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250916211315121.png" alt="image-20250916211315121"></p>
+<p>这里的v是可视化，configure检查依赖</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 下载源文件</span></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line"><span class="built_in">mkdir</span> services</span><br><span class="line"><span class="built_in">cd</span> services</span><br><span class="line">curl -o nginx-1.28.0.tar.gz https://nginx.org/download/nginx-1.28.0.tar.gz</span><br><span class="line"></span><br><span class="line"><span class="comment">#解压并安装相关依赖</span></span><br><span class="line">tar -zxvf nginx-1.28.0.tar.gz</span><br><span class="line"><span class="built_in">cd</span> nginx-1.28.0</span><br><span class="line">./configure</span><br><span class="line">yum -y install pcre-devel openssl openssl-devel gd-devel gcc gcc-c++</span><br><span class="line"><span class="comment"># 配置系统参数，支持https</span></span><br><span class="line">./configure --with-http_ssl_module --with-http_v2_module --with-stream</span><br><span class="line"></span><br><span class="line"><span class="comment"># 编译安装</span></span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行</span></span><br><span class="line"><span class="built_in">ls</span> /usr/local/nginx/sbin/nginx <span class="comment"># 可执行</span></span><br><span class="line"><span class="comment">#在最后一行添加：export PATH=$PATH:/usr/local/nginx/sbin	</span></span><br><span class="line">vim /etc/profile</span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br><span class="line">nginx</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试</span></span><br><span class="line">netstat -ntlp</span><br></pre></td></tr></table></figure>
+
+<p>编译生成的目录</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250916213320261.png" alt="image-20250916213320261"></p>
+<p>最终的效果</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Active Internet connections (only servers)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    </span><br><span class="line">tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1830/sshd           </span><br><span class="line">tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      23680/nginx: master</span><br></pre></td></tr></table></figure>
+
+
+
+<p>将我们的项目放上去，重启访问服务器80端口即可得到后端</p>
+<p>在conf&#x2F;nginx.conf中放入我们的路径（注意备份）</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250916214828718.png" alt="image-20250916214828718"></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> /usr/local/nginx/conf</span><br><span class="line">vim nginx.conf  <span class="comment">#更新location</span></span><br><span class="line">nginx -s reload</span><br></pre></td></tr></table></figure>
+
+<p><strong>此时进程指定用户不对</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@iZ2zefy0b2sguh461yjlwdZ conf]# ps -ef  | grep nginx</span><br><span class="line">root       23680       1  0 21:35 ?        00:00:00 nginx: master process nginx</span><br><span class="line">nobody     25395   23680  0 21:53 ?        00:00:00 nginx: worker process</span><br><span class="line">root       25500   23868  0 21:55 pts/1    00:00:00 grep --color=auto nginx</span><br></pre></td></tr></table></figure>
+
+<p>所以我们要在nginx.conf改成user root，之后重启即可</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250916215651158.png" alt="image-20250916215651158">	</p>
+<h4 id="后端"><a href="#后端" class="headerlink" title="后端"></a>后端</h4><p>安装java：<a target="_blank" rel="noopener" href="https://www.oracle.com/java/technologies/downloads/?er=221886">https://www.oracle.com/java/technologies/downloads/?er=221886</a></p>
+<p>安装maven：<a target="_blank" rel="noopener" href="https://maven.apache.org/download.cgi">https://maven.apache.org/download.cgi</a></p>
+<p>我们使用tar.gz格式下载（curl或者wget或者ftp传过去），解压后导入环境变量</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/root/services/apache-maven-3.9.11/bin</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> JAVA_HOME=/root/services/jdk-17.0.16</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$JAVA_HOME</span>/bin:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
+
+<p>source更新后即可</p>
+<p>后端代码通过git或者上传后，我们通过mvn 编译代码</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">mvn <span class="keyword">package</span> -DskipTests</span><br></pre></td></tr></table></figure>
+
+<p>运行打包后的jar文件即可</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">java -jar ./user-center-my-backend-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod</span><br></pre></td></tr></table></figure>
+
+<p>但是会存在问题，挂掉ssh后，java也会断，所以我们进行后台运行，通过命令检查</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">nohup</span> java -jar ./user-center-my-backend-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod &amp;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试</span></span><br><span class="line"><span class="built_in">jobs</span></span><br><span class="line">netstat -ntlp</span><br><span class="line">jps</span><br></pre></td></tr></table></figure>
+
+<p>我们用一些可视化的方式来简化上面的操作，例如宝塔linux。</p>
+<h3 id="2-宝塔linux优化"><a href="#2-宝塔linux优化" class="headerlink" title="2. 宝塔linux优化"></a>2. 宝塔linux优化</h3><p>官方教程：<a target="_blank" rel="noopener" href="https://www.bt.cn/new/download.html">https://www.bt.cn/new/download.html</a></p>
+<p>实际是一个运维服务器，方便安装软件（可以初始化，也可以按照官方教程自行安装）</p>
+<h4 id="前端-1"><a href="#前端-1" class="headerlink" title="前端"></a>前端</h4><ul>
+<li>例如安装nginx，直接安装即可</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917192358457.png" alt="image-20250917192358457"></p>
+<p>后续直接在面板里傻瓜式配置即可</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917192923244.png" alt="image-20250917192923244"></p>
+<p>放入dist目录</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917195055551.png" alt="image-20250917195055551"></p>
+<p>后续的配置</p>
+<ul>
+<li>servername是对应的域名</li>
+<li>如果找不到会找下面的</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917225753020.png" alt="image-20250917225753020"></p>
+<h4 id="后端-1"><a href="#后端-1" class="headerlink" title="后端"></a>后端</h4><p>建立后端路径</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917195724397.png" alt="image-20250917195724397"></p>
+<p>用界面来构建项目，通过jar包来构建</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917200215921.png" alt="image-20250917200215921"></p>
+<p>添加端口放行即可</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917203809835.png" alt="image-20250917203809835"></p>
+<p>课上疑问：端口开了ipv6可以正常访问端口吗？</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917203757375.png" alt="image-20250917203757375"></p>
+<h3 id="3-容器"><a href="#3-容器" class="headerlink" title="3. 容器"></a>3. 容器</h3><p>docker将项目环境、代码（java  nginx等）可以打包成镜像，更容易分发和移植，启动项目时不需要敲很多命令，直接启动即可。</p>
+<ul>
+<li>官网安装：<a target="_blank" rel="noopener" href="https://www.docker.com/get-started/">https://www.docker.com/get-started/</a></li>
+<li>宝塔安装docker管理器</li>
+</ul>
+<h4 id="构建镜像"><a href="#构建镜像" class="headerlink" title="构建镜像"></a>构建镜像</h4><p>Dockerfile指定Docker镜像</p>
+<p>一般参考同类项目（github等），然后修改。</p>
+<h5 id="jdk8（服务器构建）"><a href="#jdk8（服务器构建）" class="headerlink" title="jdk8（服务器构建）"></a>jdk8（服务器构建）</h5><ul>
+<li>FROM 依赖基础项</li>
+<li>WORK 工作目录</li>
+<li>COPY 从本机复制文件</li>
+<li>RUN 执行命令</li>
+<li>CMD &#x2F; ENTRYPOINT（附加额外参数） 指定运行容器默认执行的命令</li>
+</ul>
+<p>构建</p>
+<blockquote>
+<p>t是tag的意思，版本等信息</p>
+<p>.表示当前目录下构建镜像</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker build -t user-center-backend:v0.0.1</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight dockerfile"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Docker 镜像构建</span></span><br><span class="line"><span class="comment"># @author &lt;a href=&quot;https://github.com/liyupi&quot;&gt;程序员鱼皮&lt;/a&gt;</span></span><br><span class="line"><span class="comment"># @from &lt;a href=&quot;https://yupi.icu&quot;&gt;编程导航知识星球&lt;/a&gt;</span></span><br><span class="line"><span class="keyword">FROM</span> maven:<span class="number">3.5</span>-jdk-<span class="number">8</span>-alpine as builder</span><br><span class="line"></span><br><span class="line"><span class="comment"># Copy local code to the container image.</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /app</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> pom.xml .</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> src ./src</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Build a release artifact.</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> mvn package -DskipTests</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Run the web service on container startup.</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [<span class="string">&quot;java&quot;</span>,<span class="string">&quot;-jar&quot;</span>,<span class="string">&quot;/app/target/user-center-backend-0.0.1-SNAPSHOT.jar&quot;</span>,<span class="string">&quot;--spring.profiles.active=prod&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="Java17（本地构建）"><a href="#Java17（本地构建）" class="headerlink" title="Java17（本地构建）"></a>Java17（本地构建）</h5><p><code>louislivi/jdk:17</code>构建的镜像参考：<a target="_blank" rel="noopener" href="https://www.louislivi.com/archives/jdk17dockerfile">https://www.louislivi.com/archives/jdk17dockerfile</a></p>
+<figure class="highlight dockerfile"><table><tr><td class="code"><pre><span class="line"><span class="keyword">FROM</span> amazoncorretto:<span class="number">17</span>-alpine</span><br><span class="line"><span class="keyword">LABEL</span><span class="language-bash"> maintainer=<span class="string">&quot;louislivi.com&quot;</span></span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /home</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">ln</span> -sf /usr/share/zoneinfo/Asia/Chongqing /etc/localtime</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">echo</span> <span class="string">&#x27;Asia/Chongqing&#x27;</span> &gt;/etc/timezone</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> yum install -y curl &amp;&amp; yum install -y wget &amp;&amp; yum install -y telnet &amp;&amp; yum install -y procps &amp;&amp; yum install -y vim</span></span><br><span class="line"><span class="keyword">ENV</span> TINI_VERSION v0.<span class="number">19.0</span></span><br><span class="line"><span class="keyword">ADD</span><span class="language-bash"> https://gitee.com/wl4g-k8s/tini/releases/download/<span class="variable">$&#123;TINI_VERSION&#125;</span>/tini /tini</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">chmod</span> +x /tini</span></span><br><span class="line"><span class="keyword">ENV</span> JAVA_OPTS=<span class="string">&quot;\</span></span><br><span class="line"><span class="string">-XX:+UseG1GC \</span></span><br><span class="line"><span class="string">-XX:+UnlockDiagnosticVMOptions \</span></span><br><span class="line"><span class="string">-XX:+UnlockExperimentalVMOptions \</span></span><br><span class="line"><span class="string">-XX:+UseContainerSupport \</span></span><br><span class="line"><span class="string">-Dfile.encoding=UTF-8 \</span></span><br><span class="line"><span class="string">-Djava.security.egd=file:/dev/./urandom \</span></span><br><span class="line"><span class="string">-XX:MaxRAMPercentage=75 \</span></span><br><span class="line"><span class="string">-XX:MinRAMPercentage=75 \</span></span><br><span class="line"><span class="string">-XX:InitialRAMPercentage=75 \</span></span><br><span class="line"><span class="string">-XX:MaxDirectMemorySize=1024m \</span></span><br><span class="line"><span class="string">--add-opens=java.base/java.lang=ALL-UNNAMED \</span></span><br><span class="line"><span class="string">--add-opens java.base/java.lang.invoke=ALL-UNNAMED \</span></span><br><span class="line"><span class="string">--add-opens=java.base/java.io=ALL-UNNAMED \</span></span><br><span class="line"><span class="string">--add-opens=java.base/java.math=ALL-UNNAMED \</span></span><br><span class="line"><span class="string">--add-opens=java.base/java.net=ALL-UNNAMED \</span></span><br><span class="line"><span class="string">--add-opens=java.base/java.nio=ALL-UNNAMED \</span></span><br><span class="line"><span class="string">--add-opens=java.base/java.security=ALL-UNNAMED \</span></span><br><span class="line"><span class="string">--add-opens=java.base/java.text=ALL-UNNAMED \</span></span><br><span class="line"><span class="string">--add-opens=java.base/java.time=ALL-UNNAMED \</span></span><br><span class="line"><span class="string">--add-opens=java.base/java.util=ALL-UNNAMED \</span></span><br><span class="line"><span class="string">--add-opens=java.base/jdk.internal.access=ALL-UNNAMED \</span></span><br><span class="line"><span class="string">--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED&quot;</span></span><br><span class="line"><span class="keyword">ENTRYPOINT</span><span class="language-bash"> [<span class="string">&quot;/tini&quot;</span>, <span class="string">&quot;--&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>docker build -t louislivi&#x2F;jdk:17 .</p>
+</blockquote>
+<figure class="highlight dockerfile"><table><tr><td class="code"><pre><span class="line"><span class="keyword">FROM</span> louislivi/jdk:<span class="number">17</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /home</span></span><br><span class="line"><span class="keyword">ADD</span><span class="language-bash"> target/user-center-my-backend-0.0.1-SNAPSHOT.jar /home/user-center-my-backend-0.0.1-SNAPSHOT.jar</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ENV</span> MY_JAVA_OPTS=<span class="string">&quot;&quot;</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> java <span class="variable">$&#123;JAVA_OPTS&#125;</span> <span class="variable">$&#123;MY_JAVA_OPTS&#125;</span> -jar target/user-center-my-backend-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>docker build -t user-center-backend:v0.0.1 .</p>
+</blockquote>
+<h5 id="nginx"><a href="#nginx" class="headerlink" title="nginx"></a>nginx</h5><p>docker目录下新建<code>Nginx.conf</code>配置</p>
+<ul>
+<li><code>try_files</code> ：用户访问文件找不到时降级找index.html，防止404错误（帮助在js中重定向文件）</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen 80;</span><br><span class="line"></span><br><span class="line">    # gzip config</span><br><span class="line">    gzip on;</span><br><span class="line">    gzip_min_length 1k;</span><br><span class="line">    gzip_comp_level 9;</span><br><span class="line">    gzip_types text/plain text/css text/javascript application/json application/javascript application/x-javascript application/xml;</span><br><span class="line">    gzip_vary on;</span><br><span class="line">    gzip_disable &quot;MSIE [1-6]\.&quot;;</span><br><span class="line"></span><br><span class="line">    root /usr/share/nginx/html;</span><br><span class="line">    include /etc/nginx/mime.types;</span><br><span class="line"></span><br><span class="line">    location / &#123;</span><br><span class="line">        try_files $uri /index.html;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>dockerfile(也可以写一个自带node的，build的过程在容器内进行)</p>
+<figure class="highlight docker"><table><tr><td class="code"><pre><span class="line"><span class="keyword">FROM</span> nginx</span><br><span class="line"></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /usr/share/nginx/html/</span></span><br><span class="line"><span class="keyword">USER</span> root</span><br><span class="line"></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> ./docker/nginx.conf /etc/nginx/conf.d/default.conf</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> ./dist  /usr/share/nginx/html/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">80</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [<span class="string">&quot;nginx&quot;</span>, <span class="string">&quot;-g&quot;</span>, <span class="string">&quot;daemon off;&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p>复制到对应目录同理</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker build -t user-center-frontend:v0.0.1 .</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917212444970.png" alt="image-20250917212444970"></p>
+<p>至此构建好了镜像</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@iZ2zefy0b2sguh461yjlwdZ user-center-frontend]# docker images</span><br><span class="line">REPOSITORY            TAG       IMAGE ID       CREATED          SIZE</span><br><span class="line">user-center-front     v0.0.1    70b279125558   46 seconds ago   201MB</span><br><span class="line">user-center-backend   v0.0.1    3966c685d24f   15 minutes ago   1.04GB</span><br><span class="line">louislivi/jdk         17        842b092f8377   23 minutes ago   1.01GB</span><br></pre></td></tr></table></figure>
+
+<p>构建优化方向：</p>
+<ul>
+<li><p>构建时间：可以使用<strong>多阶段构建</strong>来优化构建效率（比如maven构建和java运行分开，这样可以丢弃不需要的内容）</p>
+</li>
+<li><p>减小尺寸</p>
+</li>
+</ul>
+<h4 id="启动镜像"><a href="#启动镜像" class="headerlink" title="启动镜像"></a>启动镜像</h4><ul>
+<li>默认找本地镜像，如果没有就去远程拉镜像</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/docker/docker-run-command.html">https://www.runoob.com/docker/docker-run-command.html</a></p>
+<ul>
+<li>端口映射：本机端口和容器端口关联</li>
+<li>容器卷映射：本机资源和容器内部资源关联</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -d -p 80:80 -v /data/app:/usr/share/nginx/html/ user-center-frontend:v0.0.1</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917214744302.png" alt="image-20250917214744302"></p>
+<p>调试</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker -<span class="built_in">exec</span> -it ca09037f6c01 /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>发现目录下为空，发现是由于容器卷映射的问题，杀掉容器</p>
+<blockquote>
+<p>docker kill 7a2b43496438</p>
+</blockquote>
+<p>去掉-d后，进行测试，后续需要后台再启动即可</p>
+<blockquote>
+<p>docker run -p 80:80 –name user-center-frontend user-center-frontend:v0.0.1</p>
+</blockquote>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917215445158.png" alt="image-20250917215445158"></p>
+<p>此时可以通过日志来观察：<a target="_blank" rel="noopener" href="https://docs.docker.com/reference/cli/docker/container/logs/">https://docs.docker.com/reference/cli/docker/container/logs/</a></p>
+<blockquote>
+<p>docker logs 7a2b43496438</p>
+<p>docker logs -f 7a2b43496438</p>
+</blockquote>
+<p>删除镜像：<code>docker rmi -f</code></p>
+<p>如法炮制</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -d -p 8080:8080 --name user-center-backend user-center-backend:v0.0.1</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="4-容器平台"><a href="#4-容器平台" class="headerlink" title="4. 容器平台"></a>4. 容器平台</h3><p>直接用别人的容器平台，只要把镜像放上去就行。（大公司用得多）</p>
+<ul>
+<li>云服务商容器平台（腾讯云、阿里云）</li>
+<li>专门的容器平台（后端微信云托管）  <strong>要花钱</strong></li>
+</ul>
+<blockquote>
+<p>前端部署：webify（比容器更傻瓜）</p>
+<ul>
+<li>优势：不用命令，代码更新时自动构建</li>
+<li>缺点：需要把代码放到托管平台上</li>
+</ul>
+</blockquote>
+<p>好处：</p>
+<ul>
+<li>更方便，不如输命令</li>
+<li>更傻瓜式，不用控制台</li>
+<li>大厂运维，更省心</li>
+<li>额外的监控告警、其他（存储、负载均衡、自动缩扩容、流水线）</li>
+</ul>
+<p>使用微信云托管建立</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917222342620.png" alt="image-20250917222342620" style="zoom: 33%;" />	
+
+<p>查看日志也很方便</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917222854088.png" alt="image-20250917222854088"></p>
+<h2 id="域名配置"><a href="#域名配置" class="headerlink" title="域名配置"></a>域名配置</h2><p>原始的绑定方式（容器也可以直接绑定一个域名）</p>
+<p>前端DNS的过程：</p>
+<p>用户输入网址——域名服务器（解析为ip地址 &#x2F; 交给其他域名解析服务）—— </p>
+<p>（防火墙）nginx（接受请求） —— 找到对应的文件，返回文件给前端——加载js等文件到浏览器中——渲染</p>
+<p>后端DNS过程：</p>
+<p>用户输入网址 —— 域名服务器 —— 我们的服务器 ——  后端服务端口 </p>
+<ul>
+<li>A——直接指向</li>
+<li>CNAME：域名——CDN——负载均衡</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917224044878.png" alt="image-20250917224044878"></p>
+<p>前端部署时要注意：nginix的servername是否加入，宝塔的域名防火墙是否放行</p>
+<p>后端部署要注意：域名默认的是80，直接用域名得加端口号，我们想实现直接用域名转发到端口</p>
+<h4 id="nginx反向代理"><a href="#nginx反向代理" class="headerlink" title="nginx反向代理"></a>nginx反向代理</h4><blockquote>
+<p>方案：配置nginx反向代理——替服务器做请求，让nginx帮忙转发请求</p>
+</blockquote>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917230136136.png" alt="image-20250917230136136"></p>
+<p>实现效果：该nginx服务请求根目录后，会自动转发到8080端口</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917230226486.png" alt="image-20250917230226486"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/09/18/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/5.%E9%83%A8%E7%BD%B2/">https://yuezi2048.github.io/2025/09/18/2.Areas🌐/01.project/condefather/user-center/back-end/5.部署/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/back-end/">back-end</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/09/18/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/408-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/15.TCP%E5%A6%82%E6%9E%9C%E5%8F%91%E9%80%81SYN%E5%90%8E%E5%AE%95%E6%9C%BA%E4%BA%86/" title="15.TCP如果发送SYN后宕机了"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">15.TCP如果发送SYN后宕机了</div></div><div class="info-2"><div class="info-item-1">Client发送SYN宕机后，服务器发送的SYN+ACK就一直得不到回复，达到一定的重试次数后，就会自动断开连接，释放资源。  重试次数是由系统参数tcp_synack_retries决定，linux是默认5次 并且是阶段性的重试（1s-&gt;2s-&gt;4s-&gt;16s，直到第五次发送后等32s才能知道重试的结果，合计63秒断开连接）  拓展  一般tcp_synack_retries范围是0~255，一般设置为3或5 调优目标：在高并发或低延迟环境下，减少tcp_synack_retries可以有助于更快释放资源，但是过低的值可能导致合法连接被过早放弃  linux本地查看tcp_synack_retries的值 sysctl net.ipv4.tcp_synack_retriescat /proc/sys/net/ipv4/tcp_synack_retries   临时设置 sudo sysctl -w net.ipv4.tcp_synack_retries=3cat...</div></div></div></a><a class="pagination-related" href="/2025/09/18/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/6.%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/" title="6.跨域问题解决"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">6.跨域问题解决</div></div><div class="info-2"><div class="info-item-1">跨域问题解决浏览器为了安全，仅允许向同域名 同端口的服务器发送请求 当请求的域名和当前网页域名不同时（其中一种情况），会发送一个预检请求（OPTIONS请求类型）  解决方案1：域名、端口改成相同的使用同域名，然后基于反向代理，判断如果是&#x2F;api开头，就转发到8080端口。 解决方案2：网关支持（nginx）让服务器告诉浏览器允许跨域（返回cross-origin-allow响应头） cross-origin-allow不建议用*，此时：Access-Control-Allow-Credentials不能设置为true：https://blog.csdn.net/zSY_snake/article/details/105230125 nginx使用配置：  proxy_pass：配置反向代理  add_header ‘Access-Control-Allow-Origin’ $http_origin;...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/09/12/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/1.%E5%90%8E%E7%AB%AF%E5%88%9D%E5%A7%8B%E5%8C%96/" title="1.后端初始化"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-12</div><div class="info-item-2">1.后端初始化</div></div><div class="info-2"><div class="info-item-1">初始化后端项目 现有模板（可能有坑） springboot官方模板 ——start.spring.io IDEA开发工具 springboot初始化     引入java的包，可以去maven中心仓库找：http://mvnrepository.com  	  问题说明：没有RunWith注解之后会把空指针异常，这是因为我们引入的是junit包的原因，当引入import org.junit.jupiter.api.Test;后就不会报错   数据库设计 数据表（类比excel） java操作数据库 设计：数据库表（model）+ 字段 + 索引（书中标签）+ 表和表的关联 用户表：id*(bigint)   userName(varchar) userAccount(注意关键字冲突) avatarUrl(varchar)  gender(tinyint)  userPassword(varchar)  phone(varchar)  email(varchar)  userStatus(int)  createTime(datetime) ...</div></div></div></a><a class="pagination-related" href="/2025/09/11/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/0.%E8%AE%BE%E8%AE%A1/" title="0.设计"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-11</div><div class="info-item-2">0.设计</div></div><div class="info-2"><div class="info-item-1">目标  建立一个统一管理用户的系统（集中管理的可以分离出来，如支付宝登录） 理清做项目思路  做项目的流程  需求分析 设计（概要设计、详细设计） 技术选型（理由） 初始化&#x2F;引入相关的技术 写Demo（先跑起来） 实现业务逻辑 测试（单元测试） 最左原则：尽早发现，尽早解决   代码提交 &#x2F; 代码评审 部署 ——&gt; 发布  需求分析  登录 &#x2F; 注册 用户管理（管理员） 查询、修改   用户校验（仅星球用户）  技术选型 前端：三件套 + React + 组件库 Ant Design + Umi + Ant Desin Pro（现成的管理系统）后端：  spring（依赖注入，管理java对象，集成其他内容） springmvc（web框架，提供接口访问，restful接口等） mybatis（持久层框架，jdbc的封装） mybatis-plus（mybatis增强，不用写sql就能crud） springboot（不用管理spring配置 整合框架，快速启动 &#x2F;...</div></div></div></a><a class="pagination-related" href="/2025/09/14/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/2.%E7%99%BB%E5%BD%95%E6%B3%A8%E5%86%8C/" title="2.登录注册"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-14</div><div class="info-item-2">2.登录注册</div></div><div class="info-2"><div class="info-item-1">代码生成器创建基本目录 实现基本数据库操作（crud）  model——创建 user对象，与和数据库的字段关联 mapper——对应resources下的xml文件 service——接口+实现类 controller utils  右边数据库选中mybatisx插件，因为没有用驼峰，所以字段要设置一样的，然后选用mabatis3，lombok，service等生成即可，得到：  domain实体对象（model的下一层） mapper（数据库操作对象） + mapper.xml关联 service（常用的增删改查） + 实现类  	  在service类上通过alt+回车生成测试类  	   小技巧：solarlint检查代码不规范的点，如测试类中的public可以不用加  	   小技巧2：generateAllSet可以帮助我们生成所有set方法  	  @Test   void testAddUser() &#123;       User user = new User();       user.setUsername(&quot;yupi&quot;);    ...</div></div></div></a><a class="pagination-related" href="/2025/09/13/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/3.%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/" title="3.用户管理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-13</div><div class="info-item-2">3.用户管理</div></div><div class="info-2"><div class="info-item-1">用户管理接口注意：该接口必须使用鉴权！！！ 查询用户：根据用户名进行查询 删除用户：逻辑删除 写代码 先做设计 代码实现 持续优化！（复用代码，提取公共逻辑 &#x2F; 常量，git超过10行重复不予commit） 常量（管理员权限标识， 用户登录态） 查询用户列表后的数据脱敏（与登录逻辑返回脱敏数据逻辑一致）    常量提取 public interface UserConstant &#123;    /**     * 用户登录态键     */    String USER_LOGIN_STATE = &quot;userLoginState&quot;;    // -------------权限-------------    /**     * 普通角色     */    int DEFAULT_ROLE = 0;    /**     * 管理员角色     */    int ADMIN_ROLE = 1;&#125;  Controller @RestController@RequestMapping(&quot;/user&quot;)public...</div></div></div></a><a class="pagination-related" href="/2025/09/14/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/4.%E7%94%A8%E6%88%B7%E6%A0%A1%E9%AA%8C/" title="4.用户校验"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-14</div><div class="info-item-2">4.用户校验</div></div><div class="info-2"><div class="info-item-1"> 这里仅适用于用户可信的情况，让用户自己填编号（2-5位编号） 后台补充对编号的校验：长度、唯一性  我们在数据库中添加一个PlantCode字段，重新生成，注意逻辑删除，自增逻辑是否对应，然后在用户脱敏的set方法中进行添加对应上。 注册修改修改请求体加上字段 修改controller、service层加上plantcode字段 后端优化 通用返回对象 目的：补充业务扩展信息，告诉前端业务处理上是成功还是失败   封装全局异常处理 全局请求日志和登录校验  通用返回对象// 成功&#123;    &quot;code&quot;; 0, // 业务状态码    &quot;data&quot;: &#123;    	&quot;name&quot;: &quot;yupi&quot;	&#125;,	&quot;message&quot;: &quot;success&quot;&#125;// 错误&#123;    &quot;code&quot;; 50001, // 业务状态码    &quot;data&quot;:...</div></div></div></a><a class="pagination-related" href="/2025/09/18/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/6.%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/" title="6.跨域问题解决"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-18</div><div class="info-item-2">6.跨域问题解决</div></div><div class="info-2"><div class="info-item-1">跨域问题解决浏览器为了安全，仅允许向同域名 同端口的服务器发送请求 当请求的域名和当前网页域名不同时（其中一种情况），会发送一个预检请求（OPTIONS请求类型）  解决方案1：域名、端口改成相同的使用同域名，然后基于反向代理，判断如果是&#x2F;api开头，就转发到8080端口。 解决方案2：网关支持（nginx）让服务器告诉浏览器允许跨域（返回cross-origin-allow响应头） cross-origin-allow不建议用*，此时：Access-Control-Allow-Credentials不能设置为true：https://blog.csdn.net/zSY_snake/article/details/105230125 nginx使用配置：  proxy_pass：配置反向代理  add_header ‘Access-Control-Allow-Origin’ $http_origin;...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2"><span class="toc-text">项目部署</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E7%8E%AF%E5%A2%83%E7%90%86%E8%AE%BA"><span class="toc-text">多环境理论</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E7%AB%AF%E5%A4%9A%E7%8E%AF%E5%A2%83"><span class="toc-text">前端多环境</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%8E%E7%AB%AF%E5%A4%9A%E7%8E%AF%E5%A2%83"><span class="toc-text">后端多环境</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%8E%9F%E7%94%9F%E9%83%A8%E7%BD%B2"><span class="toc-text">1. 原生部署</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E7%AB%AF"><span class="toc-text">前端</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%8E%E7%AB%AF"><span class="toc-text">后端</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%AE%9D%E5%A1%94linux%E4%BC%98%E5%8C%96"><span class="toc-text">2. 宝塔linux优化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E7%AB%AF-1"><span class="toc-text">前端</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%8E%E7%AB%AF-1"><span class="toc-text">后端</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%AE%B9%E5%99%A8"><span class="toc-text">3. 容器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F"><span class="toc-text">构建镜像</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#jdk8%EF%BC%88%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%9E%84%E5%BB%BA%EF%BC%89"><span class="toc-text">jdk8（服务器构建）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Java17%EF%BC%88%E6%9C%AC%E5%9C%B0%E6%9E%84%E5%BB%BA%EF%BC%89"><span class="toc-text">Java17（本地构建）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#nginx"><span class="toc-text">nginx</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E9%95%9C%E5%83%8F"><span class="toc-text">启动镜像</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%AE%B9%E5%99%A8%E5%B9%B3%E5%8F%B0"><span class="toc-text">4. 容器平台</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%9F%E5%90%8D%E9%85%8D%E7%BD%AE"><span class="toc-text">域名配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86"><span class="toc-text">nginx反向代理</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

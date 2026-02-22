@@ -1,0 +1,215 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>19.二级索引有MVCC快照吗 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="二级索引没有MVCC快照，原因：  二级索引只有索引列 + 主键值，不包含InnoDB的隐藏列（TRX_ID、ROLL_PTR），所以自身没有版本链，无法判断事务可见性 因此二级索引被修改&#x2F;删除标记时，必须回表到聚簇索引，通过TRX_ID+ROLL_PTR来判断当前事务能看到哪个版本 这意味着覆盖索引也会失效，因为必须有回表操作     即二级索引没有MVCC快照，所有版本判断必须回表聚">
+<meta property="og:type" content="article">
+<meta property="og:title" content="19.二级索引有MVCC快照吗">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/10/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/MySQL/19.%E4%BA%8C%E7%BA%A7%E7%B4%A2%E5%BC%95%E6%9C%89MVCC%E5%BF%AB%E7%85%A7%E5%90%97/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="二级索引没有MVCC快照，原因：  二级索引只有索引列 + 主键值，不包含InnoDB的隐藏列（TRX_ID、ROLL_PTR），所以自身没有版本链，无法判断事务可见性 因此二级索引被修改&#x2F;删除标记时，必须回表到聚簇索引，通过TRX_ID+ROLL_PTR来判断当前事务能看到哪个版本 这意味着覆盖索引也会失效，因为必须有回表操作     即二级索引没有MVCC快照，所有版本判断必须回表聚">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-10-14T09:36:23.000Z">
+<meta property="article:modified_time" content="2025-10-14T09:36:23.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="MySQL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "19.二级索引有MVCC快照吗",
+  "url": "https://yuezi2048.github.io/2025/10/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/MySQL/19.%E4%BA%8C%E7%BA%A7%E7%B4%A2%E5%BC%95%E6%9C%89MVCC%E5%BF%AB%E7%85%A7%E5%90%97/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-10-14T09:36:23.000Z",
+  "dateModified": "2025-10-14T09:36:23.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/10/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/MySQL/19.%E4%BA%8C%E7%BA%A7%E7%B4%A2%E5%BC%95%E6%9C%89MVCC%E5%BF%AB%E7%85%A7%E5%90%97/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '19.二级索引有MVCC快照吗',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">19.二级索引有MVCC快照吗</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">19.二级索引有MVCC快照吗</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-10-14T09:36:23.000Z" title="发表于 2025-10-14 17:36:23">2025-10-14</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-10-14T09:36:23.000Z" title="更新于 2025-10-14 17:36:23">2025-10-14</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/">02.面经记录</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/MySQL/">MySQL</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">958</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>3分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>二级索引没有MVCC快照，原因：</p>
+<ul>
+<li>二级索引只有索引列 + 主键值，不包含InnoDB的隐藏列（<code>TRX_ID</code>、<code>ROLL_PTR</code>），所以自身没有版本链，无法判断事务可见性<ul>
+<li>因此二级索引被修改&#x2F;删除标记时，必须回表到聚簇索引，通过<code>TRX_ID</code>+<code>ROLL_PTR</code>来判断当前事务能看到哪个版本</li>
+<li>这意味着覆盖索引也会失效，因为必须有回表操作</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>即二级索引没有MVCC快照，所有版本判断必须回表聚簇索引</p>
+</blockquote>
+<p><strong>扩展</strong></p>
+<h3 id="InnoDB优化-覆盖索引-MVCC"><a href="#InnoDB优化-覆盖索引-MVCC" class="headerlink" title="InnoDB优化 覆盖索引+MVCC"></a>InnoDB优化 覆盖索引+MVCC</h3><p>实际上，InnoDB为了减少MVCC的情景下的回表次数，做了一些在特定场景的优化：</p>
+<ul>
+<li>在索引页上记录了<strong>最后修改该索引页的事务ID</strong>:  <code>page_max_trx_id</code></li>
+</ul>
+<p>通过 <code>page_max_trx_id</code>可以判断：如果该页最大事务ID &lt; 事务启动时最小ID，说明该页记录对当前事务完全可见，无需回表，可以直接使用二级索引，否则还是要回到聚簇索引走MVCC那一套。</p>
+<p>补充，在 MySQL 官网 Optimizing InnoDB Transaction Management 提到以下内容，除了 <code>PAGE_MAX_TRX_ID</code>，还记录了<strong>删除标记</strong>，即如果该记录被删除了，也需要回表查询是否可见。索引条件下推ICP 也可以让他先在存储引擎查，如果搜不到了可以绕过回表的操作</p>
+<blockquote>
+<p>If secondary index pages are found to have a PAGE_MAX_TRX_ID that is too new, or if records in the secondary index are delete-marked, InnoDB may need to look up records using a clustered index.</p>
+</blockquote>
+<p>举例说明，此时事务 B 查询的 <code>(name, age)</code> 二级索引条目不能直接确定快照版本，InnoDB 会回表聚簇索引，通过 <code>trx_id</code> 和 undo log 判断 age&#x3D;20 是否对事务 B 可见。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> t (</span><br><span class="line">    id <span class="type">INT</span> <span class="keyword">PRIMARY KEY</span>,</span><br><span class="line">    name <span class="type">VARCHAR</span>(<span class="number">20</span>),</span><br><span class="line">    age <span class="type">INT</span>,</span><br><span class="line">    INDEX idx_name_age(name, age)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 事务 A：更新 age，但未提交</span></span><br><span class="line"><span class="keyword">UPDATE</span> t <span class="keyword">SET</span> age <span class="operator">=</span> <span class="number">20</span> <span class="keyword">WHERE</span> name <span class="operator">=</span> <span class="string">&#x27;Tom&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 事务 B：查询</span></span><br><span class="line"><span class="keyword">SELECT</span> age <span class="keyword">FROM</span> t <span class="keyword">WHERE</span> name <span class="operator">=</span> <span class="string">&#x27;Tom&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>附：<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.4/en/innodb-multi-versioning.html">MySQL官方的优化</a>原文完整说明：</p>
+<p>InnoDB 多版本并发控制（MVCC）对二级索引（secondary indexes）和聚簇索引（clustered indexes）的处理方式不同。聚簇索引中的记录会<strong>原地更新</strong>（updated in-place），其隐藏系统列（hidden system columns）会指向回滚日志条目（undo log entries），通过这些条目可重构记录的早期版本。与聚簇索引记录不同，二级索引记录<strong>不包含隐藏系统列</strong>，也<strong>不会原地更新</strong>。</p>
+<p>当二级索引列被更新时，旧的二级索引记录会被<strong>标记为删除</strong>（delete-marked），同时插入新记录，而被标记为删除的记录最终会被清理（purged）。当<code>二级索引记录被标记为删除，或二级索引页（secondary index page）被较新的事务更新时</code>，InnoDB 会在聚簇索引中查找对应的数据库记录。在聚簇索引中，会检查记录的 DB_TRX_ID（事务 ID）；若该记录在读取事务启动后被修改过，则会从回滚日志中获取记录的正确版本。</p>
+<p>若二级索引记录被标记为删除，或二级索引页被较新的事务更新，则<strong>不会使用覆盖索引（covering index）技术</strong>。此时 InnoDB 不会从索引结构中返回值，而是会在聚簇索引中查找记录。</p>
+<p>不过，若启用了<code>索引条件下推（ICP，index condition pushdown）</code>优化，且 WHERE 条件的部分内容仅通过索引字段就能计算，则 MySQL 服务器仍会将这部分 WHERE 条件下推到存储引擎，由存储引擎通过索引进行计算。<code>若未找到匹配记录，则可避免聚簇索引查找</code>；若找到匹配记录（即使包含被标记为删除的记录），InnoDB 仍会在聚簇索引中查找该记录。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20251015195136387.png" alt="image-20251015195136387"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/10/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/MySQL/19.%E4%BA%8C%E7%BA%A7%E7%B4%A2%E5%BC%95%E6%9C%89MVCC%E5%BF%AB%E7%85%A7%E5%90%97/">https://yuezi2048.github.io/2025/10/14/2.Areas🌐/02.面经记录/MySQL/19.二级索引有MVCC快照吗/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/MySQL/">MySQL</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/10/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/MySQL/18.MVCC/" title="18.MVCC"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">18.MVCC</div></div><div class="info-2"><div class="info-item-1">MVCC(Multi-Version Concurrency Control 多版本并发控制)，允许多个事务同时读取和写入数据库，而无需互相等待，提高数据库并发性能。 MVCC会为每个事务创建一个数据快照，MySQL不会立即覆盖原有数据，而是生成新版本记录，每个记录保存版本号和时间戳。如此一来，每个版本串联起来一个版本连，不同时刻启动的事务可以无锁地获得不同版本的数据（针对的是普通读，当前读是加锁的），此时读（普通读）写不会阻塞。 写操作就是可以继续写，无非就是创建新的数据版本（注意可见性，事务提交后的新版本才对其他事务可见，未提交的事务不会影响其他事务的读取），而历史版本记录可以供已启动的事务读取  拓展 Undo Log是InnoDB支持事务回滚的日志机制，记录数据修改历史信息，事务失败&#x2F;撤销操作时，可以恢复到原先的状态。 实际上，不是真的存储多个版本的数据，而是借助undolog记录每次写的反向操作，因此索引只会有一个最新版本，只是可以通过undo log反向操作得到历史版本，所以逻辑上是多个版本。 	  insert(1,...</div></div></div></a><a class="pagination-related" href="/2025/10/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/MySQL/20.%E5%A6%82%E6%9E%9C%E6%B2%A1%E6%9C%89MVCC%E4%BC%9A%E6%80%8E%E4%B9%88%E6%A0%B7/" title="20.如果没有MVCC会怎么样"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">20.如果没有MVCC会怎么样</div></div><div class="info-2"><div class="info-item-1">没有MVCC，系统必须频繁通过读写操作加锁来保证数据正确性（增加了锁的获取和释放开销），这种实现叫作LBCC（Lock-Based-Concurrent-Control） 扩展 场景：一个事务1正在执行，事务2修改了记录A，还未提交事务。 此时事务1想要读取记录A，因为事务2未提交，事务1无法读取到最新的记录A，因为如果事务2回滚了，就脏读了，而如果读修改之前的数据，由于事务2已经修改了，读不到之前的数据（缺少了版本控制的后果） 因此只能用锁阻塞等待事务2的提交，这就是LBCC机制（Locked-based） 	  如果有多版本的话，就不一样了。 事务 2 修改的记录 A，还未提交，但是记录 A 被修改之前的版本还在，此时事务 1 就可以读取之前的版本数据，这样读写之间就不会阻塞啦，所以说MVCC 提高了事务的并发度，提升数据库的性能。 </div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/09/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/MySQL/1.%E6%95%B0%E6%8D%AE%E6%8E%92%E5%BA%8F%E7%9A%84%E5%AE%9E%E7%8E%B0/" title="1.数据排序的实现"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-27</div><div class="info-item-2">1.数据排序的实现</div></div><div class="info-2"><div class="info-item-1">mysqld的排序优先级  索引排序：排序字段命中索引，直接用索引排序 文件排序：根据需要排序的数据量选择内部&#x2F;外部算法排序（具体有一个sort_buffer_size参数控制） 数据量少在内存排序，具体是单路排序&#x2F;双路排序（根据select列的数据大小确定） 数据量多则利用磁盘文件外部排序，一般是归并排序    拓展 索引排序如果ORDER BY的字段在索引中，并且索引排列顺序和ORDER BY子句一致，则可以直接用索引排序，效率最高，因为索引有序。 filesort通过explain分析SQL，发现执行计划的extra包含using...</div></div></div></a><a class="pagination-related" href="/2025/10/12/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/MySQL/10.%E7%B4%A2%E5%BC%95%E4%B8%8B%E6%8E%A8/" title="10.索引下推"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-12</div><div class="info-item-2">10.索引下推</div></div><div class="info-2"><div class="info-item-1">索引下推（Index Condition PushDown ICP）是一种减少回表查询，提高查询效率的技术。 在使用索引查找数据时，部分查询条件下会推到存储引擎层过滤，减少需要从表中读取的数据行，减少了I&#x2F;O（而过滤本该在Server操作，所以把交给存储引擎来做的方法叫作“下推”） 拓展 对于people表索引INDEX(zipcode, lastname, firstname) SELECT * FROM people  WHERE zipcode=&#x27;95054&#x27;  AND lastname LIKE &#x27;%etrunia%&#x27;  AND address LIKE &#x27;%Main Street%&#x27;;  在这个条件中，联合索引只能用上zipcode条件（开头的%模糊查询破坏了最左匹配原则） 如果没有索引下推，此时就只能得到...</div></div></div></a><a class="pagination-related" href="/2025/10/13/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/MySQL/11.%E5%BB%BA%E7%AB%8B%E7%B4%A2%E5%BC%95%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/" title="11.建立索引的注意事项"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-13</div><div class="info-item-2">11.建立索引的注意事项</div></div><div class="info-2"><div class="info-item-1"> 索引不是越多越好：索引占用空间，且修改要维护索引数据，消耗资源 字段重复比例大的尽量不要建索引：重复比例大的数据字段（性别），索引一般不一定能提高速度，但要看实际情况，更具体的描述应该是区分度大的字段，更适合加索引。（索引收益 &gt; 维护成本） 例外案例1：在定时任务场景下，只有少部分任务是失败的，通过失败状态查询任务，可以过滤大部分成功的任务，因为这个筛选出来的结构少，所以效率还是可以的（落脚点是查询条件的筛选结果） 例外案例2:  status 和 createTime的联合，虽然status筛选数据量大，但后续的联合索引可以筛掉更多的数据（覆盖索引 没有回表）   长字段不要建索引，如text longtext不应该加索引，占据内存大，性能提升可能不明显甚至降低性能（长数据踢出其他缓存） 数据表修改频率大于查询频率时要考虑索引性能问题：索引会减慢修改的效率 频繁多条件查询情况，可以考虑联合索引+减少索引数量：查询效率更高 索引可以加快排序、分组、去重操作，在这些操作频繁场景下适用：B+树的树形结构+有序性对这些操作具备天然优势  </div></div></div></a><a class="pagination-related" href="/2025/10/13/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/MySQL/12.%E7%B4%A2%E5%BC%95%E4%B8%80%E5%AE%9A%E6%9C%89%E6%95%88%E5%90%97-%E5%A6%82%E4%BD%95%E6%8E%92%E6%9F%A5/" title="12.索引一定有效吗-如何排查"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-13</div><div class="info-item-2">12.索引一定有效吗-如何排查</div></div><div class="info-2"><div class="info-item-1">不一定有效，是否使用索引要根据MySQL CPU I&#x2F;O的计算成本（如回表开销），来确定是辅助索引还是全表扫描。  场景：查询不包含索引列，低基数列索引效果不佳，查询条件复杂且不匹配索引顺序，这些场景下，索引并没有贡献性能 场景2：在一些小表中，MySQL可能选择全表扫描，不用维护额外的索引，开销可能更小  排查方案：EXPLAIN，在查询语句前加上EXPLAIN查看MYSQL的执行计划，可以知道：是否使用索引、使用了哪个索引、估算行数等信息：https://blog.csdn.net/dennis211/article/details/78170079  type（访问类型）：查询使用的访问方法（ALL index ref ref_eq range const），使用索引时一般是index（全表扫描二级索引）、ref（常量等值匹配）、range...</div></div></div></a><a class="pagination-related" href="/2025/10/13/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/MySQL/13.%E7%B4%A2%E5%BC%95%E8%B6%8A%E5%A4%9A%E8%B6%8A%E5%A5%BD%E5%90%97/" title="13.索引越多越好吗"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-13</div><div class="info-item-2">13.索引越多越好吗</div></div><div class="info-2"><div class="info-item-1">不是，索引在空间和时间有成本。  时间：每次更新的操作下，索引也会动态更新，增加了写操作开销。还会产生B+树页分裂、合并等操作，产生更大的时间开销   注：MySQL内部有查询优化器机制（分析当前查询选择最优计划），就会考虑选择哪个索引成本低。索引过多的情况下，在优化器上的时间开销也会增加，甚至可能会由于数据不准确导致选择次优索引   空间：建立的每一个二级索引都会对应一颗B+树，每个数据页有16KB，数据量大且索引多时，占用空间不小  </div></div></div></a><a class="pagination-related" href="/2025/10/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/MySQL/14.B+%E6%A0%91%E6%9F%A5%E8%AF%A2%E6%95%B0%E6%8D%AE%E7%9A%84%E8%BF%87%E7%A8%8B/" title="14.B+树查询数据的过程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-14</div><div class="info-item-2">14.B+树查询数据的过程</div></div><div class="info-2"><div class="info-item-1"> 定位叶子节点 根节点开始，比较键值与节点存储的索引，确定数据所在区间，从而确定分支，自顶向下定位叶子节点   数据页搜索：因为叶子节点存储形式是数据页，一页16KB，会有多个数据行 叶子节点的数据行通过组的形式划分，基于页目录，通过二分查找定位到所在组 定位到组后，通过链表遍历找到对应的数据行    拓展 从根节点开始，比较key和节点中存储的索引，在数据页中通过二分确定所在数据区间从而确定分支，最终确定叶子节点  注：非叶子节点和叶子节点都是页目录结构，理解为快速找到记录的索引即可    接下来说明叶子节点二分过程，一页是16KB，理论上是有多条记录的：  一个页目录下，有多个槽，每个槽指向的是一个分组内的最大记录 二分查找，5个槽，以查找主键为3的数据为例（low&#x3D;0, high&#x3D;4，循环不变量low&lt;high） mid&#x3D;2，定位到槽2，槽2最大记录8&gt;3—-&gt; low&#x3D;0,high&#x3D;2 mid&#x3D;1，定位到槽1，槽1最大记录4&gt;3 —&gt; low&#x3D;0,...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#InnoDB%E4%BC%98%E5%8C%96-%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%95-MVCC"><span class="toc-text">InnoDB优化 覆盖索引+MVCC</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

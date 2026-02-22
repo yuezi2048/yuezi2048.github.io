@@ -1,0 +1,3391 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>README | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Awesome-LLM-for-RecSys A collection of AWESOME papers and resources on the large language model (LLM) related recommender system topics.  :tada: Our survey paper has been accepted by ACM Transactions">
+<meta property="og:type" content="article">
+<meta property="og:title" content="README">
+<meta property="og:url" content="https://yuezi2048.github.io/2024/12/06/2.Areas%F0%9F%8C%90/science/Pre/Awesome-LLM-for-RecSys-main/Awesome-LLM-for-RecSys-main/README/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="Awesome-LLM-for-RecSys A collection of AWESOME papers and resources on the large language model (LLM) related recommender system topics.  :tada: Our survey paper has been accepted by ACM Transactions">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2024-12-06T10:16:55.000Z">
+<meta property="article:modified_time" content="2024-12-06T10:16:55.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="Awesome-LLM-for-RecSys-main">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "README",
+  "url": "https://yuezi2048.github.io/2024/12/06/2.Areas%F0%9F%8C%90/science/Pre/Awesome-LLM-for-RecSys-main/Awesome-LLM-for-RecSys-main/README/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2024-12-06T10:16:55.000Z",
+  "dateModified": "2024-12-06T10:16:55.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2024/12/06/2.Areas%F0%9F%8C%90/science/Pre/Awesome-LLM-for-RecSys-main/Awesome-LLM-for-RecSys-main/README/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'README',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">README</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">README</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-12-06T10:16:55.000Z" title="发表于 2024-12-06 18:16:55">2024-12-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-12-06T10:16:55.000Z" title="更新于 2024-12-06 18:16:55">2024-12-06</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/">science</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/">Pre</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/Awesome-LLM-for-RecSys-main/">Awesome-LLM-for-RecSys-main</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/Awesome-LLM-for-RecSys-main/Awesome-LLM-for-RecSys-main/">Awesome-LLM-for-RecSys-main</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">7.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>48分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Awesome-LLM-for-RecSys"><a href="#Awesome-LLM-for-RecSys" class="headerlink" title="Awesome-LLM-for-RecSys "></a>Awesome-LLM-for-RecSys <a target="_blank" rel="noopener" href="https://awesome.re/"><img src="/img/loading.gif" data-original="https://awesome.re/badge.svg" alt="Awesome"></a></h1><p>A collection of AWESOME papers and resources on the large language model (LLM) related recommender system topics. </p>
+<p>:tada: Our survey paper has been accepted by <strong><em>ACM Transactions on Information Systems (TOIS)</em></strong>: <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3678004">How Can Recommender Systems Benefit from Large Language Models: A Survey</a></p>
+<p>:bell: Since our survey paper is archived, we will update the latest research works at <code>1.7 Newest Research Work List</code>.</p>
+<p>:grin: I am also wrting weekly paper notes about latest LLM-enhanced RS at WeChat. Welcome to follow by scanning the <a target="_blank" rel="noopener" href="https://github.com/CHIANGEL/Awesome-LLM-for-RecSys/blob/main/wechat_for_paper_notes.jpeg">QR-Code</a>.</p>
+<p>:rocket:	<strong>2024.07.09 - Paper v6 released</strong>: Our archived camera-ready version for TOIS.</p>
+<details><summary><b>Survey Paper Update Logs</b></summary>
+
+<p>
+<ul>
+  <li><b>2024.07.09 - Paper v6 released</b>: Our camera-ready Version for TOIS, which will be archived.</li>
+  <li><b>2024.02.05 - Paper v5 released</b>: New release with 27-page main content & more thorough taxonomies.</li>
+  <li><b>2023.06.29 - Paper v4 released</b>: 7 papers have been newly added.</li>
+  <li><b>2023.06.28 - Paper v3 released</b>: Fix typos.</li>
+  <li><b>2023.06.12 - Paper v2 released</b>: Add summerization table in the appendix.</li>
+  <li><b>2023.06.09 - Paper v1 released</b>: Initial version.</li>
+</ul>
+</p>
+
+</details>
+
+<h2 id="1-Papers"><a href="#1-Papers" class="headerlink" title="1. Papers"></a>1. Papers</h2><p>We classify papers according to where LLM will be adapted in the pipeline of RS, which is summarized in the figure below.</p>
+<img width="650" src="/img/loading.gif" data-original="https://github.com/CHIANGEL/Awesome-LLM-for-RecSys/blob/main/where-framework-1.png">
+
+<details><summary><b>1.1 LLM for Feature Engineering</b></summary>
+<p>
+
+<p><b>1.1.1 User- and Item-level Feature Augmentation</b></p>
+<table>
+<thead>
+<tr>
+<th align="center"><strong>Name</strong></th>
+<th align="left"><strong>Paper</strong></th>
+<th align="center"><strong>LLM Backbone (Largest)</strong></th>
+<th align="center"><strong>LLM Tuning Strategy</strong></th>
+<th align="center"><strong>Publication</strong></th>
+<th align="center"><strong>Link</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">LLM4KGC</td>
+<td align="left">Knowledge Graph Completion Models are Few-shot Learners: An Empirical Study of Relation Labeling in E-commerce with LLMs</td>
+<td align="center">PaLM (540B)&#x2F; ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.09858v1">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">TagGPT</td>
+<td align="left">TagGPT: Large Language Models are Zero-shot Multimodal Taggers</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2304.03022v1">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">ICPC</td>
+<td align="left">Large Language Models for User Interest Journeys</td>
+<td align="center">LaMDA (137B)</td>
+<td align="center">Full Finetuning&#x2F; Prompt Tuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.15498">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">KAR</td>
+<td align="left">Towards Open-World Recommendation with Knowledge Augmentation from Large Language Models</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2306.10933">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">PIE</td>
+<td align="left">Product Information Extraction using ChatGPT</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2306.14921">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LGIR</td>
+<td align="left">Enhancing Job Recommendation through LLM-based Generative Adversarial Networks</td>
+<td align="center">GhatGLM (6B)</td>
+<td align="center">Frozen</td>
+<td align="center">AAAI 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2307.10747">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">GIRL</td>
+<td align="left">Generative Job Recommendations with Large Language Model</td>
+<td align="center">BELLE (7B)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2307.02157">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LLM-Rec</td>
+<td align="left">LLM-Rec: Personalized Recommendation via Prompting Large Language Models</td>
+<td align="center">text-davinci-003</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2307.15780">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">HKFR</td>
+<td align="left">Heterogeneous Knowledge Fusion: A Novel Approach for Personalized Recommendation via LLM</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">RecSys 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.03333">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LLaMA-E</td>
+<td align="left">LLaMA-E: Empowering E-commerce Authoring with Multi-Aspect Instruction Following</td>
+<td align="center">LLaMA (30B)</td>
+<td align="center">LoRA</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.04913">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">EcomGPT</td>
+<td align="left">EcomGPT: Instruction-tuning Large Language Models with Chain-of-Task Tasks for E-commerce</td>
+<td align="center">BLOOMZ (7.1B)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.06966">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">TF-DCon</td>
+<td align="left">Leveraging Large Language Models (LLMs) to Empower Training-Free Dataset Condensation for Content-Based Recommendation</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.09874">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">RLMRec</td>
+<td align="left">Representation Learning with Large Language Models for Recommendation</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">WWW 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.15950">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LLMRec</td>
+<td align="left">LLMRec: Large Language Models with Graph Augmentation for Recommendation</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">WSDM 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2311.00423.pdf">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LLMRG</td>
+<td align="left">Enhancing Recommender Systems with Large Language Model Reasoning Graphs</td>
+<td align="center">GPT4</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.10835">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">CUP</td>
+<td align="left">Recommendations by Concise User Profiles from Review Text</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2311.01314">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">SINGLE</td>
+<td align="left">Modeling User Viewing Flow using Large Language Models for Article Recommendation</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2311.07619">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">SAGCN</td>
+<td align="left">Understanding Before Recommendation: Semantic Aspect-Aware Review Exploitation via Large Language Models</td>
+<td align="center">Vicuna (13B)</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2312.16275">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">UEM</td>
+<td align="left">User Embedding Model for Personalized Language Prompting</td>
+<td align="center">FLAN-T5-base (250M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2401.04858">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LLMHG</td>
+<td align="left">LLM-Guided Multi-View Hypergraph Learning for Human-Centric Explainable Recommendation</td>
+<td align="center">GPT4</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2401.08217">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">Llama4Rec</td>
+<td align="left">Integrating Large Language Models into Recommendation via Mutual Augmentation and Adaptive Aggregation</td>
+<td align="center">LLaMA2 (7B)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2401.13870">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LLM4Vis</td>
+<td align="left">LLM4Vis: Explainable Visualization Recommendation using ChatGPT</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">EMNLP 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.07652">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LoRec</td>
+<td align="left">LoRec: Large Language Model for Robust Sequential Recommendation against Poisoning Attacks</td>
+<td align="center">LLaMA2</td>
+<td align="center">Frozen</td>
+<td align="center">SIGIR 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2401.17723">[Link]</a></td>
+</tr>
+</tbody></table>
+<p><b>1.1.2 Instance-level Sample Generation</b></p>
+<table>
+<thead>
+<tr>
+<th align="center"><strong>Name</strong></th>
+<th align="left"><strong>Paper</strong></th>
+<th align="center"><strong>LLM Backbone (Largest)</strong></th>
+<th align="center"><strong>LLM Tuning Strategy</strong></th>
+<th align="center"><strong>Publication</strong></th>
+<th align="center"><strong>Link</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">GReaT</td>
+<td align="left">Language Models are Realistic Tabular Data Generators</td>
+<td align="center">GPT2-medium (355M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">ICLR 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2210.06280">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">ONCE</td>
+<td align="left">ONCE: Boosting Content-based Recommendation with Both Open- and Closed-source Large Language Models</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">WSDM 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.06566">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">AnyPredict</td>
+<td align="left">AnyPredict: Foundation Model for Tabular Prediction</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.12081">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">DPLLM</td>
+<td align="left">Privacy-Preserving Recommender Systems with Synthetic Query Generation using Differentially Private Large Language Models</td>
+<td align="center">T5-XL (3B)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.05973">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">MINT</td>
+<td align="left">Large Language Model Augmented Narrative Driven Recommendations</td>
+<td align="center">text-davinci-003</td>
+<td align="center">Frozen</td>
+<td align="center">RecSys 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2306.02250">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">Agent4Rec</td>
+<td align="left">On Generative Agents in Recommendation</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.10108">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">RecPrompt</td>
+<td align="left">RecPrompt: A Prompt Tuning Framework for News Recommendation Using Large Language Models</td>
+<td align="center">GPT4</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2312.10463">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">PO4ISR</td>
+<td align="left">Large Language Models for Intent-Driven Session Recommendations</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2312.07552">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">BEQUE</td>
+<td align="left">Large Language Model based Long-tail Query Rewriting in Taobao Search</td>
+<td align="center">ChatGLM (6B)</td>
+<td align="center">FFT</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2311.03758">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">Agent4Ranking</td>
+<td align="left">Agent4Ranking: Semantic Robust Ranking via Personalized Query Rewriting Using Multi-agent LLM</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2312.15450">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">PopNudge</td>
+<td align="left">Improving Conversational Recommendation Systems via Bias Analysis and Language-Model-Enhanced Data Augmentation</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.16738">[Link]</a></td>
+</tr>
+</tbody></table>
+</p>
+</details>
+
+<details><summary><b>1.2 LLM as Feature Encoder</b></summary>
+<p>
+
+<p><b>1.2.1 Representation Enhancement</b></p>
+<table>
+<thead>
+<tr>
+<th align="center"><strong>Name</strong></th>
+<th align="left"><strong>Paper</strong></th>
+<th align="center"><strong>LLM Backbone (Largest)</strong></th>
+<th align="center"><strong>LLM Tuning Strategy</strong></th>
+<th align="center"><strong>Publication</strong></th>
+<th align="center"><strong>Link</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">U-BERT</td>
+<td align="left">U-BERT: Pre-training User Representations for Improved Recommendation</td>
+<td align="center">BERT-base (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">AAAI 2021</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://ojs.aaai.org/index.php/AAAI/article/view/16557">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">UNBERT</td>
+<td align="left">UNBERT: User-News Matching BERT for News Recommendation</td>
+<td align="center">BERT-base (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">IJCAI 2021</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://www.ijcai.org/proceedings/2021/462">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">PLM-NR</td>
+<td align="left">Empowering News Recommendation with Pre-trained Language Models</td>
+<td align="center">RoBERTa-base (125M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">SIGIR 2021</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2104.07413">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">Pyramid-ERNIE</td>
+<td align="left">Pre-trained Language Model based Ranking in Baidu Search</td>
+<td align="center">ERNIE (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">KDD 2021</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2105.11108">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">ERNIE-RS</td>
+<td align="left">Pre-trained Language Model for Web-scale Retrieval in Baidu Search</td>
+<td align="center">ERNIE (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">KDD 2021</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2106.03373">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">CTR-BERT</td>
+<td align="left">CTR-BERT: Cost-effective knowledge distillation for billion-parameter teacher models</td>
+<td align="center">Customized BERT (1.5B)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">ENLSP 2021</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://neurips2021-nlp.github.io/papers/20/CameraReady/camera_ready_final.pdf">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">SuKD</td>
+<td align="left">Learning Supplementary NLP Features for CTR Prediction in Sponsored Search</td>
+<td align="center">RoBERTa-large (355M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">KDD 2022</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/3534678.3539064">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">PREC</td>
+<td align="left">Boosting Deep CTR Prediction with a Plug-and-Play Pre-trainer for News Recommendation</td>
+<td align="center">BERT-base (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">COLING 2022</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://aclanthology.org/2022.coling-1.249/">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">MM-Rec</td>
+<td align="left">MM-Rec: Visiolinguistic Model Empowered Multimodal News Recommendation</td>
+<td align="center">BERT-base (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">SIGIR 2022</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/3477495.3531896">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">Tiny-NewsRec</td>
+<td align="left">Tiny-NewsRec: Effective and Efficient PLM-based News Recommendation</td>
+<td align="center">UniLMv2-base (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">EMNLP 2022</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2112.00944">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">PLM4Tag</td>
+<td align="left">PTM4Tag: Sharpening Tag Recommendation of Stack Overflow Posts with Pre-trained Models</td>
+<td align="center">CodeBERT (125M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">ICPC 2022</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2203.10965">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">TwHIN-BERT</td>
+<td align="left">TwHIN-BERT: A Socially-Enriched Pre-trained Language Model for Multilingual Tweet Representations</td>
+<td align="center">BERT-base (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2022</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2209.07562">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LSH</td>
+<td align="left">Improving Code Example Recommendations on Informal Documentation Using BERT and Query-Aware LSH: A Comparative Study</td>
+<td align="center">BERT-base (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.03017v1">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LLM2BERT4Rec</td>
+<td align="left">Leveraging Large Language Models for Sequential Recommendation</td>
+<td align="center">text-embedding-ada-002</td>
+<td align="center">Frozen</td>
+<td align="center">RecSys 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2309.09261">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LLM4ARec</td>
+<td align="left">Prompt Tuning Large Language Models on Personalized Aspect Extraction for Recommendations</td>
+<td align="center">GPT2 (110M)</td>
+<td align="center">Prompt Tuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2306.01475">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">TIGER</td>
+<td align="left">Recommender Systems with Generative Retrieval</td>
+<td align="center">Sentence-T5-base (223M)</td>
+<td align="center">Frozen</td>
+<td align="center">NIPS 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.05065">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">TBIN</td>
+<td align="left">TBIN: Modeling Long Textual Behavior Data for CTR Prediction</td>
+<td align="center">BERT-base (110M)</td>
+<td align="center">Frozen</td>
+<td align="center">DLP-RecSys 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.08483">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LKPNR</td>
+<td align="left">LKPNR: LLM and KG for Personalized News Recommendation Framework</td>
+<td align="center">LLaMA2 (7B)</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.12028">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">SSNA</td>
+<td align="left">Towards Efficient and Effective Adaptation of Large Language Models for Sequential Recommendation</td>
+<td align="center">DistilRoBERTa-base (83M)</td>
+<td align="center">Layerwise Adapter Tuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.01612">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">CollabContext</td>
+<td align="left">Collaborative Contextualization: Bridging the Gap between Collaborative Filtering and Pre-trained Language Model</td>
+<td align="center">Instructor-XL (1.5B)</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.09400">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LMIndexer</td>
+<td align="left">Language Models As Semantic Indexers</td>
+<td align="center">T5-base (223M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.07815">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">Stack</td>
+<td align="left">A BERT based Ensemble Approach for Sentiment Classification of Customer Reviews and its Application to Nudge Marketing in e-Commerce</td>
+<td align="center">BERT-base (110M)</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2311.10782">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">N&#x2F;A</td>
+<td align="left">Utilizing Language Models for Tour Itinerary Recommendation</td>
+<td align="center">BERT-base (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">PMAI@IJCAI 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2311.12355">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">UEM</td>
+<td align="left">User Embedding Model for Personalized Language Prompting</td>
+<td align="center">Sentence-T5-base (223M)</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2401.04858">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">Social-LLM</td>
+<td align="left">Social-LLM: Modeling User Behavior at Scale using Language Models and Social Network Data</td>
+<td align="center">SBERT-MPNet-base (110M)</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2401.00893">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LLMRS</td>
+<td align="left">LLMRS: Unlocking Potentials of LLM-Based Recommender Systems for Software Purchase</td>
+<td align="center">MPNet (110M)</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2401.06676">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">KERL</td>
+<td align="left">Knowledge Graphs and Pre-trained Language Models enhanced Representation Learning for Conversational Recommender Systems</td>
+<td align="center">BERT-mini</td>
+<td align="center">Frozen</td>
+<td align="center">TNNLS</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2312.10967">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">N&#x2F;A</td>
+<td align="left">Empowering Few-Shot Recommender Systems with Large Language Models – Enhanced Representations</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">IEEE Access</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2312.13557">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">N&#x2F;A</td>
+<td align="left">Better Generalization with Semantic IDs: A Case Study in Ranking for Recommendations</td>
+<td align="center">Unknown</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2306.08121">[Link]</a></td>
+</tr>
+</tbody></table>
+<p><b>1.2.2 Unified Cross-domain Recommendation</b></p>
+<table>
+<thead>
+<tr>
+<th align="center"><strong>Name</strong></th>
+<th align="left"><strong>Paper</strong></th>
+<th align="center"><strong>LLM Backbone (Largest)</strong></th>
+<th align="center"><strong>LLM Tuning Strategy</strong></th>
+<th align="center"><strong>Publication</strong></th>
+<th align="center"><strong>Link</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">ZESRec</td>
+<td align="left">Zero-Shot Recommender Systems</td>
+<td align="center">BERT-base (110M)</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2021</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2105.08318">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">UniSRec</td>
+<td align="left">Towards Universal Sequence Representation Learning for Recommender Systems</td>
+<td align="center">BERT-base (110M)</td>
+<td align="center">Frozen</td>
+<td align="center">KDD 2022</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2206.05941">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">TransRec</td>
+<td align="left">TransRec: Learning Transferable Recommendation from Mixture-of-Modality Feedback</td>
+<td align="center">BERT-base (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2022</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2206.06190">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">VQ-Rec</td>
+<td align="left">Learning Vector-Quantized Item Representation for Transferable Sequential Recommenders</td>
+<td align="center">BERT-base (110M)</td>
+<td align="center">Frozen</td>
+<td align="center">WWW 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2210.12316">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">IDRec vs MoRec</td>
+<td align="left">Where to Go Next for Recommender Systems? ID- vs. Modality-based Recommender Models Revisited</td>
+<td align="center">BERT-base (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">SIGIR 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2303.13835">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">TransRec</td>
+<td align="left">Exploring Adapter-based Transfer Learning for Recommender Systems: Empirical Studies and Practical Insights</td>
+<td align="center">RoBERTa-base (125M)</td>
+<td align="center">Layerwise Adapter Tuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.15036">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">TCF</td>
+<td align="left">Exploring the Upper Limits of Text-Based Collaborative Filtering Using Large Language Models: Discoveries and Insights</td>
+<td align="center">OPT-175B (175B)</td>
+<td align="center">Frozen&#x2F; Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.11700">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">S&amp;R Foundation</td>
+<td align="left">An Unified Search and Recommendation Foundation Model for Cold-Start Scenario</td>
+<td align="center">ChatGLM (6B)</td>
+<td align="center">Frozen</td>
+<td align="center">CIKM 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2309.08939">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">MISSRec</td>
+<td align="left">MISSRec: Pre-training and Transferring Multi-modal Interest-aware Sequence Representation for Recommendation</td>
+<td align="center">CLIP-B&#x2F;32 (400M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">MM 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.11175">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">UFIN</td>
+<td align="left">UFIN: Universal Feature Interaction Network for Multi-Domain Click-Through Rate Prediction</td>
+<td align="center">FLAN-T5-base (250M)</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2311.15493">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">PMMRec</td>
+<td align="left">Multi-Modality is All You Need for Transferable Recommender Systems</td>
+<td align="center">RoBERTa-large (355M)</td>
+<td align="center">Top-2-layer Finetuning</td>
+<td align="center">ICDE 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2312.09602">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">Uni-CTR</td>
+<td align="left">A Unified Framework for Multi-Domain CTR Prediction via Large Language Models</td>
+<td align="center">Sheared-LLaMA (1.3B)</td>
+<td align="center">LoRA</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2312.10743">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">PCDR</td>
+<td align="left">Prompt-enhanced Federated Content Representation Learning for Cross-domain Recommendation</td>
+<td align="center">BERT-base (110M)</td>
+<td align="center">Frozen</td>
+<td align="center">WWW 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2401.14678">[Link]</a></td>
+</tr>
+</tbody></table>
+</p>
+</details>
+
+<details><summary><b>1.3 LLM as Scoring/Ranking Function</b></summary>
+<p>
+
+<p><b>1.3.1 Item Scoring Task</b></p>
+<table>
+<thead>
+<tr>
+<th align="center"><strong>Name</strong></th>
+<th align="left"><strong>Paper</strong></th>
+<th align="center"><strong>LLM Backbone (Largest)</strong></th>
+<th align="center"><strong>LLM Tuning Strategy</strong></th>
+<th align="center"><strong>Publication</strong></th>
+<th align="center"><strong>Link</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">LMRecSys</td>
+<td align="left">Language Models as Recommender Systems: Evaluations and Limitations</td>
+<td align="center">GPT2-XL (1.5B)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">ICBINB 2021</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://openreview.net/forum?id=hFx3fY7-m9b">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">PTab</td>
+<td align="left">PTab: Using the Pre-trained Language Model for Modeling Tabular Data</td>
+<td align="center">BERT-base (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2022</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2209.08060">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">UniTRec</td>
+<td align="left">UniTRec: A Unified Text-to-Text Transformer and Joint Contrastive Learning Framework for Text-based Recommendation</td>
+<td align="center">BART (406M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">ACL 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.15756">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">Prompt4NR</td>
+<td align="left">Prompt Learning for News Recommendation</td>
+<td align="center">BERT-base (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">SIGIR 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2304.05263">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">RecFormer</td>
+<td align="left">Text Is All You Need: Learning Language Representations for Sequential Recommendation</td>
+<td align="center">LongFormer (149M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">KDD 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.13731v1">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">TabLLM</td>
+<td align="left">TabLLM: Few-shot Classification of Tabular Data with Large Language Models</td>
+<td align="center">T0 (11B)</td>
+<td align="center">Few-shot Parameter-effiecnt Finetuning</td>
+<td align="center">AISTATS 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2210.10723">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">Zero-shot GPT</td>
+<td align="left">Zero-Shot Recommendation as Language Modeling</td>
+<td align="center">GPT2-medium (355M)</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2112.04184">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">FLAN-T5</td>
+<td align="left">Do LLMs Understand User Preferences? Evaluating LLMs On User Rating Prediction</td>
+<td align="center">FLAN-5-XXL (11B)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2305.06474.pdf">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">BookGPT</td>
+<td align="left">BookGPT: A General Framework for Book Recommendation Empowered by Large Language Model</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.15673v1">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">TALLRec</td>
+<td align="left">TALLRec: An Effective and Efficient Tuning Framework to Align Large Language Model with Recommendation</td>
+<td align="center">LLaMA (7B)</td>
+<td align="center">LoRA</td>
+<td align="center">RecSys 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.00447">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">PBNR</td>
+<td align="left">PBNR: Prompt-based News Recommender System</td>
+<td align="center">T5-small (60M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2304.07862">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">CR-SoRec</td>
+<td align="left">CR-SoRec: BERT driven Consistency Regularization for Social Recommendation</td>
+<td align="center">BERT-base (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">RecSys 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/fullHtml/10.1145/3604915.3608844">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">PromptRec</td>
+<td align="left">Towards Personalized Cold-Start Recommendation with Prompts</td>
+<td align="center">LLaMA (7B)</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2306.17256">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">GLRec</td>
+<td align="left">Exploring Large Language Model for Graph Data Understanding in Online Job Recommendations</td>
+<td align="center">BELLE-LLaMA (7B)</td>
+<td align="center">LoRA</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2307.05722">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">BERT4CTR</td>
+<td align="left">BERT4CTR: An Efficient Framework to Combine Pre-trained Language Model with Non-textual Features for CTR Prediction</td>
+<td align="center">RoBERTa-large (355M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">KDD 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/3580305.3599780">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">ReLLa</td>
+<td align="left">ReLLa: Retrieval-enhanced Large Language Models for Lifelong Sequential Behavior Comprehension in Recommendation</td>
+<td align="center">Vicuna (13B)</td>
+<td align="center">LoRA</td>
+<td align="center">WWW 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.11131">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">TASTE</td>
+<td align="left">Text Matching Improves Sequential Recommendation by Reducing Popularity Biases</td>
+<td align="center">T5-base (223M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">CIKM 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.14029">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">N&#x2F;A</td>
+<td align="left">Unveiling Challenging Cases in Text-based Recommender Systems</td>
+<td align="center">BERT-base (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">RecSys Workshop 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://ceur-ws.org/Vol-3476/paper5.pdf">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">ClickPrompt</td>
+<td align="left">ClickPrompt: CTR Models are Strong Prompt Generators for Adapting Language Models to CTR Prediction</td>
+<td align="center">RoBERTa-large (355M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">WWW 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.09234">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">SetwiseRank</td>
+<td align="left">A Setwise Approach for Effective and Highly Efficient Zero-shot Ranking with Large Language Models</td>
+<td align="center">FLAN-T5-XXL (11B)</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.09497">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">UPSR</td>
+<td align="left">Thoroughly Modeling Multi-domain Pre-trained Recommendation as Language</td>
+<td align="center">T5-base (223M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.13540">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LLM-Rec</td>
+<td align="left">One Model for All: Large Language Models are Domain-Agnostic Recommendation Systems</td>
+<td align="center">OPT (6.7B)</td>
+<td align="center">LoRA</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.14304">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LLMRanker</td>
+<td align="left">Beyond Yes and No: Improving Zero-Shot LLM Rankers via Scoring Fine-Grained Relevance Labels</td>
+<td align="center">FLAN PaLM2 S</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.14122">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">CoLLM</td>
+<td align="left">CoLLM: Integrating Collaborative Embeddings into Large Language Models for Recommendation</td>
+<td align="center">Vicuna (7B)</td>
+<td align="center">LoRA</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.19488">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">FLIP</td>
+<td align="left">FLIP: Towards Fine-grained Alignment between ID-based Models and Pretrained Language Models for CTR Prediction</td>
+<td align="center">RoBERTa-large (355M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.19453">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">BTRec</td>
+<td align="left">BTRec: BERT-Based Trajectory Recommendation for Personalized Tours</td>
+<td align="center">BERT-base (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.19886">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">CLLM4Rec</td>
+<td align="left">Collaborative Large Language Model for Recommender Systems</td>
+<td align="center">GPT2 (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2311.01343">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">CUP</td>
+<td align="left">Recommendations by Concise User Profiles from Review Text</td>
+<td align="center">BERT-base (110M)</td>
+<td align="center">Last-layer Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2311.01314">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">N&#x2F;A</td>
+<td align="left">Instruction Distillation Makes Large Language Models Efficient Zero-shot Rankers</td>
+<td align="center">FLAN-T5-XL (3B)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2311.01555">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">CoWPiRec</td>
+<td align="left">Collaborative Word-based Pre-trained Item Representation for Transferable Recommendation</td>
+<td align="center">BERT-base (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">ICDM 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2311.10501">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">RecExplainer</td>
+<td align="left">RecExplainer: Aligning Large Language Models for Recommendation Model Interpretability</td>
+<td align="center">Vicuna-v1.3 (7B)</td>
+<td align="center">LoRA</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2311.10947">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">E4SRec</td>
+<td align="left">E4SRec: An Elegant Effective Efficient Extensible Solution of Large Language Models for Sequential Recommendation</td>
+<td align="center">LLaMA2 (13B)</td>
+<td align="center">LoRA</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2312.02443">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">CER</td>
+<td align="left">The Problem of Coherence in Natural Language Explanations of Recommendations</td>
+<td align="center">GPT2 (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">ECAI 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2312.11356">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LSAT</td>
+<td align="left">Preliminary Study on Incremental Learning for Large Language Model-based Recommender Systems</td>
+<td align="center">LLaMA (7B)</td>
+<td align="center">LoRA</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2312.15599">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">Llama4Rec</td>
+<td align="left">Integrating Large Language Models into Recommendation via Mutual Augmentation and Adaptive Aggregation</td>
+<td align="center">LLaMA2 (7B)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2401.13870">[Link]</a></td>
+</tr>
+</tbody></table>
+<p><b>1.3.2 Item Generation Task</b></p>
+<table>
+<thead>
+<tr>
+<th align="center"><strong>Name</strong></th>
+<th align="left"><strong>Paper</strong></th>
+<th align="center"><strong>LLM Backbone (Largest)</strong></th>
+<th align="center"><strong>LLM Tuning Strategy</strong></th>
+<th align="center"><strong>Publication</strong></th>
+<th align="center"><strong>Link</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">GPT4Rec</td>
+<td align="left">GPT4Rec: A Generative Framework for Personalized Recommendation and User Interests Interpretation</td>
+<td align="center">GPT2 (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2304.03879">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">VIP5</td>
+<td align="left">VIP5: Towards Multimodal Foundation Models for Recommendation</td>
+<td align="center">T5-base (223M)</td>
+<td align="center">Layerwise Adater Tuning</td>
+<td align="center">EMNLP 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.14302">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">P5-ID</td>
+<td align="left">How to Index Item IDs for Recommendation Foundation Models</td>
+<td align="center">T5-small (60M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.06569">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">FaiRLLM</td>
+<td align="left">Is ChatGPT Fair for Recommendation? Evaluating Fairness in Large Language Model Recommendation</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">RecSys 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.07609">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">PALR</td>
+<td align="left">PALR: Personalization Aware LLMs for Recommendation</td>
+<td align="center">LLaMA (7B)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.07622">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">ChatGPT</td>
+<td align="left">Large Language Models are Zero-Shot Rankers for Recommender Systems</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">ECIR 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.08845">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">AGR</td>
+<td align="left">Sparks of Artificial General Recommender (AGR): Early Experiments with ChatGPT</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.04518">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">NIR</td>
+<td align="left">Zero-Shot Next-Item Recommendation using Large Pretrained Language Models</td>
+<td align="center">GPT3 (175B)</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2304.03153">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">GPTRec</td>
+<td align="left">Generative Sequential Recommendation with GPTRec</td>
+<td align="center">GPT2-medium (355M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Gen-IR@SIGIR 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2306.11114">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">ChatNews</td>
+<td align="left">A Preliminary Study of ChatGPT on News Recommendation: Personalization, Provider Fairness, Fake News</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2306.10702">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">N&#x2F;A</td>
+<td align="left">Large Language Models are Competitive Near Cold-start Recommenders for Language- and Item-based Preferences</td>
+<td align="center">PaLM (62B)</td>
+<td align="center">Frozen</td>
+<td align="center">RecSys 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2307.14225">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LLMSeqPrompt</td>
+<td align="left">Leveraging Large Language Models for Sequential Recommendation</td>
+<td align="center">OpenAI ada model</td>
+<td align="center">Finetune</td>
+<td align="center">RecSys 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2309.09261">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">GenRec</td>
+<td align="left">GenRec: Large Language Model for Generative Recommendation</td>
+<td align="center">LLaMA (7B)</td>
+<td align="center">LoRA</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2307.00457">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">UP5</td>
+<td align="left">UP5: Unbiased Foundation Model for Fairness-aware Recommendation</td>
+<td align="center">T5-base (223M)</td>
+<td align="center">Prefix Tuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.12090">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">HKFR</td>
+<td align="left">Heterogeneous Knowledge Fusion: A Novel Approach for Personalized Recommendation via LLM</td>
+<td align="center">ChatGLM (6B)</td>
+<td align="center">LoRA</td>
+<td align="center">RecSys 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.03333">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">N&#x2F;A</td>
+<td align="left">The Unequal Opportunities of Large Language Models: Revealing Demographic Bias through Job Recommendations</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">EAAMO 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.02053">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">BIGRec</td>
+<td align="left">A Bi-Step Grounding Paradigm for Large Language Models in Recommendation Systems</td>
+<td align="center">LLaMA (7B)</td>
+<td align="center">LoRA</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.08434">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">KP4SR</td>
+<td align="left">Knowledge Prompt-tuning for Sequential Recommendation</td>
+<td align="center">T5-small (60M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.08459">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">RecSysLLM</td>
+<td align="left">Leveraging Large Language Models for Pre-trained Recommender Systems</td>
+<td align="center">GLM (10B)</td>
+<td align="center">LoRA</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.10837">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">POD</td>
+<td align="left">Prompt Distillation for Efficient LLM-based Recommendation</td>
+<td align="center">T5-small (60M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">CIKM 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://lileipisces.github.io/files/CIKM23-POD-paper.pdf">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">N&#x2F;A</td>
+<td align="left">Evaluating ChatGPT as a Recommender System: A Rigorous Approach</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2309.03613">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">RaRS</td>
+<td align="left">Retrieval-augmented Recommender System: Enhancing Recommender Systems with Large Language Models</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">RecSys Doctoral Symposium 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/3604915.3608889">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">JobRecoGPT</td>
+<td align="left">JobRecoGPT – Explainable job recommendations using LLMs</td>
+<td align="center">GPT4</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2309.11805">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LANCER</td>
+<td align="left">Reformulating Sequential Recommendation: Learning Dynamic User Interest with Content-enriched Language Modeling</td>
+<td align="center">GPT2 (110M)</td>
+<td align="center">Prefix Tuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2309.10435">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">TransRec</td>
+<td align="left">A Multi-facet Paradigm to Bridge Large Language Model and Recommendation</td>
+<td align="center">LLaMA (7B)</td>
+<td align="center">LoRA</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.06491">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">AgentCF</td>
+<td align="left">AgentCF: Collaborative Learning with Autonomous Language Agents for Recommender Systems</td>
+<td align="center">text-davinci-003 &amp; gpt-3.5-turbo</td>
+<td align="center">Frozen</td>
+<td align="center">WWW 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.09233">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">P4LM</td>
+<td align="left">Factual and Personalized Recommendations using Language Models and Reinforcement Learning</td>
+<td align="center">PaLM2-XS</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.06176">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">InstructMK</td>
+<td align="left">Multiple Key-value Strategy in Recommendation Systems Incorporating Large Language Model</td>
+<td align="center">LLaMA (7B)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">CIKM GenRec 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.16409">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LightLM</td>
+<td align="left">LightLM: A Lightweight Deep and Narrow Language Model for Generative Recommendation</td>
+<td align="center">T5-small (60M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.17488">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LlamaRec</td>
+<td align="left">LlamaRec: Two-Stage Recommendation using Large Language Models for Ranking</td>
+<td align="center">LLaMA2 (7B)</td>
+<td align="center">QLoRA</td>
+<td align="center">PGAI@CIKM 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2311.02089">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">N&#x2F;A</td>
+<td align="left">Exploring Recommendation Capabilities of GPT-4V(ision): A Preliminary Case Study</td>
+<td align="center">GPT-4V</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2311.04199">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">N&#x2F;A</td>
+<td align="left">Exploring Fine-tuning ChatGPT for News Recommendation</td>
+<td align="center">ChatGPT</td>
+<td align="center">gpt-3.5-turbo finetuning API</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2311.05850">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">N&#x2F;A</td>
+<td align="left">Do LLMs Implicitly Exhibit User Discrimination in Recommendation? An Empirical Study</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2311.07054">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LC-Rec</td>
+<td align="left">Adapting Large Language Models by Integrating Collaborative Semantics for Recommendation</td>
+<td align="center">LLaMA (7B)</td>
+<td align="center">LoRA</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2311.09049">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">DOKE</td>
+<td align="left">Knowledge Plugins: Enhancing Large Language Models for Domain-Specific Recommendations</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2311.10779">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">ControlRec</td>
+<td align="left">ControlRec: Bridging the Semantic Gap between Language Model and Personalized Recommendation</td>
+<td align="center">T5-base (223M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2311.16441">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LLaRA</td>
+<td align="left">LLaRA: Large Language-Recommendation Assistant</td>
+<td align="center">LLaMA2 (7B)</td>
+<td align="center">LoRA</td>
+<td align="center">SIGIR 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2312.02445">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">PO4ISR</td>
+<td align="left">Large Language Models for Intent-Driven Session Recommendations</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2312.07552">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">DRDT</td>
+<td align="left">DRDT: Dynamic Reflection with Divergent Thinking for LLM-based Sequential Recommendation</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2312.11336">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">RecPrompt</td>
+<td align="left">RecPrompt: A Prompt Tuning Framework for News Recommendation Using Large Language Models</td>
+<td align="center">GPT4</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2312.10463">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LiT5</td>
+<td align="left">Scaling Down, LiTting Up: Efficient Zero-Shot Listwise Reranking with Seq2seq Encoder-Decoder Models</td>
+<td align="center">T5-XL (3B)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2312.16098">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">STELLA</td>
+<td align="left">Large Language Models are Not Stable Recommender Systems</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2312.15746">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">Llama4Rec</td>
+<td align="left">Integrating Large Language Models into Recommendation via Mutual Augmentation and Adaptive Aggregation</td>
+<td align="center">LLaMA2 (7B)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2401.13870">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">RECLLM</td>
+<td align="left">Understanding Biases in ChatGPT-based Recommender Systems: Provider Fairness, Temporal Stability, and Recency</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2401.10545">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">DEALRec</td>
+<td align="left">Data-efficient Fine-tuning for LLM-based Recommendation</td>
+<td align="center">LLaMA (7B)</td>
+<td align="center">LoRA</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2401.17197">[Link]</a></td>
+</tr>
+</tbody></table>
+<p><b>1.3.3 Hybrid Task</b></p>
+<table>
+<thead>
+<tr>
+<th align="center"><strong>Name</strong></th>
+<th align="left"><strong>Paper</strong></th>
+<th align="center"><strong>LLM Backbone (Largest)</strong></th>
+<th align="center"><strong>LLM Tuning Strategy</strong></th>
+<th align="center"><strong>Publication</strong></th>
+<th align="center"><strong>Link</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">P5</td>
+<td align="left">Recommendation as Language Processing (RLP): A Unified Pretrain, Personalized Prompt &amp; Predict Paradigm (P5)</td>
+<td align="center">T5-base (223M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">RecSys 2022</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2203.13366">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">M6-Rec</td>
+<td align="left">M6-Rec: Generative Pretrained Language Models are Open-Ended Recommender Systems</td>
+<td align="center">M6-base (300M)</td>
+<td align="center">Option Tuning</td>
+<td align="center">Arxiv 2022</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2205.08084">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">InstructRec</td>
+<td align="left">Recommendation as Instruction Following: A Large Language Model Empowered Recommendation Approach</td>
+<td align="center">FLAN-T5-XL (3B)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.07001">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">ChatGPT</td>
+<td align="left">Is ChatGPT a Good Recommender? A Preliminary Study</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2304.10149">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">ChatGPT</td>
+<td align="left">Is ChatGPT Good at Search? Investigating Large Language Models as Re-Ranking Agent</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2304.09542">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">ChatGPT</td>
+<td align="left">Uncovering ChatGPT’s Capabilities in Recommender Systems</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">RecSys 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.02182">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">BDLM</td>
+<td align="left">Bridging the Information Gap Between Domain-Specific Model and General LLM for Personalized Recommendation</td>
+<td align="center">Vicuna (7B)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2311.03778">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">RecRanker</td>
+<td align="left">RecRanker: Instruction Tuning Large Language Model as Ranker for Top-k Recommendation</td>
+<td align="center">LLaMA2 (13B)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2312.16018">[Link]</a></td>
+</tr>
+</tbody></table>
+</p>
+</details>
+
+<details><summary><b>1.4 LLM for User Interaction</b></summary>
+<p>
+
+<p><b>1.4.1 Task-oriented User Interaction</b></p>
+<table>
+<thead>
+<tr>
+<th align="center"><strong>Name</strong></th>
+<th align="left"><strong>Paper</strong></th>
+<th align="center"><strong>LLM Backbone (Largest)</strong></th>
+<th align="center"><strong>LLM Tuning Strategy</strong></th>
+<th align="center"><strong>Publication</strong></th>
+<th align="center"><strong>Link</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">TG-ReDial</td>
+<td align="left">Towards Topic-Guided Conversational Recommender System</td>
+<td align="center">BERT-base (110M) &amp; GPT2 (110M)</td>
+<td align="center">Unknown</td>
+<td align="center">COLING 2020</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2010.04125">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">TCP</td>
+<td align="left">Follow Me: Conversation Planning for Target-driven Recommendation Dialogue Systems</td>
+<td align="center">BERT-base (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2022</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2208.03516">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">MESE</td>
+<td align="left">Improving Conversational Recommendation Systems’ Quality with Context-Aware Item Meta-Information</td>
+<td align="center">DistilBERT (67M) &amp; GPT2 (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">ACL 2022</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2112.08140">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">UniMIND</td>
+<td align="left">A Unified Multi-task Learning Framework for Multi-goal Conversational Recommender Systems</td>
+<td align="center">BART-base (139M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">ACM TOIS 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2204.06923">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">VRICR</td>
+<td align="left">Variational Reasoning over Incomplete Knowledge Graphs for Conversational Recommendation</td>
+<td align="center">BERT-base (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">WSDM 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2212.11868">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">KECR</td>
+<td align="left">Explicit Knowledge Graph Reasoning for Conversational Recommendation</td>
+<td align="center">BERT-base (110M) &amp; GPT2 (110M)</td>
+<td align="center">Frozen</td>
+<td align="center">ACM TIST 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.00783">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">N&#x2F;A</td>
+<td align="left">Large Language Models as Zero-Shot Conversational Recommenders</td>
+<td align="center">GPT4</td>
+<td align="center">Frozen</td>
+<td align="center">CIKM 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.10053">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">MuseChat</td>
+<td align="left">MuseChat: A Conversational Music Recommendation System for Videos</td>
+<td align="center">Vicuna (7B)</td>
+<td align="center">LoRA</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.06282">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">N&#x2F;A</td>
+<td align="left">Conversational Recommender System and Large Language Model Are Made for Each Other in E-commerce Pre-sales Dialogue</td>
+<td align="center">Chinese-Alpaca (7B)</td>
+<td align="center">LoRA</td>
+<td align="center">EMNLP 2023 Findings</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.14626">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">N&#x2F;A</td>
+<td align="left">ChatGPT for Conversational Recommendation: Refining Recommendations by Reprompting with Feedback</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2401.03605">[Link]</a></td>
+</tr>
+</tbody></table>
+<p><b>1.4.2 Open-ended User Interaction</b></p>
+<table>
+<thead>
+<tr>
+<th align="center"><strong>Name</strong></th>
+<th align="left"><strong>Paper</strong></th>
+<th align="center"><strong>LLM Backbone (Largest)</strong></th>
+<th align="center"><strong>LLM Tuning Strategy</strong></th>
+<th align="center"><strong>Publication</strong></th>
+<th align="center"><strong>Link</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">BARCOR</td>
+<td align="left">BARCOR: Towards A Unified Framework for Conversational Recommendation Systems</td>
+<td align="center">BART-base (139M)</td>
+<td align="center">Selective-layer Finetuning</td>
+<td align="center">Arxiv 2022</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2203.14257">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">RecInDial</td>
+<td align="left">RecInDial: A Unified Framework for Conversational Recommendation with Pretrained Language Models</td>
+<td align="center">DialoGPT (110M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">AACL 2022</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2110.07477">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">UniCRS</td>
+<td align="left">Towards Unified Conversational Recommender Systems via Knowledge-Enhanced Prompt Learning</td>
+<td align="center">DialoGPT-small (176M)</td>
+<td align="center">Frozen</td>
+<td align="center">KDD 2022</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2206.09363">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">T5-CR</td>
+<td align="left">Multi-Task End-to-End Training Improves Conversational Recommendation</td>
+<td align="center">T5-base (223M)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.06218">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">TtW</td>
+<td align="left">Talk the Walk: Synthetic Data Generation for Conversational Music Recommendation</td>
+<td align="center">T5-base (223M) &amp; T5-XXL (11B)</td>
+<td align="center">Full Finetuning &amp; Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2301.11489">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">N&#x2F;A</td>
+<td align="left">Rethinking the Evaluation for Conversational Recommendation in the Era of Large Language Models</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">EMNLP 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.13112">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">PECRS</td>
+<td align="left">Parameter-Efficient Conversational Recommender System as a Language Processing Task</td>
+<td align="center">GPT2-medium (355M)</td>
+<td align="center">LoRA</td>
+<td align="center">EACL 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2401.14194">[Link]</a></td>
+</tr>
+</tbody></table>
+</p>
+</details>
+
+<details><summary><b>1.5 LLM for RS Pipeline Controller</b></summary>
+<p>
+    
+<table>
+<thead>
+<tr>
+<th align="center"><strong>Name</strong></th>
+<th align="left"><strong>Paper</strong></th>
+<th align="center"><strong>LLM Backbone (Largest)</strong></th>
+<th align="center"><strong>LLM Tuning Strategy</strong></th>
+<th align="center"><strong>Publication</strong></th>
+<th align="center"><strong>Link</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Chat-REC</td>
+<td align="left">Chat-REC: Towards Interactive and Explainable LLMs-Augmented Recommender System</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2303.14524">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">RecLLM</td>
+<td align="left">Leveraging Large Language Models in Conversational Recommender Systems</td>
+<td align="center">LLaMA (7B)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.07961">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">RAH</td>
+<td align="left">RAH! RecSys-Assistant-Human: A Human-Central Recommendation Framework with Large Language Models</td>
+<td align="center">GPT4</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.09904">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">RecMind</td>
+<td align="left">RecMind: Large Language Model Powered Agent For Recommendation</td>
+<td align="center">ChatGPT</td>
+<td align="center">Frozen</td>
+<td align="center">NAACL 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.14296">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">InteRecAgent</td>
+<td align="left">Recommender AI Agent: Integrating Large Language Models for Interactive Recommendations</td>
+<td align="center">GPT4</td>
+<td align="center">Frozen</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.16505">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">CORE</td>
+<td align="left">Lending Interaction Wings to Recommender Systems with Conversational Agents</td>
+<td align="center">N&#x2F;A</td>
+<td align="center">N&#x2F;A</td>
+<td align="center">NIPS 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.04230">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">LLMCRS</td>
+<td align="left">A Large Language Model Enhanced Conversational Recommender System</td>
+<td align="center">LLaMA (7B)</td>
+<td align="center">Full Finetuning</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.06212">[Link]</a></td>
+</tr>
+</tbody></table>
+</p>
+</details>
+
+<details><summary><b>1.6 Related Survey Papers</b></summary>
+<p>
+
+<table>
+<thead>
+<tr>
+<th align="left"><strong>Paper</strong></th>
+<th align="center"><strong>Publication</strong></th>
+<th align="center"><strong>Link</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Bias and Unfairness in Information Retrieval Systems: New Challenges in the LLM Era</td>
+<td align="center">KDD 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.11457">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">All Roads Lead to Rome: Unveiling the Trajectory of Recommender Systems Across the LLM Era</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2407.10081">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Survey for Landing Generative AI in Social and E-commerce Recsys - the Industry Perspectives</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://www.arxiv.org/abs/2406.06475">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">A Survey of Generative Search and Recommendation in the Era of Large Language Models</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.16924">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">When Search Engine Services meet Large Language Models: Visions and Challenges</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2407.00128">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">A Review of Modern Recommender Systems Using Generative Models (Gen-RecSys)</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.00579">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Exploring the Impact of Large Language Models on Recommender Systems: An Extensive Review</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.18590">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Foundation Models for Recommender Systems: A Survey and New Perspectives</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.11143">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Prompting Large Language Models for Recommender Systems: A Comprehensive Framework and Empirical Analysis</td>
+<td align="center">Arixv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2401.04997">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">User Modeling in the Era of Large Language Models: Current Research and Future Directions</td>
+<td align="center">IEEE Data Engineering Bulletin 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2312.11518">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">A Survey on Large Language Models for Personalized and Explainable Recommendations</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2311.12338">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Large Language Models for Generative Recommendation: A Survey and Visionary Discussions</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2309.01157">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Large Language Models for Information Retrieval: A Survey</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.07107">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">When Large Language Models Meet Personalization: Perspectives of Challenges and Opportunities</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2307.16376">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Recommender Systems in the Era of Large Language Models (LLMs)</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2307.02046">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">A Survey on Large Language Models for Recommendation</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.19860">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Pre-train, Prompt and Recommendation: A Comprehensive Survey of Language Modelling Paradigm Adaptations in Recommender Systems</td>
+<td align="center">TACL 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2302.03735">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Self-Supervised Learning for Recommender Systems: A Survey</td>
+<td align="center">TKDE 2022</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2203.15876">[Link]</a></td>
+</tr>
+</tbody></table>
+</p>
+</details>
+
+<details><summary><b>1.7 Newest Research Work List</b></summary>
+<p>
+
+<table>
+<thead>
+<tr>
+<th align="left"><strong>Paper</strong></th>
+<th align="center"><strong>Publication</strong></th>
+<th align="center"><strong>Link</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Large Language Model Can Interpret Latent Space of Sequential Recommender</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.20487">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Zero-Shot Recommendations with Pre-Trained Large Language Models for Multimodal Nudging</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2309.01026">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">INTERS: Unlocking the Power of Large Language Models in Search with Instruction Tuning</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2401.06532">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Evaluation of Synthetic Datasets for Conversational Recommender Systems</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2212.08167v1">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Generative Recommendation: Towards Next-generation Recommender Paradigm</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2304.03516">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Towards Personalized Prompt-Model Retrieval for Generative Recommendation</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.02205">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Generative Next-Basket Recommendation</td>
+<td align="center">RecSys 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/3604915.3608823">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Unlocking the Potential of Large Language Models for Explainable Recommendations</td>
+<td align="center">Arxiv 2023</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2312.15661">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Logic-Scaffolding: Personalized Aspect-Instructed Recommendation Explanation Generation using LLMs</td>
+<td align="center">Falcon (40B)</td>
+<td align="center">Frozen</td>
+</tr>
+<tr>
+<td align="left">Improving Sequential Recommendations with LLMs</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.01339">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">A Multi-Agent Conversational Recommender System</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.01135">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">TransFR: Transferable Federated Recommendation with Pre-trained Language Models</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.01124">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Large Language Model Distilling Medication Recommendation Model</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.02803">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Uncertainty-Aware Explainable Recommendation with Large Language Models</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.03366">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Natural Language User Profiles for Transparent and Scrutable Recommendations</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.05810">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Leveraging LLMs for Unsupervised Dense Retriever Ranking</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.04853">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">RA-Rec: An Efficient ID Representation Alignment Framework for LLM-based Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.04527">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">A Multi-Agent Conversational Recommender System</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.01135">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Fairly Evaluating Large Language Model-based Recommendation Needs Revisit the Cross-Entropy Loss</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.06216">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">SearchAgent: A Lightweight Collaborative Search Agent with Large Language Models</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.06360">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Large Language Model Interaction Simulator for Cold-Start Item Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.09176">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Enhancing ID and Text Fusion via Alternative Training in Session-based Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.08921">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">eCeLLM: Generalizing Large Language Models for E-commerce from Large-scale, High-quality Instruction Data</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.08831">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">LLM-Enhanced User-Item Interactions: Leveraging Edge Information for Optimized Recommendations</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.09617">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">LLM-based Federated Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.09959">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Rethinking Large Language Model Architectures for Sequential Recommendations</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.09543">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Large Language Model with Graph Convolution for Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.08859">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Rec-GPT4V: Multimodal Recommendation with Large Vision-Language Models</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.08670">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Enhancing Recommendation Diversity by Re-ranking with Large Language Models</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2401.11506">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Are ID Embeddings Necessary? Whitening Pre-trained Text Embeddings for Effective Sequential Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.10602">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">SPAR: Personalized Content-Based Recommendation via Long Engagement Attention</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.10555">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Cognitive Personalized Search Integrating Large Language Models with an Efficient Memory Mechanism</td>
+<td align="center">WWW 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.10548">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Large Language Models as Data Augmenters for Cold-Start Item Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.11724">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Explain then Rank: Scale Calibration of Neural Rankers Using Natural Language Explanations from Large Language Models</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.12276">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">LLM4SBR: A Lightweight and Effective Framework for Integrating Large Language Models in Session-based Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.13840">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Breaking the Barrier: Utilizing Large Language Models for Industrial Recommendation Systems through an Inferential Knowledge Graph</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.13750">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">User-LLM: Efficient LLM Contextualization with User Embeddings</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.13598">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Stealthy Attack on Large Language Model based Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.14836">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Multi-Agent Collaboration Framework for Recommender Systems</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.15235">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Item-side Fairness of Large Language Model-based Recommendation System</td>
+<td align="center">WWW 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.15215">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Integrating Large Language Models with Graphical Session-Based Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.16539">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Language-Based User Profiles for Recommendation</td>
+<td align="center">LLM-IGS@WSDM2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.15623">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">BASES: Large-scale Web Search User Simulation with Large Language Model based Agents</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.17505">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Prospect Personalized Recommendation on Large Language Model-based Agent Platform</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.18240">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Sequence-level Semantic Representation Fusion for Recommender Systems</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.18166">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Corpus-Steered Query Expansion with Large Language Models</td>
+<td align="center">ECAL 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.18031">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">NoteLLM: A Retrievable Large Language Model for Note Recommendation</td>
+<td align="center">WWW 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.01744">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">An Interpretable Ensemble of Graph and Language Models for Improving Search Relevance in E-Commerce</td>
+<td align="center">WWW 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.00923">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">LLM-Ensemble: Optimal Large Language Model Ensemble Method for E-commerce Product Attribute Value Extraction</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.00863">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Enhancing Long-Term Recommendation with Bi-level Learnable Large Language Model Planning</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.00843">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">InteraRec: Interactive Recommendations Using Multimodal Large Language Models</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.00822">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">ChatDiet: Empowering Personalized Nutrition-Oriented Food Recommender Chatbots through an LLM-Augmented Framework</td>
+<td align="center">CHASE 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.00781">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Towards Efficient and Effective Unlearning of Large Language Models for Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.03536">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Generative News Recommendation</td>
+<td align="center">WWW 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.03424">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Bridging Language and Items for Retrieval and Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.03952">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Can Small Language Models be Good Reasoners for Sequential Recommendation?</td>
+<td align="center">WWW 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.04260">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Aligning Large Language Models for Controllable Recommendations</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.05063">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Personalized Audiobook Recommendations at Spotify Through Graph Neural Networks</td>
+<td align="center">WWW 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.05185">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Towards Graph Foundation Models for Personalization</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.07478">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">CFaiRLLM: Consumer Fairness Evaluation in Large-Language Model Recommender System</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.05668">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">CoRAL: Collaborative Retrieval-Augmented Large Language Models Improve Long-tail Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.06447">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">RecAI: Leveraging Large Language Models for Next-Generation Recommender Systems</td>
+<td align="center">WWW 2024 Demo</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.06465.pdf">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">KELLMRec: Knowledge-Enhanced Large Language Models for Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.06642">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">USimAgent: Large Language Models for Simulating Search Users</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.09142">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">CALRec: Contrastive Alignment of Generative LLMs For Sequential Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2405.02429">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Integrating Large Language Models with Graphical Session-Based Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.16539">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Language-Based User Profiles for Recommendation</td>
+<td align="center">LLM-IGS@WSDM2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.15623">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">BASES: Large-scale Web Search User Simulation with Large Language Model based Agents</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.17505">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Prospect Personalized Recommendation on Large Language Model-based Agent Platform</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.18240">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Sequence-level Semantic Representation Fusion for Recommender Systems</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.18166">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Corpus-Steered Query Expansion with Large Language Models</td>
+<td align="center">EACL 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.18031">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">NoteLLM: A Retrievable Large Language Model for Note Recommendation</td>
+<td align="center">WWW 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.01744">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">An Interpretable Ensemble of Graph and Language Models for Improving Search Relevance in E-Commerce</td>
+<td align="center">WWW 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.00923">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">LLM-Ensemble: Optimal Large Language Model Ensemble Method for E-commerce Product Attribute Value Extraction</td>
+<td align="center">SIGIR 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.00863">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Enhancing Long-Term Recommendation with Bi-level Learnable Large Language Model Planning</td>
+<td align="center">SIGIR 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.00843">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Towards Efficient and Effective Unlearning of Large Language Models for Recommendation</td>
+<td align="center">FCS</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.03536">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Generative News Recommendation</td>
+<td align="center">WWW 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.03424">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Bridging Language and Items for Retrieval and Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.03952">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Can Small Language Models be Good Reasoners for Sequential Recommendation?</td>
+<td align="center">WWW 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.04260">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Aligning Large Language Models for Controllable Recommendations</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.05063">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Personalized Audiobook Recommendations at Spotify Through Graph Neural Networks</td>
+<td align="center">WWW 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.05185">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">CFaiRLLM: Consumer Fairness Evaluation in Large-Language Model Recommender System</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.05668">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">CoRAL: Collaborative Retrieval-Augmented Large Language Models Improve Long-tail Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.06447">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">RecAI: Leveraging Large Language Models for Next-Generation Recommender Systems</td>
+<td align="center">WWW 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.06465">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">KELLMRec: Knowledge-Enhanced Large Language Models for Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.06642">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Towards Graph Foundation Models for Personalization</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.07478">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">USimAgent: Large Language Models for Simulating Search Users</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.09142">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">The Whole is Better than the Sum: Using Aggregated Demonstrations in In-Context Learning for Sequential Recommendation</td>
+<td align="center">NAACL 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.10135">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">PPM : A Pre-trained Plug-in Model for Click-through Rate Prediction</td>
+<td align="center">WWW 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.10049">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Evaluating Large Language Models as Generative User Simulators for Conversational Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.09738">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Towards Unified Multi-Modal Personalization: Large Vision-Language Models for Generative Recommendation and Beyond</td>
+<td align="center">ICLR 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.10667">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Harnessing Large Language Models for Text-Rich Sequential Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.13325">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">A Large Language Model Enhanced Sequential Recommender for Joint Video and Comment Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.13574">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Could Small Language Models Serve as Recommenders? Towards Data-centric Cold-start Recommendations</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2306.17256">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Play to Your Strengths: Collaborative Intelligence of Conventional Recommender Models and Large Language Models</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.16378">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Reinforcement Learning-based Recommender Systems with Large Language Models for State Reward and Action Modeling</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.16948">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Large Language Models Enhanced Collaborative Filtering</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.17688">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Improving Content Recommendation: Knowledge Graph-Based Semantic Contrastive Learning for Diversity and Cold-Start Users</td>
+<td align="center">LREC-COLING 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.18667">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Sequential Recommendation with Latent Relations based on Large Language Model</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.18348">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Enhanced Generative Recommendation via Content and Collaboration Integration</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.18480">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">To Recommend or Not: Recommendability Identification in Conversations with Pre-trained Language Models</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.18628">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">IDGenRec: LLM-RecSys Alignment with Textual ID Learning</td>
+<td align="center">SIGIR 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.19021">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Breaking the Length Barrier: LLM-Enhanced CTR Prediction in Long Textual User Behaviors</td>
+<td align="center">SIGIR 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.19347">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Make Large Language Model a Better Ranker</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.19181">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Do Large Language Models Rank Fairly? An Empirical Study on the Fairness of LLMs as Rankers</td>
+<td align="center">NAACL 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.03192">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">IISAN: Efficiently Adapting Multimodal Representation for Sequential Recommendation with Decoupled PEFT</td>
+<td align="center">SIGIR 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.02059">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Where to Move Next: Zero-shot Generalization of LLMs for Next POI Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.01855">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Tired of Plugins? Large Language Models Can Be End-To-End Recommender</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.00702">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Aligning Large Language Models with Recommendation Knowledge</td>
+<td align="center">NAACL 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.00245">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Enhancing Content-based Recommendation via Large Language Model</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.00236">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">DRE: Generating Recommendation Explanations by Aligning Large Language Models at Data-level</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.06311">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Optimization Methods for Personalizing Large Language Models through Retrieval Augmentation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.05970">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Q-PEFT: Query-dependent Parameter Efficient Fine-tuning for Text Reranking with Large Language Models</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.04522">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">JobFormer: Skill-Aware Job Recommendation with Semantic-Enhanced Transformer</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.04313">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">PMG : Personalized Multimodal Generation with Large Language Models</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.08677">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">The Elephant in the Room: Rethinking the Usage of Pre-trained Language Model in Sequential Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.08796">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Exact and Efficient Unlearning for Large Language Model-based Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.10327">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Large Language Models meet Collaborative Filtering: An Efficient All-round LLM-based Recommender System</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.11343">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Behavior Alignment: A New Perspective of Evaluating LLM-based Conversational Recommendation Systems</td>
+<td align="center">SIGIR 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.11773">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Generating Diverse Criteria On-the-Fly to Improve Point-wise LLM Rankers</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.11960">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">RecGPT: Generative Personalized Prompts for Sequential Recommendation via ChatGPT Training Paradigm</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.08675">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">MMGRec: Multimodal Generative Recommendation with Transformer Model</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.16555">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Hi-Gen: Generative Retrieval For Large-Scale Personalized E-commerce Search</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.15675">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Contrastive Quantization based Semantic Code for Generative Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.14774">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">ImplicitAVE: An Open-Source Dataset and Multimodal LLMs Benchmark for Implicit Attribute Value Extraction</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.15592">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Large Language Models for Next Point-of-Interest Recommendation</td>
+<td align="center">SIGIR 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.17591">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Ranked List Truncation for Large Language Model-based Re-Ranking</td>
+<td align="center">SIGIR 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.18185">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Large Language Models as Conversational Movie Recommenders: A User Study</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.19093">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Distillation Matters: Empowering Sequential Recommenders to Match the Performance of Large Language Model</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2405.00338">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Efficient and Responsible Adaptation of Large Language Models for Robust Top-k Recommendations</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2405.00824">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">FairEvalLLM. A Comprehensive Framework for Benchmarking Fairness in Large Language Model Recommender Systems</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2405.02219">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Improve Temporal Awareness of LLMs for Sequential Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2405.02778">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">CALRec: Contrastive Alignment of Generative LLMs For Sequential Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2405.02429">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Knowledge Adaptation from Large Language Model to Recommendation for Practical Industrial Application</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2405.03988">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">DynLLM: When Large Language Models Meet Dynamic Graph Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2405.07580">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Learnable Tokenizer for LLM-based Generative Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/2405.07314">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">CELA: Cost-Efficient Language Model Alignment for CTR Prediction</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2405.10596">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">RDRec: Rationale Distillation for LLM-based Recommendation</td>
+<td align="center">ACL 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2405.10587">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">EmbSum: Leveraging the Summarization Capabilities of Large Language Models for Content-Based Recommendations</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://www.arxiv.org/abs/2405.11441">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Reindex-Then-Adapt: Improving Large Language Models for Conversational Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2405.12119">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">RecGPT: Generative Pre-training for Text-based Recommendation</td>
+<td align="center">ACL 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2405.12715">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Let Me Do It For You: Towards LLM Empowered Recommendation via Tool Learning</td>
+<td align="center">SIGIR 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2405.15114">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Finetuning Large Language Model for Personalized Ranking</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2405.16127">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">LLMs for User Interest Exploration: A Hybrid Approach</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2405.16363">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">NoteLLM-2: Multimodal Large Representation Models for Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2405.16789">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Multimodality Invariant Learning for Multimedia-Based New Item Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2405.15783">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">SLMRec: Empowering Small Language Models for Sequential Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2405.17890">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Keyword-driven Retrieval-Augmented Large Language Models for Cold-start User Recommendations</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2405.19612">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Generating Query Recommendations via LLMs</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2405.19749">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Large Language Models Enhanced Sequential Recommendation for Long-tail User and Item</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2405.20646">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">DisCo: Towards Harmonious Disentanglement and Collaboration between Tabular and Semantic Space for Recommendation</td>
+<td align="center">KDD 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.00011">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">LLM-RankFusion: Mitigating Intrinsic Inconsistency in LLM-based Ranking</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.00231">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">A Practice-Friendly Two-Stage LLM-Enhanced Paradigm in Sequential Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.00333">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Large Language Models as Recommender Systems: A Study of Popularity Bias</td>
+<td align="center">Gen-IR@SIGIR24</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.01285">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Privacy in LLM-based Recommendation: Recent Advances and Future Directions</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.01363">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">An LLM-based Recommender System Environment</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.01631">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Robust Interaction-based Relevance Modeling for Online E-Commerce and LLM-based Retrieval</td>
+<td align="center">ECML-PKDD 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.02135">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Large Language Models Make Sample-Efficient Recommender Systems</td>
+<td align="center">FCS</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.02368">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">XRec: Large Language Models for Explainable Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.02377">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Exploring User Retrieval Integration towards Large Language Models for Cross-Domain Sequential Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.03085">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Large Language Models as Evaluators for Recommendation Explanations</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.03248">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Text-like Encoding of Collaborative Information in Large Language Models for Recommendation</td>
+<td align="center">ACL 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.03210">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Item-Language Model for Conversational Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.02844">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Improving LLMs for Recommendation with Out-Of-Vocabulary Tokens</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.08477">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">On Softmax Direct Preference Optimization for Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.09215">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">TokenRec: Learning to Tokenize ID for LLM-based Generative Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.10450">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">DELRec: Distilling Sequential Pattern to Enhance LLM-based Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.11156">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">TourRank: Utilizing Large Language Models for Documents Ranking with a Tournament-Inspired Strategy</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.11678">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Multi-Layer Ranking with Large Language Models for News Source Recommendation</td>
+<td align="center">SIGIR 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.11745">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Intermediate Distillation: Data-Efficient Distillation from Black-Box LLMs for Information Retrieval</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.12169">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">LLM-enhanced Reranking in Recommender Systems</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.12433">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">LLM4MSR: An LLM-Enhanced Paradigm for Multi-Scenario Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.12529">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Taxonomy-Guided Zero-Shot Recommendations with LLMs</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.14043">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">EAGER: Two-Stream Generative Recommender with Behavior-Semantic Collaboration</td>
+<td align="center">KDD 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.14017">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">An Investigation of Prompt Variations for Zero-shot LLM-based Rankers</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.14117">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Optimizing Novelty of Top-k Recommendations using Large Language Models and Reinforcement Learning</td>
+<td align="center">KDD 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.14169">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Enhancing Collaborative Semantics of Language Model-Driven Recommendations via Graph-Aware Learning</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.13235">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Decoding Matters: Addressing Amplification Bias and Homogeneity Issue for LLM-based Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.14900">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">FIRST: Faster Improved Listwise Reranking with Single Token Decoding</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.15657">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">LLM-Powered Explanations: Unraveling Recommendations Through Subgraph Reasoning</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.15859">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">DemoRank: Selecting Effective Demonstrations for Large Language Models in Ranking Task</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.16332">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">ELCoRec: Enhance Language Understanding with Co-Propagation of Numerical and Categorical Features for Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.18825">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Generative Explore-Exploit: Training-free Optimization of Generative Recommender Systems using LLM Optimizers</td>
+<td align="center">ACL 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.05255">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">ProductAgent: Benchmarking Conversational Product Search Agent with Asking Clarification Questions</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2407.00942">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">MemoCRS: Memory-enhanced Sequential Conversational Recommender Systems with Large Language Models</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2407.04960">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Preference Distillation for Personalized Generative Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2407.05033">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Towards Bridging the Cross-modal Semantic Gap for Multi-modal Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2407.05420">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Language Models Encode Collaborative Signals in Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2407.05441">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">A Neural Matrix Decomposition Recommender System Model based on the Multimodal Large Language Model</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2407.08942">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">LLMGR: Large Language Model-based Generative Retrieval in Alipay Search</td>
+<td align="center">SIGIR 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/3626772.3661364">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Enhancing Sequential Recommenders with Augmented Knowledge from Aligned Large Language Models</td>
+<td align="center">SIGIR 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3626772.3657782">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Reinforced Prompt Personalization for Recommendation with Large Language Models</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2407.17115">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Improving Retrieval in Sponsored Search by Leveraging Query Context Signals</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2407.14346">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Generative Retrieval with Preference Optimization for E-commerce Search</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2407.19829">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">GenRec: Generative Personalized Sequential Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2407.21191v1">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Breaking the Hourglass Phenomenon of Residual Quantization: Enhancing the Upper Bound of Generative Retrieval</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2407.21488">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Enhancing Taobao Display Advertising with Multimodal Representations: Challenges, Approaches and Insights</td>
+<td align="center">CIKM 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2407.19467">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Leveraging LLM Reasoning Enhances Personalized Recommender Systems</td>
+<td align="center">ACL 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2408.00802">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Multi-Aspect Reviewed-Item Retrieval via LLM Query Decomposition and Aspect Fusion</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2408.00878">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Lifelong Personalized Low-Rank Adaptation of Large Language Models for Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://www.arxiv.org/abs/2408.03533">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Exploring Query Understanding for Amazon Product Search</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2408.02215">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">A Decoding Acceleration Framework for Industrial Deployable LLM-based Recommender Systems</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2408.05676">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Prompt Tuning as User Inherent Profile Inference Machine</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2408.06577">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Beyond Inter-Item Relations: Dynamic Adaptive Mixture-of-Experts for LLM-Based Sequential Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2408.07427">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Review-driven Personalized Preference Reasoning with Large Language Models for Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2408.06276">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">DaRec: A Disentangled Alignment Framework for Large Language Model and Recommender System</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2408.08231">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">LLM4DSR: Leveraing Large Language Model for Denoising Sequential Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2408.08208">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">EasyRec: Simple yet Effective Language Models for Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2408.08821">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Collaborative Cross-modal Fusion with Large Language Model for Recommendation</td>
+<td align="center">CIKM 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://www.arxiv.org/abs/2408.08564">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Customizing Language Models with Instance-wise LoRA for Sequential Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2408.10159">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Efficient and Deployable Knowledge Infusion for Open-World Recommendations via Large Language Models</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://www.arxiv.org/abs/2408.10520">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">CoRA: Collaborative Information Perception by Large Language Model’s Weights for Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://www.arxiv.org/abs/2408.10645">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">GANPrompt: Enhancing Robustness in LLM-Based Recommendations with GAN-Enhanced Diversity Prompts</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2408.09671">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Harnessing Multimodal Large Language Models for Multimodal Sequential Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2408.09698">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">DLCRec: A Novel Approach for Managing Diversity in LLM-Based Recommender Systems</td>
+<td align="center">Arxiv</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2408.12470">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">LARR: Large Language Model Aided Real-time Scene Recommendation with Semantic Understanding</td>
+<td align="center">RecSys 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2408.11523">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">SC-Rec: Enhancing Generative Retrieval with Self-Consistent Reranking for Sequential Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2408.08686">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Are LLM-based Recommenders Already the Best? Simple Scaled Cross-entropy Unleashes the Potential of Traditional Sequential Recommenders</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2408.14238">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">HRGraph: Leveraging LLMs for HR Data Knowledge Graphs with Information Propagation-based Job Recommendation</td>
+<td align="center">KaLLM 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2408.13521">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">An Extremely Data-efficient and Generative LLM-based Reinforcement Learning Agent for Recommenders</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2408.16032">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">CheatAgent: Attacking LLM-Empowered Recommender Systems via LLM Agent</td>
+<td align="center">KDD 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/3637528.3671837">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Laser: Parameter-Efficient LLM Bi-Tuning for Sequential Recommendation with Collaborative Information</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2409.01605">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">MARS: Matching Attribute-aware Representations for Text-based Sequential Recommendation</td>
+<td align="center">CIKM 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2409.00702">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">End-to-End Learnable Item Tokenization for Generative Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2409.05546">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Incorporate LLMs with Influential Recommender System</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2409.04827">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Enhancing Sequential Recommendations through Multi-Perspective Reflections and Iteration</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2409.06377">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">STORE: Streamlining Semantic Tokenization and Generative Recommendation with A Single LLM</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2409.07276">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Multilingual Prompts in LLM-Based Recommenders: Performance Across Languages</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2409.07604">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Unleash LLMs Potential for Recommendation by Coordinating Twin-Tower Dynamic Semantic Token Generator</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2409.09253">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Large Language Model Enhanced Hard Sample Identification for Denoising Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://www.arxiv.org/abs/2409.10343">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Chain-of-thought prompting empowered generative user modeling for personalized recommendation</td>
+<td align="center">Neural Computing and Applications</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://link.springer.com/article/10.1007/s00521-024-10364-2">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Challenging Fairness: A Comprehensive Exploration of Bias in LLM-Based Recommendations</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2409.10825">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Decoding Style: Efficient Fine-Tuning of LLMs for Image-Guided Outfit Recommendation with Preference</td>
+<td align="center">CIKM 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2409.12150">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">LLM-Powered Text Simulation Attack Against ID-Free Recommender Systems</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2409.11690">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">FLARE: Fusing Language Models and Collaborative Architectures for Recommender Enhancement</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2409.11699">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Retrieve, Annotate, Evaluate, Repeat: Leveraging Multimodal LLMs for Large-Scale Product Retrieval Evaluation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="http://arxiv.org/abs/2409.11860">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">HLLM: Enhancing Sequential Recommendations via Hierarchical Large Language Models for Item and User Modeling</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2409.12740">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Large Language Model Ranker with Graph Reasoning for Zero-Shot Recommendation</td>
+<td align="center">ICANN 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://link.springer.com/chapter/10.1007/978-3-031-72344-5_24">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">User Knowledge Prompt for Sequential Recommendation</td>
+<td align="center">RecSys 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/3640457.3691714">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">RLRF4Rec: Reinforcement Learning from Recsys Feedback for Enhanced Recommendation Reranking</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2410.05939">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">FELLAS: Enhancing Federated Sequential Recommendation with LLM as External Services</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2410.04927">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">TLRec: A Transfer Learning Framework to Enhance Large Language Models for Sequential Recommendation Tasks</td>
+<td align="center">RecSys 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/3640457.3691710">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">SeCor: Aligning Semantic and Collaborative Representations by Large Language Models for Next-Point-of-Interest Recommendations</td>
+<td align="center">RecSys 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/3640457.3688124">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Efficient Inference for Large Language Model-based Generative Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2410.05165">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Instructing and Prompting Large Language Models for Explainable Cross-domain Recommendations</td>
+<td align="center">RecSys 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3640457.3688137">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">ReLand: Integrating Large Language Models’ Insights into Industrial Recommenders via a Controllable Reasoning Pool</td>
+<td align="center">RecSys 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3640457.3688131">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Inductive Generative Recommendation via Retrieval-based Speculation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2410.02939">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Constructing and Masking Preference Profile with LLMs for Filtering Discomforting Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2410.05411">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Towards Scalable Semantic Representation for Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2410.09560">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Large Language Models as Narrative-Driven Recommenders</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2410.13604">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">The Moral Case for Using Language Model Agents for Recommendation</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2410.12123">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">RosePO: Aligning LLM-based Recommenders with Human Values</td>
+<td align="center">Arxiv 2024</td>
+<td align="center">[[Link]](RosePO: Aligning LLM-based Recommenders with Human Values)</td>
+</tr>
+<tr>
+<td align="left">Comprehending Knowledge Graphs with Large Language Models for Recommender Systems</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2410.12229">[Link]</a></td>
+</tr>
+<tr>
+<td align="left">Triple Modality Fusion: Aligning Visual, Textual, and Graph Data with Large Language Models for Multi-Behavior Recommendations</td>
+<td align="center">Arxiv 2024</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2410.12228">[Link]</a></td>
+</tr>
+</tbody></table>
+</p >
+</details>
+
+<h2 id="2-Datasets-Benchmarks"><a href="#2-Datasets-Benchmarks" class="headerlink" title="2. Datasets &amp; Benchmarks"></a>2. Datasets &amp; Benchmarks</h2><p>The datasets &amp; benchmarks for LLM-related RS topics should maintain the original semantic&#x2F;textual features, instead of anonymous feature IDs.</p>
+<h3 id="2-1-Datasets"><a href="#2-1-Datasets" class="headerlink" title="2.1 Datasets"></a>2.1 Datasets</h3><table>
+<thead>
+<tr>
+<th align="center"><strong>Dataset</strong></th>
+<th align="center"><strong>RS Scenario</strong></th>
+<th align="center"><strong>Link</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">NineRec</td>
+<td align="center">9 Domains</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://github.com/westlake-repl/NineRec">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">MicroLens</td>
+<td align="center">Video Streaming</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://github.com/westlake-repl/MicroLens?tab=readme-ov-file">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">Amazon-Review 2023</td>
+<td align="center">E-commerce</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2403.03952">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">Reddit-Movie</td>
+<td align="center">Conversational &amp; Movie</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://github.com/AaronHeee/LLMs-as-Zero-Shot-Conversational-RecSys#large-language-models-as-zero-shot-conversational-recommenders">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">Amazon-M2</td>
+<td align="center">E-commerce</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2307.09688">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">MovieLens</td>
+<td align="center">Movie</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://grouplens.org/datasets/movielens/1m/">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">Amazon</td>
+<td align="center">E-commerce</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://cseweb.ucsd.edu/~jmcauley/datasets.html#amazon_reviews">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">BookCrossing</td>
+<td align="center">Book</td>
+<td align="center"><a target="_blank" rel="noopener" href="http://www2.informatik.uni-freiburg.de/~cziegler/BX/">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">GoodReads</td>
+<td align="center">Book</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://mengtingwan.github.io/data/goodreads.html">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">Anime</td>
+<td align="center">Anime</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://www.kaggle.com/datasets/CooperUnion/anime-recommendations-database">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">PixelRec</td>
+<td align="center">Short Video</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://github.com/westlake-repl/PixelRec">[Link]</a></td>
+</tr>
+<tr>
+<td align="center">Netflix</td>
+<td align="center">Movie</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://github.com/HKUDS/LLMRec">[Link]</a></td>
+</tr>
+</tbody></table>
+<h3 id="2-2-Benchmarks"><a href="#2-2-Benchmarks" class="headerlink" title="2.2 Benchmarks"></a>2.2 Benchmarks</h3><table>
+<thead>
+<tr>
+<th align="center"><strong>Benchmarks</strong></th>
+<th align="center"><strong>Webcite Link</strong></th>
+<th align="center"><strong>Paper</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Amazon-M2 (KDD Cup 2023)</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://www.aicrowd.com/challenges/amazon-kdd-cup-23-multilingual-recommendation-challenge">[Link]</a></td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2307.09688">[Paper]</a></td>
+</tr>
+<tr>
+<td align="center">LLMRec</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://github.com/williamliujl/LLMRec">[Link]</a></td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.12241">[Paper]</a></td>
+</tr>
+<tr>
+<td align="center">OpenP5</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://github.com/agiresearch/OpenP5">[Link]</a></td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2306.11134">[Paper]</a></td>
+</tr>
+<tr>
+<td align="center">TABLET</td>
+<td align="center"><a target="_blank" rel="noopener" href="https://dylanslacks.website/Tablet">[Link]</a></td>
+<td align="center"><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2304.13188">[Paper]</a></td>
+</tr>
+</tbody></table>
+<h2 id="3-Related-Repositories"><a href="#3-Related-Repositories" class="headerlink" title="3. Related Repositories"></a>3. Related Repositories</h2><table>
+<thead>
+<tr>
+<th align="center"><strong>Repo Name</strong></th>
+<th align="center"><strong>Maintainer</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><a target="_blank" rel="noopener" href="https://github.com/wwliu555/rs-llm-paper-list">rs-llm-paper-list</a></td>
+<td align="center"><a target="_blank" rel="noopener" href="https://github.com/wwliu555">wwliu555</a></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="https://github.com/archersama/awesome-recommend-system-pretraining-papers">awesome-recommend-system-pretraining-papers</a></td>
+<td align="center"><a target="_blank" rel="noopener" href="https://github.com/archersama">archersama</a></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="https://github.com/WLiK/LLM4Rec">LLM4Rec</a></td>
+<td align="center"><a target="_blank" rel="noopener" href="https://github.com/WLiK">WLiK</a></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="https://github.com/nancheng58/Awesome-LLM4RS-Papers">Awesome-LLM4RS-Papers</a></td>
+<td align="center"><a target="_blank" rel="noopener" href="https://github.com/nancheng58">nancheng58</a></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="https://github.com/RUC-NLPIR/LLM4IR-Survey">LLM4IR-Survey</a></td>
+<td align="center"><a target="_blank" rel="noopener" href="https://github.com/RUC-NLPIR">RUC-NLPIR</a></td>
+</tr>
+</tbody></table>
+<h2 id="Contributing"><a href="#Contributing" class="headerlink" title="Contributing"></a>Contributing</h2><p>👍 Welcome to contribute to this repository.</p>
+<p>If you have come across relevant resources or found some errors in this repesitory, feel free to open an issue or submit a pull request.</p>
+<p><strong>Contact</strong>: chiangel [DOT] ljh [AT] gmail [DOT] com</p>
+<h2 id="Citation"><a href="#Citation" class="headerlink" title="Citation"></a>Citation</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">@article&#123;10.1145/3678004,</span><br><span class="line">author = &#123;Lin, Jianghao and Dai, Xinyi and Xi, Yunjia and Liu, Weiwen and Chen, Bo and Zhang, Hao and Liu, Yong and Wu, Chuhan and Li, Xiangyang and Zhu, Chenxu and Guo, Huifeng and Yu, Yong and Tang, Ruiming and Zhang, Weinan&#125;,</span><br><span class="line">title = &#123;How Can Recommender Systems Benefit from Large Language Models: A Survey&#125;,</span><br><span class="line">year = &#123;2024&#125;,</span><br><span class="line">publisher = &#123;Association for Computing Machinery&#125;,</span><br><span class="line">address = &#123;New York, NY, USA&#125;,</span><br><span class="line">issn = &#123;1046-8188&#125;,</span><br><span class="line">url = &#123;https://doi.org/10.1145/3678004&#125;,</span><br><span class="line">doi = &#123;10.1145/3678004&#125;,</span><br><span class="line">journal = &#123;ACM Trans. Inf. Syst.&#125;,</span><br><span class="line">month = &#123;jul&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2024/12/06/2.Areas%F0%9F%8C%90/science/Pre/Awesome-LLM-for-RecSys-main/Awesome-LLM-for-RecSys-main/README/">https://yuezi2048.github.io/2024/12/06/2.Areas🌐/science/Pre/Awesome-LLM-for-RecSys-main/Awesome-LLM-for-RecSys-main/README/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Awesome-LLM-for-RecSys-main/">Awesome-LLM-for-RecSys-main</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2024/12/06/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/AAAI2024%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E8%AE%BA%E6%96%87/" title="AAAI2024推荐系统论文"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">AAAI2024推荐系统论文</div></div><div class="info-2"><div class="info-item-1">问题，怎么解决的，我的看法？评论，改进的部分 2024年第38届人工智能顶级会议AAAI论文列表已于近日放出，此次会议共收到12100篇有效投稿，最终有9862篇论文经过严格审稿，录取篇数为2342篇，录取率为23.75%，大会在2月20日到2月27日在加拿大温哥华进行举办。 其中，与推荐系统相关论文共包含37篇，主要涉及序列推荐中的数据增强、去偏推荐、冷启动推荐、跨域推荐、推荐系统大模型、多任务推荐、联邦推荐、可解释推荐、多模态推荐、扩散模型序列推荐等。下文列举了部分推荐系统方向论文的标题以及摘要，论文地址： https://aaai.org/wp-content/uploads/2023/12/Main-Track.pdf 第一批1 稀疏增强网络：用于序列推荐中稳健增强的对抗生成方法1 Sparse Enhanced Network: An Adversarial Generation Method for Robust Augmentation in Sequential...</div></div></div></a><a class="pagination-related" href="/2024/12/06/TagManager/" title="TagManager"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">TagManager</div></div><div class="info-2"><div class="info-item-1">  #计划 #计划&#x2F;日计划      #算法 #算法&#x2F;归并排序 #算法&#x2F;快速排序    </div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Awesome-LLM-for-RecSys"><span class="toc-text">Awesome-LLM-for-RecSys </span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Papers"><span class="toc-text">1. Papers</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Datasets-Benchmarks"><span class="toc-text">2. Datasets &amp; Benchmarks</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-Datasets"><span class="toc-text">2.1 Datasets</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Benchmarks"><span class="toc-text">2.2 Benchmarks</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Related-Repositories"><span class="toc-text">3. Related Repositories</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Contributing"><span class="toc-text">Contributing</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Citation"><span class="toc-text">Citation</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

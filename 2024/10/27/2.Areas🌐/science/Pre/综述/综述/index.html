@@ -1,0 +1,1048 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>综述 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="abstract what: related work summarize the latest advancement in the field of RS   why: The objective of this study provide the current state-of-the-art highlight the latest trends in the development o">
+<meta property="og:type" content="article">
+<meta property="og:title" content="综述">
+<meta property="og:url" content="https://yuezi2048.github.io/2024/10/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/%E7%BB%BC%E8%BF%B0/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="abstract what: related work summarize the latest advancement in the field of RS   why: The objective of this study provide the current state-of-the-art highlight the latest trends in the development o">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2024-10-27T03:20:42.000Z">
+<meta property="article:modified_time" content="2024-10-27T03:20:42.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="综述">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "综述",
+  "url": "https://yuezi2048.github.io/2024/10/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/%E7%BB%BC%E8%BF%B0/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2024-10-27T03:20:42.000Z",
+  "dateModified": "2024-10-27T03:20:42.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2024/10/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/%E7%BB%BC%E8%BF%B0/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '综述',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">综述</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">综述</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-10-27T03:20:42.000Z" title="发表于 2024-10-27 11:20:42">2024-10-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-27T03:20:42.000Z" title="更新于 2024-10-27 11:20:42">2024-10-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/">science</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/">Pre</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/">综述</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">11.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>47分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="abstract"><a href="#abstract" class="headerlink" title="abstract"></a>abstract</h2><ul>
+<li>what: related work<ul>
+<li>summarize the latest advancement in the field of RS</li>
+</ul>
+</li>
+<li>why: The objective of this study<ul>
+<li>provide the current <code>state-of-the-art</code></li>
+<li>highlight the latest trends in the development of RS</li>
+</ul>
+</li>
+<li>how: specific context<ul>
+<li>the main taxonomy of RS, including <code>personalized and group</code> RS</li>
+<li>delves into the category of <code>knowledge-based</code> RS</li>
+<li>Summarizing evaluation metrics to asses the performance of systems ：the <code>robustness, data bias and fairness issues</code> in RS</li>
+</ul>
+</li>
+</ul>
+<h2 id="Ⅰ-introduction"><a href="#Ⅰ-introduction" class="headerlink" title="Ⅰ. introduction"></a>Ⅰ. introduction</h2><ul>
+<li>To address the issue of online information overload and improving customer relationship management, <strong>So design to provide</strong> <code>personalized recommendations</code> to users<ul>
+<li>the application of recommender systems can be seen in various online platforms</li>
+<li>the objective is to <strong>identify new and relevant items that align with the user’s preferences</strong> leading to an increase in incremental revenue for companies</li>
+<li>fundamental principle is to suggest relevant items by leveraging <code>feature engineering techniques</code> on users preference, item features and  interactions</li>
+</ul>
+</li>
+<li>the categorization can be based on the number of users, which can be classified into two types: <code>personalized and group recommend system</code><ul>
+<li>personalized is designed to predict the next item <strong>for an individual user based on past preferences</strong></li>
+<li>group recommender system <strong>consider the collective preferences of a group of users</strong> to alleviate the conflicts within the group</li>
+</ul>
+</li>
+</ul>
+<p><strong>personalized recommender Systems</strong></p>
+<ul>
+<li>personalized is the most widely researched type, which have three main approaches: <code>collaborative filtering, content-based, and hybrid methods</code>.<ul>
+<li><strong>collaborative filtering</strong>: based on behavior of other users, can be classified into three categories: <code>memory-based</code>, <code>model-based</code>, <code>context-aware-based</code><ul>
+<li>focus on incorporating additional information. </li>
+<li>( such as preferences, emotions, item attributes in the model design, and we often use DL for feature selection and feature addition )</li>
+</ul>
+</li>
+<li><strong>content-based</strong>: based on <code>attribute information</code> and provides recommendation accordingly<ul>
+<li>can eliminates<code> the cold start and sparse problems</code> and have advantage of <code>providing explanations</code> by listing the relevant content features.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>recently, <code>the use of knowledge</code> extracted from user profiles or public data has become more prevalent<code>to solve</code>cold problems and <code> grey sheep problems</code> (refers the item do not fit into traditional categories, resulting the suboptimal recommendations), resulting the fourth method  to approach personalized ——<code>knowed-based</code></li>
+</ul>
+<p><strong>group recommender Systems</strong></p>
+<ul>
+<li>this is more difficult as it needs to consider more than one people’s interests, there are to categories to approach group RS: <code>memory-based</code>, <code>model-based</code><ul>
+<li>notice: not include all types, <strong>such as multi-criteria recommender system, risk aware RS, mobile RS</strong>, etc. This is to focus on the popular category</li>
+</ul>
+</li>
+</ul>
+<p><strong>evaluation metrics</strong></p>
+<ul>
+<li><p><code>Robustness</code> is the ability to maintain accurate and effective recommendations in the face of unexpaceted data.</p>
+</li>
+<li><p><code>Data bias</code> is the systematic deviations in the data that can result in unfair or inaccurate recommendations</p>
+</li>
+<li><p><code>Fairness</code> denotes the principle that RS should provide unbiased and equitable recommendations for all users, regardless of personal characteristics</p>
+</li>
+<li><p>The evaluation metrics can be classified into <code>Rating Based Indicators(RBI), Item Based Indicators(IBI)</code></p>
+<ul>
+<li>RBI evaluates the recommendations based on <strong>predicted rating score</strong></li>
+<li>IBI evaluates the recommendations based on <strong>a set of list of predicted items</strong> (interactive behavior)</li>
+</ul>
+</li>
+</ul>
+<p><strong>Further research</strong></p>
+<ul>
+<li>including the categorization, implementation and evaluation metrics</li>
+<li>we provides a comprehensive overview of RS, covering the problems and new techniques in the field<ul>
+<li>and created a new taxonomy and discussed common evaluation metrics and challenges (Robustness, etc.)</li>
+</ul>
+</li>
+</ul>
+<h2 id="Ⅱ-Personalized-Recommender-Systems"><a href="#Ⅱ-Personalized-Recommender-Systems" class="headerlink" title="Ⅱ. Personalized Recommender Systems"></a>Ⅱ. Personalized Recommender Systems</h2><ul>
+<li>can be classified into three types: <code>collaborative filtering, content-based, and hybrid</code></li>
+<li>recent development have seen the integration of external knowledge into these systems, leading to the <code>knowledge-based systems</code></li>
+</ul>
+<h3 id="A-Collaborative-Filtering-Based-RS"><a href="#A-Collaborative-Filtering-Based-RS" class="headerlink" title="A. Collaborative Filtering Based RS"></a>A. Collaborative Filtering Based RS</h3><ul>
+<li><code>Collaborative Filtering (CF)</code> is used in RS by leveraging the collective knowledge of a large pool of users<ul>
+<li>based on the idea that <strong>users who have share similar preferences and behaviors will also have similar opinions</strong>.</li>
+<li>driven by the <strong>user profiles that are created from their historical interactions</strong>(such as the items they have purchased).</li>
+</ul>
+</li>
+<li>can be divided into two main categories: <code>memory-based CF</code> , <code>model-based CF</code><ul>
+<li>memory-based utilizes the users’ profiles as a simpler, more direct way</li>
+<li>model-based employees more sophisticated mathematical models to generate recommendations which result in more accurate and reliable predictions</li>
+</ul>
+</li>
+</ul>
+<h4 id="memory-based-CF"><a href="#memory-based-CF" class="headerlink" title="memory-based CF"></a>memory-based CF</h4><ul>
+<li>leverages the similarity between users or items to make recommendations</li>
+<li>The algorithm has two key steps<ul>
+<li>using a nearest neighbor-based method to calculate the similarity between users or items</li>
+<li>On sorted similarity values,  recommendations are generated for users.</li>
+</ul>
+</li>
+<li>despite the simplicity and popularity, it often encounters challenges<ul>
+<li>the form of <code>sparsity in the interaction matrix</code><ul>
+<li>implies that there are</li>
+<li>only a limited number of non-zero values, which makes RS more susceptible to errors</li>
+</ul>
+</li>
+<li><code>computational difficulties</code> in large user or item space</li>
+</ul>
+</li>
+<li><code>the calculation of similarity</code> between users or items is a crucial aspect of RS, primarily obtained from the co-rated items. there are some methods:<ul>
+<li>Pearson Correlation Coefficient (PCC)</li>
+<li>Cosine similarity (COS)</li>
+<li>Mean Squared Difference (MSD)</li>
+<li>Proximity Impact Popularity (PIP)</li>
+<li>Jaccard Similarity</li>
+<li>Proximity Significance Singularity (PSS)</li>
+</ul>
+</li>
+<li>to <strong>reduce the computational complexity in recommender systems</strong>, the use of <code>embedding techniques</code> has been widely adopted<ul>
+<li>The aim of these techniques is to <strong>map high-dimensional sparse vectors to low-dimensional dense vectors</strong> and calculate the similarity between users or items</li>
+<li>Valcarece et al. proposed <strong>the prefs2vec model</strong> which is inspired by the bag-of-words( CBOW ) in word2vec</li>
+<li>hChen at al. applied a <strong>graph-based</strong> method to learn user and item representation.</li>
+<li>Barkan at al. introduced an <strong>anchor vector-based</strong> recommender systems, proposed nonconformity measures in the inductive setting</li>
+</ul>
+</li>
+</ul>
+<h4 id="Model-based-CF"><a href="#Model-based-CF" class="headerlink" title="Model-based CF"></a>Model-based CF</h4><ul>
+<li><p>there has been a growing interest in the application of <code>neural networks</code> in recommendation systems, can be named <code>neural-based CF</code></p>
+<ul>
+<li>the integration of review test data has been shown to improve the performance of RS</li>
+<li><code>Convolutional Neural Network (CNN), Long Short-Term Memory (LSTM), Recurrent Neural Network (RNN), and AutoEncoder</code> have been widely adopted.</li>
+<li>one of the approaches is utilizing the <code>Multi-Layer Perceptron (MLP)</code> for latent feature Learning resulting in successful models such as <code>Neural Collaborative Filtering (NCF)</code>  and <code>Neural Network Matrix Factorization (NNMF) </code>.</li>
+</ul>
+</li>
+<li><p>basic framework of the neural-based CF consists of</p>
+<ul>
+<li><code>mapping user[su] and item[si] representations</code></li>
+<li><code>reviewing text data [tui]</code> into a continuous vector space through the neural network (NN)</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241020174034142.png" alt="image-20241020174034142">    </p>
+<ul>
+<li><p>θ is optimized to minimized the prediction error</p>
+</li>
+<li><p>The output(r^) represents the <code>predicted rating</code> and is usually<code> fed into a factorization-based method</code> for further refinement</p>
+</li>
+</ul>
+</li>
+<li><p><code>The Factorization Machine (FM)</code> offers the ability to handle sparse data efficiently, makes it ideal in real-world recommendation</p>
+<ul>
+<li><p>it <strong>can incorporate a variety of features</strong> (both categorical and numerical features)</p>
+</li>
+<li><p><code>Its scalability</code> in training procedures also makes it a good choice for <strong>large-scale recommendation systems</strong></p>
+</li>
+<li><p>predict <strong>output y</strong>, which considers <code>the dot product</code> <strong>between w and x</strong> as well as the dot product between <strong>the rows of V</strong></p>
+</li>
+<li><p><code>weight parameter</code> w ∈ R^d, the <code>factorization matrix V </code>∈ R^(d*k), k is a <code>rank hyper-parameter</code></p>
+<ul>
+<li>for instance, if k represents the vocabulary size. The computational complexity is O(dk), making it faster than traditional models with complexity O(d^2)</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241020174851260.png" alt="image-20241020174851260">    </p>
+</li>
+<li><p>plenty of works apply this method to construct their models</p>
+<ul>
+<li>Zheng et al. adopted <code>two parallel CNN</code> to extract features from review text and item review text respectively and constructed the model <strong>DeepCoNN</strong> to link user behaviors and item properties together, and <strong>fed the learned features into a FM t construct the loss function</strong></li>
+<li>Seo et al. model the user and the item separately with CNN based model<ul>
+<li>they apply <code>local and global attention mechanism</code> to reduce noise</li>
+<li>they simply used the<code> inner product</code> of user and item representation of the rating prediction</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>above works mainly <code>extract features</code> at the sentence level, there are further works</p>
+<ul>
+<li>Chin et al. argue that not all reviews are important, they proposed an <code>aspect-based neural recommender (ANR)</code> to learn more granular feature representations</li>
+<li>Li et al. applied the <code>capsule neural network </code> to extract viewpoints and aspects from the user review and item text respectively</li>
+<li>Wu et al. used <code>CNN</code> to be news &#x2F; user encoder to learn representation based on his&#x2F;her clicked news,  <code>the personalization attention</code> is applied to boost the performance</li>
+</ul>
+</li>
+<li><p>the <code>explanation</code> is an important factor in improving user experience and discovering system defects</p>
+<ul>
+<li>Liu et al. built the explainable recommender system by learning representation with <code>a graph neural network</code></li>
+<li>Fang et al. applied the <code>variational autoencoder</code> model o provide precise recommendation based on sensitive information</li>
+</ul>
+</li>
+<li><p>due to the complexity of <code>the relationship between users and items</code>, together with Spectral <strong>CNN, GCN, GrapthSAGE, GAT and other classic graph neural networks</strong></p>
+<ul>
+<li>JODIE model in the field of music recommendation</li>
+<li>NGCF, <code>Multi-GCCF, DGCF, LightGCN</code> in <code>POI(point of interest)</code> and book recommendation field have achieved good results(lightGCN become a classic model in the RS field)</li>
+</ul>
+</li>
+<li><p>graph neural network</p>
+<ul>
+<li>Recent years, Wu et al. improved the robustness of <strong>graph neural network</strong> through three operations: <code>node discarding, edge discarding and random walk</code></li>
+<li>Xia et al. proposed an <code>incremental graph convolutional network (IGCN)</code> model including <code>meta-learning</code> to solve <code>&quot;catastrophic forgetting&quot; and cold start problem of GNN</code></li>
+<li>Lin et al. introduced <code>comparative learning based on neighbor nodes</code> on the basis of GNN</li>
+<li>Li et al. considered the recommendation behavior in the<code> hyper complex number space</code> and design a<code>hypercomplex graph convolution operator </code>based on the <strong>Cayley-Dickson structure</strong></li>
+<li>Xia et al. used <code>hypergraphs</code> to enhance the capture ability of the <code>cross-view contrastive learning architecture</code></li>
+<li>Zhao et al. proposed <strong>the r-AdjNorm plug-in</strong> that controls <code>the normalization stragth of neighborhood aggregation</code> to solve the <code>popularity bias problem</code> caused by GNN</li>
+</ul>
+</li>
+<li><p>summarize the performance of RS model based on GNN from <a target="_blank" rel="noopener" href="https://grouplens.org/datasets/movielens/">https://grouplens.org/datasets/movielens/</a> choose <code>NDCG@K Recall@K</code> as evaluation criteria( Top-K )</p>
+<ul>
+<li>five basic models and two combined models, have three categories: <code>graph collaborative filtering. graph convolutional neural networks, self-supervised graph learning</code></li>
+<li>the best result: two combined models 37-38 <code>based on collaborative filtering algorithm of graph neural networks</code></li>
+<li><code>neighborhood-enhanced contrastive learnin</code> method integrated into collaborative filtering can alleviate the catastrophic forgetting and cold stars</li>
+<li><code>graph collaborative filtering </code>32-34 and 34 slightly outperforms the other two</li>
+<li>basic models: <code>graph convolutional neural networks</code> 35 and<code>self-supervised graph learning</code>35 exhibit similar performance</li>
+</ul>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241021115409434.png" alt="image-20241021115409434" style="zoom:80%;" />    
+</li>
+<li><p>the selection of a suitable <code>loss function</code></p>
+<ul>
+<li><code>Mean Square Error (MSE)</code>: when rating data is explicit (capsule neural network、rating scale raging from 1 to 5)</li>
+<li><code>Log-likelihood</code>: when rating data is implicit ( RS have pseudo K+1 way classification problem, use log-likelihood with a scale of -1 and 1 )</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Context-aware-Based-CF"><a href="#Context-aware-Based-CF" class="headerlink" title="Context-aware Based CF"></a>Context-aware Based CF</h4><ul>
+<li><p>consider <code>contextual information</code> to enhance the decision-making capabilities of RS such as time, location, social status, mood, weather, day type,  language, etc.</p>
+<ul>
+<li>why is important: the relationship <code>between user activity and contextual information</code> is closely intertwined, both have a reciprocal effect</li>
+<li>have various source for <code>obtaining contextual information</code>: smart devices that provide GPS and companion data or from the users directly</li>
+<li>can analyzing the user’s activities on the system instead of relying on self-reported information, achieved the data mining method</li>
+</ul>
+</li>
+<li><p>However, it’s <code>more complex and dynamic</code> than user-item interaction data</p>
+<ul>
+<li>can number up to 600 variables</li>
+</ul>
+</li>
+<li><p>Therefore, to reduce its complexity, a direct approach is to use <code>latent context embedding to reduce the dimension</code></p>
+<ul>
+<li>Mei et al. [44] applied the <code>interaction-centric module</code> in their framework to obtain the interaction representation between contexts and users&#x2F;items. </li>
+<li>Unger et al. [45] adopted the <code>autoencoder framework</code> to learn contextual representations that might be useful for a recommendation.</li>
+<li>Unger et al. [46] constructed <code>a hierarchical model</code> to obtain the latent representation of the context, which is the composition of a group similar latent context vectors (<code>contextual situation</code>).</li>
+<li>Ouyang et al. [47] believed that the <code>existing symmetric context perception </code>cannot fully extract features, they designed an <code>asymmetric context perception modulation</code> and combined it with GNN to complete the recommendation</li>
+</ul>
+</li>
+<li><p>based on the location and time, there are three ways to include contextual modeling</p>
+<ul>
+<li><code>Pre-filtering</code>: filtering out the irrelevant data source before feeding context into RS</li>
+<li><code>post-filtering</code>: apply the context after the standard recommendation (without contextual information)</li>
+<li><code>contextual modeling</code>: integrate the context into recommend algorithm directly,</li>
+</ul>
+</li>
+<li><p>However, Contextual modeling is <code>rarely effective</code></p>
+<ul>
+<li><p>Ebesu et al. [49] applied the <code>convolutional neural network-based model</code> to learn the contextual representation. </p>
+</li>
+<li><p>Jawarneh et al. [50] selected the contextual combinations by an<code> item-splitting algorithm</code> based on the t-statistics, and then apply the <code>Prefiltering approach</code></p>
+</li>
+<li><p>Unger et al. [51] utilized the contextual modeling to incorporate the context,</p>
+</li>
+<li><p>they first apply<code>the auto-encoder to obtain the unstructured latent contextual representation</code>from sensor data</p>
+</li>
+<li><p>and then <code>build a hierarchical tree from the learned representation</code> to get the contextual situation which includes the time of the day, day of the week, location, and weather, etc., </p>
+</li>
+<li><p>finally, <code>the neural collaborative filtering model</code> is applied to make a recommendation. </p>
+</li>
+<li><p>Wu et al. [8] adopted <code>the graph convolution machine</code> which consists of the e<strong>ncoder, graph convolution layer, and the decoder to extract information</strong> from the user-item graph and its contextual information.</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241021132950824.png" alt="image-20241021132950824"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="B-Content-Based-RS"><a href="#B-Content-Based-RS" class="headerlink" title="B. Content Based RS"></a>B. Content Based RS</h3><ul>
+<li><p>Content Based treat RS as <code>a user-specific classification problem</code> by learning a classifier based on item features, provide more personal information</p>
+</li>
+<li><p>this system focus on two types of information</p>
+<ul>
+<li><p><code>user preference</code></p>
+</li>
+<li><p><code>user interaction history</code></p>
+</li>
+</ul>
+</li>
+<li><p>advantage: <strong>only make recommendations based on the content without rating</strong></p>
+</li>
+<li><p>deep learning especially the NLP is more effective than CF</p>
+<ul>
+<li><code>text data</code> is important source and implicit data (textual modality). </li>
+<li><code>Side information</code> can be<code> meta data or user-generated content</code></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/google19890102/article/details/108863046">side information</a>主要指的是与item相关的一些先验信息，对于商品而言，先验信息包括：类别，商店，价格等</li>
+<li>However, <code>knowledge-based RS</code>  is often used to extend metadata</li>
+<li><code>visual and multimedia features</code> becoming popular.</li>
+<li>related work<ul>
+<li>Van et al. [55] concatenated the <code>word embedding</code> with other personal favors to learn user profiles</li>
+<li>Yang et al. [56] extracted <code>additional features and side information</code> from an <code>open knowledge graph with an autoencoder</code> </li>
+<li>Deldjoo et al. [57] applied a <code>pre-trained neural network</code> to obtain the stylistic properties from text </li>
+<li>Cami et al. [58] applied the <code>posterior inference</code> to create the user model based on the user profile and make a better recommendation with <code>the latent clustering method.</code> </li>
+<li>Wang et al. [59] applied <code>GRU</code> to construct <strong>the content encoder</strong> and build <code>the model CAMO</code> in the text feature extraction. With the help of <code>adversarial training</code>, it has gained state-of-the-art results in the recommendation. </li>
+<li>Jesus et. al. [60] built a method for determining personal preferences and <code>a variation coefficient approach</code> for assigning significance to the product review aspects. </li>
+<li>Marco et. al. [61] contributed by introducing<code> a comprehensive emotion-sensitive computational model</code>, which is based on the creation of affecting user profiles (such as 5-star rating for a movie)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>The emotional state</code> of user is a crucial aspect of decision-making</p>
+<ul>
+<li>Ray et al. [62] presented a hotel recommendation system that <code>leverages sentiment analysis of hotel reviews and aspect-based review categorization</code>, based on user queries. Additionally, they introduced a new extensive and diverse dataset of online hotel reviews from <a href="Tripadvisor.com">Tripadvisor.com</a></li>
+</ul>
+</li>
+<li><p>The <code>heterogeneous Information Network (HIN)</code> is widely used to connect different types of side information in a parallel manner</p>
+<ul>
+<li>HIN incorporates multiple item types and relationships to effectively integrate data from many domains</li>
+<li>HIN add <code>semantics</code> to items and links, which can take <code>social networks, knowledge graphs, or other types of information networks</code></li>
+<li>related work<ul>
+<li>Amato et al. [63] created a user-content social graph <code>based on multimedia content</code>, using <code>semantic relevance and lowlevel feature comparisons</code> to make recommendations through <code>ranking technology</code>.</li>
+<li>Ma et al. [64] built a <code>heterogeneous bibliographic network</code> using citation information and made recommendations based on meta-paths in the HIN.</li>
+<li>Pham et al. [65] proposed the <code>fuzzy-driven HIN embedding model</code> for the recommendation which integrated hierarchical structure from fuzzy and deep network-based embedding architecture.</li>
+<li>Later, they applied the HIN to <code>extract features from unstructured attributes or contents</code> [66].</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>we can use <code>clustering or ranking-based</code> method to proceed recommendation</p>
+<ul>
+<li>clustering is based on <code>Bayesian model</code></li>
+<li>ranking is based on <code>distance between candidates&#39; and users&#39; preferences</code></li>
+</ul>
+</li>
+<li><p>later we introduce the different similarity calculation:  <strong>Kendall-Tau, Spearman, Pearson, etc.</strong></p>
+</li>
+</ul>
+<h3 id="C-Knowledge-based-RS"><a href="#C-Knowledge-based-RS" class="headerlink" title="C. Knowledge-based RS"></a>C. Knowledge-based RS</h3><ul>
+<li><p>commonly used in complex domains, the key information is <code>domain knowledge</code>( including user item interaction), overcome challenges( cold start and grep sheeps)</p>
+<ul>
+<li><p>we can see the domain knowledge can be located on both the user and item sides</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241022160601123.png" alt="image-20241022160601123" style="zoom: 80%;" /></li>
+</ul>
+</li>
+<li><p>advantages: <code>versatility </code> in domains by integrating contextual knowledge-based RS</p>
+</li>
+<li><p>related works </p>
+<ul>
+<li>overall domain<ul>
+<li>Chen et al. [69] integrating contextual knowledge of items into <code>multi-turn dialog systems</code>,  improve the natural language generation process</li>
+<li>Vijayakumar et al. [70] utilized user selected <code>Point-of-Interest information as temporal features</code> to personalize travel plans.  (e-commerce)</li>
+<li>Liu et al. [71] enhanced <code>news recommendation reasoning</code> based on a <code>knowledge graph combined with reinforcement learning</code>( news )</li>
+<li>Huang et al. [72] proposed the <code>Knowledge-aware Coupled Graph Neural Network (KCGN)</code>, to enhance the encoding of user-item relationships, as well as the utilization of mutual information for global graph structure awareness. </li>
+<li>Wang et al. [73]  propose the <code>Knowledge Graph-based Intent Network (KGIN)</code>, promoting independence among different intents for better model capability and interpretability.</li>
+<li>Xia et al. [74] introduced the <code>Knowledge-Enhanced Hierarchical Graph Transformer Network (KHGT)·</code> to explore multi-typed interactive patterns</li>
+</ul>
+</li>
+<li>medical sector<ul>
+<li>Gong et al. [75] proposed <code>Safe Medicine Recommendation (SMR)</code>  in <code>graph embedding learning techniques</code>. <ul>
+<li>SMR first creates a <strong>graph</strong> by Medical Records (EMRs) and <strong>medical knowledge graphs,</strong></li>
+<li>and then embeds diseases, medicines and corresponding relationships into a shared <strong>lower-dimensional space</strong>.</li>
+</ul>
+</li>
+<li>Cui et al. [77] enhanced the <code>health thread recommendation</code> method based on a <code>knowledge graph</code>, focusing not only on the user’s interaction with the thread but also on the underlying conditions and symptoms</li>
+</ul>
+</li>
+<li>In software development<ul>
+<li>Bilal et al. [76] utilized <code>query expansion</code> to enhance the recommendation of personnel development tools during website searches.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Knowledge-Graph-based-RS"><a href="#Knowledge-Graph-based-RS" class="headerlink" title="Knowledge Graph-based RS"></a>Knowledge Graph-based RS</h4><ul>
+<li><code>Knowledge Graph</code> is based on <strong>entities and relationship</strong>, providing additional information to RS and enhance the quality (giving more <strong>evidence</strong>)</li>
+</ul>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241022162724900.png" alt="image-20241022162724900" style="zoom:67%;" />	
+
+<ul>
+<li>KG is an entity-relation-entity triples (h, r, t)</li>
+<li>There are three ways in KG utilization in RS<ul>
+<li><strong>knowledge graph enbedding</strong></li>
+<li><strong>path pattern learning</strong> </li>
+<li><strong>hybrid enbedding-methods</strong></li>
+</ul>
+</li>
+</ul>
+<p><strong>Knowledge Graph Embedding （KGE）</strong> </p>
+<ul>
+<li>most works are the <code>transition-based KGE</code></li>
+<li>score functions: directly \ projection matrix \ projection vectors \ bi-liner equations</li>
+<li>related work: The field of external knowledge addition in KGE. these works demonstrate <strong>aggregation methods</strong>.<ul>
+<li>Zhang et al. [92] incorporated structural, visual, and textual knowledge into their model by <code>transferring the knowledge into embeddings</code>.</li>
+<li>Wang et al. [93] proposed a <code>deep knowledge-aware network</code> for news recommendation, using the <code>TransD [90] algorithm</code> to transfer knowledge embeddings from the <code>Satori knowledge base</code>. </li>
+<li>Huang et al. [94] improved <code>sequential recommendation</code> by incorporating external knowledge information into their key-value memory network. They used the <code>TransE [87] algorithm</code> to transfer the knowledge embedding, using Freebase [79] as the source of external knowledge.</li>
+<li>Dadoun et al. [95] utilized the <code>TransE [87] algorithm</code> to transfer the knowledge graph from Wikidata [82] into their <code>deep knowledge factorization machines</code> for POI recommendation. </li>
+<li>Hu et al. [96] made further progress by using the <code>TransR [89] algorithm</code> to quantify relationships between POIs and their attributes. This method allowed for the cross-sharing of information between POI and entity vectors, thus improving the expressive ability of POI data and addressing the issue of data sparsity.</li>
+<li>Huang et al. [97] designed an <code>Entity-Aware Collaborative Relational Network (ECRN)</code> to extract interactive entity semantic relations. </li>
+<li>Tu et al. [98] designed the <code>knowledge-aware conditional attention network (KCAN)</code> to refine the useful information of the knowledge graph to better improve the performance of RS.</li>
+<li>Anelli et al. [99] designed the<code> KGFlex model based on the knowledge map</code> to obtain sparse features of interaction and context and made recommendations on this basis.</li>
+<li>Yang et al. [100] designed a <code>contrastive learning model using knowledge graphs</code>, which can learn perceptual representations with less noise for the project. Experiments have proved that the model has a better antinoise ability and ability to deal with long-tail effects. </li>
+<li>Wang et al. [101] designed a <code>multi-level reasoning framework</code> based on knowledge graphs to learn users’ multi-level interests, and explained the reasoning path through path selection.</li>
+<li>Geng et al. [102] proposed the <code>Path Language Modeling Recommendation (PLM-Rec) </code>framework by learning a language model to solve the problem of knowledge-based RS recall bias. </li>
+<li>Park et al. [103] combined user <code>sentiment analysis</code> on the basis of knowledge graphs to improve the performance and interpretation quality of RS.</li>
+</ul>
+</li>
+</ul>
+<h4 id="Path-based-RS"><a href="#Path-based-RS" class="headerlink" title="Path-based RS"></a>Path-based RS</h4><ul>
+<li>leverage the <code>connectivity patterns</code> between entities to enrich the side information ( by evaluating <code>the semantic similarity</code> )<ul>
+<li>there are three types of entity similarity: User-User, Item-Item, User-Item similarity</li>
+</ul>
+</li>
+<li>related works ( “<code>rules</code>“  refers to characterize the user’s preferences )<ul>
+<li>In [105], Ma et al. leveraged an <code>external knowledge graph</code> to learn association rules and integrate these rules into <strong>the interaction matrix</strong> through matrix factorization for recommendation generation. </li>
+<li>Xu et al. [106] adopted a <code>TransE-based approach</code> to embed target users and items and <code>combine knowledge graph and reinforcement learning </code>to determine the appropriate recommendation items and <strong>discover reasoning paths</strong> from target users to the recommended items. </li>
+<li>in [107], the authors proposed<code>a knowledge graph-based multi-context-aware recommendation algorithm</code>that <strong>blends the benefits</strong> of both path-based and propagation based methods.</li>
+<li>Sun et al. [108] employed a <code>recurrent network</code> in their model, <code>Recurrent Knowledge Graph Embedding (RKGE)</code>, to encode the path linking the same entity pair and learned the semantic representations of both entities and paths to characterize user preferences towards items.</li>
+<li>Wang et al. [109] proposed the <code>Knowledge-Aware Path Recurrent Network (KPRN) that used LSTM</code> to encode the path sequence with relation and entity embeddings to estimate the user’s preference for a recommendation. </li>
+<li>Zheng et al. [110] proposed <code>a guided model based on meta-path and self-attention mechanism</code>, which can provide a reasonable explanation for session-based recommendation (SR). </li>
+<li>Zhao et al. [111] designed a multi-turn dialogue recommendation <code>model GPR based on graph paths</code>, and made recommendations through the optimal paths learned by <code>soft clustering, set operations, and reinforcement learning</code>.</li>
+<li>Ning et al. [112] designed a <code>meta-path selection framework (RMS)</code> for heterogeneous graphs based on reinforcement learning and proposed a new meta-path recommendation for its RMS HRec, which is superior to existing models</li>
+</ul>
+</li>
+<li>Different models have used different similarity evaluation methods, such as <code>PathSim, Hetesim, and LSTM,</code> to calculate the semantic similarity</li>
+</ul>
+<h3 id="D-Hybrid-RS"><a href="#D-Hybrid-RS" class="headerlink" title="D. Hybrid RS"></a>D. Hybrid RS</h3><ul>
+<li><p>use <code>deep learning</code> as <strong>fusion of multi-source information</strong> (such as context and content)</p>
+</li>
+<li><p>relate works</p>
+<ul>
+<li><p>Polignano et al. [114] <code>blend user-item interactions and contextual features</code> for the recommendation. </p>
+</li>
+<li><p>Luo et al. [115] <code>mixed graph embedding and context information</code> for the recommendation.</p>
+</li>
+<li><p>The table shows that the majority of works utilize a <strong>CFbased model</strong> as the optimization framework</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241022171116747.png" alt="image-20241022171116747" style="zoom:80%;" /></li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>notice: In addition to content information, contextual information, includes a variety of features such as historical behavior, social connections, and personal characteristics</p>
+</blockquote>
+<h2 id="Ⅲ-Group-Recommender-System"><a href="#Ⅲ-Group-Recommender-System" class="headerlink" title="Ⅲ. Group Recommender System"></a>Ⅲ. Group Recommender System</h2><p>目前group RS现状：</p>
+<ul>
+<li>初期阶段但具有潜力</li>
+<li>有两种方式，但在群推荐中，memory-based只能preferece aggregation，而model-based可以学习更加复杂的特征</li>
+</ul>
+<h3 id="A-memory-based"><a href="#A-memory-based" class="headerlink" title="A. memory-based"></a>A. memory-based</h3><p>对于memory-based：preference aggregation</p>
+<ul>
+<li><p>result aggregation</p>
+<ul>
+<li>通过所有用户的结果融合，来对整个群组进行综合的推荐。最近用的比较多的是通过GNN</li>
+<li>（举例，Pitoura提出通过使用rank aggregation method，在个性化的推荐后进而进行群组推荐）</li>
+</ul>
+</li>
+<li><p>profile aggregation</p>
+<ul>
+<li>更多的是将个性化的推荐给 群组当中抽离出来的虚拟用户</li>
+</ul>
+</li>
+<li><p>研究案例：Wang等人通过对结果和画像这些用户偏好融合后，提出trust-aware group recommendation model</p>
+</li>
+</ul>
+<p>关于融合的策略，主要有以下几类</p>
+<ul>
+<li>majoryity-based策略（比如多数投票制）</li>
+<li>consensus-based策略（average without misery , and fairness）<ul>
+<li>average表示选择的评分是群里的平均值，without misery 表示低于一定门槛的会被排除, fairness表示items会按照用户的选择均值从高到低排名，最高的表示用户最满意的item</li>
+</ul>
+</li>
+<li>borderline 策略（least misery, and moust pleasure）<ul>
+<li>Least misery表示群里最低的个人评分，即该策略的意思是：将最不满意的成员作为该组偏好的代表</li>
+<li>most pleasure表示群里最高的个人评分，该策略的意思是：将最满意的成员作为该组偏好的代表</li>
+</ul>
+</li>
+<li>综合评价：各自有各自的优缺点<ul>
+<li>如果组里的用户偏好一致，那么推荐效果会好，反之，会让推荐效果更差</li>
+<li>Sato等人提出了一个support filtering queries来枚举公平的方案，从而缓解组推荐中的公平性问题</li>
+</ul>
+</li>
+</ul>
+<h3 id="B-Model-based"><a href="#B-Model-based" class="headerlink" title="B. Model-based"></a>B. Model-based</h3><p>对于Model-based 方法</p>
+<ul>
+<li><p>model主要是表示通过机器学习的方式可以提取出user iteraction过程中的特征</p>
+</li>
+<li><p>尤其是深度学习的方式，可以对各类外部信息进行融合，比如社会关系、群体描述以及常识，提高了推荐系统的performance</p>
+</li>
+<li><p>相关工作</p>
+<ul>
+<li>Yin等人对 临时团体 提取个人偏好以及社会影响</li>
+<li>Zhu等人使用知识图谱和聚类方式来生成组推荐</li>
+<li>Cao等人使用注意力网络和神经协同过滤NCF直接从数据中学习偏好融合策略<ul>
+<li>注意力机制是比较流行的技术</li>
+</ul>
+</li>
+<li>Huang等人应用在深度学习基础上应用多重注意力机制应用到组推荐上</li>
+<li>Wang等人使用了图表示方法 结合了序列和组推荐<ul>
+<li>自注意力机制用来学习组之间偏好的权重，以便融合特征</li>
+</ul>
+</li>
+<li>sparse group-item interaction问题，Zhang等人提出self-supervised hypergrapth learning framework<ul>
+<li>主要是通过层级超图卷积网络（基于用户层和群组层超图以及双尺度节点损失策略）</li>
+<li>自监督信号，前者用来捕获到团体内部的交流，后者可以缓解原始数据稀疏的问题</li>
+</ul>
+</li>
+<li>Sajjadi等人定义了组推荐中的冷启动问题 为 组内不清晰的反馈，他基于这个反馈提出了Deep Group模型</li>
+<li>Zhang等人提出GBERT pre-training和fine-tuning（预训练 微调）方法来解决临时群组推荐<ul>
+<li>BERT的表达能力可以提高捕获群体的偏好效果</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>而在预训练阶段，有三种tasks可以缓解稀疏性和冷启动问题，以及目标微调的权重调整</p>
+<ul>
+<li>Chen等人认为使用空间点表示用户和群组偏好有问题，提出了CubeRec model（基于hypercubes）<ul>
+<li>学习在偏好融合过程中用户嵌入的超立方体，以及改进的距离指标性能、<strong>交叉两组结合自监督</strong>来解决数据稀疏性</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="C-buddle"><a href="#C-buddle" class="headerlink" title="C. buddle"></a>C. buddle</h3><p>C. 捆绑推荐</p>
+<ul>
+<li>捆绑推荐：当捆绑的内容满足用户需要时可以一次卖出多个物品，卖出更多的利润以及节省用户时间<ul>
+<li>典型案例：beer diaper case 啤酒尿布案例同时提升两个物品的销量</li>
+<li>Agrawal等人提出了挖掘的规则，可以视为捆绑推荐的基础</li>
+</ul>
+</li>
+<li>组推荐的目的是将物品推荐给一组有共同点的用户，而捆绑推荐的目的是向整体的用户推荐捆绑商品<ul>
+<li>他们有很多相似之处，可以认为捆绑推荐是一种群推荐</li>
+</ul>
+</li>
+<li>相关研究<ul>
+<li>Bai等人提出beam generation network（BGN）模型，通过决定点过程（DPP）将结构化的问题分解为质量和多样性，并且缓解表达能力差的问题<ul>
+<li>通过编码器-解码器框架以及提出的特征感知softmax，通过遮蔽束搜索和DPP选择来进行推荐</li>
+</ul>
+</li>
+<li>Liu等人基于GNN提出了一种新框架BasConv，集成了三个区分框架中不同类型的交互器，可以从邻居和高位邻居中学习节点嵌入表达</li>
+<li>He等人提出多轮对话推荐（MCR）的BundleMCR推荐任务，并提出BundleBert（Bunt）模型，通过多个代理的马尔可夫决策过程进行推荐</li>
+<li>Zhao等人提出了多视图意图分离图网络（MIDGN）模型<ul>
+<li>将用户意图从全局视图和局部视图两个角度分离出来，以更细的粒度准确、全面地捕捉用户意图和item关联的多样性。</li>
+</ul>
+</li>
+<li>Avny等人[149]提出了基于Transformers的BRUCE模型，以捕捉物品与捆绑包中其他物品之间的关系，提高推荐的准确性</li>
+</ul>
+</li>
+</ul>
+<h2 id="Ⅳ-PROBLEMS"><a href="#Ⅳ-PROBLEMS" class="headerlink" title="Ⅳ. PROBLEMS"></a>Ⅳ. PROBLEMS</h2><p>三个主要的问题：Robustness，data bias，fairness</p>
+<ul>
+<li>Robustness: 能在对抗攻击下保持一定性能，并消除偏差对RS的影响（保证推荐系统的安全性以及可靠性）<ul>
+<li>对抗攻击不同的形式：操纵数据、模型参数，甚至是模型的输出</li>
+</ul>
+</li>
+<li>Data bias: 由于训练集由于只提供用户偏好的倾向快照，导致模型偏向次优结果<ul>
+<li>包括受欢迎程度偏差、选择偏差、曝光偏差、位置偏差等等</li>
+</ul>
+</li>
+<li>Fairness: 推荐系统的模型结果基于公平性原则，包括基于用户以及基于item的公平性原则<ul>
+<li>基于user公平：推荐系统不会由于敏感属性（种族 性别等）受到影响，从而推荐系统产生偏见</li>
+<li>基于item公平：推荐系统应当保证同类别的item有平等的机会被推荐。典型案例：冷启动问题和长尾问题（冷门的推荐不了 缺少多样性）</li>
+</ul>
+</li>
+</ul>
+<p>接下来说明具体的现有解决方案，以及这些方案的优势和缺陷</p>
+<h3 id="A-Robustness"><a href="#A-Robustness" class="headerlink" title="A. Robustness"></a>A. Robustness</h3><p>对抗训练和模型提炼是增强推荐系统鲁棒性的两种常用防御模型。这些方法分别通过添加扰动和传输知识来解决鲁棒性的挑战。</p>
+<ul>
+<li><p>检测鲁棒性，研究者们常用的做法是进行对抗攻击（Adversarial attacks）</p>
+<ul>
+<li>图像处理以及自然语言处理领域（image processing or natural language processing system），会对像素值或文本添加扰动( perturbations )</li>
+<li>自然语言处理中，物品&#x2F;用户可以表示为嵌入，攻击者可从用户&#x2F;物品的特性 (profile)、用户&#x2F;物品嵌入(enbedding)以及辅助信息(side information)等方面进行攻击</li>
+</ul>
+</li>
+<li><p>对抗攻击包含黑盒攻击以及白盒攻击</p>
+<ul>
+<li>白盒攻击允许攻击者访问模型信息，并通过基于梯度方式（比如FGSM, PGM, C&amp;W）来搜索对抗扰动</li>
+<li>黑盒攻击攻击者无法访问模型信息，使用模型替换&#x2F;DeepFool等方式进行攻击</li>
+<li>相关工作<ul>
+<li>He等人[151]使用FGSM对用户和项目嵌入添加了扰动，并且是第一个对推荐系统执行对抗攻击的人</li>
+<li>Tang等人[152]使用FGSM向辅助信息添加了扰动</li>
+<li>Christakopoulou等人[153]使用基于生成对抗网络的方法向用户配置文件添加了扰动。</li>
+<li>Zhang等人[154]基于概率生成模型，对用户与项目之间的交互添加了干扰。</li>
+<li>Yue等人[155]通过合成数据和标签，利用蒸馏（distillation）将黑匣子模型提取为白盒模型，然后利用白盒模型生成针对样本攻击的黑匣子模型。</li>
+<li>Chen等人[156]通过知识图增强了虚假用户配置文件的生成，从而提高了攻击的有效性</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>此外，引入另一种类型为数据中毒攻击（DPA），也叫做先令(shilling)攻击或者注入攻击，攻击者不知道模型但只知道数据</p>
+<ul>
+<li>攻击目标：引入虚假用户和评级注入推荐系统从而更改推荐列表<ul>
+<li>而传统解决DPA问题算法（基于关联规则和基于图的算法）表现并不是很好</li>
+</ul>
+</li>
+<li>Tang等人[157]将DPA视为优化问题，并提出了对抗梯度逼近方法。</li>
+<li>Huang等人[158]通过训练代理模型来模拟目标推荐系统，但这个问题仍然没有得到解决，因为在不知情的情况下优化模型是NP困难的。</li>
+<li>Wu等人[159]提出了由生成器、搜索器和影响力模块组成的三重对抗学习模型，并设计了估计每个生成的虚假用户影响力的方法。</li>
+<li>Wu等人[160]提出了一种针对联邦推荐的中毒方法，该方法通过错误的最困难的样本颠覆训练并降低模型性能</li>
+</ul>
+</li>
+<li><p>给出两个类别：针对性攻击以及非针对性攻击</p>
+<ul>
+<li>针对性攻击：将推荐系统的某个类误导到错误的类别上<ul>
+<li>Di等人[161]开发了一个攻击模型TAaMR来使用FGSM和PVD操纵推荐。</li>
+<li>Hu等人[162]专注于通过在基于因子分解的推荐系统中注入虚假评级和社交关系来向特定用户群体推荐商品。<ul>
+<li>这些有针对性的攻击是由影响利润推荐的明确动机驱动的[157]。</li>
+</ul>
+</li>
+<li>张等人[163]设计了一种基于受欢迎度偏差的新攻击方法，通过增加目标（不受欢迎的物品）的曝光度来实现。</li>
+</ul>
+</li>
+<li>非针对性攻击并没有一个特定的类别，而是攻击模型到输出非真实的类别（目前研究不足但是重要的方面）</li>
+</ul>
+</li>
+<li><p>而为了提高鲁棒性，目前研究者们的常用做法是： 通过对抗训练（adversarial training ），模型蒸馏（model distillation）后得到防御模型（defense models）</p>
+<ul>
+<li><p>前者主要是添加扰动，后者主要是传递知识</p>
+</li>
+<li><p>对抗训练：对手和模型之间的最小-最大博弈（min-max game），对手会搜索最合适的扰动σ 来最大化攻击成功的可能性，而模型通过优化参数θ最小化风险</p>
+<ul>
+<li>学者们将该方式归类为：生成对抗网络（generative adversarial network）</li>
+<li>ε表示扰动的上界</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241026214352489.png" alt="image-20241026214352489">    </p>
+<ul>
+<li>目前大多数工作是直接将扰动添加到模型参数中<ul>
+<li>袁等人。[165]在对抗性自动编码器框架中对编解码器的权值加入扰动，然后用扰动后的权值训练模型进行对抗性训练。</li>
+<li>Anelli et al.[166]在基于视觉的推荐系统中增加了对图像的扰动来代替正常数据，并直接利用扰动数据进行对抗性训练进行防御。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>蒸馏</strong>是另一种常用的防御模型，它通过训练软标签将知识从教师模型传递到学生模型，提取的网络对扰动的例子具有健壮性</p>
+<ul>
+<li>Du等人。[167]设计了基于神经协同过滤的师生框架（teacher-student framework），成功地从教师模型中提取知识，并在C&amp;W攻击下验证了该框架的健壮性。</li>
+<li>Yue et al.[168]针对组态文件污染问题（configuration file pollution），提出了一种Dirichlet邻域抽样防御方法。该方法通过多跳邻居学习嵌入，并将其用于防御。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="B-Data-bias"><a href="#B-Data-bias" class="headerlink" title="B. Data bias"></a>B. Data bias</h3><p>本节讨论了各种形式的数据偏差，即受欢迎程度偏差、选择偏差、曝光偏差和位置偏差。为了缓解这些偏差，研究人员主要依靠去偏技术，除了利用分数校准损失和倾向分数来提高模型效率。这些办法旨在通过确保数据公平和减少歧视性结果来增加用户对系统的信心和信任。</p>
+<ul>
+<li>我们如果只通过观察（observation）来获得用户行为数据会导致不可避免的偏差，进而会导致推荐系统性能降低并且影响用户体验和对系统的信任度，不容忽视<ul>
+<li><strong>消除偏差以及提升推荐系统的鲁棒性是如今推荐系统的重要研究领域</strong></li>
+<li>包括：popularity bias, selection bias, exposure bias, and position bias. 接下来详细展开这些方面说</li>
+</ul>
+</li>
+</ul>
+<p><strong>popularity bias</strong></p>
+<ul>
+<li>是基于物品的公平性问题（长尾问题），即只有少数的受欢迎物品与用户进行互动，其他的物品交互会很少（包括点击 书签 查询 购买 购买后评论等）</li>
+<li>进而导致模型训练的结果会偏向于高欢迎度的物品，最终降低了个性化的水平，同时结果也是不公平的（解决不公平的问题见下一小节）</li>
+</ul>
+<p><strong>selection bias</strong></p>
+<ul>
+<li>指的是用户不能对每个物品进行完整的评分而导致的偏差。</li>
+<li>解释：用户一般只会对自己非常满意或者非常不满意的物品进行评分，从而导致了MissingNotAtRandom（MNAR问题 非随机缺失），进而产生了偏差</li>
+<li>相关解决的方案<ul>
+<li>Wang等人。[171]提出了一种新的基于查询的偏差估计方法，该方法能够捕获结果相似的查询并处理稀疏数据。</li>
+<li>Wang等人。[172]假设有一小部分训练数据是无偏的，然后利用无偏数据自适应地为有偏的训练评级赋予倾向性权重，从而减少了选择偏差对推荐系统训练的影响，并通过优化算法降低了选择偏差对推荐系统训练的影响。</li>
+<li>刘等人。[173]提出了一种自监督学习框架评级分布校准(RDC)，以减轻选择偏差对RS的负面影响，并通过引入评级校准损失来修正估计的评级分布。</li>
+<li>Huang等人的研究成果。[174]通过实验证明，在选择偏向和用户偏好都是动态的动态场景中，现有的去偏方法不再是无偏的，因此在dyNamiCscEnaRio (DANCER)中引入去偏来提高动态得分预测性能。</li>
+<li>Shih等人。[175]提出了一种基于时间可见性的数据填充策略，利用不感兴趣的项目来缓解数据中的选择偏差，通过使用加权矩阵分解模型来学习用户对未评级项目的预使用偏好，并结合用户活动、项目热度和时间评级信息进行非均匀加权来恢复用户真实的评级分布。</li>
+</ul>
+</li>
+</ul>
+<p> <strong>exposure bias</strong></p>
+<ul>
+<li>表示用户只能看到和交互一部分暴露出来的物品，而其他的物品中包含用户真正喜欢或者不喜欢的没有暴露出来，因此也会产生一定偏见</li>
+<li>解决方案<ul>
+<li>Zhou等人[176]设计了基于对比学习的CLRec模型，可以提高大候选量RS中深度候选生成（DCG）的公平性、有效性和效率，并进一步将模型改进为Multi-CLRec，以准确减少多意图感知偏差并通过在淘宝上的实际部署验证模型性能。</li>
+<li>Wang等人[177]利用潜在结果框架来理解偏差机制，利用反向训练实例重新加权来纠正其倾向评分（IPS），重新制定顺序推荐任务，并进一步设计参数模型来消除潜在混杂因素的影响，并通过实验验证了模型的有效性。</li>
+</ul>
+</li>
+</ul>
+<p><strong>position deviation</strong></p>
+<ul>
+<li>表示用户一般会选择比较显眼位置的物品（顶部 粗体等），这和用户的需求没有直接相关，因此产生误差<ul>
+<li>该问题对于推荐系统中的CTR（预测点击率）至关重要</li>
+</ul>
+</li>
+<li>解决方案<ul>
+<li>Collins等人。[178]在数字图书系统Sowiport和参考文献管理系统JabRef上进行了实验，证明了向用户显示的推荐评级与用户是否决定点击之间的密切关系。</li>
+<li>Agarwal等人。[179]通过从多个不同的历史反馈日志中获取特定类型的干预数据来估计用户的propensity倾向，并设计了极值估计器来进一步估计倾向。</li>
+<li>郭某等人。[180]设计了一个位置偏差感知学习(PAL)框架来预测RS中的点击率(CTR)，该模型可以在没有位置信息的情况下离线训练和进行离线推理，该模型在在线实验中得到了验证。</li>
+</ul>
+</li>
+</ul>
+<h3 id="C-Fairness"><a href="#C-Fairness" class="headerlink" title="C. Fairness"></a>C. Fairness</h3><ul>
+<li>分为基于用户的公平性和基于物品的公平性<ul>
+<li>前者是不因为用户敏感信息而受到推荐系统歧视</li>
+<li>后者是每个物品应有平等的被推荐机会（基于公平性的典型情况就是冷启动问题和长尾问题，其中长尾问题与暴露偏差也有关）</li>
+</ul>
+</li>
+</ul>
+<p><strong>User-based Fairness</strong></p>
+<ul>
+<li>主流的方法是元学习（meta-learning）, 对抗训练（confrontation training），联邦学习（federated learning），强化学习（reinforce learning）以及transformer等<ul>
+<li>比如差异隐私和多臂强盗算法</li>
+<li>Cold-Transformer正在开发用于自适应地合并基于上下文的嵌入，以提高用户偏好的准确性</li>
+</ul>
+</li>
+<li>相关工作<ul>
+<li>Finn等人。[181]提出了一种能够在小样本下获得更好性能的元学习算法，为解决冷启动问题，提高RS的公平性提供了新的思路。</li>
+<li>Lee等人。[182]为提高RS的冷启动能力和公平性，设计了MELU元学习模型，并提出了区分条目的证据候选选择策略。</li>
+<li>董等人的研究成果。[183]设计了两个存储任务特定记忆和特征特定记忆的记忆矩阵，分别指导元学习模型的初始化和预测用户偏好，提高了冷启动性能。</li>
+<li>卢等人[184]提出了基于元学习思想的MetaHIN模型，提高了HIN的冷启动能力。</li>
+<li>魏等人的研究成果。[185]基于元学习的思想，提出了基于元学习模型的MetaCF模型，该模型能够细粒度地优化自适应学习率，提高冷启动能力。</li>
+<li>冯等人[186]设计了一种与主流工业部署兼容的上下文调制元学习模型，通过前馈操作降低了模型的计算效率，缓解了冷启动问题。</li>
+<li>魏等人的研究成果。[187]提出了一个综合公平的元学习框架CLOVER，该框架在不降低冷启动性能的前提下，综合提高了个体公平、群体公平和反事实公平。</li>
+<li>Neupane等人。[188]针对历史活跃用户和当前非活跃用户，提出了一种新的动态元学习模型，在一定程度上解决了时间敏感的冷启动问题。</li>
+<li>Pang等人。[189]提出了一种用于用户冷启动推荐的预训练网络调制和任务适应模型(PNMTA)，该模型采用非元学习方法训练得到预训练模型，并将学习到的知识转移到元学习阶段调制。该模型在实验中取得了较好的效果，提高了冷启动性能。</li>
+<li>Shivaswamy等人[190]设计了一个经过对抗训练的机器学习模型，可以改善服务不足的用户的服务。</li>
+<li>Liu等人[191]在联邦优化期间传达了群体统计信息，提高了模型的公平性，同时通过差异隐私技术和隐私保护隐私。</li>
+<li>Do等人[192]考虑了公平审计的嫉妒问题，将审计视为多臂强盗机器（multi-armed bandit machines）中一个新的纯探索问题，提出了一种样本高效算法，并分析了模型的性能。</li>
+<li>Li等人[193]提出了Cold-Transformer模型，该模型通过基于上下文的嵌入自适应地抵消特征分布，将冷状态嵌入转换为温状态嵌入，以表达用户偏好。</li>
+</ul>
+</li>
+</ul>
+<p><strong>Item-based Fairness</strong></p>
+<p>提出了各种方法来实现RS中基于项目的公平性，包括因果推理、对抗训练、元学习和强化学习。</p>
+<ul>
+<li><p>一种方式是通过<strong>因果推理（causal inference）</strong></p>
+<ul>
+<li><p>基于Gupta等人提出的因果推理，他们设计了一个全面的因果推理框架，可以减少数据生成和模型训练阶段的popular bias，并在一定程度上缓解长尾问题。</p>
+</li>
+<li><p>魏等人的研究成果。[195]使用因果关系图描述推荐过程中的因果关系，并通过反事实推理消除项目热度，提高模型公平性。</p>
+</li>
+</ul>
+</li>
+<li><p>另一种方法是基于对抗性训练。</p>
+<ul>
+<li>Anelli等人。[196]采用对抗性正则化方法，克服了RS模型对权重干扰建模的脆弱性，提高了模型的精度。然而，他们发现，在数据分布不平衡的情况下，对抗性正规化可能会放大popular bias，降低模型公平性。</li>
+<li>Li等人。[197]提出了基于产生式对抗网络(GAN)的FairGAN模型，该模型将公平性问题映射为隐式反馈的负偏好问题，在保证公平性的同时尽可能地保持用户效用。</li>
+</ul>
+</li>
+<li><p>元学习和强化学习也用于基于项目的公平性。</p>
+<ul>
+<li>Du等人[198]结合了少镜头学习和元学习，设计了S2 Meta模型来提高基于项目的公平性。</li>
+<li>Xie等人[199]提出了一种元学习框架KoMen，该框架首先通过基于场景的领域知识定制全局模型参数，然后通过混合专家架构学习特定场景的参数。该模型可以提高模型冷启动性能。</li>
+<li>Ji等人[200]提出了一种行为者-批评者强化学习（WL-LTV）框架，该框架结合了物品生命周期价值，以提高冷启动性能并解决RS系统的长期回报问题。</li>
+<li>最近，Shalaby等人[201]提出了M2 TRec模型，这是一种基于会话推荐的元数据感知多任务Transformer模型。该模型集成了元数据来学习不同项目的共享表示，并能够推荐冷启动和稀疏项目</li>
+</ul>
+</li>
+</ul>
+<h2 id="Ⅴ-MEASUREMENTS"><a href="#Ⅴ-MEASUREMENTS" class="headerlink" title="Ⅴ. MEASUREMENTS"></a>Ⅴ. MEASUREMENTS</h2><ul>
+<li>根据应用类型和预测目标的不同，评估指标有两类：基于评级的指标（RBI）和基于项目的指标（IBI）。<ul>
+<li>RBI 表示推荐系统的输出是一个评分，好的推荐系统应当接近真实的预测评分</li>
+<li>IBI表示推荐系统的输出是一组物品，好的推荐系统应当与用户期望物品进行匹配</li>
+</ul>
+</li>
+</ul>
+<h3 id="A-Rating-based-Indicator"><a href="#A-Rating-based-Indicator" class="headerlink" title="A. Rating based Indicator"></a>A. Rating based Indicator</h3><ul>
+<li>直接的方法是估计隐式&#x2F;显式标签 之间的间隔</li>
+<li>当标签是显式的，测量指标可以是：均方根误差 Root Mean Squared Error（RMSE）<ul>
+<li>U是用户集合，I是物品即可，r^表示预测评分，r表示真实评分</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241027093635138.png" alt="image-20241027093635138">	</p>
+<ul>
+<li>另一种流行指标是：平均绝对误差（Mean Absolute Error, MAE）</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241027093829192.png" alt="image-20241027093829192">	</p>
+<ul>
+<li>可以看到这两个测量指标都是非负的，且指标值越低表示性能越好</li>
+<li>但是由于r^ - r会与误差成正比，所以对于异常值是非常敏感的</li>
+</ul>
+<h3 id="B-Item-Based-Indicator"><a href="#B-Item-Based-Indicator" class="headerlink" title="B. Item Based Indicator"></a>B. Item Based Indicator</h3><ul>
+<li><p>如果推荐系统不是ranking system，我们可以采用混淆矩阵（confusion matrix）来评价</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241027094324497.png" alt="image-20241027094324497">    </p>
+</li>
+<li><p>然后更多的是通过TP FP FN TN的一个组合表达式来说明，例如Precision，Recall，以及F-Measure</p>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241027094509416.png" alt="image-20241027094509416">	</p>
+<p><strong>（1）Ranking Indicators</strong></p>
+<ul>
+<li><p>大多数的推荐是有序的项目列表，但是精度和召回率与顺序是无关的</p>
+<ul>
+<li>因此更有意义的做法是采取top-k Precision and Recall at cutoff k（截断值为k的前k个精度和召回率 使用Precision@k, Recall@k表示），即只考虑了第一个物品到第k个物品有序列表的子集</li>
+</ul>
+</li>
+<li><p>给出一个更加宏观的指标mean average precision（MAP@k）以及mean average recall（MAR@k），即截断值为k的平均精度和平均召回率</p>
+<ul>
+<li>rel是指示函数，即如果和目标相关，则输出1，否则输出0</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241027095406245.png" alt="image-20241027095406245">	</p>
+<ul>
+<li><p>这两个指标可以评估一定的性能，但是存在一定缺陷</p>
+<ul>
+<li>不适合于细粒度数字评级（fine-grained numerical ratings），因为他们需要一个阈值来讲数字评级转换为二元相关性，可能会导致偏见以及细粒度信息</li>
+</ul>
+</li>
+<li><p>为了解决该缺陷，学者们做了以下工作</p>
+<ul>
+<li><p>为了考虑到排名，提出一种广泛在用的指标：normalized discounted cumulative gain（NDCG）归一化折损累计增益，该指标通过细粒度的评级提高了推荐评估质量（recommendation evaluation quality）</p>
+</li>
+<li><p>其中discounted cumulative gain（DCG）折损累计增益<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241027100836179.png" alt="image-20241027100836179"></p>
+<ul>
+<li>rel表示第i个位置的细粒度数字评分，并且引入了对数运算，根据物品的位置给予相应的惩罚</li>
+</ul>
+</li>
+<li><p>接下来给出Ideal Discounted Cumulative Gain（IDCG，理想折损累计增益），在第p个位置下，给出具有最大可能性的DCG值<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241027101317572.png" alt="image-20241027101317572"></p>
+<ul>
+<li>|rel(p)|表示到p为止相关数目的数量</li>
+</ul>
+</li>
+<li><p>通过IDCG，我们可以实现正规化</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241027102927140.png" alt="image-20241027102927140">    </p>
+</li>
+<li><p>但是使用NDCG存在的问题是无法处理不完整的评级，缺失的值可以通过平均数&#x2F;中位数等填充</p>
+</li>
+</ul>
+</li>
+<li><p>如果没有用户的相对排名信息，可以将多个物品绑定在一起作为一个物品进行推荐</p>
+</li>
+<li><p>除了NDCG没有其他能表示相关性的指标，提出了normalized distance-based performance measurement (NDPM). 归一化基于距离的性能度量</p>
+<ul>
+<li>rui是参考排名，rui^是系统给出的排名，nu，sgn是符号函数</li>
+<li>C^u表示有序列表有序对数量，C+，C-表示按正确顺序和不正确排列的对数，C^t是参考排名不并列但是推荐系统排名并列的对数</li>
+<li>NDPM专注于预测排名而不是预测评级，所以不适用于为用户提供评级的系统</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241027103341925.png" alt="image-20241027103341925"></p>
+</li>
+</ul>
+<p><strong>（2）similarity</strong></p>
+<ul>
+<li>Pearson correlation coefficient (PCC), **皮尔逊相关系数 **  [-1, 1]如果Spcc&#x3D;0表示没有相关性，1表示正相关，-1表示负相关，复杂度取决于共同评分物品的数量</li>
+<li>cosine similarity (COS) <strong>余弦相似度</strong>，对于大特征值，COS可以具有让特征值收缩的理想特性，调整后的COS称为 ACOS，不同于pearSon这里的r^_u和r^_v是基于用户u和v所有评级计算的</li>
+<li>mean squared difference (MSD) <strong>均方差</strong></li>
+<li>proximity impact popularity (PIP) <strong>接近影响流行度</strong></li>
+<li>Jaccard <strong>杰卡德系数</strong></li>
+<li>proximity significance singularity (PSS) <strong>接近显著性奇异性</strong></li>
+<li>new heuristic similarity model (NHSM) <strong>新启发式相似模型</strong></li>
+</ul>
+<p>其中</p>
+<ul>
+<li>r_u,i表示用户u对物品i的评分</li>
+<li>r_med表示评级量表的中位数值（例如1-5评分 r_med&#x3D;3）</li>
+<li>r^_u表示用户u对共同相关物品v的平均评分</li>
+<li>r·^_u表示用户度i所有物品的平均评分</li>
+<li>I是所有项目的集合，如果用户u对a物品没有评级，则r_u,i&#x3D;0</li>
+<li>I_u,v表示用户u对v的共同评级项目</li>
+<li>|I_u ∪ I_v| 表示用户u和v评级的总物品数</li>
+<li>r^_i表示物品i的平均评级</li>
+<li>H表示基于性能的实验值，关于Proximity(r_ui, r_vi), Impact(r_ui, r_vi), Popularity(r_ui, r_vi)</li>
+<li>σu表示用户u的标准方差</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241027104101727.png" alt="image-20241027104101727">	</p>
+<h2 id="Ⅵ-CONCLULATION"><a href="#Ⅵ-CONCLULATION" class="headerlink" title="Ⅵ. CONCLULATION"></a>Ⅵ. CONCLULATION</h2><p>软计算已从推荐系统转向情感分析。有望在这一领域进行研究，例如使用模糊逻辑进行基于方面的情感分析或情感知识库推理</p>
+<ul>
+<li><p>首先概述了个性化和群组推荐的推荐系统当前趋势</p>
+<ul>
+<li>对于个性化系统，在传统分类基础上加入了基于知识的系统，并分为四类：协同过滤、基于内容、基于知识以及混合推荐</li>
+<li>并深入探讨了群组推荐，提出基于记忆和基于模型的技术，并讨论了基于物品的群组推荐以及捆绑推荐</li>
+</ul>
+</li>
+<li><p>同时讨论了推荐系统挑战，稳健性、数据偏见以及公平性的问题</p>
+</li>
+<li><p>最后分析各项性能指标，包括基于评级、排名以及相似性的指标</p>
+</li>
+<li><p>随着基于生成预训练（GPT）技术的ChatGPT的流行，研究人员正在考虑其增强各自领域的潜力，包括推荐系统（RS）。</p>
+</li>
+<li><p>在RS领域，通过对话生成用户推荐的对话推荐系统越来越受欢迎。</p>
+</li>
+<li><p>比如</p>
+<ul>
+<li>Gao等人[206]通过利用ChatGPT改进了推荐系统的交互性和可解释性，并启用了跨域推荐功能。</li>
+<li>Cui等人[207]提出了基于M6的推荐系统，类似于ChatGPT和T5。预计GPT技术将催化推荐系统领域的新进展</li>
+</ul>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2024/10/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/%E7%BB%BC%E8%BF%B0/">https://yuezi2048.github.io/2024/10/27/2.Areas🌐/science/Pre/综述/综述/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%BB%BC%E8%BF%B0/">综述</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2024/10/19/2.Areas%F0%9F%8C%90/back-end-java/5.Maven%E4%B8%93%E9%A2%98/2.%20Maven%E9%AB%98%E7%BA%A7%E7%AF%87/" title="2. Maven高级篇"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">2. Maven高级篇</div></div><div class="info-2"><div class="info-item-1">二、Maven高级篇2.1 maven分模块开发与设计2.1.1 创建父工程这里除了web项目都用一般的无骨架创建方式，方法是在工作空间的父项目中创建模块module  使用无骨架maven创建方式：一般的javaSE代码 使用骨架maven创建方式：web项目  	 在聚合工程中，通过maven拆分子模块的优势是什么？  后续工作中，只要用maven，就是用聚合工程 采用继承思想，父类的资源可以被子类继承 进一步地独立代码，解耦合，开发一个模块，无需关注其他模块，提高代码复用性，将jar包可以推送到中央仓库，别人就可以复用我的依赖  在父工程中定义一些依赖后，子工程可以继承这些依赖的版本等信息。 构建聚合工程遇到的问题 1. idea 每次创建项目都要重新配置maven在file选项 settings for new Projects中对maven相关进行设置2. @Test单元测试时报错Class not found因为创建项目出错了，没有在聚合工程中创建子模块，而是一个普通的目录，图标没有蓝色的模块标识3. pom.xml中...</div></div></div></a><a class="pagination-related" href="/2024/10/30/2.Areas%F0%9F%8C%90/back-end-java/6.SSM/Spring/1.%20%E6%A6%82%E8%BF%B0_%E5%9F%BA%E4%BA%8EXML%E9%85%8D%E7%BD%AEIOC/" title="1. 概述_基于XML配置IOC"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">1. 概述_基于XML配置IOC</div></div><div class="info-2"><div class="info-item-1">一、概述_基于XML配置IOC1.1 Spring的基本概述1.1.1 Spring是什么 Spring 是分层的 Java SE&#x2F;EE 应用 full-stack轻量级开源框架 以 IoC(Inverse Of Control：控制反转)和AOP(Aspect Oriented Programming：面向切面编程)为内核提供了展现层 SpringMVC 和持久层   Spring JDBC 以及业务层事务管理等众多的企业级应用技术，还能整合众多著名的第三方框架和类库，逐渐成为使用最多的 Java EE 企业应用开源框架  发展历程 1997 年 IBM 提出了 EJB 的思想1998 年，SUN 制定开发标准规范 EJB1.01999 年，EJB1.1 发布2001 年，EJB2.0 发布2003 年，EJB2.1 发布2006 年，EJB3.0 发布Rod Johnson（spring 之父）Expert One-to-One J2EE Design and Development(2002)阐述了 J2EE 使用 EJB 开发设计的优点及解决方案Expert...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2024/12/31/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/A%20survey%20on%20causal%20infer.../" title="A survey on causal infer..."><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-31</div><div class="info-item-2">A survey on causal infer...</div></div><div class="info-2"><div class="info-item-1">Treatment effect estimation 用于 policy evaluation 用药领域，如果我们想要评估一个药对寿命的影响那么要回答一个问题：如果强制复用该药物，患者在L年内存活的可能性是多少一个比较好的方式是大规模随机对照实验（large-scale randomized controlled trial）  但是有成本乃至道德上的问题  因此我们只能从非随机观测数据中估计结果：  药物与生存的相关性并不意味着有因果关系，比如年龄、性别、疾病等严重程度等因素可能影响结果  推荐系统中的因果关系，也被用于评估策略估计的一个提升模型最近几年，才倾向于应用因果推断来进行模型的训练 因果推理可以应用到CTR，点击后指标预测、以及RS各个阶段：数据搜集、用户的表示学习、无偏嵌入，以及目标优化和在线&#x2F;离线策略评估 具有的优势：  模型中的因果。推荐系统主要也是依赖于统计方法，着重关注变量之间的相关性，但是在应用中，应当更加关注因果关系而不是相关性 传统推荐系统学习到的虚假关联spurious...</div></div></div></a><a class="pagination-related" href="/2024/11/20/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/%E5%9F%BA%E4%BA%8E%E5%9B%A0%E6%9E%9C%E6%8E%A8%E6%96%AD%E7%9A%84%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" title="基于因果推断的推荐系统"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-20</div><div class="info-item-2">基于因果推断的推荐系统</div></div><div class="info-2"><div class="info-item-1">基于因果推断的推荐系统去偏研究综述作者：杨新新、刘真、卢思博、袁亚凡、孙永奇发表刊物：《计算机学报》2024 年第 47 卷第 10...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#abstract"><span class="toc-text">abstract</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%85%A0-introduction"><span class="toc-text">Ⅰ. introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%85%A1-Personalized-Recommender-Systems"><span class="toc-text">Ⅱ. Personalized Recommender Systems</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#A-Collaborative-Filtering-Based-RS"><span class="toc-text">A. Collaborative Filtering Based RS</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#memory-based-CF"><span class="toc-text">memory-based CF</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Model-based-CF"><span class="toc-text">Model-based CF</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Context-aware-Based-CF"><span class="toc-text">Context-aware Based CF</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-Content-Based-RS"><span class="toc-text">B. Content Based RS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C-Knowledge-based-RS"><span class="toc-text">C. Knowledge-based RS</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Knowledge-Graph-based-RS"><span class="toc-text">Knowledge Graph-based RS</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Path-based-RS"><span class="toc-text">Path-based RS</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#D-Hybrid-RS"><span class="toc-text">D. Hybrid RS</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%85%A2-Group-Recommender-System"><span class="toc-text">Ⅲ. Group Recommender System</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#A-memory-based"><span class="toc-text">A. memory-based</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-Model-based"><span class="toc-text">B. Model-based</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C-buddle"><span class="toc-text">C. buddle</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%85%A3-PROBLEMS"><span class="toc-text">Ⅳ. PROBLEMS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#A-Robustness"><span class="toc-text">A. Robustness</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-Data-bias"><span class="toc-text">B. Data bias</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C-Fairness"><span class="toc-text">C. Fairness</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%85%A4-MEASUREMENTS"><span class="toc-text">Ⅴ. MEASUREMENTS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#A-Rating-based-Indicator"><span class="toc-text">A. Rating based Indicator</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-Item-Based-Indicator"><span class="toc-text">B. Item Based Indicator</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%85%A5-CONCLULATION"><span class="toc-text">Ⅵ. CONCLULATION</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

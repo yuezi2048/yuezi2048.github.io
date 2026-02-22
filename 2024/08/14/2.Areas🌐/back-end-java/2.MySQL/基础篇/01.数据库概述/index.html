@@ -1,0 +1,366 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>01.数据库概述 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一、数据库概述1. 为什么要数据库 数据的持久化：将数据保存到硬盘上，可供可掉电式的存储设备使用，大多使用关系数据库实现（也可以通过文件I&#x2F;O、XML实现）  	 2. DB 和 DBMS2.1 概述 数据库DB：存储数据的仓库，本质上是一个文件系统，保存一系列有组织的数据 数据库管理系统DBMS：管理和操纵数据库的大型软件，从而建立、使用和维护数据库。用户可以使用DBMS查询数据库的数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="01.数据库概述">
+<meta property="og:url" content="https://yuezi2048.github.io/2024/08/14/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/01.%E6%95%B0%E6%8D%AE%E5%BA%93%E6%A6%82%E8%BF%B0/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="一、数据库概述1. 为什么要数据库 数据的持久化：将数据保存到硬盘上，可供可掉电式的存储设备使用，大多使用关系数据库实现（也可以通过文件I&#x2F;O、XML实现）  	 2. DB 和 DBMS2.1 概述 数据库DB：存储数据的仓库，本质上是一个文件系统，保存一系列有组织的数据 数据库管理系统DBMS：管理和操纵数据库的大型软件，从而建立、使用和维护数据库。用户可以使用DBMS查询数据库的数">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2024-08-14T00:36:37.000Z">
+<meta property="article:modified_time" content="2024-08-14T00:36:37.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="基础篇">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "01.数据库概述",
+  "url": "https://yuezi2048.github.io/2024/08/14/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/01.%E6%95%B0%E6%8D%AE%E5%BA%93%E6%A6%82%E8%BF%B0/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2024-08-14T00:36:37.000Z",
+  "dateModified": "2024-08-14T00:36:37.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2024/08/14/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/01.%E6%95%B0%E6%8D%AE%E5%BA%93%E6%A6%82%E8%BF%B0/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '01.数据库概述',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">01.数据库概述</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">01.数据库概述</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-08-14T00:36:37.000Z" title="发表于 2024-08-14 08:36:37">2024-08-14</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-08-14T00:36:37.000Z" title="更新于 2024-08-14 08:36:37">2024-08-14</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/">back-end-java</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/2-MySQL/">2.MySQL</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/2-MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/">基础篇</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>11分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="一、数据库概述"><a href="#一、数据库概述" class="headerlink" title="一、数据库概述"></a>一、数据库概述</h1><h2 id="1-为什么要数据库"><a href="#1-为什么要数据库" class="headerlink" title="1. 为什么要数据库"></a>1. 为什么要数据库</h2><ul>
+<li><code>数据的持久化</code>：将数据保存到硬盘上，可供可掉电式的存储设备使用，大多使用关系数据库实现（也可以通过文件I&#x2F;O、XML实现）</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814080929352.png" alt="image-20240814080929352">	</p>
+<h2 id="2-DB-和-DBMS"><a href="#2-DB-和-DBMS" class="headerlink" title="2. DB 和 DBMS"></a>2. DB 和 DBMS</h2><h3 id="2-1-概述"><a href="#2-1-概述" class="headerlink" title="2.1 概述"></a>2.1 概述</h3><ul>
+<li>数据库DB：存储数据的仓库，本质上是一个文件系统，保存一系列有组织的数据</li>
+<li>数据库管理系统DBMS：管理和操纵数据库的大型软件，从而建立、使用和维护数据库。用户可以使用DBMS查询数据库的数据</li>
+<li>结构化查询语言SQL：用于数据库交互的语言</li>
+</ul>
+<p>其中，DBMS可以管理多个DB，开发中，通常针对每个应用创建一个数据库，并在一个数据库中创建多个表，从而保存实体用户的数据</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814081315113.png" alt="image-20240814081315113">	</p>
+<h3 id="2-2-常见DBMS"><a href="#2-2-常见DBMS" class="headerlink" title="2.2 常见DBMS"></a>2.2 常见DBMS</h3><p>常见的DBMS</p>
+<p>参考数据库最新排名:<a target="_blank" rel="noopener" href="https://db-engines.com/en/ranking">https://db-engines.com/en/ranking</a></p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814081353061.png" alt="image-20240814081353061">	</p>
+<p>发展趋势：<a target="_blank" rel="noopener" href="https://db-engines.com/en/ranking_trend">https://db-engines.com/en/ranking_trend</a></p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814081438761.png" alt="image-20240814081438761">	</p>
+<p><strong>Oracle</strong></p>
+<p>1979 年，Oracle 2 诞生，它是第一个商用的 RDBMS（关系型数据库管理系统）。随着 Oracle 软件的名气越来越大，公司也改名叫 Oracle 公司。</p>
+<p>2007年，总计85亿美金收购BEA Systems。</p>
+<p>2009年，<strong>总计74亿美金收购SUN</strong>。此前的2008年，SUN以10亿美金<strong>收购MySQL</strong>。意味着Oracle 同时拥有了 MySQL 的管理权，至此 Oracle 在数据库领域中成为绝对的领导者。</p>
+<p>2013年，甲骨文超越IBM，成为继Microsoft后全球第二大软件公司。</p>
+<p>如今 Oracle 的年收入达到了 400 亿美金，足以证明商用（收费）数据库软件的价值。</p>
+<p><strong>SQL Server</strong></p>
+<p>SQL Server 是微软开发的大型商业数据库，诞生于 1989 年。C#、.net等语言常使用，与WinNT完全集成，也可以很好地与Microsoft BackOffice产品集成。</p>
+<p><strong>DB2</strong></p>
+<p>IBM公司的数据库产品,收费的。常应用在银行系统中。</p>
+<p><strong>PostgreSQL</strong></p>
+<p>PostgreSQL 的稳定性极强，最符合SQL标准，开放源码，具备商业级DBMS质量。PG对数据量大的文本以及SQL处理较快。</p>
+<p><strong>SyBase</strong></p>
+<p>已经淡出历史舞台。提供了一个非常专业数据建模的工具PowerDesigner。 </p>
+<p><strong>SQLite</strong></p>
+<p>嵌入式的小型数据库，应用在手机端。 零配置，SQlite3不用安装，不用配置，不用启动，关闭或者配置数据库实例。当系统崩溃后不用做任何恢复操作，再下次使用数据库的时候自动恢复。</p>
+<p><strong>informix</strong></p>
+<p>IBM公司出品，取自Information 和Unix的结合，它是第一个被移植到Linux上的商业数据库产品。仅运行于unix&#x2F;linux平台，命令行操作。 性能较高，支持集群，适应于安全性要求极高的系统，尤其是银行，证券系统的应用。  </p>
+<h2 id="3-MySQL"><a href="#3-MySQL" class="headerlink" title="3. MySQL"></a>3. MySQL</h2><h3 id="3-1-概述"><a href="#3-1-概述" class="headerlink" title="3.1 概述"></a>3.1 概述</h3><ul>
+<li>MySQL是一个<code>开放源代码的关系型数据库管理系统</code>，由瑞典MySQL AB（创始人Michael Widenius）公司1995年开发，迅速成为开源数据库的 No.1。</li>
+<li>2008被<code>Sun</code>收购（10亿美金），2009年Sun被<code>Oracle</code>收购。<code>MariaDB</code>应运而生。（MySQL 的创造者担心 MySQL 有闭源的风险，因此创建了 MySQL 的分支项目 MariaDB）</li>
+<li>MySQL6.x 版本之后分为<code>社区版</code>和<code>商业版</code>。</li>
+<li>MySQL是一种关联数据库管理系统，将数据保存在不同的表中，而不是将所有数据放在一个大仓库内，这样就增加了速度并提高了灵活性。</li>
+<li>MySQL是开源的，所以你不需要支付额外的费用。</li>
+<li>MySQL是可以定制的，采用了<code>GPL（GNU General Public License）</code>协议，你可以修改源码来开发自己的MySQL系统。</li>
+<li>MySQL支持大型的数据库。可以处理拥有上千万条记录的大型数据库。</li>
+<li>MySQL支持大型数据库，支持5000万条记录的数据仓库，32位系统表文件最大可支持<code>4GB</code>，64位系统支持最大的表文件为<code>8TB</code>。</li>
+<li>MySQL使用<code>标准的SQL数据语言</code>形式。</li>
+<li>MySQL可以允许运行于多个系统上，并且支持多种语言。这些编程语言包括C、C++、Python、Java、Perl、PHP和Ruby等。</li>
+</ul>
+<p><code>MySQL从5.7版本直接跳跃发布了8.0版本</code>，可见这是一个令人兴奋的里程碑版本。MySQL 8版本在功能上做了显著的改进与增强</p>
+<h3 id="3-2-为什么选择MySQL"><a href="#3-2-为什么选择MySQL" class="headerlink" title="3.2 为什么选择MySQL"></a>3.2 为什么选择MySQL</h3><ol>
+<li><p>   开放源代码，使用成本低。</p>
+</li>
+<li><p>   性能卓越，服务稳定。</p>
+</li>
+<li><p>   软件体积小，使用简单，并且易于维护。</p>
+</li>
+<li><p>   历史悠久，社区用户非常活跃，遇到问题可以寻求帮助。</p>
+</li>
+<li><p>   许多互联网公司在用，经过了时间的验证。</p>
+</li>
+</ol>
+<h3 id="3-3-Oracle-vs-MySQL"><a href="#3-3-Oracle-vs-MySQL" class="headerlink" title="3.3 Oracle vs MySQL"></a>3.3 Oracle vs MySQL</h3><p>Oracle 更适合大型跨国企业的使用，因为他们对费用不敏感，但是对性能要求以及安全性有更高的要求。</p>
+<p>MySQL 由于其<strong>体积小、速度快、总体拥有成本低，可处理上千万条记录的大型数据库，尤其是开放源码这一特点，使得很多互联网公司、中小型网站选择了MySQL作为网站数据库</strong>（Facebook，Twitter，YouTube，阿里巴巴&#x2F;蚂蚁金服，去哪儿，美团外卖，腾讯）。</p>
+<h2 id="4-RDBMS-vs-非RDBMS"><a href="#4-RDBMS-vs-非RDBMS" class="headerlink" title="4. RDBMS vs 非RDBMS"></a>4. RDBMS vs 非RDBMS</h2><p>关系型数据库绝对是 DBMS 的主流，其中使用最多的 DBMS 分别是 <strong>Oracle、MySQL 和 SQL Server</strong></p>
+<h3 id="4-1-关系型数据库RDBMS"><a href="#4-1-关系型数据库RDBMS" class="headerlink" title="4.1 关系型数据库RDBMS"></a>4.1 关系型数据库RDBMS</h3><h4 id="4-1-1-概述"><a href="#4-1-1-概述" class="headerlink" title="4.1.1 概述"></a>4.1.1 概述</h4><ul>
+<li>关系型数据库模型是把复杂的数据结构归结为简单的<code>二元关系</code>（即二维表格形式）</li>
+<li>关系型数据库以<code>行(row)</code>和<code>列(column)</code>的形式存储数据，以便于用户理解。这一系列的行和列被称为<code>表(table)</code>，一组表组成了一个库(database)。</li>
+<li>表与表之间的数据记录有关系(relationship)。现实世界中的各种实体以及实体之间的各种联系均用<code>关系模型</code>来表示。关系型数据库，就是建立在<code>关系模型</code>基础上的数据库。</li>
+<li>SQL 就是关系型数据库的查询语言。</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814082014075.png" alt="image-20240814082014075">	</p>
+<h4 id="4-1-2-优势"><a href="#4-1-2-优势" class="headerlink" title="4.1.2 优势"></a>4.1.2 优势</h4><p>RDBMS的优势：</p>
+<ul>
+<li><strong>复杂查询</strong><br>可以用SQL语句方便的在一个表以及多个表之间做非常复杂的数据查询。</li>
+<li><strong>事务支持</strong><br>使得对于安全性能很高的数据访问要求得以实现。</li>
+</ul>
+<h3 id="4-2-非关系型数据库NoSQL"><a href="#4-2-非关系型数据库NoSQL" class="headerlink" title="4.2 非关系型数据库NoSQL"></a>4.2 非关系型数据库NoSQL</h3><h4 id="4-2-1-概述"><a href="#4-2-1-概述" class="headerlink" title="4.2.1 概述"></a>4.2.1 概述</h4><p><strong>非关系型数据库</strong>，可看成传统关系型数据库的功能<code>阉割版本</code>，基于键值对存储数据，不需要经过SQL层的解析，<code>性能非常高</code>。同时，通过减少不常用的功能，进一步提高性能</p>
+<h4 id="4-2-2-非DBMS的分类"><a href="#4-2-2-非DBMS的分类" class="headerlink" title="4.2.2 非DBMS的分类"></a>4.2.2 非DBMS的分类</h4><p>相比于 SQL，<code>NoSQL</code> 泛指非关系型数据库，包括了榜单上的键值型数据库、文档型数据库、搜索引擎和列存储等，除此以外还包括图形数据库。也只有用 NoSQL 一词才能将这些技术囊括进来。</p>
+<p><strong>键值型数据库</strong></p>
+<p>键值型数据库通过 Key-Value 键值的方式来存储数据，其中 Key 和 Value 可以是简单的对象，也可以是复杂的对象。Key 作为唯一的标识符，优点是查找速度快，在这方面明显优于关系型数据库，缺点是无法像关系型数据库一样使用条件过滤（比如 WHERE），如果你不知道去哪里找数据，就要遍历所有的键，这就会消耗大量的计算。</p>
+<p>键值型数据库典型的使用场景是作为<code>内存缓存</code>。<code>Redis </code>是最流行的键值型数据库。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814082406519.png" alt="image-20240814082406519">	</p>
+<p><strong>文档型数据库</strong></p>
+<p>此类数据库可存放并获取文档，可以是XML、JSON等格式。在数据库中文档作为处理信息的基本单位，一个文档就相当于一条记录。文档数据库所存放的文档，就相当于键值数据库所存放的“值”。MongoDB 是最流行的文档型数据库。此外，还有CouchDB等。</p>
+<p><strong>搜索引擎数据库</strong></p>
+<p>虽然关系型数据库采用了索引提升检索效率，但是针对全文索引效率却较低。搜索引擎数据库是应用在搜索引擎领域的数据存储形式，由于搜索引擎会爬取大量的数据，并以特定的格式进行存储，这样在检索的时候才能保证性能最优。核心原理是“倒排索引”。</p>
+<p>典型产品：Solr、Elasticsearch、Splunk 等。</p>
+<p><strong>列式数据库</strong></p>
+<p>列式数据库是相对于行式存储的数据库，Oracle、MySQL、SQL Server 等数据库都是采用的行式存储（Row-based），而列式数据库是将数据按照列存储到数据库中，这样做的好处是可以大量降低系统的 I&#x2F;O，适合于分布式文件系统，不足在于功能相对有限。典型产品：HBase等。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814082502002.png" alt="image-20240814082502002">	</p>
+<p><strong>图形数据库</strong></p>
+<p>图形数据库，利用了图这种数据结构存储了实体（对象）之间的关系。图形数据库最典型的例子就是社交网络中人与人的关系，数据模型主要是以节点和边（关系）来实现，特点在于能高效地解决复杂的关系问题。</p>
+<p>图形数据库顾名思义，就是一种存储图形关系的数据库。它利用了图这种数据结构存储了实体（对象）之间的关系。关系型数据用于存储明确关系的数据，但对于复杂关系的数据存储却有些力不从心。如社交网络中人物之间的关系，如果用关系型数据库则非常复杂，用图形数据库将非常简单。典型产品：Neo4J、InfoGrid等。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814082549322.png" alt="image-20240814082549322">	</p>
+<h4 id="4-2-3-NoSQL的演变"><a href="#4-2-3-NoSQL的演变" class="headerlink" title="4.2.3 NoSQL的演变"></a>4.2.3 NoSQL的演变</h4><p>由于 SQL 一直称霸 DBMS，因此许多人在思考是否有一种数据库技术能远离 SQL，于是 NoSQL 诞生了，但是随着发展却发现越来越离不开 SQL。到目前为止 NoSQL 阵营中的 DBMS 都会有实现类似 SQL 的功能。下面是“NoSQL”这个名词在不同时期的诠释，从这些释义的变化中可以看出 <code>NoSQL 功能的演变</code>：</p>
+<p>1970：NoSQL &#x3D; We have no SQL</p>
+<p>1980：NoSQL &#x3D; Know SQL</p>
+<p>2000：NoSQL &#x3D; No SQL!</p>
+<p>2005：NoSQL &#x3D; Not only SQL</p>
+<p>2013：NoSQL &#x3D; No, SQL!</p>
+<p>NoSQL 对 SQL 做出了很好的补充，比如实际开发中，有很多业务需求，其实并不需要完整的关系型数据库功能，非关系型数据库的功能就足够使用了。这种情况下，使用<code>性能更高</code>、<code>成本更低</code>的非关系型数据库当然是更明智的选择。比如：日志收集、排行榜、定时器等。</p>
+<h2 id="5-关系型数据库的设计准则"><a href="#5-关系型数据库的设计准则" class="headerlink" title="5. 关系型数据库的设计准则"></a>5. 关系型数据库的设计准则</h2><ul>
+<li><p>关系型数据库的典型数据结构就是<code>数据表</code>，这些数据表的组成都是结构化的（Structured）。</p>
+</li>
+<li><p>将数据放到表中，表再放到库中。</p>
+</li>
+<li><p>一个数据库中可以有多个表，每个表都有一个名字，用来标识自己。表名具有唯一性。</p>
+</li>
+<li><p>表具有一些特性，这些特性定义了数据在表中如何存储，类似Java和Python中 “类”的设计。</p>
+</li>
+</ul>
+<h3 id="5-1-表、记录、字段"><a href="#5-1-表、记录、字段" class="headerlink" title="5.1 表、记录、字段"></a>5.1 表、记录、字段</h3><ul>
+<li>E-R（entity-relationship，实体-联系）模型中有三个主要概念是：<code>实体集</code>、<code>属性</code>、<code>联系集</code>。</li>
+<li>一个实体集（class）对应于数据库中的一个表（table），一个实体（instance）则对应于数据库表中的一行（row），也称为一条记录（record）。一个属性（attribute）对应于数据库表中的一列（column），也称为一个字段（field）。</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814082741534.png" alt="image-20240814082741534">	</p>
+<p>ORM思想 (Object Relational Mapping)体现：</p>
+<ul>
+<li>数据库中的一个表  &lt;—&gt; Java或Python中的一个类</li>
+<li>表中的一条数据  &lt;—&gt; 类中的一个对象（或实体）</li>
+<li>表中的一个列  &lt;—-&gt; 类中的一个字段、属性(field)</li>
+</ul>
+<h3 id="5-2-表的关联关系"><a href="#5-2-表的关联关系" class="headerlink" title="5.2 表的关联关系"></a>5.2 表的关联关系</h3><ul>
+<li>表与表之间的数据记录有关系(relationship)。现实世界中的各种实体以及实体之间的各种联系均用关系模型来表示。</li>
+<li>四种：一对一关联、一对多关联、多对多关联、自我引用</li>
+</ul>
+<h4 id="5-2-1-一对一关系（one-to-one）"><a href="#5-2-1-一对一关系（one-to-one）" class="headerlink" title="5.2.1 一对一关系（one-to-one）"></a>5.2.1 一对一关系（one-to-one）</h4><ul>
+<li>在实际的开发中应用不多，因为一对一可以创建成一张表。</li>
+<li>举例：设计<code>学生表</code>：学号、姓名、手机号码、班级、系别、身份证号码、家庭住址、籍贯、紧急联系人、…<ul>
+<li><p>拆为两个表：两个表的记录是一一对应关系。</p>
+</li>
+<li><p><code>基础信息表</code>（常用信息）：学号、姓名、手机号码、班级、系别</p>
+</li>
+<li><p><code>档案信息表</code>（不常用信息）：学号、身份证号码、家庭住址、籍贯、紧急联系人、…</p>
+</li>
+</ul>
+</li>
+<li>两种建表原则： <ul>
+<li>外键唯一：主表的主键和从表的外键（唯一），形成主外键关系，外键唯一。 </li>
+<li>外键是主键：主表的主键和从表的主键，形成主外键关系。</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814082934903.png" alt="image-20240814082934903">	</p>
+<h4 id="5-2-2-一对多关系（one-to-many）"><a href="#5-2-2-一对多关系（one-to-many）" class="headerlink" title="5.2.2 一对多关系（one-to-many）"></a>5.2.2 一对多关系（one-to-many）</h4><ul>
+<li>常见实例场景：<code>客户表和订单表</code>，<code>分类表和商品表</code>，<code>部门表和员工表</code>。</li>
+<li>举例：<ul>
+<li><p>员工表：编号、姓名、…、所属部门</p>
+</li>
+<li><p>部门表：编号、名称、简介</p>
+</li>
+</ul>
+</li>
+<li>一对多建表原则：在从表(多方)创建一个字段，字段作为外键指向主表(一方)的主键</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814083026180.png" alt="image-20240814083026180">	</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814083103769.png" alt="image-20240814083103769">	</p>
+<h4 id="5-2-3-多对多关系（many-to-many）"><a href="#5-2-3-多对多关系（many-to-many）" class="headerlink" title="5.2.3 多对多关系（many-to-many）"></a>5.2.3 多对多关系（many-to-many）</h4><p>要表示多对多关系，必须创建第三个表，该表通常称为<code>联接表</code>，它将多对多关系划分为两个一对多关系。将这两个表的主键都插入到第三个表中。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814083136530.png" alt="image-20240814083136530">	</p>
+<p><strong>举例1：学生-课程</strong></p>
+<ul>
+<li><p><code>学生信息表</code>：一行代表一个学生的信息（学号、姓名、手机号码、班级、系别…）</p>
+</li>
+<li><p><code>课程信息表</code>：一行代表一个课程的信息（课程编号、授课老师、简介…）</p>
+</li>
+<li><p><code>选课信息表</code>：一个学生可以选多门课，一门课可以被多个学生选择</p>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814083037956.png" alt="image-20240814083037956">	</p>
+<p><strong>举例2：产品-订单</strong></p>
+<p>“订单”表和“产品”表有一种多对多的关系，这种关系是通过与“订单明细”表建立两个一对多关系来定义的。一个订单可以有多个产品，每个产品可以出现在多个订单中。</p>
+<ul>
+<li><code>产品表</code>：“产品”表中的每条记录表示一个产品。</li>
+<li><code>订单表</code>：“订单”表中的每条记录表示一个订单。</li>
+<li><code>订单明细表</code>：每个产品可以与“订单”表中的多条记录对应，即出现在多个订单中。一个订单可以与“产品”表中的多条记录对应，即包含多个产品。</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814083221908.png" alt="image-20240814083221908">	</p>
+<p><strong>举例3：用户-角色</strong></p>
+<ul>
+<li>多对多关系建表原则：需要创建第三张表，中间表中至少两个字段，这两个字段分别作为外键指向各自一方的主键。</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814083239847.png" alt="image-20240814083239847">	</p>
+<h4 id="5-2-4-自我引用-Self-reference"><a href="#5-2-4-自我引用-Self-reference" class="headerlink" title="5.2.4 自我引用(Self reference)"></a>5.2.4 自我引用(Self reference)</h4><p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814083319511.png" alt="image-20240814083319511"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2024/08/14/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/01.%E6%95%B0%E6%8D%AE%E5%BA%93%E6%A6%82%E8%BF%B0/">https://yuezi2048.github.io/2024/08/14/2.Areas🌐/back-end-java/2.MySQL/基础篇/01.数据库概述/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%9F%BA%E7%A1%80%E7%AF%87/">基础篇</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2024/08/04/2.Areas%F0%9F%8C%90/back-end-java/1.JavaSE/%E5%9F%BA%E7%A1%80%E7%AF%87%E2%80%94%E2%80%94%E9%9F%A9%E9%A1%BA%E5%B9%B3/17.%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%9F%BA%E7%A1%80/" title="17.多线程基础"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">17.多线程基础</div></div><div class="info-2"><div class="info-item-1">十七、多线程基础17.1 线程相关概念程序(program)：完成特定任务，使用特定语言编写的指令集合。 	 进程：表示运行的程序。例如启动了QQ，就表示启动了一个进程，操作系统为其开辟一块内存空间。  进程是程序的执行过程，是一个动态的过程，有其产生、存在和消亡的生命周期  	 线程：线程是通过进程创建的（也可以通过线程创建），是进程的一个实体  一个进程可以拥有多个线程，引申出两种线程类型 单线程：同一个时刻只能运行一个线程 多线程：同一个时刻可以执行多个线程（比如迅雷的多任务下载）    	 理解：  一个线程就可以联想到一个猴毛，让一个小猴干一件事情而不影响本体的运行  	  	 并发和并行的概念：  并发：同一个时刻，多个任务交替执行 举例：（1）单核CPU实现多任务；（2）同时开车和打电话    	  并行：同一个时刻，多个任务同时执行，多核CPU可以实现并行  	  并发和并行可以同时进行  17.2 基本使用创建线程两种方式，本质是一样的：  继承Thread类 实现Runnable接口  	 17.2.1...</div></div></div></a><a class="pagination-related" href="/2024/08/14/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/00.%E5%9F%BA%E7%A1%80%E7%AF%87%E5%86%85%E5%AE%B9%E6%A1%86%E6%9E%B6/" title="00.基础篇内容框架"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">00.基础篇内容框架</div></div><div class="info-2"><div class="info-item-1">MySQL数据库基础篇分为5个篇章： 1. 数据库概述与MySQL安装篇  第01章：数据库概述 第02章：MySQL环境搭建  2. SQL之SELECT使用篇  第03章：基本的SELECT语句 第04章：运算符 第05章：排序与分页 第06章：多表查询 第07章：单行函数 第08章：聚合函数 第09章：子查询  3. SQL之DDL、DML、DCL使用篇  第10章：创建和管理表 第11章：数据处理之增删改 第12章：MySQL数据类型精讲 第13章：约束  4. 其它数据库对象篇（开发用到了再学）  第14章：视图 第15章：存储过程与函数 第16章：变量、流程控制与游标 第17章：触发器  5. MySQL8 新特性篇（开发用到了再学）  第18章：MySQL8其它新特性  ps：普通开发往往积累单点技术、比如 CRUD、锁类型、索引的数据结构… 而对于技术骨干、架构师则往往需要对底层原理吃透：  数据库事务 ACID...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/05/25/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/02.MySQL%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" title="02.MySQL环境搭建"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-25</div><div class="info-item-2">02.MySQL环境搭建</div></div><div class="info-2"><div class="info-item-1">二、MySQL环境搭建1. 清除原有MySQL环境Step1：停止MySQL服务 	 Step2：软件卸载  亦可通过mysql-installer-community-8.0.26.0.msi卸载，此时安装目录也会被移除  	 Step3：残余文件清理 如果再次安装不成功，可以卸载后对残余文件进行清理后再安装。 （1）服务目录：mysql服务的安装目录 （2）数据目录：默认在C:\ProgramData\MySQL 注意：请在卸载前做好数据备份 在操作完以后，需要重启计算机，然后进行安装即可。如果仍然安装失败，需要继续操作如下步骤4。 Step4：清理注册表 在系统的搜索框中输入regedit HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\Eventlog\Application\MySQL服务 目录删除HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\MySQL服务...</div></div></div></a><a class="pagination-related" href="/2024/08/16/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/03.%E5%9F%BA%E6%9C%ACSELECT%E8%AF%AD%E5%8F%A5/" title="03.基本SELECT语句"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-16</div><div class="info-item-2">03.基本SELECT语句</div></div><div class="info-2"><div class="info-item-1">三、基本SELECT语句1. SQL概述1.1 SQL背景 1946 年，世界上第一台电脑诞生，如今，借由这台电脑发展起来的互联网已经自成江湖。在这几十年里，无数的技术、产业在这片江湖里沉浮，有的方兴未艾，有的已经几幕兴衰。但在这片浩荡的波动里，有一门技术从未消失，甚至“老当益壮”，那就是 SQL。  45 年前，也就是 1974 年，IBM 研究员发布了一篇揭开数据库技术的论文《SEQUEL：一门结构化的英语查询语言》，直到今天这门结构化的查询语言并没有太大的变化，相比于其他语言，SQL 的半衰期可以说是非常长了。   不论是前端工程师，还是后端算法工程师，都一定会和数据打交道，都需要了解如何又快又准确地提取自己想要的数据。更别提数据分析师了，他们的工作就是和数据打交道，整理不同的报告，以便指导业务决策。  SQL（Structured Query...</div></div></div></a><a class="pagination-related" href="/2025/04/24/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/04.%E8%BF%90%E7%AE%97%E7%AC%A6/" title="04.运算符"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-24</div><div class="info-item-2">04.运算符</div></div><div class="info-2"><div class="info-item-1">四、运算符1. 算数运算符算术运算符主要用于数学运算，其可以连接运算符前后的两个数值或表达式，对数值或表达式进行加（+）、减（-）、乘（*）、除（&#x2F;）和取模（%）运算。 1.1 加减法# 算数运算符：+ - * / div % mod SELECT 100, 100 + 0, 100 - 0, 100 + 50, 100 + 50 - 30, 100 + 35.5, 100 - 35.5FROM DUAL;+-----+---------+---------+----------+--------------+------------+------------+| 100 | 100 + 0 | 100 - 0 | 100 + 50 | 100 + 50 -30 | 100 + 35.5 | 100 - 35.5 |+-----+---------+---------+----------+--------------+------------+------------+| 100 |     100 |     100 |      150 |         ...</div></div></div></a><a class="pagination-related" href="/2024/08/14/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/00.%E5%9F%BA%E7%A1%80%E7%AF%87%E5%86%85%E5%AE%B9%E6%A1%86%E6%9E%B6/" title="00.基础篇内容框架"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-14</div><div class="info-item-2">00.基础篇内容框架</div></div><div class="info-2"><div class="info-item-1">MySQL数据库基础篇分为5个篇章： 1. 数据库概述与MySQL安装篇  第01章：数据库概述 第02章：MySQL环境搭建  2. SQL之SELECT使用篇  第03章：基本的SELECT语句 第04章：运算符 第05章：排序与分页 第06章：多表查询 第07章：单行函数 第08章：聚合函数 第09章：子查询  3. SQL之DDL、DML、DCL使用篇  第10章：创建和管理表 第11章：数据处理之增删改 第12章：MySQL数据类型精讲 第13章：约束  4. 其它数据库对象篇（开发用到了再学）  第14章：视图 第15章：存储过程与函数 第16章：变量、流程控制与游标 第17章：触发器  5. MySQL8 新特性篇（开发用到了再学）  第18章：MySQL8其它新特性  ps：普通开发往往积累单点技术、比如 CRUD、锁类型、索引的数据结构… 而对于技术骨干、架构师则往往需要对底层原理吃透：  数据库事务 ACID...</div></div></div></a><a class="pagination-related" href="/2025/05/28/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/05.%E6%8E%92%E5%BA%8F%E5%92%8C%E5%88%86%E9%A1%B5/" title="05.排序和分页"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-28</div><div class="info-item-2">05.排序和分页</div></div><div class="info-2"><div class="info-item-1">五、排序和分页1. 排序1.1 单列排序 使用 ORDER BY 子句排序 ASC（ascend）: 升序 DESC（descend）:降序   ORDER BY 子句在SELECT语句的结尾。 关注SELECT查询的顺序，实际场景：别名不能在where从句中使用，而可以在order by中使用  # 1. 一级排序# 如果没有使用排序操作，默认情况下查询返回的数据按照添加数据的顺序SELECT * FROM employees;-- 1.1 基本使用# 练习：按照salary从高到低显示数据(ORDER BY 通过什么来排序)# 升序:ASC(ascend) 降序：DESC(descend)SELECT employee_id, last_name, salaryFROM employeesORDER BY salary DESC;# 从低到高(没有显式写，默认升序)SELECT employee_id, last_name, salaryFROM employeesORDER BY salary ASC;-- 2. 别名# 使用列的别名进行排序SELECT...</div></div></div></a><a class="pagination-related" href="/2024/09/21/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/06.%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2/" title="06.多表查询"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-21</div><div class="info-item-2">06.多表查询</div></div><div class="info-2"><div class="info-item-1">六、多表查询多表查询，也称为关联查询，指两个或更多个表一起完成查询操作。 前提条件：这些一起查询的表之间是有关系的（一对一、一对多），它们之间一定是有关联字段，这个关联字段可能建立了外键，也可能没有建立外键。比如：员工表和部门表，这两个表依靠“部门编号”进行关联。 1. 为什么要多表查询1.1 案例	 给出这三个表，我们需要查询员工名last_name为Abel的人在哪个城市中 如果按照前置知识，需要3个SELECT语句 /*前置知识：SELECT ..., ..., ...FROM ...WHERE ... AND ... OR ... NOT ...ORDER BY ... (ASC / DESC), ...LIMIT ..., ...*/# 查询员工为Abel的人在哪个城市中SELECT *FROM employeesWHERE last_name = &#x27;Abel&#x27;; # dept_id = 80SELECT *FROM departmentsWHERE department_id = 80; # loc_id = 2500SELECT *FROM...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%95%B0%E6%8D%AE%E5%BA%93%E6%A6%82%E8%BF%B0"><span class="toc-text">一、数据库概述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-text">1. 为什么要数据库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-DB-%E5%92%8C-DBMS"><span class="toc-text">2. DB 和 DBMS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E6%A6%82%E8%BF%B0"><span class="toc-text">2.1 概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E5%B8%B8%E8%A7%81DBMS"><span class="toc-text">2.2 常见DBMS</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-MySQL"><span class="toc-text">3. MySQL</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E6%A6%82%E8%BF%B0"><span class="toc-text">3.1 概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E6%8B%A9MySQL"><span class="toc-text">3.2 为什么选择MySQL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-Oracle-vs-MySQL"><span class="toc-text">3.3 Oracle vs MySQL</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-RDBMS-vs-%E9%9D%9ERDBMS"><span class="toc-text">4. RDBMS vs 非RDBMS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93RDBMS"><span class="toc-text">4.1 关系型数据库RDBMS</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-1-%E6%A6%82%E8%BF%B0"><span class="toc-text">4.1.1 概述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-2-%E4%BC%98%E5%8A%BF"><span class="toc-text">4.1.2 优势</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E9%9D%9E%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93NoSQL"><span class="toc-text">4.2 非关系型数据库NoSQL</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-1-%E6%A6%82%E8%BF%B0"><span class="toc-text">4.2.1 概述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-2-%E9%9D%9EDBMS%E7%9A%84%E5%88%86%E7%B1%BB"><span class="toc-text">4.2.2 非DBMS的分类</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-3-NoSQL%E7%9A%84%E6%BC%94%E5%8F%98"><span class="toc-text">4.2.3 NoSQL的演变</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%87%86%E5%88%99"><span class="toc-text">5. 关系型数据库的设计准则</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E8%A1%A8%E3%80%81%E8%AE%B0%E5%BD%95%E3%80%81%E5%AD%97%E6%AE%B5"><span class="toc-text">5.1 表、记录、字段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E8%A1%A8%E7%9A%84%E5%85%B3%E8%81%94%E5%85%B3%E7%B3%BB"><span class="toc-text">5.2 表的关联关系</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-1-%E4%B8%80%E5%AF%B9%E4%B8%80%E5%85%B3%E7%B3%BB%EF%BC%88one-to-one%EF%BC%89"><span class="toc-text">5.2.1 一对一关系（one-to-one）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-2-%E4%B8%80%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%EF%BC%88one-to-many%EF%BC%89"><span class="toc-text">5.2.2 一对多关系（one-to-many）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-3-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB%EF%BC%88many-to-many%EF%BC%89"><span class="toc-text">5.2.3 多对多关系（many-to-many）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-4-%E8%87%AA%E6%88%91%E5%BC%95%E7%94%A8-Self-reference"><span class="toc-text">5.2.4 自我引用(Self reference)</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

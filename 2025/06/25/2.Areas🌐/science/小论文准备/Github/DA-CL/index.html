@@ -1,0 +1,1791 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>DA-CL | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Awesome Contrastive Learning &amp; Data Augmentation RS Paper &amp; CodeThis repository collects the latest research progress of Contrastive Learning (CL) and Data Augmentation (DA) in Recommender Sys">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DA-CL">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/06/25/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/Github/DA-CL/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="Awesome Contrastive Learning &amp; Data Augmentation RS Paper &amp; CodeThis repository collects the latest research progress of Contrastive Learning (CL) and Data Augmentation (DA) in Recommender Sys">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-06-25T11:18:52.000Z">
+<meta property="article:modified_time" content="2025-06-25T11:18:52.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="Github">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "DA-CL",
+  "url": "https://yuezi2048.github.io/2025/06/25/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/Github/DA-CL/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-06-25T11:18:52.000Z",
+  "dateModified": "2025-06-25T11:18:52.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/06/25/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/Github/DA-CL/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'DA-CL',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">DA-CL</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">DA-CL</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-06-25T11:18:52.000Z" title="发表于 2025-06-25 19:18:52">2025-06-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-06-25T11:18:52.000Z" title="更新于 2025-06-25 19:18:52">2025-06-25</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/">science</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/">小论文准备</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/Github/">Github</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">8.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>51分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Awesome-Contrastive-Learning-Data-Augmentation-RS-Paper-Code"><a href="#Awesome-Contrastive-Learning-Data-Augmentation-RS-Paper-Code" class="headerlink" title="Awesome Contrastive Learning &amp; Data Augmentation RS Paper &amp; Code"></a>Awesome Contrastive Learning &amp; Data Augmentation RS Paper &amp; Code</h1><p>This repository collects the latest research progress of <strong>Contrastive Learning (CL) and Data Augmentation (DA)</strong> in Recommender Systems.<br>Comments and contributions are welcome.</p>
+<p>CF &#x3D; Collaborative Filtering, SSL &#x3D; Self-Supervised Learning</p>
+<ul>
+<li><a href="#Survey/Tutorial/Framework">Survey&#x2F;Tutorial&#x2F;Framework</a> Total Papers: 8</li>
+<li><a href="#Only-Data-Augmentation">Only Data Augmentation</a> Total Papers: 62</li>
+<li><a href="#Graph-Models-with-CL">Graph Models with CL</a> Total Papers: 164</li>
+<li><a href="#Sequential-Models-with-CL">Sequential Models with CL</a> Total Papers: 125</li>
+<li><a href="#Other-Tasks-with-CL">Other Tasks with CL</a> Total Papers: 170</li>
+</ul>
+<h2 id="Survey-Tutorial-Framework"><a href="#Survey-Tutorial-Framework" class="headerlink" title="Survey&#x2F;Tutorial&#x2F;Framework"></a>Survey&#x2F;Tutorial&#x2F;Framework</h2><ol>
+<li><p><strong>Contrastive Self-supervised Learning in Recommender Systems: A Survey</strong> (Survey)</p>
+<p>TOIS 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2303.09902.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Self-Supervised Learning for Recommender Systems A Survey</strong> (Survey + Framework)</p>
+<p>TKDE 2023, <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/10144391">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Coder-Yu/SELFRec">[Code]</a></p>
+</li>
+<li><p><strong>Self-Supervised Learning in Recommendation: Fundamentals and Advances</strong> (Tutorial)</p>
+<p>WWW 2022, <a target="_blank" rel="noopener" href="https://ssl-recsys.github.io/">[Web]</a></p>
+</li>
+<li><p><strong>Tutorial: Self-Supervised Learning for Recommendation: Foundations, Methods and Prospects</strong> (Tutorial)</p>
+<p>DASFAA 2023, <a target="_blank" rel="noopener" href="https://junliang-yu.github.io/publications/">[Web]</a></p>
+</li>
+<li><p><strong>SSLRec: A Self-Supervised Learning Framework for Recommendation</strong> (Framework)</p>
+<p>WSDM 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2308.05697.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HKUDS/SSLRec">[Code]</a></p>
+</li>
+<li><p><strong>A Comprehensive Survey on Self-Supervised Learning for Recommendation</strong> (Survey)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2404.03354.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HKUDS/Awesome-SSLRec-Papers">[Code]</a></p>
+</li>
+<li><p><strong>Towards Graph Contrastive Learning: A Survey and Beyond</strong> (Survey)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2405.11868">[PDF]</a></p>
+</li>
+<li><p><strong>Data Augmentation for Sequential Recommendation: A Survey</strong> (Survey)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2409.13545">[PDF]</a></p>
+</li>
+</ol>
+<h2 id="Only-Data-Augmentation"><a href="#Only-Data-Augmentation" class="headerlink" title="Only Data Augmentation"></a>Only Data Augmentation</h2><ol>
+<li><p><strong>Enhancing Collaborative Filtering with Generative Augmentation</strong> (CF + GAN + DA)</p>
+<p> KDD 2019, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/3292500.3330873">[PDF]</a></p>
+</li>
+<li><p><strong>Future Data Helps Training: Modeling Future Contexts for Session-based Recommendation</strong> (Session + DA)</p>
+<p> WWW 2020, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1906.04473.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/fajieyuan/WWW2020-grec">[Code]</a></p>
+</li>
+<li><p><strong>Augmenting Sequential Recommendation with Pseudo-Prior Items via Reversely Pre-training Transformer</strong> (Sequential + DA)</p>
+<p> SIGIR 2021, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2105.00522.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/DyGRec/ASReP">[Code]</a></p>
+</li>
+<li><p><strong>Self-Knowledge Distillation with Bidirectional Chronological Augmentation of Transformer for Sequential Recommendation</strong> (Sequential + DA)</p>
+<p> arXiv 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2112.06460.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/juyongjiang/BiCAT">[Code]</a></p>
+</li>
+<li><p><strong>Counterfactual Data-Augmented Sequential Recommendation</strong> (Sequential + Counterfactual + DA)</p>
+<p> SIGIR 2021, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2207.02643.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>CauseRec: Counterfactual User Sequence Synthesis for Sequential Recommendation</strong> (Sequential + Counterfactual + DA)</p>
+<p> SIGIR 2021, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2109.05261.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Effective and Efficient Training for Sequential Recommendation using Recency Sampling</strong> (Sequential + DA)</p>
+<p> RecSys 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2207.02643.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Data Augmentation Strategies for Improving Sequential Recommender Systems</strong> (Sequential + DA)</p>
+<p> arXiv 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2203.14037.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/saladsong/DataAugForSeqRec">[Code]</a></p>
+</li>
+<li><p><strong>Learning to Augment for Casual User Recommendation</strong> (Sequential + DA)</p>
+<p> WWW 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2204.00926.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Recency Dropout for Recurrent Recommender Systems</strong> (RNN + DA)</p>
+<p> arXiv 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2201.11016.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Improved Recurrent Neural Networks for Session-based Recommendations</strong> (RNN + DA)</p>
+<p> DLRS 2016, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1606.08117.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Bootstrapping User and Item Representations for One-Class Collaborative Filtering</strong> (CF + Graph + DA)</p>
+<p> SIGIR 2021, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2105.06323.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/donalee/BUIR">[Code]</a></p>
+</li>
+<li><p><strong>MixGCF: An Improved Training Method for Graph Neural Network-based Recommender Systems</strong> (Graph + DA)</p>
+<p> KDD 2021, <a target="_blank" rel="noopener" href="http://keg.cs.tsinghua.edu.cn/jietang/publications/KDD21-Huang-et-al-MixGCF.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/huangtinglin/MixGCF">[Code]</a></p>
+</li>
+<li><p><strong>Improving Recommendation Fairness via Data Augmentation</strong> (Fairness + DA)</p>
+<p> WWW 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2302.06333.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/newlei/FDA">[Code]</a></p>
+</li>
+<li><p><strong>Fairly Adaptive Negative Sampling for Recommendations</strong> (Fairness + DA)</p>
+<p> WWW 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2302.08266.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Creating Synthetic Datasets for Collaborative Filtering Recommender  Systems using Generative Adversarial Networks</strong> (CF + DA)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2303.01297.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Graph Collaborative Signals Denoising and Augmentation for Recommendation</strong> (CF + DA)</p>
+<p> SIGIR 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2304.03344.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/zfan20/GraphDA">[Code]</a></p>
+</li>
+<li><p><strong>Data Augmented Sequential Recommendation based on Counterfactual Thinking</strong> (Sequential + DA)</p>
+<p>TKDE 2022, <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/abstract/document/9950302">[PDF]</a></p>
+</li>
+<li><p><strong>Multi-Epoch Learning for Deep Click-Through Rate Prediction Models</strong> (CRT + DA)</p>
+<p>arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2305.19531.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Improving Conversational Recommendation Systems via Counterfactual Data Simulation</strong> (Conversational Rec + DA)</p>
+<p>KDD 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2306.02842.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/RUCAIBox/CFCRS">[Code]</a></p>
+</li>
+<li><p><strong>Disentangled Variational Auto-encoder Enhanced by Counterfactual Data for Debiasing Recommendation</strong> (Debias Rec + DA)</p>
+<p>arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2306.15961.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Domain Disentanglement with Interpolative Data Augmentation for Dual-Target Cross-Domain Recommendation</strong> (Cross-Domain + DA)</p>
+<p>RecSys 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2307.13910.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Scaling Session-Based Transformer Recommendations using Optimized Negative Sampling and Loss Functions</strong> (Session + DA)</p>
+<p>RecSys 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2307.14906.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Intrinsically Motivated Reinforcement Learning based Recommendation with Counterfactual Data Augmentation</strong> (RL Rec + DA)</p>
+<p> arXiv 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2209.08228.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Augmented Negative Sampling for Collaborative Filtering</strong> (CF + DA)</p>
+<p> RecSys 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2308.05972.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Asa9aoTK/ANS-Recbole">[Code]</a></p>
+</li>
+<li><p><strong>gSASRec: Reducing Overconfidence in Sequential Recommendation Trained with Negative Sampling</strong> (Sequential + DA)</p>
+<p> RecSys 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2308.07192.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Learning from All Sides: Diversified Positive Augmentation via Self-distillation in Recommendation</strong> (DA)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2308.07629.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Counterfactual Graph Augmentation for Consumer Unfairness Mitigation in  Recommender Systems</strong> (Graph + DA)</p>
+<p> CIKM 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.12083">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/jackmedda/RS-BGExplainer/tree/cikm2023">[Code]</a></p>
+</li>
+<li><p><strong>Bayes-enhanced Multi-view Attention Networks for Robust POI Recommendation</strong> (Graph + DA)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2311.00491.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Diffusion Augmentation for Sequential Recommendation</strong> (Sequential + DA)</p>
+<p> CIKM 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2309.12858.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/liuqidong07/DiffuASR">[Code]</a></p>
+</li>
+<li><p><strong>Large Language Models as Data Augmenters for Cold-Start Item Recommendation</strong> (DA)</p>
+<p> WWW 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3589335.3651532">[PDF]</a></p>
+</li>
+<li><p><strong>SSDRec: Self-Augmented Sequence Denoising for Sequential Recommendation</strong> (Sequential + DA)</p>
+<p> ICDE 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.04278.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/zc-97/SSDRec">[Code]</a></p>
+</li>
+<li><p><strong>CoRAL: Collaborative Retrieval-Augmented Large Language Models Improve Long-tail Recommendation</strong> (DA)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.06447.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>ReLLa: Retrieval-enhanced Large Language Models for Lifelong Sequential Behavior Comprehension in Recommendation</strong> (DA)</p>
+<p> WWW 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2308.11131.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/LaVieEnRose365/ReLLa">[Code]</a></p>
+</li>
+<li><p><strong>Repeated Padding for Sequential Recommendation</strong> (Sequential + DA)</p>
+<p> RecSys 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.06372.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/KingGugu/RepPad">[Code]</a></p>
+</li>
+<li><p><strong>Rethinking sequential relationships: Improving sequential recommenders with inter-sequence data augmentation</strong> (Sequential + DA)</p>
+<p> amazon.science 2024, <a target="_blank" rel="noopener" href="https://www.amazon.science/publications/rethinking-sequential-relationships-improving-sequential-recommenders-with-inter-sequence-data-augmentation">[PDF]</a></p>
+</li>
+<li><p><strong>Beyond Relevance: Factor-level Causal Explanation for User Travel Decisions with Counterfactual Data Augmentation</strong> (POI Rec + DA)</p>
+<p> TOIS 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3653673">[PDF]</a></p>
+</li>
+<li><p><strong>TAU: Trajectory Data Augmentation with Uncertainty for Next POI Recommendation</strong> (POI Rec + DA)</p>
+<p> AAAI 2024, <a target="_blank" rel="noopener" href="https://ojs.aaai.org/index.php/AAAI/article/download/30265/32257">[PDF]</a></p>
+</li>
+<li><p><strong>Improving Long-Tail Item Recommendation with Graph Augmentation</strong> (Graph + DA)</p>
+<p> CIKM 2023, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3583780.3614929">[PDF]</a></p>
+</li>
+<li><p><strong>Improving Long-Tail Item Recommendation with Graph Augmentation</strong> (Coupon Rec + DA)</p>
+<p> WWW 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3589335.3648306">[PDF]</a></p>
+</li>
+<li><p><strong>Dataset Regeneration for Sequential Recommendation</strong> (Sequential + DA)</p>
+<p> KDD 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2405.17795">[PDF]</a>, <a target="_blank" rel="noopener" href="https://anonymous.4open.science/r/KDD2024-86EA/">[Code]</a></p>
+</li>
+<li><p><strong>Counterfactual Data Augmentation for Debiased Coupon Recommendations Based on Potential Knowledge</strong> (DA)</p>
+<p> WWW 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3589335.3648306">[PDF]</a></p>
+</li>
+<li><p><strong>A Generic Behavior-Aware Data Augmentation Framework for Sequential Recommendation</strong> (Sequential + DA)</p>
+<p> SIGIR 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3626772.3657682">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/XiaoJing-C/MBASR">[Code]</a></p>
+</li>
+<li><p><strong>Cross-reconstructed Augmentation for Dual-target Cross-domain Recommendation</strong> (Cross-Domain + DA)</p>
+<p> SIGIR 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3626772.3657902">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Double680/CrossAug">[Code]</a></p>
+</li>
+<li><p><strong>SCM4SR: Structural Causal Model-based Data Augmentation for Robust Session-based Recommendation</strong> (Session Rec + DA)</p>
+<p> SIGIR 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3626772.3657940">[PDF]</a></p>
+</li>
+<li><p><strong>GenRec: A Flexible Data Generator for Recommendations</strong> (DA)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2407.16594">[PDF]</a>, <a target="_blank" rel="noopener" href="https://anonymous.4open.science/r/GenRec-DED3">[Code]</a></p>
+</li>
+<li><p><strong>Sample Enrichment via Temporary Operations on Subsequences for Sequential Recommendation</strong> (Sequential + DA)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2407.17802">[PDF]</a>, <a target="_blank" rel="noopener" href="https://anonymous.4open.science/r/SETO-code-A026/">[Code]</a></p>
+</li>
+<li><p><strong>Discovering Collaborative Signals for Next POI Recommendation with Iterative Seq2Graph Augmentation</strong> (POI Rec + DA)</p>
+<p> IJCAI 2021, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2106.15814">[PDF]</a></p>
+</li>
+<li><p><strong>Federated Recommender System Based on Diffusion Augmentation and Guided Denoising</strong> (Fed Rec + DA)</p>
+<p> TOIS 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3688570">[PDF]</a></p>
+</li>
+<li><p><strong>Sliding Window Training - Utilizing Historical Recommender Systems Data for Foundation Models</strong> (Sequential + DA)</p>
+<p> RecSys 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2409.14517">[PDF]</a></p>
+</li>
+<li><p><strong>PACIFIC: Enhancing Sequential Recommendation via Preference-aware Causal Intervention and Counterfactual Data Augmentation</strong> (Sequential + DA)</p>
+<p> CIKM 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3627673.3679803">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/ppppeanut/Pacific">[Code]</a></p>
+</li>
+<li><p><strong>Guided Diffusion-based Counterfactual Augmentation for Robust Session-based Recommendation</strong> (Session + DA)</p>
+<p> RecSys 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2410.21892">[PDF]</a></p>
+</li>
+<li><p><strong>Privacy-Preserving Synthetic Data Generation for Recommendation Systems</strong> (Privacy-Preserving + DA)</p>
+<p> SIGIR 2022, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3477495.3532044">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HuilinChenJN/UPC_SDG">[Code]</a></p>
+</li>
+<li><p><strong>Augmenting Sequential Recommendation with Balanced Relevance and Diversity</strong> (Sequential + DA)</p>
+<p> AAAI 2025, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2412.08300">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/KingGugu/BASRec">[Code]</a></p>
+</li>
+<li><p><strong>Temporal Linear Item-Item Model for Sequential Recommendation</strong> (Sequential + DA)</p>
+<p> WSDM 2025, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2412.07382">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/psm1206/TALE">[Code]</a></p>
+</li>
+<li><p><strong>One for Dozens: Adaptive REcommendation for All Domains with Counterfactual Augmentation</strong> (Cross-Domain + DA)</p>
+<p> AAAI 2025, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2412.11905">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Chrissie-Law/AREAD-Multi-Domain-Recommendation">[Code]</a></p>
+</li>
+<li><p><strong>Generating Diverse Synthetic Datasets for Evaluation of Real-life Recommender Systems</strong> (Evaluation + DA)</p>
+<p> RecSys 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2412.06809">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/outbrain-inc/outrank">[Code]</a></p>
+</li>
+<li><p><strong>CoMix: Collaborative Filtering with Mixup for Implicit Datasets</strong> (CF + DA)</p>
+<p> INS 2023, <a target="_blank" rel="noopener" href="https://www.sciencedirect.com/science/article/pii/S0020025523001275">[PDF]</a></p>
+</li>
+<li><p><strong>Batch-Mix Negative Sampling for Learning Recommendation Retrievers</strong> (CF + DA)</p>
+<p> CIKM 2023, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/3583780.3614789">[PDF]</a></p>
+</li>
+<li><p><strong>Dimension Independent Mixup for Hard Negative Sample in Collaborative Filtering</strong> (CF + DA)</p>
+<p> CIKM 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2306.15905">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Wu-Xi/DINS">[Code]</a></p>
+</li>
+<li><p><strong>LOAM: Improving Long-tail Session-based Recommendation via Niche Walk Augmentation and Tail Session Mixup</strong> (Session Rec + DA)</p>
+<p> SIGIR 2023, <a target="_blank" rel="noopener" href="https://web.archive.org/web/20230720042142id_/https://dl.acm.org/doi/pdf/10.1145/3539618.3591718">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/yoony02/SIGIR-2023-LOAM">[Code]</a></p>
+</li>
+<li><p><strong>MixDec Sampling: A Soft Link-based Sampling Method of Graph Neural Network for Recommendation</strong> (Graph + DA)</p>
+<p> ICMD 2022, <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/abstract/document/10027691">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/a2093930/MixDec-Sampling">[Code]</a></p>
+</li>
+</ol>
+<h2 id="Graph-Models-with-CL"><a href="#Graph-Models-with-CL" class="headerlink" title="Graph Models with CL"></a>Graph Models with CL</h2><ol>
+<li><p><strong>Self-supervised Graph Learning for Recommendation</strong> (Graph + CL + DA)</p>
+<p> SIGIR 2021, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2010.10783.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/wujcan/SGL-Torch">[Code]</a></p>
+</li>
+<li><p><strong>Contrastive Graph Structure Learning via Information Bottleneck for Recommendation</strong> (Graph + CL)</p>
+<p> NeurIPS 2022, <a target="_blank" rel="noopener" href="https://openreview.net/pdf?id=lhl_rYNdiH6">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/weicy15/CGI">[Code]</a></p>
+</li>
+<li><p><strong>Are graph augmentations necessary? simple graph contrastive learning for recommendation</strong> (Graph + CL)</p>
+<p> SIGIR 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2112.08679.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Coder-Yu/SELFRec/blob/main/model/graph/SimGCL.py">[Code]</a></p>
+</li>
+<li><p><strong>XSimGCL: Towards Extremely Simple Graph Contrastive Learning for Recommendation</strong> (Graph + CL)</p>
+<p> TKDE 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2209.02544.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Coder-Yu/SELFRec/blob/main/model/graph/XSimGCL.py">[Code]</a></p>
+</li>
+<li><p><strong>Intent-aware Multi-source Contrastive Alignment for Tag-enhanced Recommendation</strong> (Graph + CL + DA)</p>
+<p> arXiv 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2211.06370.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>DisenPOI: Disentangling Sequential and Geographical Influence for Point-of-Interest Recommendation</strong> (POI Rec, Graph + CL + DA)</p>
+<p> WSDM 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2210.16591.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Fang6ang/DisenPOI">[Code]</a></p>
+</li>
+<li><p><strong>An MLP-based Algorithm for Efficient Contrastive Graph Recommendations</strong> (Graph + CL + DA)</p>
+<p> SIGIR 2022, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3477495.3531874">[PDF]</a></p>
+</li>
+<li><p><strong>A Review-aware Graph Contrastive Learning Framework for Recommendation</strong> (Graph + CL + DA)</p>
+<p> SIGIR 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2204.12063.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/JarenceSJ/ReviewGraph">[Code]</a></p>
+</li>
+<li><p><strong>Simple Yet Effective Graph Contrastive Learning for Recommendation</strong> (Graph + CL + DA)</p>
+<p> ICLR 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2302.08191.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HKUDS/LightGCL">[Code]</a></p>
+</li>
+<li><p><strong>Contrastive Meta Learning with Behavior Multiplicity for Recommendation</strong> (Graph + CL + DA)</p>
+<p>WSDM 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2202.08523.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/weiwei1206/CML">[Code]</a></p>
+</li>
+<li><p><strong>Disentangled Contrastive Learning for Social Recommendation</strong> (Graph + CL + DA)</p>
+<p>CIKM 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2208.08723.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Improving Knowledge-aware Recommendation with Multi-level Interactive Contrastive Learning</strong> (Graph + CL)</p>
+<p>CIKM 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2208.10061.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/CCIIPLab/KGIC">[Code]</a></p>
+</li>
+<li><p><strong>Multi-level Cross-view Contrastive Learning for Knowledge-aware Recommender System</strong> (Graph + CL)</p>
+<p>SIGIR 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2204.08807.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/CCIIPLab/MCCLK">[Code]</a></p>
+</li>
+<li><p><strong>Knowledge Graph Contrastive Learning for Recommendation</strong> (Graph + DA + CL)</p>
+<p>SIGIR 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2205.00976.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/yuh-yang/KGCL-SIGIR22">[Code]</a></p>
+</li>
+<li><p><strong>Self-Supervised Multi-Channel Hypergraph Convolutional Network for Social Recommendation</strong> (Graph + SSL)</p>
+<p>WWW 2021, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2101.06448.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Coder-Yu/QRec">[Code]</a></p>
+</li>
+<li><p><strong>SAIL: Self-Augmented Graph Contrastive Learning</strong> (Graph + CL)</p>
+<p>AAAI 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2009.00934.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Predictive and Contrastive: Dual-Auxiliary Learning for Recommendation</strong> (Graph + CL)</p>
+<p>arXiv 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2203.03982.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Socially-Aware Self-Supervised Tri-Training for Recommendation</strong> (Graph + CL)</p>
+<p>KDD 2021, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2106.03569.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Coder-Yu/QRec">[Code]</a></p>
+</li>
+<li><p><strong>Predictive and Contrastive: Dual-Auxiliary Learning for Recommendation</strong> (Graph + CL)</p>
+<p>arXiv 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2203.03982.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Multi-Behavior Dynamic Contrastive Learning for Recommendation</strong> (Graph + CL)</p>
+<p>arXiv 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2203.03982.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Self-Augmented Recommendation with Hypergraph Contrastive Collaborative Filtering</strong> (Graph + CL)</p>
+<p>SIGIR 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2204.12200">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/akaxlh/HCCF">[Code]</a></p>
+</li>
+<li><p><strong>Improving Graph Collaborative Filtering with Neighborhood-enriched Contrastive Learning</strong> (Graph + CF + CL)</p>
+<p>WWW 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2202.06200.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/RUCAIBox/NCL">[Code]</a></p>
+</li>
+<li><p><strong>Semi-deterministic and Contrastive Variational Graph Autoencoder for Recommendation</strong> (Graph + CL)</p>
+<p>CIKM 2021, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3459637.3482390">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/syxkason/SCVG">[Code]</a></p>
+</li>
+<li><p><strong>Hypergraph Contrastive Collaborative Filtering</strong> (Graph + CF + CL + DA)</p>
+<p>SIGIR 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2204.12200.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/akaxlh/HCCF">[Code]</a></p>
+</li>
+<li><p><strong>Graph Structure Aware Contrastive Knowledge Distillation for Incremental Learning in Recommender Systems</strong> (Graph + CL)</p>
+<p>CIKM 2021, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3459637.3482117">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/syxkason/SCVG">[Code]</a></p>
+</li>
+<li><p><strong>Double-Scale Self-Supervised Hypergraph Learning for Group Recommendation</strong> (Group Rec, Graph + CL + DA)</p>
+<p>CIKM 2021, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2109.04200">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/0411tony/HHGR">[Code]</a></p>
+</li>
+<li><p><strong>Self-Supervised Hypergraph Transformer for Recommender Systems</strong> (Graph + SSL)</p>
+<p>KDD 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2207.14338.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/akaxlh/SHT">[Code]</a></p>
+</li>
+<li><p><strong>Episodes Discovery Recommendation with Multi-Source Augmentations</strong> (Graph + DA + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2301.01737.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Poincaré Heterogeneous Graph Neural Networks for Sequential Recommendation</strong> (Graph + Sequential + CL)</p>
+<p> TOIS 2023, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3568395">[PDF]</a></p>
+</li>
+<li><p><strong>Adversarial Learning Data Augmentation for Graph Contrastive Learning in Recommendation</strong> (Graph + DA + CL)</p>
+<p> DASFAA 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2302.02317.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>SimCGNN: Simple Contrastive Graph Neural Network for Session-based Recommendation</strong> (Graph + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2302.03997.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>MA-GCL: Model Augmentation Tricks for Graph Contrastive Learning</strong> (Graph + DA + CL)</p>
+<p> AAAI 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2212.07035.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/GXM1141/MA-GCL">[Code]</a></p>
+</li>
+<li><p><strong>Self-Supervised Hypergraph Convolutional Networks for Session-based Recommendation</strong> (Graph + Session + CL)</p>
+<p> AAAI 2021, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2012.06852.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/xiaxin1998/DHCN">[Code]</a></p>
+</li>
+<li><p><strong>Self-Supervised Graph Co-Training for Session-based Recommendation</strong> (Graph + Session + CL)</p>
+<p> CIMK 2021, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2108.10560.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/xiaxin1998/COTREC">[Code]</a></p>
+</li>
+<li><p><strong>Heterogeneous Graph Contrastive Learning for Recommendation</strong> (Graph + CL)</p>
+<p> WSDM 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2303.00995.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HKUDS/HGCL">[Code]</a></p>
+</li>
+<li><p><strong>Automated Self-Supervised Learning for Recommendation</strong> (Graph + DA + CL)</p>
+<p> WWW 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2303.07797.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HKUDS/AutoCF">[Code]</a></p>
+</li>
+<li><p><strong>Graph-less Collaborative Filtering</strong> (Graph + CL)</p>
+<p> WWW 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2303.08537.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HKUDS/SimRec">[Code]</a></p>
+</li>
+<li><p><strong>Disentangled Contrastive Collaborative Filtering</strong> (Graph + CL)</p>
+<p> SIGIR 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2305.02759.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HKUDS/DCCF">[Code]</a></p>
+</li>
+<li><p><strong>Knowledge-refined Denoising Network for Robust Recommendation</strong> (Graph + CL)</p>
+<p> SIGIR 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2304.14987.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/xj-zhu98/KRDN">[Code]</a></p>
+</li>
+<li><p><strong>Disentangled Graph Contrastive Learning for Review-based Recommendation</strong> (Graph + CL)</p>
+<p> arxiv 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2209.01524.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Adaptive Graph Contrastive Learning for Recommendation</strong> (Graph + CL)</p>
+<p> SIGIR 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.10837">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/ZzMeei/AdaptiveGCL">[Code]</a></p>
+</li>
+<li><p><strong>Knowledge Enhancement for Contrastive Multi-Behavior Recommendation</strong> (Graph + CL)</p>
+<p> WSDM 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2301.05403.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HKUDS/SSLRec">[Code]</a></p>
+</li>
+<li><p><strong>Contrastive Meta Learning with Behavior Multiplicity for Recommendation</strong> (Graph + CL)</p>
+<p> WSDM 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2202.08523.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/weiwei1206/CML">[Code]</a></p>
+</li>
+<li><p><strong>Graph Transformer for Recommendation</strong> (Graph + CL)</p>
+<p> SIGIR 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2306.02330.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HKUDS/GFormer">[Code]</a></p>
+</li>
+<li><p><strong>PANE-GNN: Unifying Positive and Negative Edges in Graph Neural Networks for Recommendation</strong> (Graph + CL)</p>
+<p> arxiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2306.04095.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Knowledge Graph Self-Supervised Rationalization for Recommendation</strong> (Graph + CL)</p>
+<p> KDD 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2307.02759.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HKUDS/KGRec">[Code]</a></p>
+</li>
+<li><p><strong>Enhanced Graph Learning for Collaborative Filtering via Mutual Information Maximization</strong> (Graph + CL)</p>
+<p> SIGIR 2021, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/3404835.3462928">[PDF]</a></p>
+</li>
+<li><p><strong>Generative-Contrastive Graph Learning for Recommendation</strong> (Graph + CL)</p>
+<p> SIGIR 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2307.05100.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>AdaMCL: Adaptive Fusion Multi-View Contrastive Learning for Collaborative Filtering</strong> (Graph + CL)</p>
+<p> SIGIR 2023, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3539618.3591632">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/PasaLab/AdaMCL">[Code]</a></p>
+</li>
+<li><p><strong>Candidate–aware Graph Contrastive Learning for Recommendation</strong> (Graph + CL)</p>
+<p> SIGIR 2023, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3539618.3591647">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/WeiHeCnSH/CGCL-Pytorch-master">[Code]</a></p>
+</li>
+<li><p><strong>Multi-View Graph Convolutional Network for Multimedia Recommendation</strong> (Graph + CL)</p>
+<p> MM 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/ftp/arxiv/papers/2308/2308.03588.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/demonph10/MGCN">[Code]</a></p>
+</li>
+<li><p><strong>Uncertainty-aware Consistency Learning for Cold-Start Item Recommendation</strong> (Graph + CL)</p>
+<p> SIGIR 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2308.03470.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>uCTRL: Unbiased Contrastive Representation Learning via Alignment and Uniformity for Collaborative Filtering</strong> (Graph + CL)</p>
+<p> SIGIR 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2305.12768.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Jaewoong-Lee/sigir_2023_uCTRL">[Code]</a></p>
+</li>
+<li><p><strong>Contrastive Box Embedding for Collaborative Reasoning</strong> (Graph + CL)</p>
+<p> SIGIR 2023, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3539618.3591654">[PDF]</a></p>
+</li>
+<li><p><strong>Self-Supervised Dynamic Hypergraph Recommendation based on Hyper-Relational Knowledge Graph</strong> (Graph + CL)</p>
+<p> CIKM 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2308.07752.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Contrastive Graph Prompt-tuning for Cross-domain Recommendation</strong> (Graph + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2308.10685.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Dual Intents Graph Modeling for User-centric Group Discovery</strong> (Graph + CL)</p>
+<p> CIKM 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2308.05013.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/WxxShirley/CIKM2023DiRec">[Code]</a></p>
+</li>
+<li><p><strong>Group Identification via Transitional Hypergraph Convolution with Cross-view Self-supervised Learning</strong> (Graph + CL)</p>
+<p> CIKM 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2308.08620.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/mdyfrank/GTGS">[Code]</a></p>
+</li>
+<li><p><strong>Multi-Relational Contrastive Learning for Recommendation</strong> (Graph + CL)</p>
+<p> RecSys 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2309.01103.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HKUDS/RCL">[Code]</a></p>
+</li>
+<li><p><strong>Multi-behavior Recommendation with SVD Graph Neural Networks</strong> (Graph + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2309.06912.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>E-commerce Search via Content Collaborative Graph Neural Network</strong> (Graph + DA + CL)</p>
+<p> KDD 2023, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3580305.3599320">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/XMUDM/CC-GNN">[Code]</a></p>
+</li>
+<li><p><strong>Long-tail Augmented Graph Contrastive Learning for Recommendation</strong> (Graph + DA + CL)</p>
+<p> PKDD 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2309.11177.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/im0qianqian/LAGCL">[Code]</a></p>
+</li>
+<li><p><strong>LMACL: Improving Graph Collaborative Filtering with Learnable Model Augmentation Contrastive Learning</strong> (Graph + CL)</p>
+<p>TKDD 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3657302">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/LiuHsinx/LMACL">[Code]</a></p>
+</li>
+<li><p><strong>On the Sweet Spot of Contrastive Views for Knowledge-enhanced Recommendation</strong> (Graph + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2309.13384.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://figshare.com/articles/conference_contribution/SimKGCL/22783382">[Code]</a></p>
+</li>
+<li><p><strong>Neighborhood-Enhanced Supervised Contrastive Learning for Collaborative Filtering</strong> (Graph + CL)</p>
+<p> TKDE 2023, <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/10255367">[PDF]</a>, <a target="_blank" rel="noopener" href="https://gitee.com/peijie_hfut/nescl">[Code]</a></p>
+</li>
+<li><p><strong>Towards Robust Neural Graph Collaborative Filtering via Structure Denoising and Embedding Perturbation</strong> (Graph + CL)</p>
+<p> TOIS 2023, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/full/10.1145/3568396">[PDF]</a></p>
+</li>
+<li><p><strong>TDCGL: Two-Level Debiased Contrastive Graph Learning for Recommendation</strong> (Graph + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://browse.arxiv.org/pdf/2310.00569.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Topology-aware Debiased Self-supervised Graph Learning for Recommendation</strong> (Graph + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2310.15858.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/malajikuai/TDSGL">[Code]</a></p>
+</li>
+<li><p><strong>Learning to Denoise Unreliable Interactions for Graph Collaborative Filtering</strong> (Graph + DA + CL)</p>
+<p> SIGIR 2022, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/3477495.3531889">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/ChangxinTian/RGCF">[Code]</a></p>
+</li>
+<li><p><strong>Contrastive Multi-Level Graph Neural Networks for Session-based Recommendation</strong> (Graph + CL)</p>
+<p> TMM 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2311.02938.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>An Empirical Study Towards Prompt-Tuning for Graph Contrastive Pre-Training in Recommendations</strong> (Graph + CL)</p>
+<p> NeurIPS 2023, <a target="_blank" rel="noopener" href="https://openreview.net/pdf?id=XyAP8ScqLV">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Haoran-Young/CPTPP">[Code]</a></p>
+</li>
+<li><p><strong>An Empirical Study Towards Prompt-Tuning for Graph Contrastive Pre-Training in Recommendations</strong> (Graph + CL)</p>
+<p> ICDM 2021, <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/9678992">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Haoran-Young/HMG-CR">[Code]</a></p>
+</li>
+<li><p><strong>Denoised Self-Augmented Learning for Social Recommendation</strong> (Graph + CL)</p>
+<p> IJCAI 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2305.12685.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HKUDS/DSL">[Code]</a></p>
+</li>
+<li><p><strong>Intent-aware Recommendation via Disentangled Graph Contrastive Learning</strong> (Graph + CL)</p>
+<p> IJCAI 2023, <a target="_blank" rel="noopener" href="https://www.ijcai.org/proceedings/2023/0260.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>GENET: Unleashing the Power of Side Information for Recommendation via Hypergraph Pre-training</strong> (Graph + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2311.13121.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Graph Pre-training and Prompt Learning for Recommendation</strong> (Graph + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2311.16716.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Robust Basket Recommendation via Noise-tolerated Graph Contrastive Learning</strong> (Graph + CL)</p>
+<p> CIKM 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2311.16334.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Xinrui17/BNCL">[Code]</a></p>
+</li>
+<li><p><strong>ID Embedding as Subtle Features of Content and Structure for Multimodal Recommendation</strong> (Graph + Multi-Modal + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2311.05956.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Knowledge Graphs and Pre-trained Language Models enhanced Representation Learning for Conversational Recommender Systems</strong> (Graph + LLM + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2312.10967.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>LGMRec: Local and Global Graph Learning for Multimodal Recommendation</strong> (Graph + Multi-Modal + CL)</p>
+<p> AAAI 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2312.16400.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/georgeguo-cn/LGMRec">[Code]</a></p>
+</li>
+<li><p><strong>RDGCL: Reaction-Diffusion Graph Contrastive Learning for Recommendation</strong> (Graph + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2312.16563.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>DiffKG: Knowledge Graph Diffusion Model for Recommendation</strong> (Graph + CL)</p>
+<p> WSDM 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2312.16890.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HKUDS/DiffKG">[Code]</a></p>
+</li>
+<li><p><strong>QoS-Aware Graph Contrastive Learning for Web Service Recommendation</strong> (Graph + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2401.03162.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Challenging Low Homophily in Social Recommendation</strong> (Graph + CL)</p>
+<p> WWW 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2401.14606.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>RecDCL: Dual Contrastive Learning for Recommendation</strong> (Graph + CL)</p>
+<p> WWW 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2401.15635.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/THUDM/RecDCL">[Code]</a></p>
+</li>
+<li><p><strong>Prerequisite-Enhanced Category-Aware Graph Neural Networks for Course Recommendation</strong> (Graph + CL)</p>
+<p> TKDD 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3643644">[PDF]</a></p>
+</li>
+<li><p><strong>Graph Contrastive Learning With Negative Propagation for Recommendation</strong> (Graph + CL)</p>
+<p> TCSS 2024, <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/abstract/document/10419035">[PDF]</a></p>
+</li>
+<li><p><strong>General Debiasing for Graph-based Collaborative Filtering via Adversarial Graph Dropout</strong> (Graph + CL)</p>
+<p> WWW 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2402.13769.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Arthurma71/AdvDrop">[Code]</a></p>
+</li>
+<li><p><strong>Breaking the Barrier: Utilizing Large Language Models for Industrial Recommendation Systems through an Inferential Knowledge Graph</strong> (Graph + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2402.13750.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>FedHCDR: Federated Cross-Domain Recommendation with Hypergraph Signal Decoupling</strong> (Graph + CL)</p>
+<p> SIAM 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.02630.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/orion-orion/FedHCDR">[Code]</a></p>
+</li>
+<li><p><strong>Self-supervised Contrastive Learning for Implicit Collaborative Filtering</strong> (Graph + DA + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.07265.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Dual-Channel Multiplex Graph Neural Networks for Recommendation</strong> (Graph + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.11624.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Bilateral Unsymmetrical Graph Contrastive Learning for Recommendation</strong> (Graph + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.15075.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Knowledge-aware Dual-side Attribute-enhanced Recommendation</strong> (Graph + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.16037.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/TJTP/KDAR">[Code]</a></p>
+</li>
+<li><p><strong>A Progressively-Passing-then-Disentangling Approach to Recipe Recommendation</strong> (Graph + CL)</p>
+<p> TMM 2024, <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/abstract/document/10460165/">[PDF]</a></p>
+</li>
+<li><p><strong>Graph Augmentation for Recommendation</strong> (Graph + DA + CL)</p>
+<p> ICDE 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.16656.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HKUDS/GraphAug">[Code]</a></p>
+</li>
+<li><p><strong>One Backpropagation in Two Tower Recommendation Models</strong> (Graph + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.18227.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Improving Content Recommendation: Knowledge Graph-Based Semantic Contrastive Learning for Diversity and Cold-Start Users</strong> (Graph + CL)</p>
+<p> COLING 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.18667.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Dual Homogeneity Hypergraph Motifs with Cross-view Contrastive Learning for Multiple Social Recommendations</strong> (Graph + Social Rec + CL)</p>
+<p>TKDD 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3653976">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/chenai2024/DH-HGCNplusplus">[Code]</a></p>
+</li>
+<li><p><strong>Graph Disentangled Contrastive Learning with Personalized Transfer for Cross-Domain Recommendation</strong> (Graph + CL)</p>
+<p>AAAI 2024, <a target="_blank" rel="noopener" href="https://ojs.aaai.org/index.php/AAAI/article/download/28723/29398">[PDF]</a></p>
+</li>
+<li><p><strong>A Directional Diffusion Graph Transformer for Recommendation</strong> (Graph + CL)</p>
+<p>SIGIR 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2404.03326.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Heterogeneous Adaptive Preference Learning for Recommendation</strong> (Graph + CL)</p>
+<p>TORS 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3656480">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Feifei84/HAPLRec/tree/main/">[Code]</a></p>
+</li>
+<li><p><strong>Stock Recommendations for Individual Investors: A Temporal Graph Network Approach with Diversification-Enhancing Contrastive Learning</strong> (Graph + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2404.07223.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://anonymous.4open.science/r/IJCAI2024-12F4">[Code]</a></p>
+</li>
+<li><p><strong>Disentangled Cascaded Graph Convolution Networks for Multi-Behavior Recommendation</strong> (Graph + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2404.11519.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/JianhuaDongCS/Disen-CGCN">[Code]</a></p>
+</li>
+<li><p><strong>Enhanced Hierarchical Contrastive Learning for Recommendation</strong> (Graph + CL)</p>
+<p>AAAI 2024, <a target="_blank" rel="noopener" href="https://ojs.aaai.org/index.php/AAAI/article/download/28761/29461">[PDF]</a></p>
+</li>
+<li><p><strong>How to Improve Representation Alignment and Uniformity in Graph-based Collaborative Filtering?</strong> (Graph + CL)</p>
+<p>AAAI 2024, <a target="_blank" rel="noopener" href="https://zyouyang.github.io/assets/publications/AUPlus.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/zyouyang/AUPlus">[Code]</a></p>
+</li>
+<li><p><strong>PopDCL: Popularity-aware Debiased Contrastive Loss for Collaborative Filtering</strong> (Graph + CL)</p>
+<p>CIKM 2023, <a target="_blank" rel="noopener" href="https://www.researchgate.net/profile/Liu-Zhuang/publication/374907265_PopDCL_Popularity-aware_Debiased_Contrastive_Loss_for_Collaborative_Filtering/links/65dda61ce7670d36abe2b0eb/PopDCL-Popularity-aware-Debiased-Contrastive-Loss-for-Collaborative-Filtering.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Improving Graph Collaborative Filtering with Directional Behavior Enhanced Contrastive Learning</strong> (Graph + CL)</p>
+<p>TKDD 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3663574">[PDF]</a></p>
+</li>
+<li><p><strong>SCONE: A Novel Stochastic Sampling to Generate Contrastive Views and Hard Negative Samples for Recommendation</strong> (Graph + CL)</p>
+<p>WSDM 2025, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2405.00287">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/jeongwhanchoi/SCONE">[Code]</a></p>
+</li>
+<li><p><strong>Learning Social Graph for Inactive User Recommendation</strong> (Graph + CL)</p>
+<p>DASFAA 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2405.05288">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/liun-online/LSIR">[Code]</a></p>
+</li>
+<li><p><strong>Exploring the Individuality and Collectivity of Intents behind Interactions for Graph Collaborative Filtering</strong> (Graph + CL)</p>
+<p>SIGIR 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2405.09042">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/BlueGhostYi/BIGCF">[Code]</a></p>
+</li>
+<li><p><strong>Graph Contrastive Learning with Kernel Dependence Maximization for Social Recommendation</strong> (Graph + CL)</p>
+<p>WWW 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3589334.3645412">[PDF]</a></p>
+</li>
+<li><p><strong>MvStHgL: Multi-view Hypergraph Learning with Spatial-temporal Periodic Interests for Next POI Recommendation</strong> (Graph + POI Rec + CL)</p>
+<p>TOIS 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3664651">[PDF]</a></p>
+</li>
+<li><p><strong>A Vlogger-augmented Graph Neural Network Model for Micro-video Recommendation</strong> (Graph + CL)</p>
+<p>ECML-PKDD 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2405.18260">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/laiweijiang/VAGNN">[Code]</a></p>
+</li>
+<li><p><strong>Knowledge Enhanced Multi-intent Transformer Network for Recommendation</strong> (Graph + CL)</p>
+<p>WWW 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2405.20565">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/CCIIPLab/KGTN">[Code]</a></p>
+</li>
+<li><p><strong>QAGCF: Graph Collaborative Filtering for Q&amp;A Recommendation</strong> (Graph + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2406.04828">[PDF]</a></p>
+</li>
+<li><p><strong>Balancing Embedding Spectrum for Recommendation</strong> (Graph + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2406.12032">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/tanatosuu/directspec">[Code]</a></p>
+</li>
+<li><p><strong>Meta Graph Learning for Long-tail Recommendation</strong> (Graph + CL)</p>
+<p>KDD 2023, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3580305.3599428">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/weicy15/MGL">[Code]</a></p>
+</li>
+<li><p><strong>Heterogeneous Hypergraph Embedding for Recommendation Systems</strong> (Graph + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2407.03665">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/viethungvu1998/KHGRec">[Code]</a></p>
+</li>
+<li><p><strong>Consistency and Discrepancy-Based Contrastive Tripartite Graph Learning for Recommendations</strong> (Graph + CL)</p>
+<p>KDD 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2407.05126">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/foodfaust/CDR">[Code]</a></p>
+</li>
+<li><p><strong>Towards Robust Recommendation via Decision Boundary-aware Graph Contrastive Learning</strong> (Graph + CL)</p>
+<p>KDD 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2407.10184">[PDF]</a>, <a target="_blank" rel="noopener" href="https://cl4rec.github.io/RGCL">[Code]</a></p>
+</li>
+<li><p><strong>Graph Augmentation Empowered Contrastive Learning for Recommendation</strong> (Graph + DA + CL)</p>
+<p>TOIS 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3677377">[PDF]</a></p>
+</li>
+<li><p><strong>L2CL: Embarrassingly Simple Layer-to-Layer Contrastive Learning for Graph Collaborative Filtering</strong> (Graph + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2407.14266">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/downeykking/L2CL">[Code]</a></p>
+</li>
+<li><p><strong>RevGNN: Negative Sampling Enhanced Contrastive Graph Learning for Academic Reviewer Recommendation</strong> (Graph + CL)</p>
+<p>TOIS 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3679200">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/THUDM/Reviewer-Rec">[Code]</a></p>
+</li>
+<li><p><strong>Intent-Guided Heterogeneous Graph Contrastive Learning for Recommendation</strong> (Graph + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2407.17234">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/wangyu0627/IHGCL">[Code]</a></p>
+</li>
+<li><p><strong>Your Graph Recommender is Provably a Single-view Graph Contrastive Learning</strong> (Graph + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2407.17723">[PDF]</a></p>
+</li>
+<li><p><strong>High-Order Fusion Graph Contrastive Learning for Recommendation</strong> (Graph + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2407.19692">[PDF]</a></p>
+</li>
+<li><p><strong>Feedback Reciprocal Graph Collaborative Filtering</strong> (Graph + CL)</p>
+<p>CIKM 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2408.02404">[PDF]</a></p>
+</li>
+<li><p><strong>Symmetric Graph Contrastive Learning against Noisy Views for Recommendation</strong> (Graph + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2408.02691">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/user683/SGCL">[Code]</a></p>
+</li>
+<li><p><strong>Dual-Channel Latent Factor Analysis Enhanced Graph Contrastive Learning for Recommendation</strong> (Graph + DA + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2408.04838">[PDF]</a></p>
+</li>
+<li><p><strong>Meta-optimized Structural and Semantic Contrastive Learning for Graph Collaborative Filtering</strong> (Graph + DA + CL)</p>
+<p>ICDE 2024, <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/abstract/document/10597955">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/YongjingHao/Meta-SSCL">[Code]</a></p>
+</li>
+<li><p><strong>Unveiling Vulnerabilities of Contrastive Recommender Systems to Poisoning Attacks</strong> (Graph + Attack + CL)</p>
+<p>KDD 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3637528.3671795">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/CoderWZW/ARLib">[Code]</a></p>
+</li>
+<li><p><strong>Enhancing Graph Contrastive Learning with Reliable and Informative Augmentation for Recommendation</strong> (Graph + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2409.05633">[PDF]</a></p>
+</li>
+<li><p><strong>Multi-view Hypergraph-based Contrastive Learning Model for Cold-Start Micro-video Recommendation</strong> (Graph + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2409.09638">[PDF]</a></p>
+</li>
+<li><p><strong>TwinCL: A Twin Graph Contrastive Learning Model for Collaborative Filtering</strong> (Graph + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2409.19169">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/chengkai-liu/TwinCL">[Code]</a></p>
+</li>
+<li><p><strong>Firzen: Firing Strict Cold-Start Items with Frozen Heterogeneous and Homogeneous Graphs for Recommendation</strong> (Graph + CL)</p>
+<p>ICDE 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2410.07654">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/PKU-ICST-MIPL/Firzen_ICDE2024">[Code]</a></p>
+</li>
+<li><p><strong>Firzen: Firing Strict Cold-Start Items with Frozen Heterogeneous and Homogeneous Graphs for Recommendation</strong> (Graph + CL)</p>
+<p>ICWS 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2410.10296">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/ItsukiFujii/AttrGAU">[Code]</a></p>
+</li>
+<li><p><strong>Adaptive Fusion of Multi-View for Graph Contrastive Recommendation</strong> (Graph + DA + CL)</p>
+<p>RecSys 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3640457.3688153">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Du-danger/AMGCR">[Code]</a></p>
+</li>
+<li><p><strong>Simplify to the Limit! Embedding-less Graph Collaborative Filtering for Recommender Systems</strong> (Graph + CL)</p>
+<p>TOIS 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3701230">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/BlueGhostYi/ID-GRec">[Code]</a></p>
+</li>
+<li><p><strong>FairDgcl: Fairness-aware Recommendation with Dynamic Graph Contrastive Learning</strong> (Graph + DA + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2410.17555">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/cwei01/FairDgcl">[Code]</a></p>
+</li>
+<li><p><strong>Decoupled Behavior-based Contrastive Recommendation</strong> (Graph + CL)</p>
+<p>CIKM 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3627673.3679636">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Du-danger/DBCR">[Code]</a></p>
+</li>
+<li><p><strong>Mixed Supervised Graph Contrastive Learning for Recommendation</strong> (Graph + DA + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2404.15954">[PDF]</a></p>
+</li>
+<li><p><strong>Bi-Level Graph Structure Learning for Next POI Recommendation</strong> (Graph + POI Rec + CL)</p>
+<p>TKDE 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2411.01169">[PDF]</a></p>
+</li>
+<li><p><strong>Bi-Level Graph Structure Learning for Next POI Recommendation</strong> (Graph + Multi-Modal + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2411.01169">[PDF]</a></p>
+</li>
+<li><p><strong>Mitigating Matthew Effect: Multi-Hypergraph Boosted Multi-Interest Self-Supervised Learning for Conversational Recommendation</strong> (Graph + CL)</p>
+<p>EMNLP 2024, <a target="_blank" rel="noopener" href="https://aclanthology.org/2024.emnlp-main.86.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/zysensmile/HiCore">[Code]</a></p>
+</li>
+<li><p><strong>Unifying Graph Convolution and Contrastive Learning in Collaborative Filtering</strong> (Graph + CL)</p>
+<p>KDD 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2406.13996">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/wu1hong/SCCF">[Code]</a></p>
+</li>
+<li><p><strong>DeBaTeR: Denoising Bipartite Temporal Graph for Recommendation</strong> (Graph + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2411.09181">[PDF]</a></p>
+</li>
+<li><p><strong>Next Point-of-Interest Recommendation with Adaptive Graph Contrastive Learning</strong> (Graph + CL)</p>
+<p>TKDE 2024, <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/10772008">[PDF]</a></p>
+</li>
+<li><p><strong>Graph-Sequential Alignment and Uniformity: Toward Enhanced Recommendation Systems</strong> (Graph + Sequential + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2412.04276">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/YuweiCao-UIC/GSAU">[Code]</a></p>
+</li>
+<li><p><strong>Graph-Sequential Alignment and Uniformity: Toward Enhanced Recommendation Systems</strong> (Graph + DA + CL)</p>
+<p>COLING 2025, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2412.11105">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/liang-tian-tian/MGCOT">[Code]</a></p>
+</li>
+<li><p><strong>SPGL: Enhancing Session-based Recommendation with Single Positive Graph Learning</strong> (Graph + CL)</p>
+<p>ICONIP 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2412.11846">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/liang-tian-tian/SPGL">[Code]</a></p>
+</li>
+<li><p><strong>Heterogeneous Graph Collaborative Filtering</strong> (Graph + DA + CL)</p>
+<p>WSDM 2025, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2412.13825">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HKUDS/MixRec">[Code]</a></p>
+</li>
+<li><p><strong>DisCo: Graph-Based Disentangled Contrastive Learning for Cold-Start Cross-Domain Recommendation</strong> (Graph + CL)</p>
+<p>AAAI 2025, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2412.15005">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HourunLi/2025-AAAI-DisCo">[Code]</a></p>
+</li>
+<li><p><strong>Spectrum-based Modality Representation Fusion Graph Convolutional Network for Multimodal Recommendation</strong> (Graph + Multi-Modal + CL)</p>
+<p>WSDM 2025, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2412.14978">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/kennethorq/SMORE">[Code]</a></p>
+</li>
+<li><p><strong>HEC-GCN: Hypergraph Enhanced Cascading Graph Convolution Network for Multi-Behavior Recommendation</strong> (Graph + CL)</p>
+<p>arXiv 2025, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2412.14476">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/marqu22/HEC-GCN">[Code]</a></p>
+</li>
+<li><p><strong>Heterogeneous Hyperbolic Hypergraph Neural Network for Friend Recommendation in Location-based Social Networks</strong> (Graph + CL)</p>
+<p>TKDD 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2412.14476">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/liyongkang123/H3GNN">[Code]</a></p>
+</li>
+<li><p><strong>Score-based Generative Diffusion Models for Social Recommendations</strong> (Graph + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2412.15579">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Anonymous-CodeRepository/Score-based-Generative-Diffusion-Models-for-Social-Recommendations-SGSR">[Code]</a></p>
+</li>
+<li><p><strong>Hyperbolic Graph Contrastive Learning for Collaborative Filtering</strong> (Graph + DA + CL)</p>
+<p>TKDE 2024, <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/10816511">[PDF]</a></p>
+</li>
+<li><p><strong>Efficient Session-based Recommendation with Contrastive Graph-based Shortest Path Search</strong> (Graph + CL)</p>
+<p>TORS 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3701764">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/dbis-uibk/SPARE">[Code]</a></p>
+</li>
+<li><p><strong>Don’t Lose Yourself: Boosting Multimodal Recommendation via Reducing Node-neighbor Discrepancy in Graph Convolutional Network</strong> (Graph + CL)</p>
+<p>ICASSP 2025, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2412.18962">[PDF]</a></p>
+</li>
+<li><p><strong>Multi-behavior Hypergraph Contrastive Learning for Session-based Recommendation</strong> (Graph + CL)</p>
+<p>TKDE 2024, <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/abstract/document/10816604">[PDF]</a></p>
+</li>
+<li><p><strong>DiffCL: A Diffusion-Based Contrastive Learning Framework with Semantic Alignment for Multimodal Recommendations</strong> (Graph + Multi-Modal + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2501.01066">[PDF]</a></p>
+</li>
+<li><p><strong>Pone-GNN: Integrating Positive and Negative Feedback in Graph Neural Networks for Recommender Systems</strong> (Graph + CL)</p>
+<p>TORS 2025, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3711666">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Young0222/Pone-GNN">[Code]</a></p>
+</li>
+<li><p><strong>LightGNN: Simple Graph Neural Network for Recommendation</strong> (Graph + DA + CL)</p>
+<p>WSDM 2025, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2501.03228">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HKUDS/LightGNN">[Code]</a></p>
+</li>
+</ol>
+<h2 id="Sequential-Models-with-CL"><a href="#Sequential-Models-with-CL" class="headerlink" title="Sequential Models with CL"></a>Sequential Models with CL</h2><ol>
+<li><p><strong>Uniform Sequence Better: Time Interval Aware Data Augmentation for Sequential Recommendation</strong> (Sequential + CL + DA)</p>
+<p> AAAI 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2212.08262.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/KingGugu/TiCoSeRec">[Code]</a></p>
+</li>
+<li><p><strong>Contrastive Learning for Sequential Recommendation</strong> (Sequential + CL + DA)</p>
+<p> ICDE 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2010.14395.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/RUCAIBox/RecBole-DA/blob/master/recbole/model/sequential_recommender/cl4srec.py">[Code]</a></p>
+</li>
+<li><p><strong>Contrastive Self-supervised Sequential Recommendation with Robust Augmentation</strong> (Sequential + CL + DA)</p>
+<p> arXiv 2021, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2108.06479.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/YChen1993/CoSeRec">[Code]</a></p>
+</li>
+<li><p><strong>Learnable Model Augmentation Self-Supervised Learning for Sequential Recommendation</strong> (Sequential + CL + DA)</p>
+<p> arXiv 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2204.10128.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>S3-Rec: Self-Supervised Learning for Sequential Recommendation with Mutual Information Maximization</strong> (Sequential + CL + DA)</p>
+<p> CIKM 2020, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2008.07873.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/RUCAIBox/CIKM2020-S3Rec">[Code]</a></p>
+</li>
+<li><p><strong>Contrastive Curriculum Learning for Sequential User Behavior Modeling via Data Augmentation</strong> (Sequential + CL + DA)</p>
+<p> CIKM 2021, <a target="_blank" rel="noopener" href="https://www.atailab.cn/seminar2022Spring/pdf/2021_CIKM_Contrastive%20Curriculum%20Learning%20for%20Sequential%20User%20Behavior%20Modeling%20via%20Data%20Augmentation.pdf">[PDF]</a> , <a target="_blank" rel="noopener" href="https://github.com/RUCAIBox/Contrastive-Curriculum-Learning">[Code]</a></p>
+</li>
+<li><p><strong>Contrastive Learning for Representation Degeneration Problem in Sequential Recommendation</strong> (Sequential + CL + DA)</p>
+<p> WSDM 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2110.05730.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/RuihongQiu/DuoRec">[Code]</a></p>
+</li>
+<li><p><strong>Memory Augmented Multi-Instance Contrastive Predictive Coding for Sequential Recommendation</strong> (Sequential + CL + DA)</p>
+<p>ICDM 2021, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2109.00368.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Contrastive Learning with Bidirectional Transformers for Sequential Recommendation</strong> (Sequential + CL + DA)</p>
+<p>CIKM 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2208.03895.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/hw-du/CBiT/tree/master">[Code]</a></p>
+</li>
+<li><p><strong>ContrastVAE: Contrastive Variational AutoEncoder for Sequential Recommendation</strong> (Sequential + CL + DA)</p>
+<p>CIKM 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2209.00456.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/YuWang-1024/ContrastVAE">[Code]</a></p>
+</li>
+<li><p><strong>Temporal Contrastive Pre-Training for Sequential Recommendation</strong> (Sequential + CL + DA)</p>
+<p>CIKM 2022, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3511808.3557468">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/ChangxinTian/TCP-SRec">[Code]</a></p>
+</li>
+<li><p><strong>Multi-level Contrastive Learning Framework for Sequential Recommendation</strong> (Graph + Sequential + CL)</p>
+<p>CIKM 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2208.13007.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Equivariant Contrastive Learning for Sequential Recommendation</strong> (Sequential + DA + CL)</p>
+<p>RecSys 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2211.05290.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Tokkiu/ECL">[Code]</a></p>
+</li>
+<li><p><strong>Explanation Guided Contrastive Learning for Sequential Recommendation</strong> (Sequential + DA + CL)</p>
+<p>CIKM 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2209.01347.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/demoleiwang/EC4SRec">[Code]</a></p>
+</li>
+<li><p><strong>Intent Contrastive Learning for Sequential Recommendation</strong> (Sequential + DA + CL)</p>
+<p>WWW 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2202.02519.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/salesforce/ICLRec">[Code]</a></p>
+</li>
+<li><p><strong>Dual Contrastive Network for Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>SIGIR 2022, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3477495.3531918">[PDF]</a></p>
+</li>
+<li><p><strong>Dual Contrastive Network for Sequential Recommendation with User and Item-Centric Perspectives</strong> (Sequential + CL)</p>
+<p>arXiv 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2209.08446.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Enhancing Sequential Recommendation with Graph Contrastive Learning</strong> (Sequential + Graph + CL + DA)</p>
+<p>IJCAI 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2205.14837.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/sdu-zyx/GCL4SR">[Code]</a></p>
+</li>
+<li><p><strong>Disentangling Long and Short-Term Interests for Recommendation</strong> (Sequential + Graph + CL)</p>
+<p>WWW 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2202.13090.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/tsinghua-fib-lab/CLSR">[Code]</a></p>
+</li>
+<li><p><strong>Hyperbolic Hypergraphs for Sequential Recommendation</strong> (Sequential + Graph + CL + DA)</p>
+<p>CIKM 2021, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2108.08134.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Abigale001/h2seqrec">[Code]</a></p>
+</li>
+<li><p><strong>Mutual Wasserstein Discrepancy Minimization for Sequential  Recommendation</strong> (Sequential + CL)</p>
+<p>WWW 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2301.12197.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/zfan20/MStein">[Code]</a></p>
+</li>
+<li><p><strong>Dual-interest Factorization-heads Attention for Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>WWW 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2302.03965.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/tsinghua-fib-lab/WWW2023-DFAR">[Code]</a></p>
+</li>
+<li><p><strong>GUESR: A Global Unsupervised Data-Enhancement with Bucket-Cluster Sampling for Sequential Recommendation</strong> (Sequential + DA + CL)</p>
+<p>arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2303.00243.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Self-Supervised Interest Transfer Network via Prototypical Contrastive  Learning for Recommendation</strong> (Sequential + CL)</p>
+<p>AAAI 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2302.14438.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/fanqieCoffee/SITN-Supplement">[Code]</a></p>
+</li>
+<li><p><strong>A Self-Correcting Sequential Recommender</strong> (Sequential + DA + SSL)</p>
+<p>WWW 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2303.02297.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/TempSDU/STEAM">[Code]</a></p>
+</li>
+<li><p><strong>User Retention-oriented Recommendation with Decision Transformer</strong> (Sequential + CL)</p>
+<p>WWW 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2303.06347.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/kesenzhao/DT4Rec">[Code]</a></p>
+</li>
+<li><p><strong>Debiased Contrastive Learning for Sequential Recommendation</strong> (Sequential + DA + CL)</p>
+<p>WWW 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2303.11780.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HKUDS/DCRec">[Code]</a></p>
+</li>
+<li><p><strong>Learning Vector-Quantized Item Representation for Transferable Sequential Recommenders</strong> (Sequential + CL)</p>
+<p>WWW 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2210.12316.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/RUCAIBox/VQ-Rec">[Code]</a></p>
+</li>
+<li><p><strong>Sequential Recommendation with Diffusion Models</strong> (Diffsion + Sequential + CL)</p>
+<p>arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2304.04541.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Triple Sequence Learning for Cross-domain Recommendation</strong> (Cross-Domain + Sequential + CL)</p>
+<p>arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2304.05027.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Contrastive Cross-Domain Sequential Recommendation</strong> (Cross-Domain + Sequential + CL)</p>
+<p>CIMK 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2304.03891.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/cjx96/C2DSR">[Code]</a></p>
+</li>
+<li><p><strong>Adversarial and Contrastive Variational Autoencoder for Sequential Recommendation</strong> (VAE + Sequential + CL)</p>
+<p>WWW 2021, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2103.10693.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/ACVAE/ACVAE-PyTorch">[Code]</a></p>
+</li>
+<li><p><strong>Meta-optimized Contrastive Learning for Sequential Recommendation</strong> (Meta + Sequential + CL)</p>
+<p>SIGIR 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2304.07763.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/QinHsiu/MCLRec">[Code]</a></p>
+</li>
+<li><p><strong>Frequency Enhanced Hybrid Attention Network for Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>SIGIR 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2304.09184.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/sudaada/FEARec">[Code]</a></p>
+</li>
+<li><p><strong>Self-Supervised Multi-Modal Sequential Recommendation</strong> (Multi-Moda + Sequential + CL)</p>
+<p>arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2304.13277.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/kz-song/MMSRec">[Code]</a></p>
+</li>
+<li><p><strong>Conditional Denoising Diffusion for Sequential Recommendation</strong> (Diffusion + Sequential + CL)</p>
+<p>arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2304.11433.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Ensemble Modeling with Contrastive Knowledge Distillation for Sequential Recommendation</strong> (Diffusion + Sequential + CL)</p>
+<p>SIGIR 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2304.14668.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/hw-du/EMKD">[Code]</a></p>
+</li>
+<li><p><strong>Multi-view Multi-behavior Contrastive Learning in Recommendation</strong> (Sequential + Graph + CL)</p>
+<p>DASFAA 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2203.10576.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/wyqing20/MMCLR">[Code]</a></p>
+</li>
+<li><p><strong>Denoising Multi-modal Sequential Recommenders with Contrastive Learning</strong> (Sequential + CL)</p>
+<p>arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2305.01915.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Multi-view Multi-behavior Contrastive Learning in Recommendation</strong> (Sequential + Graph + CL)</p>
+<p>SIGIR 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2305.04619.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HKUDS/MAERec">[Code]</a></p>
+</li>
+<li><p><strong>Contrastive Enhanced Slide Filter Mixer for Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>ICDE 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2305.04322.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/sudaada/SLIME4Rec">[Code]</a></p>
+</li>
+<li><p><strong>Contrastive State Augmentations for Reinforcement Learning-Based Recommender Systems</strong> (Sequential + DA + CL)</p>
+<p>SIGIR 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2305.11081.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HN-RS">[Code]</a></p>
+</li>
+<li><p><strong>When Search Meets Recommendation: Learning Disentangled Search Representation for Recommendation</strong> (Sequential + CL)</p>
+<p>SIGIR 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2305.10822.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Ethan00Si/SESREC-SIGIR-2023">[Code]</a></p>
+</li>
+<li><p><strong>Text Is All You Need: Learning Language Representations for Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>KDD 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2305.13731.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Sequential Recommendation with Multiple Contrast Signals</strong> (Sequential + CL)</p>
+<p>TOIS 2022, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3522673">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/THUwangcy/ReChorus/tree/TOIS22">[Code]</a></p>
+</li>
+<li><p><strong>Robust Reinforcement Learning Objectives for Sequential Recommender Systems</strong> (Sequential + CL)</p>
+<p>arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2305.18820.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/melfm/sasrec-ccql">[Code]</a></p>
+</li>
+<li><p><strong>AdaptiveRec: Adaptively Construct Pairs for Contrastive Learning in Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>PMLR 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2307.05469.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Fisher-Weighted Merge of Contrastive Learning Models in Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>PMLR 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2307.05476.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Hierarchical Contrastive Learning with Multiple Augmentation for Sequential Recommendation</strong> (Sequential + DA + CL)</p>
+<p>arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2308.03400.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Poisoning Self-supervised Learning Based Sequential Recommendations</strong> (Sequential + Attack + DA + CL)</p>
+<p>SIGIR 2023, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3539618.3591751">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/CongGroup/Poisoning-SSL-based-RS">[Code]</a></p>
+</li>
+<li><p><strong>Dual Contrastive Transformer for Hierarchical Preference Modeling in Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>SIGIR 2023, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3539618.3591672">[PDF]</a></p>
+</li>
+<li><p><strong>Leveraging Negative Signals with Self-Attention for Sequential Music Recommendation</strong> (Sequential + CL)</p>
+<p>RecSys 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2309.11623.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>RUEL: Retrieval-Augmented User Representation with Edge Browser Logs for Sequential Recommendationn</strong> (Sequential + DA + CL)</p>
+<p>CIKM 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2309.10469.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>FedDCSR: Federated Cross-domain Sequential Recommendation via Disentangled Representation Learning</strong> (Sequential + DA + CL)</p>
+<p>arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2309.08420.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/orion-orion/FedDCSR">[Code]</a></p>
+</li>
+<li><p><strong>Unbiased and Robust: External Attention-enhanced Graph Contrastive Learning for Cross-domain Sequential Recommendation</strong> (Sequential + Graph + DA + CL)</p>
+<p>arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2310.04633.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HoupingY/EA-GCL">[Code]</a></p>
+</li>
+<li><p><strong>Dual-Scale Interest Extraction Framework with Self-Supervision for Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2310.10025.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Intent Contrastive Learning with Cross Subsequences for Sequential Recommendation</strong> (Sequential + DA + CL)</p>
+<p>WSDM 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2310.14318.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/QinHsiu/ICSRec">[Code]</a></p>
+</li>
+<li><p><strong>Meta-optimized Joint Generative and Contrastive Learning for Sequential Recommendation</strong> (Sequential + DA + CL)</p>
+<p>ICDE 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2310.13925.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/YongjingHao/Meta-SGCL">[Code]</a></p>
+</li>
+<li><p><strong>Model-enhanced Contrastive Reinforcement Learning for Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2310.16566.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Periodicity May Be Emanative: Hierarchical Contrastive Learning for Sequential Recommendation</strong> (Sequential + DA + CL)</p>
+<p>CIKM 2023, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3583780.3615007">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/RUCAIBox/RecBole">[Code]</a></p>
+</li>
+<li><p><strong>APGL4SR: A Generic Framework with Adaptive and Personalized Global Collaborative Information in Sequential Recommendation</strong> (Sequential + Graph + CL)</p>
+<p>CIKM 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2311.02816.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Graph-Team/APGL4SR">[Code]</a></p>
+</li>
+<li><p><strong>Towards Open-world Cross-Domain Sequential Recommendation: A Model-Agnostic Contrastive Denoising Approach</strong> (Sequential + CL)</p>
+<p>arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2311.04760.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Feature-Level Deeper Self-Attention Network With Contrastive Learning for Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>TKDE 2023, <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/10059216">[PDF]</a></p>
+</li>
+<li><p><strong>Learnable Model Augmentation Contrastive Learning for Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>TKDE 2023, <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/10313990">[PDF]</a></p>
+</li>
+<li><p><strong>Learnable Model Augmentation Contrastive Learning for Sequential Recommendation</strong> (Sequential + DA + CL)</p>
+<p>WSDM 2023, <a target="_blank" rel="noopener" href="https://www.atailab.cn/seminar2023Spring/pdf/2023_WSDM_Multi-Intention%20Oriented%20Contrastive%20Learning%20for%20Sequential%20Recommendation.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/LFM-bot/IOCRec">[Code]</a></p>
+</li>
+<li><p><strong>Collaborative Word-based Pre-trained Item Representation for Transferable Recommendation</strong> (Sequential + CL)</p>
+<p>arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2311.10501.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/ysh-1998/CoWPiRec">[Code]</a></p>
+</li>
+<li><p><strong>Cracking the Code of Negative Transfer:A Cooperative Game Theoretic Approach for Cross-Domain Sequential Recommendation</strong> (Sequential + Cross-Domain + CL)</p>
+<p>CIKM 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2311.13188.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Contrastive Multi-View Interest Learning for Cross-Domain Sequential Recommendation</strong> (Sequential + Cross-Domain + CL)</p>
+<p>TOIS 2023, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3632402">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/ZSHKJWBY/CMVCDR">[Code]</a></p>
+</li>
+<li><p><strong>E4SRec: An Elegant Effective Efficient Extensible Solution of Large Language Models for Sequential Recommendation</strong> (Sequential + LLM + CL)</p>
+<p>arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2312.02443.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HestiaSky/E4SRec/">[Code]</a></p>
+</li>
+<li><p><strong>TFCSRec: Time-Frequency Consistency Based Contrastive Learning for Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>Expert Systems with Applications 2024, <a target="_blank" rel="noopener" href="https://www.sciencedirect.com/science/article/pii/S0957417423036229">[PDF]</a></p>
+</li>
+<li><p><strong>A Relevant and Diverse Retrieval-enhanced Data Augmentation Framework for Sequential Recommendation</strong> (Sequential + DA + CL)</p>
+<p>CIMK 2022, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3511808.3557071">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/RUCAIBox/ReDA">[Code]</a></p>
+</li>
+<li><p><strong>high-level preferences as positive examples in contrastive learning for multi-interest sequential recommendation</strong> （Sequential + CL）</p>
+<p>Arxiv 2023, <a target="_blank" rel="noopener" href="https://assets.researchsquare.com/files/rs-3825823/v1_covered_773bc524-1cf2-454b-88cb-52e5bf0386b0.pdf?c=1704709556">[PDF]</a></p>
+</li>
+<li><p><strong>Feature-Aware Contrastive Learning with Bidirectional Transformers for Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>TKDE 2023, <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/abstract/document/10375742/">[PDF]</a></p>
+</li>
+<li><p><strong>End-to-end Learnable Clustering for Intent Learning in Recommendation</strong> (Sequential + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2401.05975.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Contrastive Learning with Frequency-Domain Interest Trends for Sequential Recommendation</strong> (Sequential + DA + CL)</p>
+<p>RecSys 2023, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3604915.3608790">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/zhangyichi1Z/CFIT4SRec">[Code]</a></p>
+</li>
+<li><p><strong>Sequential Recommendation on Temporal Proximities with Contrastive Learning and Self-Attention</strong> (Sequential + CL)</p>
+<p>WWW 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2402.09784.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/TemProxRec">[Code]</a></p>
+</li>
+<li><p><strong>End-to-end Graph-Sequential Representation Learning for Accurate Recommendations</strong> (Sequential + Graph + CL)</p>
+<p>WWW 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.00895.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/NonameUntitled/MRGSRec">[Code]</a></p>
+</li>
+<li><p><strong>Multi-Sequence Attentive User Representation Learning for Side-information Integrated Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>WSDM 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3616855.3635815">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/xiaolLIN/MSSR">[Code]</a></p>
+</li>
+<li><p><strong>Empowering Sequential Recommendation from Collaborative Signals and Semantic Relatedness</strong> (Sequential + CL)</p>
+<p>arxiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.07623.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Collaborative Sequential Recommendations via Multi-View GNN-Transformers</strong> (Sequential + Graph + CL)</p>
+<p>TOIS 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3649436">[PDF]</a></p>
+</li>
+<li><p><strong>Is Contrastive Learning Necessary? A Study of Data Augmentation vs Contrastive Learning in Sequential Recommendation</strong> (Sequential + DA + CL)</p>
+<p>WWW 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.11136.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/AIM-SE/DA4Rec">[Code]</a></p>
+</li>
+<li><p><strong>Diversifying Sequential Recommendation with Retrospective and Prospective Transformers</strong> (Sequential + CL)</p>
+<p>TOIS 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3653016">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/chaoyushi/TRIER">[Code]</a></p>
+</li>
+<li><p><strong>A Large Language Model Enhanced Sequential Recommender for Joint Video and Comment Recommendation</strong> (Sequential + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.13574.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/RUCAIBox/LSVCR/">[Code]</a></p>
+</li>
+<li><p><strong>Efficient Noise-Decoupling for Multi-Behavior Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>WWW 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.17603.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/huschbsd/END4REC">[Code]</a></p>
+</li>
+<li><p><strong>Temporal Graph Contrastive Learning for Sequential Recommendation</strong> (Sequential + Graph + CL)</p>
+<p>AAAI 2024, <a target="_blank" rel="noopener" href="https://ojs.aaai.org/index.php/AAAI/article/download/28789/29511">[PDF]</a></p>
+</li>
+<li><p><strong>Sparse Enhanced Network: An Adversarial Generation Method for Robust Augmentation in Sequential Recommendation</strong> (Sequential + DA + CL)</p>
+<p>AAAI 2024, <a target="_blank" rel="noopener" href="https://ojs.aaai.org/index.php/AAAI/article/download/28669/29299">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/junyachen/SparseEnNet">[Code]</a></p>
+</li>
+<li><p><strong>Sequential Recommendation for Optimizing Both Immediate Feedback and Long-term Retention</strong> (Sequential + CL)</p>
+<p>SIGIR 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2404.03637.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://anonymous.4open.science/r/DT4IER-5837">[Code]</a></p>
+</li>
+<li><p><strong>Beyond the Sequence: Statistics-Driven Pre-training for Stabilizing Sequential Recommendation Model</strong> (Sequential + DA + CL)</p>
+<p>RecSys 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2404.05342.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Leave No One Behind: Online Self-Supervised Self-Distillation for Sequential Recommendation</strong> (Sequential + DA + CL)</p>
+<p>WWW 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2404.07219.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/xjaw/S4Rec">[Code]</a></p>
+</li>
+<li><p><strong>UniSAR: Modeling User Transition Behaviors between Search and Recommendation</strong> (Sequential + CL)</p>
+<p>SIGIR 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2404.09520.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/TengShi-RUC/UniSAR">[Code]</a></p>
+</li>
+<li><p><strong>Multi-Level Sequence Denoising with Cross-Signal Contrastive Learning for Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2404.13878.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/lalunex/MSDCCL/tree/main">[Code]</a></p>
+</li>
+<li><p><strong>Contrastive Learning Method for Sequential Recommendation based on Multi-Intention Disentanglement</strong> (Sequential + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2404.18214">[PDF]</a></p>
+</li>
+<li><p><strong>CALRec: Contrastive Alignment of Generative LLMs For Sequential Recommendation</strong> (Sequential + LLM + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2405.02429">[PDF]</a></p>
+</li>
+<li><p><strong>ID-centric Pre-training for Recommendation</strong> (Sequential + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2405.03562">[PDF]</a></p>
+</li>
+<li><p><strong>Diffusion-based Contrastive Learning for Sequential Recommendation</strong> (Sequential + DA + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2405.09369">[PDF]</a></p>
+</li>
+<li><p><strong>Soft Contrastive Sequential Recommendation</strong> (Sequential + DA + CL)</p>
+<p>TOIS 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3665325">[PDF]</a></p>
+</li>
+<li><p><strong>Modeling User Fatigue for Sequential Recommendation</strong> (Sequential + DA + CL)</p>
+<p>SIGIR 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2405.11764">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/tsinghua-fib-lab/SIGIR24-FRec">[Code]</a></p>
+</li>
+<li><p><strong>Aligned Side Information Fusion Method for Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>WWW 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3589335.3648308">[PDF]</a></p>
+</li>
+<li><p><strong>Learning Partially Aligned Item Representation for Cross-Domain Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2405.12473">[PDF]</a>, <a target="_blank" rel="noopener" href="https://anonymous.4open.science/r/KDD2024-58E8/">[Code]</a></p>
+</li>
+<li><p><strong>SelfGNN: Self-Supervised Graph Neural Networks for Sequential Recommendation</strong> (Sequential + Graph + CL)</p>
+<p>SIGIR 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2405.20878">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HKUDS/SelfGNN">[Code]</a></p>
+</li>
+<li><p><strong>Exploring User Retrieval Integration towards Large Language Models for Cross-Domain Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2406.03085">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/TingJShen/URLLM">[Code]</a></p>
+</li>
+<li><p><strong>PTF-FSR: A Parameter Transmission-Free Federated Sequential Recommender System</strong> (Sequential + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2406.05387">[PDF]</a></p>
+</li>
+<li><p><strong>Pacer and Runner: Cooperative Learning Framework between Single- and Cross-Domain Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>SIGIR 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2407.11245">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/cpark88/SyNCRec">[Code]</a></p>
+</li>
+<li><p><strong>Scaling Sequential Recommendation Models with Transformers</strong> (Sequential + CL)</p>
+<p>SIGIR 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2412.07585">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/mercadolibre/srt">[Code]</a></p>
+</li>
+<li><p><strong>CMCLRec: Cross-modal Contrastive Learning for User Cold-start Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>SIGIR 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3626772.3657839">[PDF]</a></p>
+</li>
+<li><p><strong>Multimodal Pre-training for Sequential Recommendation via Contrastive Learning</strong> (Sequential + CL)</p>
+<p>TORS 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2303.11879.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Beyond Inter-Item Relations: Dynamic Adaptive Mixture-of-Experts for LLM-Based Sequential Recommendation</strong> (Sequential + LLM + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2408.07427">[PDF]</a></p>
+</li>
+<li><p><strong>Contrastive Learning on Medical Intents for Sequential Prescription Recommendation</strong> (Sequential + CL)</p>
+<p>CIKM 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2408.10259">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/aryahm1375/ARCI">[Code]</a></p>
+</li>
+<li><p><strong>Disentangled Multi-interest Representation Learning for Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>KDD 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3637528.3671800">[PDF]</a></p>
+</li>
+<li><p><strong>Multi-intent Aware Contrastive Learning for Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2409.08733">[PDF]</a></p>
+</li>
+<li><p><strong>Large Language Model Empowered Embedding Generator for Sequential Recommendation</strong> (Sequential + LLM + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2409.08733">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/liuqidong07/LLMEmb">[Code]</a></p>
+</li>
+<li><p><strong>FELLAS: Enhancing Federated Sequential Recommendation with LLM as External Services</strong> (Sequential + LLM + CL)</p>
+<p>TOIS 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2410.04927">[PDF]</a></p>
+</li>
+<li><p><strong>Sequential Recommendation with Collaborative Explanation via Mutual Information Maximization</strong> (Sequential + CL)</p>
+<p>SIGIR 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3626772.3657770">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/yiyualt/SCEMIM">[Code]</a></p>
+</li>
+<li><p><strong>Intent-Enhanced Data Augmentation for Sequential Recommendation</strong> (Sequential + DA + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2410.08583">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/yiyualt/SCEMIM">[Code]</a></p>
+</li>
+<li><p><strong>Relative Contrastive Learning for Sequential Recommendation with Similarity-based Positive Sample Selection</strong> (Sequential + CL)</p>
+<p>CIKM 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3627673.3679681">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Cloudcatcher888/RCL">[Code]</a></p>
+</li>
+<li><p><strong>Context Matters: Enhancing Sequential Recommendation with Context-aware Diffusion-based Contrastive Learning</strong> (Sequential + DA + CL)</p>
+<p>CIKM 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3627673.3679655">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/ziqiangcui/CaDiRec">[Code]</a></p>
+</li>
+<li><p><strong>Momentum Contrastive Bidirectional Encoding with Self-Distillation for Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>CIKM 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3627673.3679965">[PDF]</a></p>
+</li>
+<li><p><strong>AuriSRec: Adversarial User Intention Learning in Sequential Recommendation</strong> (Sequential + CL)</p>
+<p>EMNLP 2024 (Findings), <a target="_blank" rel="noopener" href="https://aclanthology.org/2024.findings-emnlp.735.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>AuriSRec: Adversarial User Intention Learning in Sequential Recommendation</strong> (Sequential + LLM + CL)</p>
+<p>EMNLP 2024 (Findings), <a target="_blank" rel="noopener" href="https://aclanthology.org/2024.findings-emnlp.423.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>LLM-assisted Explicit and Implicit Multi-interest Learning Framework for Sequential Recommendation</strong> (Sequential + LLM + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2411.09410">[PDF]</a></p>
+</li>
+<li><p><strong>Temporal Linear Item-Item Model for Sequential Recommendation</strong> (Sequential + DA + CL)</p>
+<p>WSDM 2025, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2412.07382">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/psm1206/TALE">[Code]</a></p>
+</li>
+<li><p><strong>PTF-FSR: A Parameter Transmission-Free Federated Sequential Recommender System</strong> (Sequential + CL)</p>
+<p>TOIS 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3708344">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/hi-weiyuan/PTF-FSR">[Code]</a></p>
+</li>
+<li><p><strong>Future Sight and Tough Fights: Revolutionizing Sequential Recommendation with FENRec</strong> (Sequential + DA + CL)</p>
+<p>AAAI 2025, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2412.11589">[PDF]</a></p>
+</li>
+<li><p><strong>Lightweight yet Fine-grained: A Graph Capsule Convolutional Network with Subspace Alignment for Shared-account Sequential Recommendation</strong> (Graph + Sequential + CL)</p>
+<p>AAAI 2025, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2412.13408">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/ZZY-GraphMiningLab/LightGC2N">[Code]</a></p>
+</li>
+<li><p><strong>Molar: Multimodal LLMs with Collaborative Filtering Alignment for Enhanced Sequential Recommendation</strong> (Sequential + LLM + CL)</p>
+<p>arXiv 2025, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2412.18176">[PDF]</a>, <a target="_blank" rel="noopener" href="https://anonymous.4open.science/r/Molar-8B06/">[Code]</a></p>
+</li>
+</ol>
+<h2 id="Other-Tasks-with-CL"><a href="#Other-Tasks-with-CL" class="headerlink" title="Other Tasks with CL"></a>Other Tasks with CL</h2><ol>
+<li><p><strong>CL4CTR: A Contrastive Learning Framework for CTR Prediction</strong> (CTR + CL)</p>
+<p> WSDM 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2212.00522.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/cl4ctr/cl4ctr">[Code]</a></p>
+</li>
+<li><p><strong>CCL4Rec: Contrast over Contrastive Learning for Micro-video Recommendation</strong> (Micro Video + CL)</p>
+<p> arXiv 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2208.08024.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Re4: Learning to Re-contrast, Re-attend, Re-construct for Multi-interest Recommendation</strong> (Multi Interest + CL)</p>
+<p> WWW 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2208.08011.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/DeerSheep0314/Re4-Learning-to-Re-contrast-Re-attend-Re-construct-for-Multi-interest-Recommendation">[Code]</a></p>
+</li>
+<li><p><strong>Interventional Recommendation with Contrastive Counterfactual Learning for Better Understanding User Preferences</strong> (Counterfactual + DA + CL)</p>
+<p> arXiv 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2208.06746.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Multi-granularity Item-based Contrastive Recommendation</strong> (Industry + CL)</p>
+<p> arXiv 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2207.01387.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Improving Micro-video Recommendation via Contrastive Multiple Interests</strong> (Micro Video + CL)</p>
+<p> SIGIR 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2205.09593.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Exploiting Negative Preference in Content-based Music Recommendation with Contrastive Learning</strong> (Music Rec + CL)</p>
+<p> RecSys 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2103.09410.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Spijkervet/CLMR">[Code]</a></p>
+</li>
+<li><p><strong>Self-supervised Learning for Large-scale Item Recommendations</strong> (Industry + CL + DA)</p>
+<p> CIKM 2021, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3459637.3481952">[PDF]</a></p>
+</li>
+<li><p><strong>CrossCBR: Cross-view Contrastive Learning for Bundle Recommendation</strong> (Bundle Rec + CL)</p>
+<p> KDD 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2206.00242.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/mysbupt/CrossCBR">[Code]</a></p>
+</li>
+<li><p><strong>Contrastive Learning for Cold-start Recommendation</strong> (Cold Start + CL)</p>
+<p>ACM MM (ACM International Conference on Multimedia) 2021, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2107.05315v1.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/weiyinwei/CLCRec">[Code]</a></p>
+</li>
+<li><p><strong>Socially-aware Dual Contrastive Learning for Cold-Start Recommendation</strong> (Cold Start + CL)</p>
+<p>SIGIR 2022, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3477495.3531780">[PDF]</a></p>
+</li>
+<li><p><strong>Multi-modal Graph Contrastive Learning for Micro-video Recommendation</strong> (Cold Start + Graph + CL)</p>
+<p>SIGIR 2022, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3477495.3531780">[PDF]</a></p>
+</li>
+<li><p><strong>Self-supervised Learning for Multimedia Recommendation</strong> (Multi Media + Graph + DA + CL)</p>
+<p>TMM (IEEE Transactions on Multimedia) 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2107.05315v1.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/zltao/SLMRec/">[Code]</a></p>
+</li>
+<li><p><strong>SelfCF: A Simple Framework for Self-supervised Collaborative Filtering</strong> (CF + Graph + DA + CL)</p>
+<p>ACM MM (ACM International Conference on Multimedia) 2021, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2107.03019.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/enoche/SelfCF">[Code]</a></p>
+</li>
+<li><p><strong>Trading Hard Negatives and True Negatives:A Debiased Contrastive Collaborative Filtering Approach</strong> (CF + CL)</p>
+<p>IJCAI 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2204.11752.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>The World is Binary: Contrastive Learning for Denoising Next Basket Recommendation</strong> (Next Basket + CL)</p>
+<p>SIGIR 2021, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3404835.3462836">[PDF]</a></p>
+</li>
+<li><p><strong>MIC: Model-agnostic Integrated Cross-channel Recommender</strong> (Industry + CL + DA)</p>
+<p> CIKM 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2110.11570.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>A Contrastive Sharing Model for Multi-Task Recommendation</strong> (Multi Task + CL)</p>
+<p> WWW 2022, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3485447.3512043">[PDF]</a></p>
+</li>
+<li><p><strong>C2-CRS: Coarse-to-Fine Contrastive Learning for Conversational Recommender System</strong> (Conversational Rec + CL)</p>
+<p> WSDM 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2201.02732.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/RUCAIBox/WSDM2022-C2CRS">[Code]</a></p>
+</li>
+<li><p><strong>Contrastive Cross-domain Recommendation in Matching</strong> (Cross-domain Rec + DA + CL)</p>
+<p> KDD 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2112.00999.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/lqfarmer/CCDR">[Code]</a></p>
+</li>
+<li><p><strong>Contrastive Cross-Domain Sequential Recommendation</strong> (Cross-Domain + Sequential + CL)</p>
+<p> CIKM 2022, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3511808.3557262">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/cjx96/C2DSR">[Code]</a></p>
+</li>
+<li><p><strong>Prototypical Contrastive Learning and Adaptive Interest Selection for Candidate Generation in Recommendations</strong> (Industry + CL + DA)</p>
+<p> CIKM 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2211.12893.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/cjx96/C2DSR">[Code]</a></p>
+</li>
+<li><p><strong>Spatio-Temporal Contrastive Learning Enhanced GNNs for Session-based Recommendation</strong> (GNN + CL)</p>
+<p> TOIS 2022, under review, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2209.11461v2.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Disentangled Causal Embedding With Contrastive Learning For Recommender System</strong> (Causal + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2302.03248.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/somestudies/DCCL">[Code]</a></p>
+</li>
+<li><p><strong>Contrastive Collaborative Filtering for Cold-Start Item Recommendation</strong> (CF + Cold Start +  CL)</p>
+<p> WWW 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2302.02151.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/zzhin/CCFCRec">[Code]</a></p>
+</li>
+<li><p><strong>Cross-domain recommendation via user interest alignment</strong> (Cross-Domain Rec + CL)</p>
+<p> WWW 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2301.11467.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github/anonymous/COAST">[Code]</a></p>
+</li>
+<li><p><strong>Multi-Modal Self-Supervised Learning for Recommendation</strong> (Multi-Modal Rec + CL)</p>
+<p> WWW 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2302.10632.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HKUDS/MMSSL">[Code]</a></p>
+</li>
+<li><p><strong>Efficient On-Device Session-Based Recommendation</strong> (Session + DA + CL)</p>
+<p> TOIS 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2209.13422.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/xiaxin1998/EODRec">[Code]</a></p>
+</li>
+<li><p><strong>On-Device Next-Item Recommendation with Self-Supervised Knowledge Distillation</strong> (Session + DA + CL)</p>
+<p> SIGIR 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2204.11091.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/xiaxin1998/OD-Rec">[Code]</a></p>
+</li>
+<li><p><strong>Modality Matches Modality: Pretraining Modality-Disentangled Item Representations for Recommendation</strong> (Multi-Modal Rec + CL)</p>
+<p> WWW 2022, <a target="_blank" rel="noopener" href="https://web.archive.org/web/20220428140054id_/https://dl.acm.org/doi/pdf/10.1145/3485447.3512079">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/hantengyue/PAMD">[Code]</a></p>
+</li>
+<li><p><strong>End-to-End Personalized Next Location Recommendation via Contrastive User Preference Modeling</strong> (POI Rec + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2303.12507">[PDF]</a></p>
+</li>
+<li><p><strong>Bootstrap Latent Representations for Multi-modal Recommendation</strong> (Multi-Modal Rec + CL)</p>
+<p> WWW 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2207.05969">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/enoche/BM3">[Code]</a></p>
+</li>
+<li><p><strong>Simplifying Content-Based Neural News Recommendation: On User Modeling and Training Objectives</strong> (News Rec + CL)</p>
+<p> SIGIR 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2304.03112">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/andreeaiana/simplifying_nnr">[Code]</a></p>
+</li>
+<li><p><strong>Hierarchically Fusing Long and Short-Term User Interests for Click-Through Rate Prediction in Product Search</strong> (CTR + CL)</p>
+<p> CIKM 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2304.02089">[PDF]</a></p>
+</li>
+<li><p><strong>Cross-Domain Recommendation to Cold-Start Users via Variational Information Bottleneck</strong> (Cross-Domain + CL)</p>
+<p> ICDE 2022, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2304.02089">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/cjx96/CDRIB">[Code]</a></p>
+</li>
+<li><p><strong>DisenCDR: Learning Disentangled Representations for Cross-Domain Recommendation</strong> (Cross-Domain + CL)</p>
+<p> SIGIR 2022, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3477495.3531967">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/cjx96/DisenCDR">[Code]</a></p>
+</li>
+<li><p><strong>Towards Universal Cross-Domain Recommendation</strong> (Cross-domain + CL)</p>
+<p> WSDM 2023, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3539597.3570366">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/cjx96/UniCDR">[Code]</a></p>
+</li>
+<li><p><strong>Dual-Ganularity Contrastive Learning for Session-based Recommendation</strong> (Session + CL)</p>
+<p>arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2304.08873.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Discreetly Exploiting Inter-session Information for Session-based Recommendation</strong> (Session Rec + CL)</p>
+<p>arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2304.08894.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>PerCoNet: News Recommendation with Explicit Persona and Contrastive Learning</strong> (News Rec + CL)</p>
+<p>arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2304.07923.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Hierarchical and Contrastive Representation Learning for Knowledge-aware Recommendation</strong> (Knowledge Aware + CL)</p>
+<p>ICME 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2304.07506.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Attention-guided Multi-step Fusion: A Hierarchical Fusion Network for Multimodal Recommendation</strong> (Multi-Modal + CL)</p>
+<p>SIGIR 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2304.11979.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>PerFedRec++: Enhancing Personalized Federated Recommendation with Self-Supervised Pre-Training</strong> (Fed Rec + CL)</p>
+<p>arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.06622">[PDF]</a></p>
+</li>
+<li><p><strong>UniTRec: A Unified Text-to-Text Transformer and Joint Contrastive Learning Framework for Text-based Recommendation</strong> (Text Based Rec + CL)</p>
+<p>ACL 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2305.15756.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Veason-silverbullet/UniTRec">[Code]</a></p>
+</li>
+<li><p><strong>Multi-behavior Self-supervised Learning for Recommendation</strong> (Multi-Behavior + CL)</p>
+<p>SIGIR 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2305.18238v1.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Scofield666/MBSSL">[Code]</a></p>
+</li>
+<li><p><strong>Learning Similarity among Users for Personalized Session-Based Recommendation from hierarchical structure of User-Session-Item</strong> (Session Rec + CL)</p>
+<p>arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2306.03040.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Securing Visually-Aware Recommender Systems: An Adversarial Image Reconstruction and Detection Framework</strong> (Visually Rec + CL)</p>
+<p>arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2306.07992.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Disentangled Contrastive Learning for Cross-Domain Recommendation</strong> (Cross-Domain + CL)</p>
+<p>DASFAA 2023, <a target="_blank" rel="noopener" href="https://link.springer.com/chapter/10.1007/978-3-031-30672-3_11">[PDF]</a></p>
+</li>
+<li><p><strong>ContentCTR: Frame-level Live Streaming Click-Through Rate Prediction with Multimodal Transformer</strong> (CTR + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2306.14392.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Contrastive Learning for Conversion Rate Prediction</strong> (CVR + CL)</p>
+<p> SIGIR 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2307.05974.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/DongRuiHust/CL4CVR">[Code]</a></p>
+</li>
+<li><p><strong>Language-Enhanced Session-Based Recommendation with Decoupled Contrastive Learning</strong> (Session Rec + CL)</p>
+<p> KDD 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2307.10650.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/gaozhanfire//KDDCup2023">[Code]</a></p>
+</li>
+<li><p><strong>Multi-view Hypergraph Contrastive Policy Learning for Conversational Recommendation</strong> (Conversational Rec + CL)</p>
+<p> SIGIR 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2307.14024.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Snnzhao/MH">[Code]</a></p>
+</li>
+<li><p><strong>Gaussian Graph with Prototypical Contrastive Learning in E-Commerce Bundle Recommendation</strong> (Bundle Rec + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2307.13468">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Snnzhao/MH">[Code]</a></p>
+</li>
+<li><p><strong>Contrastive Learning for Conversion Rate Prediction</strong> (CVR + CL)</p>
+<p> SIGIR 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2307.05974.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/DongRuiHust/CL4CVR">[Code]</a></p>
+</li>
+<li><p><strong>Review-based Multi-intention Contrastive Learning for Recommendation</strong> (Review + CL)</p>
+<p> SIGIR 2023, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3539618.3592053">[PDF]</a></p>
+</li>
+<li><p><strong>CSPM: A Contrastive Spatiotemporal Preference Model for CTR Prediction  in On-Demand Food Delivery Services</strong> (CTR + CL)</p>
+<p> CIKM 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2308.08446.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>MISSRec: Pre-training and Transferring Multi-modal Interest-aware Sequence Representation for Recommendation</strong> (Multi-Modal + CL)</p>
+<p> MM 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2308.11175.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/gimpong/MM23-MISSRec">[Code]</a></p>
+</li>
+<li><p><strong>MUSE: Music Recommender System with Shuffle Play Recommendation Enhancement</strong> (Music Rec + DA + CL)</p>
+<p> CIKM 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2308.09649.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/yunhak0/MUSE">[Code]</a></p>
+</li>
+<li><p><strong>Multi-aspect Graph Contrastive Learning for Review-enhanced Recommendation</strong> (Review + CL)</p>
+<p> TOIS 2023, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3618106">[PDF]</a></p>
+</li>
+<li><p><strong>Interpretable User Retention Modeling in Recommendation</strong> (User Modelling + CL)</p>
+<p> RecSys 2023, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3604915.3608818">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/dinry/IURO">[Code]</a></p>
+</li>
+<li><p><strong>Beyond Co-occurrence: Multi-modal Session-based Recommendation</strong> (Session Rec + CL)</p>
+<p> TKDE 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2309.17037.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Zhang-xiaokun/MMSBR">[Code]</a></p>
+</li>
+<li><p><strong>Representation Learning with Large Language Models for Recommendation</strong> (LLM + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2310.15950.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HKUDS/RLMRec">[Code]</a></p>
+</li>
+<li><p><strong>Universal Multi-modal Multi-domain Pre-trained Recommendation</strong> (Pre-trained + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2311.01831.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Towards Hierarchical Intent Disentanglement for Bundle Recommendation</strong> (Bundle Rec + CL)</p>
+<p> TKDE 2023, <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/abstract/document/10304376">[PDF]</a></p>
+</li>
+<li><p><strong>ControlRec: Bridging the Semantic Gap between Language Model and Personalized Recommendation</strong> (LLM + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2311.16441.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Enhancing Item-level Bundle Representation for Bundle Recommendation</strong> (Bundle Rec + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2311.16892.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/answermycode/EBRec">[Code]</a></p>
+</li>
+<li><p><strong>MultiCBR: Multi-view Contrastive Learning for Bundle Recommendation</strong> (Bundle Rec + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2311.16751.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HappyPointer/MultiCBR">[Code]</a></p>
+</li>
+<li><p><strong>Poisoning Attacks Against Contrastive Recommender Systems</strong> (Attack Rec + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2311.18244.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>PEACE: Prototype lEarning Augmented transferable framework for Cross-domain rEcommendation</strong> (Cross-domain + CL)</p>
+<p> WSDM 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2312.01916.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>(Debiased) Contrastive Learning Loss for Recommendation (Technical Report)</strong> (Analysis + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2312.08517.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Revisiting Recommendation Loss Functions through Contrastive Learning (Technical Report)</strong> (Analysis + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2312.08520.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Hierarchical Alignment With Polar Contrastive Learning for Next-Basket Recommendation</strong> (Next Basket + CL)</p>
+<p> TKDE 2023, <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/10144403">[PDF]</a></p>
+</li>
+<li><p><strong>CETN: Contrast-enhanced Through Network for CTR Prediction</strong> (CTR + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2312.09715.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Multi-Modality is All You Need for Transferable Recommender Systems</strong> (Transferable Rec + CL)</p>
+<p> ICDE 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2312.09602.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/ICDE24/PMMRec">[Code]</a></p>
+</li>
+<li><p><strong>RIGHT: Retrieval-augmented Generation for Mainstream Hashtag Recommendation</strong> (Hashtag Rec + CL)</p>
+<p> ECIR 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2312.10466.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/ict-bigdatalab/RIGHT">[Code]</a></p>
+</li>
+<li><p><strong>AT4CTR: Auxiliary Match Tasks for Enhancing Click-Through Rate Prediction</strong> (CTR + CL)</p>
+<p> AAAI 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2312.06683.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Attribute-driven Disentangled Representation Learning for Multimodal Recommendation</strong> (Multi-Modal + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2312.14433.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>TopicVAE: Topic-aware Disentanglement Representation Learning for Enhanced Recommendation</strong> (Multi-Modal + CL)</p>
+<p> MM 2022, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3503161.3548294">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/georgeguo-cn/TopicVAE">[Code]</a></p>
+</li>
+<li><p><strong>Disentangled CVAEs with Contrastive Learning for Explainable Recommendation</strong> (Explainable + CL)</p>
+<p> AAAI 2023, <a target="_blank" rel="noopener" href="https://ojs.aaai.org/index.php/AAAI/article/view/26604/26376">[PDF]</a></p>
+</li>
+<li><p><strong>DualVAE: Dual Disentangled Variational AutoEncoder for Recommendation</strong> (Rec + CL)</p>
+<p> SIAM 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2401.04914.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/georgeguo-cn/DualVAE">[Code]</a></p>
+</li>
+<li><p><strong>Self-Supervised Learning for User Sequence Modeling</strong> (Rec + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://sslneurips23.github.io/paper_pdfs/paper_39.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>RA-Rec: An Efficient ID Representation Alignment Framework for LLM-based Recommendation</strong> (LLM + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2402.04527.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>CounterCLR: Counterfactual Contrastive Learning with Non-random Missing Data in Recommendation</strong> (Counterfactual + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2402.05740.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Non-autoregressive Generative Models for Reranking Recommendation</strong> (Reranking + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2402.06871.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Modeling Balanced Explicit and Implicit Relations with Contrastive Learning for Knowledge Concept Recommendation in MOOCs</strong> (MOOC Rec + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2402.08256.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>MENTOR: Multi-level Self-supervised Learning for Multimodal Recommendation</strong> (Multi-Modal + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2402.19407.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Jinfeng-Xu/MENTOR">[Code]</a></p>
+</li>
+<li><p><strong>NoteLLM: A Retrievable Large Language Model for Note Recommendation</strong> (Note Rec + CL)</p>
+<p> WWW 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.01744.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>A Privacy-Preserving Framework with Multi-Modal Data for Cross-Domain Recommendation</strong> (Cross-Domain + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.03600.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>PPM : A Pre-trained Plug-in Model for Click-through Rate Prediction</strong> (CTR + CL)</p>
+<p> WWW 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.10049.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>An Aligning and Training Framework for Multimodal Recommendations</strong> (Multi-Modal + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.12384.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Reinforcement Learning-based Recommender Systems with Large Language Models for State Reward and Action Modeling</strong> (RL Rec + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.16948.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Enhanced Generative Recommendation via Content and Collaboration Integration</strong> (Generative Rec + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.18480.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>End-to-End Personalized Next Location Recommendation via Contrastive User Preference Modeling</strong> (POI Rec + CL)</p>
+<p> arXiv 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2303.12507.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Preference Aware Dual Contrastive Learning for Item Cold-Start Recommendation</strong> (Cold Start + CL)</p>
+<p> AAAI 2024, <a target="_blank" rel="noopener" href="https://ojs.aaai.org/index.php/AAAI/article/view/28763/29465">[PDF]</a></p>
+</li>
+<li><p><strong>Tail-STEAK: Improve Friend Recommendation for Tail Users via Self-Training Enhanced Knowledge Distillation</strong> (Friend Rec + CL)</p>
+<p> AAAI 2024, <a target="_blank" rel="noopener" href="https://ojs.aaai.org/index.php/AAAI/article/view/28737/29421">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/antman9914/Tail-STEAK">[Code]</a></p>
+</li>
+<li><p><strong>Aiming at the Target: Filter Collaborative Information for Cross-Domain Recommendation</strong> (Cross-Domain + CL)</p>
+<p> SIGIR 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.20296.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://anonymous.4open.science/r/CUT_anonymous-9815">[Code]</a></p>
+</li>
+<li><p><strong>Robust Federated Contrastive Recommender System against Model Poisoning Attack</strong> (Fed Rec + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.20107.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://anonymous.4open.science/r/CUT_anonymous-9815">[Code]</a></p>
+</li>
+<li><p><strong>Bridging Language and Items for Retrieval and Recommendation</strong> (Multi-Modal + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2403.03952.pdf">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/hyp1231/AmazonReviews2023">[Code]</a></p>
+</li>
+<li><p><strong>DRepMRec: A Dual Representation Learning Framework for Multimodal Recommendation</strong> (Multi-Modal + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2404.11119.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Knowledge-Aware Multi-Intent Contrastive Learning for Multi-Behavior Recommendation</strong> (Multi-Behavior + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2404.11993.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>General Item Representation Learning for Cold-start Content Recommendations</strong> (Cold Start + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2404.13808.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>MARec: Metadata Alignment for Cold-start Recommendation</strong> (Cold Start + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2404.13298.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Contrastive Quantization based Semantic Code for Generative Recommendation</strong> (Generative Rec + CL)</p>
+<p> CIKM 2023, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2404.14774.pdf">[PDF]</a></p>
+</li>
+<li><p><strong>Retrieval-Oriented Knowledge for Click-Through Rate Prediction</strong> (CTR + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2404.18304">[PDF]</a></p>
+</li>
+<li><p><strong>Denoising Long-and Short-term Interests for Sequential Recommendation</strong> (Session + DA + CL)</p>
+<p> SDM 2024, <a target="_blank" rel="noopener" href="https://epubs.siam.org/doi/pdf/10.1137/1.9781611978032.63">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/zxyllq/LSIDN">[Code]</a></p>
+</li>
+<li><p><strong>Learnable Tokenizer for LLM-based Generative Recommendation</strong> (Gen Rec + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2405.07314">[PDF]</a></p>
+</li>
+<li><p><strong>MVBIND: Self-Supervised Music Recommendation For Videos Via Embedding Space Binding</strong> (Music Rec + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2405.09286">[PDF]</a></p>
+</li>
+<li><p><strong>CELA: Cost-Efficient Language Model Alignment for CTR Prediction</strong> (LLM + CTR + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2405.10596">[PDF]</a></p>
+</li>
+<li><p><strong>A Unified Search and Recommendation Framework Based on Multi-Scenario Learning for Ranking in E-commerce</strong> (Search &amp; Rec + CL)</p>
+<p> SIGIR 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2405.10835">[PDF]</a></p>
+</li>
+<li><p><strong>Learning Structure and Knowledge Aware Representation with Large Language Models for Concept Recommendation</strong> (Concept Rec + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2405.12442">[PDF]</a></p>
+</li>
+<li><p><strong>Bilateral Multi-Behavior Modeling for Reciprocal Recommendation in Online Recruitment</strong> (Job Rec + CL)</p>
+<p> TKDE 2024, <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/abstract/document/10521826/">[PDF]</a></p>
+</li>
+<li><p><strong>Multi-Modal Recommendation Unlearning</strong> (Rec Unlearning + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2405.15328">[PDF]</a></p>
+</li>
+<li><p><strong>Your decision path does matter in pre-training industrial recommenders with multi-source behaviors</strong> (Cross-Domain + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2405.17132">[PDF]</a></p>
+</li>
+<li><p><strong>NoteLLM-2: Multimodal Large Representation Models for Recommendation</strong> (Multi-Modal + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2405.16789">[PDF]</a></p>
+</li>
+<li><p><strong>Multimodality Invariant Learning for Multimedia-Based New Item Recommendation</strong> (Multi-Modal + CL)</p>
+<p> SIGIR 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2405.15783">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HaoyueBai98/MILK">[Code]</a></p>
+</li>
+<li><p><strong>Cross-Domain LifeLong Sequential Modeling for Online Click-Through Rate Prediction</strong> (CTR + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2312.06424">[PDF]</a></p>
+</li>
+<li><p><strong>Medication Recommendation via Dual Molecular Modalities and Multi-Substructure Distillation</strong> (Med Rec + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2405.20358">[PDF]</a></p>
+</li>
+<li><p><strong>Item-Language Model for Conversational Recommendation</strong> (Conversational Rec + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2406.02844">[PDF]</a></p>
+</li>
+<li><p><strong>Boosting Multimedia Recommendation via Separate Generic and Unique Awareness</strong> (Multi-Modal + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2406.08270">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/bruno686/SAND">[Code]</a></p>
+</li>
+<li><p><strong>Contextual Distillation Model for Diversified Recommendation</strong> (Diversified Rec + CL)</p>
+<p> KDD 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2406.09021">[PDF]</a></p>
+</li>
+<li><p><strong>DiffMM: Multi-Modal Diffusion Model for Recommendation</strong> (Multi-Modal + DA + CL)</p>
+<p> MM 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2406.11781">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HKUDS/DiffMM">[Code]</a></p>
+</li>
+<li><p><strong>Improving Multi-modal Recommender Systems by Denoising and Aligning Multi-modal Content and User Feedback</strong> (Multi-Modal + CL)</p>
+<p> KDD 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2406.12501">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/XMUDM/DA-MRS">[Code]</a></p>
+</li>
+<li><p><strong>EAGER: Two-Stream Generative Recommender with Behavior-Semantic Collaboration</strong> (Gen Rec + CL)</p>
+<p> KDD 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2406.14017">[PDF]</a></p>
+</li>
+<li><p><strong>Enhancing Collaborative Semantics of Language Model-Driven Recommendations via Graph-Aware Learning</strong> (LLM Rec + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2406.13235">[PDF]</a></p>
+</li>
+<li><p><strong>Hyperbolic Knowledge Transfer in Cross-Domain Recommendation System</strong> (Cross-Domain + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2406.17289">[PDF]</a></p>
+</li>
+<li><p><strong>MMBee: Live Streaming Gift-Sending Recommendations via Multi-Modal Fusion and Behaviour Expansion</strong> (Gift-Sending Rec + CL)</p>
+<p> KDD 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2407.00056">[PDF]</a></p>
+</li>
+<li><p><strong>Adapting Job Recommendations to User Preference Drift with Behavioral-Semantic Fusion Learning</strong> (Job Rec + CL)</p>
+<p> KDD 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2407.00082">[PDF]</a></p>
+</li>
+<li><p><strong>Personalised Outfit Recommendation via History-aware Transformers</strong> (Outfit Rec + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2407.00289">[PDF]</a></p>
+</li>
+<li><p><strong>Unified Dual-Intent Translation for Joint Modeling of Search and Recommendation</strong> (Search &amp; Rec + CL)</p>
+<p> KDD 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2407.00912">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/17231087/UDITSR">[Code]</a></p>
+</li>
+<li><p><strong>Language Models Encode Collaborative Signals in Recommendation</strong> (LLM + Graph + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2407.05441">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/LehengTHU/AlphaRec">[Code]</a></p>
+</li>
+<li><p><strong>GUME: Graphs and User Modalities Enhancement for Long-Tail Multimodal Recommendation</strong> (Multi-Modal + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2407.12338">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/NanGongNingYi/GUME">[Code]</a></p>
+</li>
+<li><p><strong>A Unified Graph Transformer for Overcoming Isolations in Multi-modal Recommendation</strong> (Multi-Modal + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2407.19886">[PDF]</a></p>
+</li>
+<li><p><strong>MOSAIC: Multimodal Multistakeholder-aware Visual Art Recommendation</strong> (Art Rec + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2407.21758">[PDF]</a></p>
+</li>
+<li><p><strong>Disentangled Contrastive Hypergraph Learning for Next POI Recommendation</strong> (POI Rec + DA + CL)</p>
+<p> SIGIR 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3626772.3657726">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/icmpnorequest/SIGIR2024_DCHL">[Code]</a></p>
+</li>
+<li><p><strong>Modeling User Intent Beyond Trigger: Incorporating Uncertainty for Trigger-Induced Recommendation</strong> (CTR + CL)</p>
+<p> CIKM 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2408.03091">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/majx1997/DUIN">[Code]</a></p>
+</li>
+<li><p><strong>SimCEN: Simple Contrast-enhanced Network for CTR Prediction</strong> (CTR + CL)</p>
+<p> MM 2024, <a target="_blank" rel="noopener" href="https://openreview.net/pdf?id=pJHu4hDlLX">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/salmon1802/SimCEN">[Code]</a></p>
+</li>
+<li><p><strong>CETN: Contrast-enhanced Through Network for Click-Through Rate Prediction</strong> (CTR + CL)</p>
+<p> TOIS 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3688571">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/salmon1802/CETN">[Code]</a></p>
+</li>
+<li><p><strong>Multi-task Heterogeneous Graph Learning on Electronic Health Records</strong> (Drug Rec + CL)</p>
+<p> NN 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2408.07569">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HKU-MedAI/MulT-EHR">[Code]</a></p>
+</li>
+<li><p><strong>Don’t Click the Bait: Title Debiasing News Recommendation via Cross-Field Contrastive Learning</strong> (News Rec + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2408.08538">[PDF]</a></p>
+</li>
+<li><p><strong>EasyRec: Simple yet Effective Language Models for Recommendation</strong> (LLM + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2408.08821">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/HKUDS/EasyRec">[Code]</a></p>
+</li>
+<li><p><strong>Bundle Recommendation with Item-level Causation-enhanced Multi-view Learning</strong> (Bundle Rec + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2408.08906">[PDF]</a></p>
+</li>
+<li><p><strong>Debiased Contrastive Representation Learning for Mitigating Dual Biases in Recommender Systems</strong> (Debias + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2408.09646">[PDF]</a></p>
+</li>
+<li><p><strong>LARR: Large Language Model Aided Real-time Scene Recommendation with Semantic Understanding</strong> (CTR + LLM + CL)</p>
+<p> RecSys 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2408.11523">[PDF]</a></p>
+</li>
+<li><p><strong>Federated User Preference Modeling for Privacy-Preserving Cross-Domain Recommendation</strong> (Cross-Domain + Fed Rec + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2408.14689">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Lili1013/FUPM">[Code]</a></p>
+</li>
+<li><p><strong>Mitigating Negative Transfer in Cross-Domain Recommendation via Knowledge Transferability Enhancement</strong> (Cross-Domain + CL)</p>
+<p> KDD 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3637528.3671799">[PDF]</a></p>
+</li>
+<li><p><strong>Federated Prototype-based Contrastive Learning for Privacy-Preserving Cross-domain Recommendation</strong> (Cross-Domain + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2409.03294">[PDF]</a></p>
+</li>
+<li><p><strong>A Unified Framework for Cross-Domain Recommendation</strong> (Cross-Domain + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2409.04540">[PDF]</a></p>
+</li>
+<li><p><strong>End-to-End Learnable Item Tokenization for Generative Recommendation</strong> (Gen Rec + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2409.05546">[PDF]</a></p>
+</li>
+<li><p><strong>Towards Leveraging Contrastively Pretrained Neural Audio Embeddings for Recommender Tasks</strong> (Music Rec + CL)</p>
+<p> RecSys 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2409.09026">[PDF]</a></p>
+</li>
+<li><p><strong>A Multimodal Single-Branch Embedding Network for Recommendation in Cold-Start and Missing Modality Scenarios</strong> (Multi-Modal + CL)</p>
+<p>RecSys 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2409.17864">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/hcai-mms/SiBraR---Single-Branch-Recommender">[Code]</a></p>
+</li>
+<li><p><strong>The Devil is in the Sources! Knowledge Enhanced Cross-Domain Recommendation in an Information Bottleneck Perspective</strong> (Cross-Domain + CL)</p>
+<p>CIKM 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2409.19574">[PDF]</a></p>
+</li>
+<li><p><strong>Contrastive Clustering Learning for Multi-Behavior Recommendation</strong> (Multi-Behavior + CL)</p>
+<p>TOIS 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3698192">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/lanbiolab/MBRCC">[Code]</a></p>
+</li>
+<li><p><strong>End-to-End Learnable Item Tokenization for Generative Recommendation</strong> (Gen Rec + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2410.02939">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Jamesding000/SpecGR">[Code]</a></p>
+</li>
+<li><p><strong>Improving Object Detection via Local-global Contrastive Learning</strong> (OD + CL)</p>
+<p> BMVC 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2410.05058">[PDF]</a>, <a target="_blank" rel="noopener" href="https://local-global-detection.github.io/">[Code]</a></p>
+</li>
+<li><p><strong>DISCO: A Hierarchical Disentangled Cognitive Diagnosis Framework for Interpretable Job Recommendation</strong> (Job Rec + CL)</p>
+<p> ICDM 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2410.07671">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/LabyrinthineLeo/DISCO">[Code]</a></p>
+</li>
+<li><p><strong>Neural Contrast: Leveraging Generative Editing for Graphic Design Recommendations</strong> (Design Rec + CL)</p>
+<p> PRICAI 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2410.07211">[PDF]</a></p>
+</li>
+<li><p><strong>Pseudo Dataset Generation for Out-of-domain Multi-Camera View Recommendation</strong> (View Rec + CL)</p>
+<p> arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2410.13585">[PDF]</a></p>
+</li>
+<li><p><strong>Hyperbolic Contrastive Learning for Cross-Domain Recommendation</strong> (Cross-Domain + CL)</p>
+<p>CIKM 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3627673.3679572">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/EnkiXin/hcts">[Code]</a></p>
+</li>
+<li><p><strong>Enhancing CTR prediction in Recommendation Domain with Search Query Representation</strong> (CTR + CL)</p>
+<p>CIKM 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2410.21487">[PDF]</a></p>
+</li>
+<li><p><strong>Multi-Modal Correction Network for Recommendation</strong> (Multi-Modal + CL)</p>
+<p>TKDE 2024, <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/10746604">[PDF]</a></p>
+</li>
+<li><p><strong>QARM: Quantitative Alignment Multi-Modal Recommendation at Kuaishou</strong> (Multi-Modal + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2411.11739">[PDF]</a></p>
+</li>
+<li><p><strong>Collaborative Contrastive Network for Click-Through Rate Prediction</strong> (CTR + CL)</p>
+<p>arXiv 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2411.11508">[PDF]</a></p>
+</li>
+<li><p><strong>Hierarchical Denoising for Robust Social Recommendation</strong> (Social Rec + CL)</p>
+<p>TKDE 2024, <a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/10771708">[PDF]</a></p>
+</li>
+<li><p><strong>Learning Self-Supervised Audio-Visual Representations for Sound Recommendations</strong> (Sound Rec + CL)</p>
+<p>ISVC 2021, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2412.07406">[PDF]</a></p>
+</li>
+<li><p><strong>Bridging the User-side Knowledge Gap in Knowledge-aware Recommendations with Large Language Models</strong> (Knowledge-aware Rec + LLM + CL)</p>
+<p>AAAI 2025, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2412.13544">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/laowangzi/CIKGRec">[Code]</a></p>
+</li>
+<li><p><strong>TCKT: Tree-Based Cross-domain Knowledge Transfer for Next POI Cold-Start Recommendation</strong> (POI Rec + CL)</p>
+<p>TOIS 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3709137">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/simplehx/TCKT">[Code]</a></p>
+</li>
+<li><p><strong>Contrastive Representation for Interactive Recommendation</strong> (Interactive Rec + CL)</p>
+<p>AAAI 2025, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2412.18396">[PDF]</a></p>
+</li>
+<li><p><strong>MixMBR: Contrastive Learning for Multi-behavior Recommendation</strong> (Multi-behavior + DA + CL)</p>
+<p>DASFAA 2023, <a target="_blank" rel="noopener" href="https://link.springer.com/chapter/10.1007/978-3-031-30672-3_29">[PDF]</a></p>
+</li>
+<li><p><strong>Content-Based Collaborative Generation for Recommender Systems</strong> (Generative Rec + LLM + CL)</p>
+<p>CIKM 2024, <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3627673.3679692">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Junewang0614/ColaRec">[Code]</a></p>
+</li>
+<li><p><strong>A Contrastive Pretrain Model with Prompt Tuning for Multi-center Medication Recommendation</strong> (Medication Rec + CL)</p>
+<p>TOIS 2024, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2412.20040">[PDF]</a>, <a target="_blank" rel="noopener" href="https://github.com/Applied-Machine-Learning-Lab/TEMPT">[Code]</a></p>
+</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/06/25/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/Github/DA-CL/">https://yuezi2048.github.io/2025/06/25/2.Areas🌐/science/小论文准备/Github/DA-CL/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Github/">Github</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/06/25/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E6%8C%87%E5%AF%BC-%E5%90%B4%E6%81%A9%E8%BE%BE/" title="论文指导-吴恩达"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">论文指导-吴恩达</div></div><div class="info-2"><div class="info-item-1">吴恩达总结 论文要点  编制论文清单（medium  github blog） 跳过周围的知识，一开始从5篇论文开始 如果不好，直接跳过 如果很有创造性，需要认真阅读（可能从引文找到第六篇论文，充实理解，找第7篇论文，得到结论） 如此跳来跳去，试着掌握我们阅读文献的主题   阅读量：如果看了15-20篇论文，可能对其有了更深刻的了解（复现的程度），50-100篇关于该领域论文，可以对领域有了很好的理解（研究的程度） 如果掌握的不好，1小时看一篇，如果很好，半小时，一周2-3篇的量  如何读一篇论文  bad ：从头到尾读 instead，multipule possess through the paper  title &#x2F; abstract &#x2F; figures(图) intro &#x2F; conclusions &#x2F; figures(数字) &#x2F; skim rest （skim related work） skip &#x2F; skim the math（move on，然后再回头看） whole thing but skip...</div></div></div></a><a class="pagination-related" href="/2025/06/25/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/Github/MultimodalRecSys/" title="MultimodalRecSys"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">MultimodalRecSys</div></div><div class="info-2"><div class="info-item-1">公共数据集 [2014 年亚马逊产品数据] ( http://jmcauley.ucsd.edu/data/amazon/links.html ) 具有婴儿&#x2F;运动&#x2F;电动等加工版本。   [2018年亚马逊商品数据] ( https://nijianmo.github.io/amazon/index.html ) [PixelRec]（ https://github.com/westlake-repl/PixelRec ） [MicroLens] ( https://github.com/westlake-repl/MicroLens ) [NineRec] ( https://github.com/westlake-repl/NineRec )  </div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/06/25/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/Github/MultimodalRecSys/" title="MultimodalRecSys"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-25</div><div class="info-item-2">MultimodalRecSys</div></div><div class="info-2"><div class="info-item-1">公共数据集 [2014 年亚马逊产品数据] ( http://jmcauley.ucsd.edu/data/amazon/links.html ) 具有婴儿&#x2F;运动&#x2F;电动等加工版本。   [2018年亚马逊商品数据] ( https://nijianmo.github.io/amazon/index.html ) [PixelRec]（ https://github.com/westlake-repl/PixelRec ） [MicroLens] ( https://github.com/westlake-repl/MicroLens ) [NineRec] ( https://github.com/westlake-repl/NineRec )  </div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Awesome-Contrastive-Learning-Data-Augmentation-RS-Paper-Code"><span class="toc-text">Awesome Contrastive Learning &amp; Data Augmentation RS Paper &amp; Code</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Survey-Tutorial-Framework"><span class="toc-text">Survey&#x2F;Tutorial&#x2F;Framework</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Only-Data-Augmentation"><span class="toc-text">Only Data Augmentation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Graph-Models-with-CL"><span class="toc-text">Graph Models with CL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Sequential-Models-with-CL"><span class="toc-text">Sequential Models with CL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Other-Tasks-with-CL"><span class="toc-text">Other Tasks with CL</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

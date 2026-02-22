@@ -1,0 +1,196 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>16.Mybatis优点 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Mybatis 的优点有以下几点： 1）减少手动配置：与 JDBC 相比，Mybatis 减少了复杂的代码配置，让开发者不用过于关注繁琐连接操作。 2）应用解耦：通过将 SQL 语句保持在 XML 文件或注解中，很好的将逻辑层与数据层分离，灵活性高。 3）内置缓存：内置一级缓存和二级缓存机制，可提高数据库查询性能。 4）内置多种数据库和连接池：支持多种数据库和连接池，在多种开发环境中都能使用。 5">
+<meta property="og:type" content="article">
+<meta property="og:title" content="16.Mybatis优点">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/11/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/mybatis/16.Mybatis%E4%BC%98%E7%82%B9/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="Mybatis 的优点有以下几点： 1）减少手动配置：与 JDBC 相比，Mybatis 减少了复杂的代码配置，让开发者不用过于关注繁琐连接操作。 2）应用解耦：通过将 SQL 语句保持在 XML 文件或注解中，很好的将逻辑层与数据层分离，灵活性高。 3）内置缓存：内置一级缓存和二级缓存机制，可提高数据库查询性能。 4）内置多种数据库和连接池：支持多种数据库和连接池，在多种开发环境中都能使用。 5">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-11-27T13:49:07.000Z">
+<meta property="article:modified_time" content="2025-11-27T13:49:07.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="mybatis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "16.Mybatis优点",
+  "url": "https://yuezi2048.github.io/2025/11/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/mybatis/16.Mybatis%E4%BC%98%E7%82%B9/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-11-27T13:49:07.000Z",
+  "dateModified": "2025-11-27T13:49:07.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/11/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/mybatis/16.Mybatis%E4%BC%98%E7%82%B9/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '16.Mybatis优点',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">16.Mybatis优点</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">16.Mybatis优点</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-11-27T13:49:07.000Z" title="发表于 2025-11-27 21:49:07">2025-11-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-11-27T13:49:07.000Z" title="更新于 2025-11-27 21:49:07">2025-11-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/">02.面经记录</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/mybatis/">mybatis</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">247</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>1分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>Mybatis 的优点有以下几点：</p>
+<p>1）<strong>减少手动配置</strong>：与 JDBC 相比，Mybatis 减少了复杂的代码配置，让开发者不用过于关注繁琐连接操作。</p>
+<p>2）<strong>应用解耦</strong>：通过将 SQL 语句保持在 XML 文件或注解中，很好的将逻辑层与数据层分离，灵活性高。</p>
+<p>3）<strong>内置缓存</strong>：内置一级缓存和二级缓存机制，可提高数据库查询性能。</p>
+<p>4）<strong>内置多种数据库和连接池</strong>：支持多种数据库和连接池，在多种开发环境中都能使用。</p>
+<p>5）<strong>动态SQL</strong>：提供了强大的动态 SQL 功能，能够根据条件灵活生成 SQL 语句。</p>
+<p>6）<strong>轻量级</strong>：与 Hibernate 相比，MyBatis 更加轻量级，也提供了更多的 SQL 控制权，适合复杂查询和高性能需求的场景。</p>
+<h2 id="扩展知识"><a href="#扩展知识" class="headerlink" title="扩展知识"></a>扩展知识</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.mianshiya.com/bank/1801424748099739650/question/1802597639336042498">1153. 说说 MyBatis 的缓存机制？</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.mianshiya.com/bank/1801424748099739650/question/1802527090962407426">MyBatis 动态 sql 有什么用？执行原理？有哪些动态 sql？</a></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/11/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/mybatis/16.Mybatis%E4%BC%98%E7%82%B9/">https://yuezi2048.github.io/2025/11/27/2.Areas🌐/02.面经记录/mybatis/16.Mybatis优点/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/mybatis/">mybatis</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/11/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/mybatis/15.Mybatis-plus%E7%9A%84%E4%BD%9C%E7%94%A8_%E5%8C%BA%E5%88%AB/" title="15.Mybatis-plus的作用_区别"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">15.Mybatis-plus的作用_区别</div></div><div class="info-2"><div class="info-item-1">Mybatis是半ORM（对象关系映射）框架，内部封装JDBC，开发者只需关注SQL和业务，不需要关注驱动、创建连接、statement等过程 MyBatis-Plus 是 MyBatis 的增强版框架，是对Mybatis的二次封装，只增强不改变，提供更丰富的API和代码生成强，将重复的CRUD操作更简单，无需手动编写SQL.  提供了条件构造器，可以通过编程方式构建复杂的查询条件，无需编写繁琐的 SQL 语句 提供了分页查询支持，无需手动编写分页逻辑 提供了一个代码生成器工具，可以根据数据库表自动生成 Java 实体类、Mapper 接口和 XML 映射文件，减少了手工编写的工作量。  使用 MyBatis Plus 前，需要自己编写 SQL Mapper 映射文件和语句： &lt;!-- userMapper.xml --&gt;&lt;mapper namespace=&quot;com.demo.dao.UserMapper&quot;&gt;  &lt;select id=&quot;getUserById&quot;...</div></div></div></a><a class="pagination-related" href="/2025/11/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/mybatis/17.Mybatis%E7%BC%BA%E7%82%B9/" title="17.Mybatis缺点"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">17.Mybatis缺点</div></div><div class="info-2"><div class="info-item-1">Mybtis 的缺点有以下几点： 1）半ORM：MyBatis 不会像全自动 ORM 框架（如 Hibernate）那样自动生成 SQL 语句， 对于一些简单的查询修改操作，也需要自己写 SQL，增加了工作量。 2）大量XML维护：对大型项目来说，可能需要大量的 xml 文件，会导致配置的复杂性和维护的困难。 3）SQL无法自动生成：因为 MyBatis 缺乏 SQL 自动能力，因此维护成本会高一些，例如修改了表结构或字段名或迁移了数据库，都需要手动修改相应的 SQL，还容易漏改。 </div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/11/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/mybatis/1.Mybatis%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/" title="1.Mybatis缓存机制"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-27</div><div class="info-item-2">1.Mybatis缓存机制</div></div><div class="info-2"><div class="info-item-1">缓存分为两类缓存：一级缓存、二级缓存。  一级缓存（SqlSession 级别）：在同一个SqlSession内生效（通过命名空间+SQL语句+参数作为唯一标识） 执行commit、rollback、手动清理时会清空   二级缓存（Mapper级别）：跨SqlSession共享缓存，基于Mapper缓存 默认不开启，徐雅晴去哦手动改配置（XML文件设置&lt;cache /&gt;） 数据更新、插入、删除使得缓存失效 生命周期和SqlSessionFactory一致 支持定制化存储（如整合第三方存储工具）     注：在多线程的多SqlSession &#x2F; 分布式环境下，一级缓存存在脏读。而二级缓存虽然是跨SqlSession级别共享，但是在多表查询的时候无法感知其他表的更新 缓存顺序：二级缓存—-&gt;  一级缓存 –&gt;  数据库 源码层面，本质是存储Map存储，使用了装饰器模式，提供了cache功能的扩展（LRU、FIFO 等）  扩展知识进一步理解一级缓存默认是会话级缓存。即创建一个 SqlSession...</div></div></div></a><a class="pagination-related" href="/2025/11/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/mybatis/10.Mybatis%E6%8F%92%E4%BB%B6%E5%8E%9F%E7%90%86_%E5%A6%82%E4%BD%95%E8%87%AA%E5%B7%B1%E5%86%99/" title="10.Mybatis插件原理_如何自己写"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-27</div><div class="info-item-2">10.Mybatis插件原理_如何自己写</div></div><div class="info-2"><div class="info-item-1">MyBatis 的插件机制实现原理是基于动态代理执行，具体思路是在SQL执行的某个节点（查询、更新、插入）拦截，增强功能 拦截点一共四种：  Executor：负责执行增删改查操作。 ParameterHandler：负责处理 SQL 语句中的参数。 ResultSetHandler：负责处理结果集。 StatementHandler：负责处理 SQL 语句。  在运行时根据配置加载插件，在拦截点生成代理对象，当拦截点方法被调用时，调用插件 intercept 方法织入，如果是多个插件，按照配置顺序进行（责任链模式） 场景：性能分析、动态参数注入（ParameterHandler）、数据脱敏（ResultSetHandler）、自动分页（StatementHandler）  编写插件：  注解 @Intercepts(&#123;    @Signature(        type= StatementHandler.class,        method = &quot;prepare&quot;,        args =...</div></div></div></a><a class="pagination-related" href="/2025/11/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/mybatis/12.Mybatis%E6%9C%89%E5%93%AA%E4%BA%9BExecutor%E6%89%A7%E8%A1%8C%E5%99%A8_%E5%8C%BA%E5%88%AB/" title="12.Mybatis有哪些Executor执行器_区别"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-27</div><div class="info-item-2">12.Mybatis有哪些Executor执行器_区别</div></div><div class="info-2"><div class="info-item-1">MyBatis 有三种执行器，  SimpleExecutor 每次执行 SQL 都会创建新的 Statement（默认） ReuseExecutor 会复用 Statement 以提高效率 原理是将Statement缓存到Map中，后续就识别有没有相同的SQL，如果有就从缓存取Statement，避免重复创建 要注意游标限制问题   BatchExecutor 则专注于批量执行 SQL 语句以优化大批量数据操作的性能。 首先存入队列，最后一次性提交 不支持Select  扩展知识Mybatis 提供了三种类型的 Executor 执行器如下：1） SimpleExecutor 简单执行器  每次执行 SQL 时，都会新建一个 Statement（如 PreparedStatement）。 执行完成后，立即将 Statement 关闭，不进行缓存。  2） ReuseExecutor 重用执行器  把 SQL 语句当成键，将 Statement 缓存到一个 Map 中。 如果后续执行相同的 SQL，则直接从缓存中获取 Statement，不用重新创建。 执行完成后，不关闭...</div></div></div></a><a class="pagination-related" href="/2025/11/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/mybatis/13.Mybatis%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B1%BB%E5%9E%8B%E5%92%8CJava%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" title="13.Mybatis如何实现数据库类型和Java类型转换"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-27</div><div class="info-item-2">13.Mybatis如何实现数据库类型和Java类型转换</div></div><div class="info-2"><div class="info-item-1">Mybatis类型转换是通过 类型处理器（TypeHandler） ，TypeHandler 具体转换方式：  Java 类型转换为 JDBC 类型，用于 SQL 参数设置。 JDBC 类型转换为 Java 类型，用于查询结果的映射。  具体的原理：  加载映射文件时，解析字段类型（jdbcType）和Java类型（resultType），确定使用的TypeHandler 执行SQL时，ParameterHandler通过TypeHandler将Java参数转换成JDBC 解析结果集时，ResultHandler通过TypeHandler将JDBC类型转换成Java对象   细节：IntegerTypeHandler等TypeHandler 会被注册到 TypeHandlerRegistry 中，底层就是通过map来存储类型和TypeHandler的映射 自定义类型转换器怎么实现？  重写BaseTypeHandler的方法： setParameter：动态SQL设置值时的逻辑 getResult：处理结果集的逻辑   在 MyBatis...</div></div></div></a><a class="pagination-related" href="/2025/11/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/mybatis/14.Mybatis%E8%87%AA%E5%B8%A6%E8%BF%9E%E6%8E%A5%E6%B1%A0%E4%BA%86%E8%A7%A3%E8%BF%87%E5%90%97/" title="14.Mybatis自带连接池了解过吗"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-27</div><div class="info-item-2">14.Mybatis自带连接池了解过吗</div></div><div class="info-2"><div class="info-item-1"> 我在项目中一般是用SpringBoot默认的HikariCP，或者引入阿里巴巴的Druid连接池 Mybatis自带的连接池是基于PooledDataSource，提供基本的连接复用和资源管理 整体的执行的流程：初始化连接池、获取链接（创建新连接&#x2F;空闲队列）、回收链接（pushConnection到空闲队列）、失效检测（定期检查空闲连接可用） 具体的源码有大致看过：  他内部有一个PoolState 来管理连接，内部包括了当前活跃的连接列表，空闲的连接列表 这个连接PoolConnection，比较关键的是他实现了InnovationHandler，表示他是一个代理逻辑，内部保存真正的连接和代理连接。 而这个代理的目的是增强close方法，...</div></div></div></a><a class="pagination-related" href="/2025/11/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/mybatis/15.Mybatis-plus%E7%9A%84%E4%BD%9C%E7%94%A8_%E5%8C%BA%E5%88%AB/" title="15.Mybatis-plus的作用_区别"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-27</div><div class="info-item-2">15.Mybatis-plus的作用_区别</div></div><div class="info-2"><div class="info-item-1">Mybatis是半ORM（对象关系映射）框架，内部封装JDBC，开发者只需关注SQL和业务，不需要关注驱动、创建连接、statement等过程 MyBatis-Plus 是 MyBatis 的增强版框架，是对Mybatis的二次封装，只增强不改变，提供更丰富的API和代码生成强，将重复的CRUD操作更简单，无需手动编写SQL.  提供了条件构造器，可以通过编程方式构建复杂的查询条件，无需编写繁琐的 SQL 语句 提供了分页查询支持，无需手动编写分页逻辑 提供了一个代码生成器工具，可以根据数据库表自动生成 Java 实体类、Mapper 接口和 XML 映射文件，减少了手工编写的工作量。  使用 MyBatis Plus 前，需要自己编写 SQL Mapper 映射文件和语句： &lt;!-- userMapper.xml --&gt;&lt;mapper namespace=&quot;com.demo.dao.UserMapper&quot;&gt;  &lt;select id=&quot;getUserById&quot;...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A9%E5%B1%95%E7%9F%A5%E8%AF%86"><span class="toc-text">扩展知识</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

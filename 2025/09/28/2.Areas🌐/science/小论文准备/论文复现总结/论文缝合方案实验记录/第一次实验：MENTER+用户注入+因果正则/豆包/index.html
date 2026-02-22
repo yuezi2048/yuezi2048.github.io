@@ -1,0 +1,298 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>豆包 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="为了让你彻底理清模型逻辑（尤其是核心创新点“分级原型对比损失”和“图社区伪标签+自适应学习”，以及关键的“引导式解耦损失”），我会按照“数据输入→特征学习→表示细化→损失优化”的核心脉络，用中文拆解每一步——既保留技术准确性，又避免晦涩术语，用“举例子”的方式让抽象环节变直观。 第一步：数据输入与预处理（模型训练前的“原料准备”：把所有需要用到的数据整理好）模型开始训练前，会先加载4类关键数据，每">
+<meta property="og:type" content="article">
+<meta property="og:title" content="豆包">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/09/28/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/%E8%B1%86%E5%8C%85/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="为了让你彻底理清模型逻辑（尤其是核心创新点“分级原型对比损失”和“图社区伪标签+自适应学习”，以及关键的“引导式解耦损失”），我会按照“数据输入→特征学习→表示细化→损失优化”的核心脉络，用中文拆解每一步——既保留技术准确性，又避免晦涩术语，用“举例子”的方式让抽象环节变直观。 第一步：数据输入与预处理（模型训练前的“原料准备”：把所有需要用到的数据整理好）模型开始训练前，会先加载4类关键数据，每">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-09-28T03:26:00.000Z">
+<meta property="article:modified_time" content="2025-09-28T03:26:00.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="第一次实验：MENTER+用户注入+因果正则">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "豆包",
+  "url": "https://yuezi2048.github.io/2025/09/28/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/%E8%B1%86%E5%8C%85/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-09-28T03:26:00.000Z",
+  "dateModified": "2025-09-28T03:26:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/09/28/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/%E8%B1%86%E5%8C%85/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '豆包',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">豆包</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">豆包</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-09-28T03:26:00.000Z" title="发表于 2025-09-28 11:26:00">2025-09-28</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-09-28T03:26:00.000Z" title="更新于 2025-09-28 11:26:00">2025-09-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/">science</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/">小论文准备</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/">论文复现总结</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/">论文缝合方案实验记录</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER-%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5-%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/">第一次实验：MENTER+用户注入+因果正则</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>7分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>为了让你彻底理清模型逻辑（尤其是核心创新点“分级原型对比损失”和“图社区伪标签+自适应学习”，以及关键的“引导式解耦损失”），我会按照“数据输入→特征学习→表示细化→损失优化”的核心脉络，用中文拆解每一步——既保留技术准确性，又避免晦涩术语，用“举例子”的方式让抽象环节变直观。</p>
+<h3 id="第一步：数据输入与预处理"><a href="#第一步：数据输入与预处理" class="headerlink" title="第一步：数据输入与预处理"></a>第一步：数据输入与预处理</h3><p>（模型训练前的“原料准备”：把所有需要用到的数据整理好）<br>模型开始训练前，会先加载4类关键数据，每类数据都有明确的用途，缺一不可：  </p>
+<table>
+<thead>
+<tr>
+<th>数据类型</th>
+<th>来源&#x2F;生成方式</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>用户-物品交互数据</td>
+<td>存储在<code>.inter</code>文件中（比如“用户A点击了商品X”“用户B购买了商品Y”这类行为记录）</td>
+<td>1. 划分成训练集、验证集、测试集；<br>2. 构建<strong>用户-物品交互图</strong>（用来捕捉“谁喜欢什么”的关联关系）。</td>
+</tr>
+<tr>
+<td>视觉特征（<code>v_feat</code>）</td>
+<td>用预训练模型（比如ResNet）从商品图片中提取（比如衬衫的颜色、版型特征）</td>
+<td>给商品提供“图像层面的信息”，让模型“看见”商品的样子。</td>
+</tr>
+<tr>
+<td>文本特征（<code>t_feat</code>）</td>
+<td>用预训练模型（比如BERT）从商品描述&#x2F;评论中提取（比如“100%纯棉”“宽松版型”）</td>
+<td>给商品提供“文字层面的信息”，让模型“读懂”商品的属性。</td>
+</tr>
+<tr>
+<td><strong>图社区伪标签</strong>（<code>item_to_fused_community.pt</code>）</td>
+<td>生成逻辑：<br>1. 先建一个“融合图”（结合“商品内容相似度”和“用户-商品交互信号”，比如“买过A的人也买B”且“A和B视觉相似”，就给A和B连边）；<br>2. 用<strong>Louvain算法</strong>（一种社区发现算法）在这个融合图上分组，把“相似商品”归为一个“社区”。</td>
+<td>给每个商品贴一个“伪类别标签”（比如“红底白纹休闲衬衫”归为1号社区，“蓝底格子正装衬衫”归为2号社区）——这是后续“分级对比损失”的核心依据。</td>
+</tr>
+</tbody></table>
+<h3 id="第二步：多视角GCN表示学习"><a href="#第二步：多视角GCN表示学习" class="headerlink" title="第二步：多视角GCN表示学习"></a>第二步：多视角GCN表示学习</h3><p>（从原始数据中“提炼有用特征”：用图卷积网络学习带结构信息的表示）<br>每次训练时，模型会处理一个“批次”的数据（比如一批<code>(用户, 正样本商品, 负样本商品)</code>三元组——“正样本”是用户喜欢的商品，“负样本”是用户不喜欢的商品），通过<strong>图卷积网络（GCN）</strong> 学习有意义的特征：  </p>
+<ol>
+<li><p><strong>多模态GCN传播</strong>：  </p>
+<ul>
+<li>「视觉GCN（<code>v_gcn</code>）」：把“用户-物品交互图”和“视觉特征”结合，让视觉信息在图上“传播”（比如用户A喜欢商品X（红衬衫），GCN会把X的视觉特征传递给A交互过的其他商品），最终输出<strong>视觉表示（<code>v_rep</code>）</strong>（用户和商品各自的视觉特征向量）。  </li>
+<li>「文本GCN（<code>t_gcn</code>）」：同理，结合“交互图”和“文本特征”，输出<strong>文本表示（<code>t_rep</code>）</strong>。</li>
+</ul>
+</li>
+<li><p><strong>图噪声视图（借鉴SimGCL思路）</strong>：<br>为了让模型更“抗干扰”（不会因为数据微小变化就出错），会额外跑两次GCN传播——每次都加一点随机噪声（比如轻微改变交互图的边权重），生成两个“带噪声的特征版本”：<code>result_embed_n1</code>和<code>result_embed_n2</code>（后续用来做对比学习，提升模型鲁棒性）。</p>
+</li>
+</ol>
+<h3 id="第三步：多模态表示融合与细化"><a href="#第三步：多模态表示融合与细化" class="headerlink" title="第三步：多模态表示融合与细化"></a>第三步：多模态表示融合与细化</h3><p>（把视觉&#x2F;文本特征“揉成能用的最终向量”：让特征更贴合推荐任务）<br>GCN学到的<code>v_rep</code>和<code>t_rep</code>还需要进一步融合、优化，这个过程在<code>_generate_representations</code>函数里完成：  </p>
+<ol>
+<li><p><strong>用户表示融合</strong>：<br>每个用户的最终表示，是其“视觉表示（<code>v_rep_u</code>）”和“文本表示（<code>t_rep_u</code>）”的<strong>加权和</strong>。这里的权重（<code>self.weight_u</code>）是“可学习的”——模型会自动调整（比如用户A更看重商品图片而非文字描述，模型就会给<code>v_rep_u</code>分配更大的权重）。  </p>
+</li>
+<li><p><strong>物品表示细化</strong>：<br>先把商品的“视觉表示”和“文本表示”拼接起来，再用“商品-商品内容图（<code>mm_adj.pt</code>，用视觉&#x2F;文本特征的k-NN算法构建，比如“视觉相似的衬衫”之间连边）”跑一次GCN。这样能让每个商品“吸收邻居的信息”（比如商品X的特征会融入相似商品Y、Z的特征），让商品特征更平滑、更可靠。  </p>
+</li>
+<li><p><strong>最终嵌入向量</strong>：<br>把优化后的“用户表示”和“商品表示”拼接成一个矩阵（<code>self.result_embed</code>）——这就是后续计算“用户对商品喜好程度”的核心依据。</p>
+</li>
+</ol>
+<h3 id="第四步：最终损失计算（模型优化的核心）"><a href="#第四步：最终损失计算（模型优化的核心）" class="headerlink" title="第四步：最终损失计算（模型优化的核心）"></a>第四步：最终损失计算（模型优化的核心）</h3><p>（通过“多目标损失”引导模型学对东西：包括你的核心创新“引导式解耦损失”）<br>模型的性能好不好，取决于能否最小化一个“多任务损失函数”（把多个优化目标结合起来）。下面拆解每个损失组件，重点讲你的创新点：  </p>
+<h4 id="4-1-主推荐任务：去噪BPR损失"><a href="#4-1-主推荐任务：去噪BPR损失" class="headerlink" title="4.1 主推荐任务：去噪BPR损失"></a>4.1 主推荐任务：去噪BPR损失</h4><ul>
+<li><strong>目标</strong>：让模型把“用户喜欢的商品”排在“不喜欢的商品”前面。  </li>
+<li><strong>逻辑</strong>：  <ol>
+<li>先给每个正样本算一个“置信度分数”——根据商品的“图文一致性”（比如“文字说红衬衫，图片也是红衬衫”置信度高；“文字说红衬衫，图片是蓝衬衫”置信度低）。  </li>
+<li>计算标准BPR损失（如果负样本得分比正样本高，就扣分），但会<strong>用置信度分数给每个样本的损失加权</strong>——让模型少关注“图文不符的噪声样本”（比如用户误点的商品），这比普通BPR更精准。</li>
+</ol>
+</li>
+</ul>
+<h4 id="4-2-正则化损失（防止模型“学偏”）"><a href="#4-2-正则化损失（防止模型“学偏”）" class="headerlink" title="4.2 正则化损失（防止模型“学偏”）"></a>4.2 正则化损失（防止模型“学偏”）</h4><ul>
+<li><code>reg_loss</code>：对“用户偏好向量”和“融合权重”做L2正则化（简单说就是不让参数值太大），避免模型“死记硬背训练数据”，在新数据上出错（过拟合）。  </li>
+<li><code>mask_f_loss</code>：给最终的用户&#x2F;商品特征加“dropout”（随机关掉部分特征），然后要求“扰动后的特征”和“原始特征（过一个MLP层后）”尽可能一致——保证特征的稳定性（轻微扰动不改变特征含义）。  </li>
+<li><code>mask_g_loss</code>：用<strong>InfoNCE损失</strong>对比两个“噪声视图”（<code>result_embed_n1</code>和<code>result_embed_n2</code>），让模型认为“稍微带点噪声的同一图结构”是相似的——提升模型对图扰动的抗干扰能力。</li>
+</ul>
+<h4 id="4-3-核心创新：引导式解耦损失（loss-disentangle）"><a href="#4-3-核心创新：引导式解耦损失（loss-disentangle）" class="headerlink" title="4.3 核心创新：引导式解耦损失（loss_disentangle）"></a>4.3 核心创新：引导式解耦损失（<code>loss_disentangle</code>）</h4><p>这是模型最关键的部分——把特征“拆解开、优化好”，让特征更有用。只有当批次里商品数量足够时才计算，具体步骤如下：  </p>
+<table>
+<thead>
+<tr>
+<th>子步骤</th>
+<th>做什么</th>
+<th>为什么重要（创新点体现）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a. 特征解耦</td>
+<td>调用<code>mge()</code>函数，把每个商品的多模态特征拆成两部分：<br> - <strong>通用特征（G）</strong>：跨模态共享的核心信息（比如“这是件衬衫”——图片和文字都能体现）；<br> - <strong>特定特征（S）</strong>：某模态独有的细节（比如“图片显示格子纹”是视觉特定，“文字说纯棉”是文本特定）。</td>
+<td>把“通用常识”和“模态专属细节”分开，避免特征混淆（比如不会把“格子纹”和“纯棉”混为一谈）。</td>
+</tr>
+<tr>
+<td>b. 自适应加权</td>
+<td>计算每个商品“视觉特定特征（S_v）”和“文本特定特征（S_t）”的差异度——差异大的是“难样本”，给这些样本分配更高的<code>sample_weights</code>（权重）。</td>
+<td>借鉴PCKD思路：让模型多花精力优化“难样本”（比如一个商品图片是“修身”但文字是“宽松”，需要重点调整）。</td>
+</tr>
+<tr>
+<td>c. <strong>分级原型对比损失</strong>（<code>loss_S_contrastive</code>）</td>
+<td>1. 调用<code>_find_graded_samples</code>找三类样本：<br> - <strong>强正样本（R）</strong>：和目标商品同属一个社区（第一步的伪标签）的商品；<br> - <strong>弱正样本（T_v&#x2F;T_t）</strong>：特定特征（S）相似但不同社区的商品；<br> - <strong>负样本</strong>：其他所有商品。<br> 2. 调用<code>_calculate_prototype_contrastive_loss</code>做三件事：<br> - 让商品的S特征向“社区原型”（社区内所有商品S特征的平均值）靠近；<br> - 让强正样本的S特征更接近，弱正样本的S特征稍微接近，负样本的S特征远离；<br> 3. 用<code>sample_weights</code>给损失加权。</td>
+<td>你的<strong>核心创新</strong>：结合“图社区伪标签”（明确正负样本分组）、“分级样本区分”（强&#x2F;弱正样本，不是简单的正负）、“自适应加权”——让特定特征（S）更有区分度（比如同社区的衬衫S特征更像，不同社区的更不像）。</td>
+</tr>
+<tr>
+<td>d. G特征对齐损失（<code>loss_InfoNCE_G</code>）</td>
+<td>用InfoNCE损失让“视觉通用特征（G_v）”和“文本通用特征（G_t）”尽可能一致。</td>
+<td>保证“跨模态的核心信息”不冲突（比如图片说“是衬衫”，文字也得说“是衬衫”）。</td>
+</tr>
+<tr>
+<td>e. 独立性损失（<code>loss_club</code>）</td>
+<td>用<strong>CLUBSample</strong>（一种互信息估计器），最小化“通用特征（G）”和“特定特征（S）”的相关性。</td>
+<td>确保G和S真正“解耦”——G里不掺S的细节，S里不掺G的信息，避免互相干扰。</td>
+</tr>
+<tr>
+<td>f. 损失组合</td>
+<td>1. 用超参数<code>alpha_g_s</code>把<code>loss_InfoNCE_G</code>和<code>loss_S_contrastive</code>合并成<code>loss_graded</code>；<br> 2. 用超参数<code>lambda_1</code>和<code>lambda_graded_align</code>把<code>loss_club</code>和<code>loss_graded</code>合并成最终的<code>loss_disentangle</code>。</td>
+<td>平衡“解耦”和“特征质量”两个目标，让损失函数更合理。</td>
+</tr>
+</tbody></table>
+<h3 id="第五步：总损失与模型优化"><a href="#第五步：总损失与模型优化" class="headerlink" title="第五步：总损失与模型优化"></a>第五步：总损失与模型优化</h3><p>最终的“总损失”是所有损失组件的和：<br><code>total_loss = 去噪BPR损失 + reg_loss + mask_f_loss + mask_g_loss + 引导式解耦损失</code>  </p>
+<p>模型通过“反向传播”不断最小化这个总损失——更新所有可学习参数（比如GCN的权重、用户融合权重<code>self.weight_u</code>、对比损失的系数），直到损失不再下降，模型就训练好了。</p>
+<h3 id="核心创新点总结（你的模型亮点）"><a href="#核心创新点总结（你的模型亮点）" class="headerlink" title="核心创新点总结（你的模型亮点）"></a>核心创新点总结（你的模型亮点）</h3><ol>
+<li><strong>图社区伪标签</strong>：基于“融合图+Louvain算法”生成，给商品提供了可靠的“相似分组”，为分级对比损失打下基础；  </li>
+<li><strong>分级原型对比损失</strong>：不只用“正负样本”，还区分“强&#x2F;弱正样本”，结合社区原型对齐和自适应加权，让特定特征（S）更有区分度；  </li>
+<li><strong>引导式解耦损失</strong>：把特征拆成G&#x2F;S，再通过对齐、独立性约束优化，既避免特征混淆，又保证跨模态一致性。</li>
+</ol>
+<p>整个流程的核心目标是：让模型既能用好视觉&#x2F;文本多模态信息，又能抗噪声、少过拟合，最终输出更精准的推荐结果。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/09/28/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/%E8%B1%86%E5%8C%85/">https://yuezi2048.github.io/2025/09/28/2.Areas🌐/science/小论文准备/论文复现总结/论文缝合方案实验记录/第一次实验：MENTER+用户注入+因果正则/豆包/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER-%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5-%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/">第一次实验：MENTER+用户注入+因果正则</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/09/27/2.Areas%F0%9F%8C%90/00.%E7%A7%8B%E6%8B%9B%E5%87%86%E5%A4%87%E6%96%B9%E5%90%91/%E9%9D%A2%E8%AF%95%E8%AE%A1%E5%88%92%E4%BF%AE%E6%AD%A3/" title="面试计划修正"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">面试计划修正</div></div><div class="info-2"><div class="info-item-1">10月-2月面试题+算法题精准规划（按实际题量修正，无剩余时间）一、基础数据校准（按你提供的准确题量）1. 已完成模块（无需新题，仅复习）   模块 题量 状态 复习优先级    Java基础 59 9月完成 第二梯队   Java集合 26 9月完成 第二梯队   计算机网络 36 9月完成 第二梯队   2....</div></div></div></a><a class="pagination-related" href="/2025/09/28/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/%E6%B6%88%E8%9E%8D/" title="消融"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">消融</div></div><div class="info-2"><div class="info-item-1">TT3 baby&#x3D;MENTER改进（去除 align模块 待添加改进模块） + 解耦模块改进（分级对比） +  网络发现改进（结合用户交互） █████████████ BEST ████████████████29 Sep 10:43    INFO    Parameters: [&#x27;seed&#x27;, &#x27;reg_weight&#x27;, &#x27;learning_rate&#x27;, &#x27;dropout&#x27;, &#x27;mask_weight_f&#x27;, &#x27;mask_weight_g&#x27;, &#x27;infoNCETemp&#x27;, &#x27;lambda_graded_align&#x27;, &#x27;alpha_g_s&#x27;]=(999, 0.0001, 0.0001, 0.5, 1.5, 0.001, 0.4, 0.5, 0.2),Valid: recall@5: 0.0408    recall@10: 0.0632    recall@20: 0.0998   ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/09/30/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/TT4/" title="TT4"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-30</div><div class="info-item-2">TT4</div></div><div class="info-2"><div class="info-item-1">baby █████████████ BEST ████████████████Mon 29 Sep 2025 20:58:47 INFO 	Parameters: [&#x27;seed&#x27;, &#x27;reg_weight&#x27;, &#x27;learning_rate&#x27;, &#x27;dropout&#x27;, &#x27;mask_weight_f&#x27;, &#x27;mask_weight_g&#x27;, &#x27;infoNCETemp&#x27;, &#x27;lambda_graded_align&#x27;, &#x27;alpha_g_s&#x27;]=(999, 0.0001, 0.0001, 0.5, 1.5, 0.001, 0.4, 0.5, 0.5),Valid: recall@5: 0.0407    recall@10: 0.0632    recall@20: 0.0998    recall@50: 0.1666    ndcg@5: 0.0270    ndcg@10: 0.0343   ...</div></div></div></a><a class="pagination-related" href="/2025/09/27/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/TT/" title="TT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-27</div><div class="info-item-2">TT</div></div><div class="info-2"><div class="info-item-1">TT0: base + DGM解耦 - align模块： █████████████ BEST ████████████████19 Sep 12:12    INFO    Parameters: [&#x27;seed&#x27;, &#x27;reg_weight&#x27;, &#x27;learning_rate&#x27;, &#x27;dropout&#x27;, &#x27;mask_weight_f&#x27;, &#x27;mask_weight_g&#x27;, &#x27;lambda_1&#x27;, &#x27;infoNCETemp&#x27;]=(999, 0.001, 0.0001, 0.5, 1.5, 0.001, 0.5, 0.4),Valid: recall@5: 0.0407    recall@10: 0.0657    recall@20: 0.1004    recall@50: 0.1692    ndcg@5: 0.0270    ndcg@10: 0.0350    ndcg@20: 0.0438    ndcg@50:...</div></div></div></a><a class="pagination-related" href="/2025/07/23/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90/" title="代码实现分析"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-23</div><div class="info-item-2">代码实现分析</div></div><div class="info-2"><div class="info-item-1">代码编写INFO AAA(  (mlp): Linear(in_features=128, out_features=128, bias=True)  (image_embedding): Embedding(7050, 4096)  (image_trs): Linear(in_features=4096, out_features=64, bias=True)  (text_embedding): Embedding(7050, 384)  (text_trs): Linear(in_features=384, out_features=64, bias=True)  (MLP_user): Linear(in_features=128, out_features=64, bias=True)  (v_gcn): GCN(    (MLP): Sequential(      (0): Linear(in_features=4096, out_features=256, bias=True)      (1): LeakyReLU(negative_slope=0.01) ...</div></div></div></a><a class="pagination-related" href="/2025/09/30/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/TT4%E6%B6%88%E8%9E%8D/" title="TT4消融"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-30</div><div class="info-item-2">TT4消融</div></div><div class="info-2"><div class="info-item-1">好的，既然您的模型 TT4 和预处理流程 process_hierarchical_community.py 已经最终确定，我们来为您设计一套全新的、与您最终工作完全匹配的消融实验方案。 这套方案将帮助您在论文中，逻辑清晰、论证有力地证明您每一个核心创新点的价值。  消融实验设计 (Ablation Study Design)我们的核心故事是：我们提出了一种新颖的层级化社区发现方法来生成高质量的伪类别标签，并将其应用于一个先进的原型对比解耦框架中，从而提升了推荐性能。 消融实验的目的就是系统性地验证这个故事中的每一个环节。 实验模型与变体定义您需要在实验中对比以下模型，它们构成了一个清晰的逻辑链条：    模型名称 核心策略描述 目的与要论证的观点    MENTOR 强大的多模态GCN基线模型（不含任何解耦模块）。 作为所有工作的性能起点。   TT4 w&#x2F;o GradedAlign MENTOR + 基础解耦 (只有loss_club和loss_InfoNCE_G)。 证明引入基础解耦框架本身是有效的。   TT4...</div></div></div></a><a class="pagination-related" href="/2025/09/15/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/" title="实验记录"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-15</div><div class="info-item-2">实验记录</div></div><div class="info-2"><div class="info-item-1">base &#x3D; MENTOR——   recall@10: 0.0654    recall@20: 0.1028    recall@50: 0.1690    ndcg@5: 0.0272    ndcg@10: 0.0352    ndcg@20: 0.0448   █████████████ BEST ████████████████15 Sep 12:23    INFO    Parameters: [&#x27;seed&#x27;, &#x27;reg_weight&#x27;, &#x27;learning_rate&#x27;, &#x27;dropout&#x27;, &#x27;mask_weight_f&#x27;, &#x27;mask_weight_g&#x27;, &#x27;align_weight&#x27;, &#x27;temp&#x27;]=(999, 0.001, 0.0001, 0.5, 1.5, 0.001, 0.1, 0.2),Valid: recall@5: 0.0388    recall@10: 0.0647   ...</div></div></div></a><a class="pagination-related" href="/2025/09/15/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%952/" title="实验记录2"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-15</div><div class="info-item-2">实验记录2</div></div><div class="info-2"><div class="info-item-1">base &#x3D; MENTOR——   recall@10: 0.0650    recall@20: 0.1030    recall@50: 0.1689    ndcg@5: 0.0271    ndcg@10: 0.0350    ndcg@20: 0.0448    ndcg@50: 0.0581 █████████████ BEST ████████████████  Wed 18 Jun 2025 14:54:00 INFO   Parameters: [&#x27;reg_weight&#x27;, &#x27;learning_rate&#x27;, &#x27;dropout&#x27;, &#x27;mask_weight_f&#x27;, &#x27;mask_weight_g&#x27;, &#x27;align_weight&#x27;, &#x27;temp&#x27;, &#x27;seed&#x27;]=(0.001, 0.0001, 0.5, 1.5, 0.001, 0.1, 0.2, 999),  Valid: recall@5:...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E6%95%B0%E6%8D%AE%E8%BE%93%E5%85%A5%E4%B8%8E%E9%A2%84%E5%A4%84%E7%90%86"><span class="toc-text">第一步：数据输入与预处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E5%A4%9A%E8%A7%86%E8%A7%92GCN%E8%A1%A8%E7%A4%BA%E5%AD%A6%E4%B9%A0"><span class="toc-text">第二步：多视角GCN表示学习</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E5%A4%9A%E6%A8%A1%E6%80%81%E8%A1%A8%E7%A4%BA%E8%9E%8D%E5%90%88%E4%B8%8E%E7%BB%86%E5%8C%96"><span class="toc-text">第三步：多模态表示融合与细化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%EF%BC%9A%E6%9C%80%E7%BB%88%E6%8D%9F%E5%A4%B1%E8%AE%A1%E7%AE%97%EF%BC%88%E6%A8%A1%E5%9E%8B%E4%BC%98%E5%8C%96%E7%9A%84%E6%A0%B8%E5%BF%83%EF%BC%89"><span class="toc-text">第四步：最终损失计算（模型优化的核心）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-%E4%B8%BB%E6%8E%A8%E8%8D%90%E4%BB%BB%E5%8A%A1%EF%BC%9A%E5%8E%BB%E5%99%AABPR%E6%8D%9F%E5%A4%B1"><span class="toc-text">4.1 主推荐任务：去噪BPR损失</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-%E6%AD%A3%E5%88%99%E5%8C%96%E6%8D%9F%E5%A4%B1%EF%BC%88%E9%98%B2%E6%AD%A2%E6%A8%A1%E5%9E%8B%E2%80%9C%E5%AD%A6%E5%81%8F%E2%80%9D%EF%BC%89"><span class="toc-text">4.2 正则化损失（防止模型“学偏”）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-%E6%A0%B8%E5%BF%83%E5%88%9B%E6%96%B0%EF%BC%9A%E5%BC%95%E5%AF%BC%E5%BC%8F%E8%A7%A3%E8%80%A6%E6%8D%9F%E5%A4%B1%EF%BC%88loss-disentangle%EF%BC%89"><span class="toc-text">4.3 核心创新：引导式解耦损失（loss_disentangle）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%94%E6%AD%A5%EF%BC%9A%E6%80%BB%E6%8D%9F%E5%A4%B1%E4%B8%8E%E6%A8%A1%E5%9E%8B%E4%BC%98%E5%8C%96"><span class="toc-text">第五步：总损失与模型优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E5%88%9B%E6%96%B0%E7%82%B9%E6%80%BB%E7%BB%93%EF%BC%88%E4%BD%A0%E7%9A%84%E6%A8%A1%E5%9E%8B%E4%BA%AE%E7%82%B9%EF%BC%89"><span class="toc-text">核心创新点总结（你的模型亮点）</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

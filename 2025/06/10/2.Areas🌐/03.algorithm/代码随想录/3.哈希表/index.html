@@ -1,0 +1,462 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>3.哈希表 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="三、哈希法3.1 理论基础哈希表 哈希表：key是关键字，作为哈希表的索引下标，访问对应的元素value，在算法中常常用来空间换时间   当我们需要查询一个元素是否出现过，或者一个元素是否在集合里的时候，就要第一时间想到哈希法   哈希函数：映射方式，通常会有取模操作  	   哈希碰撞：如果映射到了一个位置，那么就出现了碰撞，解决方案：  拉链法       线性探测法      哈希存储结构">
+<meta property="og:type" content="article">
+<meta property="og:title" content="3.哈希表">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/06/10/2.Areas%F0%9F%8C%90/03.algorithm/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/3.%E5%93%88%E5%B8%8C%E8%A1%A8/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="三、哈希法3.1 理论基础哈希表 哈希表：key是关键字，作为哈希表的索引下标，访问对应的元素value，在算法中常常用来空间换时间   当我们需要查询一个元素是否出现过，或者一个元素是否在集合里的时候，就要第一时间想到哈希法   哈希函数：映射方式，通常会有取模操作  	   哈希碰撞：如果映射到了一个位置，那么就出现了碰撞，解决方案：  拉链法       线性探测法      哈希存储结构">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-06-10T09:40:41.000Z">
+<meta property="article:modified_time" content="2025-06-10T09:40:41.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="代码随想录">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "3.哈希表",
+  "url": "https://yuezi2048.github.io/2025/06/10/2.Areas%F0%9F%8C%90/03.algorithm/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/3.%E5%93%88%E5%B8%8C%E8%A1%A8/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-06-10T09:40:41.000Z",
+  "dateModified": "2025-06-10T09:40:41.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/06/10/2.Areas%F0%9F%8C%90/03.algorithm/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/3.%E5%93%88%E5%B8%8C%E8%A1%A8/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '3.哈希表',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">3.哈希表</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">3.哈希表</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-06-10T09:40:41.000Z" title="发表于 2025-06-10 17:40:41">2025-06-10</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-06-10T09:40:41.000Z" title="更新于 2025-06-10 17:40:41">2025-06-10</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/03-algorithm/">03.algorithm</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/03-algorithm/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/">代码随想录</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>17分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="三、哈希法"><a href="#三、哈希法" class="headerlink" title="三、哈希法"></a>三、哈希法</h1><h2 id="3-1-理论基础"><a href="#3-1-理论基础" class="headerlink" title="3.1 理论基础"></a>3.1 理论基础</h2><h3 id="哈希表"><a href="#哈希表" class="headerlink" title="哈希表"></a>哈希表</h3><ul>
+<li>哈希表：key是关键字，作为哈希表的索引下标，访问对应的元素value，在算法中常常用来空间换时间</li>
+</ul>
+<blockquote>
+<p>当我们需要查询一个元素是否出现过，或者一个元素是否在集合里的时候，就要第一时间想到<strong>哈希法</strong></p>
+</blockquote>
+<ul>
+<li>哈希函数：映射方式，通常会有取模操作</li>
+</ul>
+<img src="/img/loading.gif" data-original="https://file1.kamacoder.com/i/algo/2021010423484818.png" alt="哈希表2" style="zoom:67%;" />	
+
+<ul>
+<li><p>哈希碰撞：如果映射到了一个位置，那么就出现了碰撞，解决方案：</p>
+<ul>
+<li><p>拉链法</p>
+<p><img src="/img/loading.gif" data-original="https://file1.kamacoder.com/i/algo/20210104235015226.png" alt="哈希表4">    </p>
+</li>
+<li><p>线性探测法</p>
+<p><img src="/img/loading.gif" data-original="https://file1.kamacoder.com/i/algo/20210104235109950.png" alt="哈希表5"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="哈希存储结构"><a href="#哈希存储结构" class="headerlink" title="哈希存储结构"></a>哈希存储结构</h3><table>
+<thead>
+<tr>
+<th>集合</th>
+<th>java对应类</th>
+<th>底层实现</th>
+<th>是否有序</th>
+<th>数值是否可以重复</th>
+<th>能否更改数值</th>
+<th>查询效率</th>
+<th>增删效率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>std::set</td>
+<td>TreeSet</td>
+<td>红黑树</td>
+<td>有序</td>
+<td>否</td>
+<td>否</td>
+<td>O(log n)</td>
+<td>O(log n)</td>
+</tr>
+<tr>
+<td>std::multiset</td>
+<td><code>Map&lt;String, Integer&gt;</code></td>
+<td>红黑树</td>
+<td>有序</td>
+<td>是</td>
+<td>否</td>
+<td>O(logn)</td>
+<td>O(logn)</td>
+</tr>
+<tr>
+<td>std::unordered_set</td>
+<td>HashSet</td>
+<td>哈希表</td>
+<td>无序</td>
+<td>否</td>
+<td>否</td>
+<td>O(1)</td>
+<td>O(1)</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>映射</th>
+<th>java对应类</th>
+<th>底层实现</th>
+<th>是否有序</th>
+<th>数值是否可以重复</th>
+<th>能否更改数值</th>
+<th>查询效率</th>
+<th>增删效率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>std::map</td>
+<td>TreeMap</td>
+<td>红黑树</td>
+<td>key有序</td>
+<td>key不可重复</td>
+<td>key不可修改</td>
+<td>O(log n)</td>
+<td>O(log n)</td>
+</tr>
+<tr>
+<td>std::multimap</td>
+<td><code>Map&lt;String, List&lt;String&gt;&gt;</code></td>
+<td>红黑树</td>
+<td>key有序</td>
+<td>key可重复</td>
+<td>key不可修改</td>
+<td>O(log n)</td>
+<td>O(log n)</td>
+</tr>
+<tr>
+<td>std::unordered_map</td>
+<td>HashMap</td>
+<td>哈希表</td>
+<td>key无序</td>
+<td>key不可重复</td>
+<td>key不可修改</td>
+<td>O(1)</td>
+<td>O(1)</td>
+</tr>
+</tbody></table>
+<p>数组拷贝元素</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">         * @param      src      the source array. 源数组</span></span><br><span class="line"><span class="comment">         * @param      srcPos   starting position in the source array. 从第几个位置开始拷贝</span></span><br><span class="line"><span class="comment">         * @param      dest     the destination array. 目标数组</span></span><br><span class="line"><span class="comment">         * @param      destPos  starting position in the destination data. 从第几个位置开始拷贝</span></span><br><span class="line"><span class="comment">         * @param      length   the number of array elements to be copied. 拷贝的长度 超过以后数组越界</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        System.arraycopy(src, <span class="number">0</span>, dst, <span class="number">1</span>, <span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="3-2-数组（字母异位词）"><a href="#3-2-数组（字母异位词）" class="headerlink" title="3.2 数组（字母异位词）"></a>3.2 数组（字母异位词）</h2><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/valid-anagram/">242. 有效的字母异位词</a></p>
+<p>给定两个字符串 <code>s</code> 和 <code>t</code> ，编写一个函数来判断 <code>t</code> 是否是 <code>s</code> 的 字母异位词。</p>
+<p><img src="/img/loading.gif" data-original="https://file1.kamacoder.com/i/algo/242.%E6%9C%89%E6%95%88%E7%9A%84%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D.gif" alt="242.有效的字母异位词">	</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">     <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isAnagram</span><span class="params">(String s, String t)</span> &#123;</span><br><span class="line">        <span class="type">int</span>[] cs = <span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">26</span>];</span><br><span class="line">        <span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> s.length();</span><br><span class="line">        <span class="keyword">if</span> (n != t.length()) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; n; i ++) &#123;</span><br><span class="line">            cs[s.charAt(i) - <span class="string">&#x27;a&#x27;</span>] ++;</span><br><span class="line">            cs[t.charAt(i) - <span class="string">&#x27;a&#x27;</span>] --;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> c : cs) &#123;</span><br><span class="line">            <span class="keyword">if</span> (c != <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>二刷使用map复习一波写法，更加兼容 原题说的Unicode的情况</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isAnagram</span><span class="params">(String s, String t)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (s.length() != t.length()) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        </span><br><span class="line">        Map&lt;Character, Integer&gt; cnt = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; s.length(); i ++) &#123;</span><br><span class="line">            cnt.put(s.charAt(i), cnt.getOrDefault(s.charAt(i), <span class="number">0</span>) + <span class="number">1</span>);</span><br><span class="line">            cnt.put(t.charAt(i), cnt.getOrDefault(t.charAt(i), <span class="number">0</span>) - <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Set&lt;Character&gt; keySet = cnt.keySet();</span><br><span class="line">        <span class="keyword">for</span> (Character key : keySet) &#123;</span><br><span class="line">            <span class="keyword">if</span> (cnt.get(key) != <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="相关题目"><a href="#相关题目" class="headerlink" title="相关题目"></a>相关题目</h3><ul>
+<li><p><a target="_blank" rel="noopener" href="https://programmercarl.com/0383.%E8%B5%8E%E9%87%91%E4%BF%A1.html">383.赎金信(opens new window)</a></p>
+<ul>
+<li><p><strong>本题使用map的空间消耗要比数组大一些的，因为map要维护红黑树或者哈希表，而且还要做哈希函数，是费时的！数据量大的话就能体现出来差别了。 所以数组更加简单直接有效！</strong></p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250602214324294.png" alt="image-20250602214324294"></p>
+</li>
+</ul>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/group-anagrams/">49.字母异位词分组(opens new window)</a></p>
+<ul>
+<li>涉及到的算法：字符哈希 + 数组集合</li>
+<li>学到了一个<code>基于hash合并</code>的思路：<ul>
+<li><p>将满足条件的基于Hash Key（字母异位词满足同个字符哈希），放在一个集合中（List）</p>
+<ul>
+<li>对于字母异位词的key，也可以暴力地通过排序来表示，但是该操作时间复杂度会有一个mlogm的级别（m是每个字符串的最大长度），而使用哈希表后，单个操作只有O(1)的时间复杂度（1&#x3D;26）</li>
+</ul>
+</li>
+<li><p>最终展现出来的方式是：返回map中所有的值（map.values）</p>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Map&lt;String, List&lt;String&gt;&gt; map = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">List&lt;String&gt; list = map.getOrDefault(key, <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;()); <span class="comment">// key: 21000....00</span></span><br><span class="line">list.add(str); </span><br><span class="line">map.put(key, list);</span><br><span class="line">...</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(map.values());</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/find-all-anagrams-in-a-string/">438.找到字符串中所有字母异位词</a></p>
+<ul>
+<li>涉及到的算法：字符哈希+滑动窗口（注意利用滑动窗口的特性来应用双指针）</li>
+<li>优化：因为涉及比较，可以利用该点，来比较滑动窗口和比较字符串中不同字符数量的差</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">sDict[s.charAt(start - <span class="number">1</span>) - <span class="string">&#x27;a&#x27;</span>] --;</span><br><span class="line">sDict[s.charAt(end) - <span class="string">&#x27;a&#x27;</span>] ++;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="3-3-unordered-set（去重-无序）"><a href="#3-3-unordered-set（去重-无序）" class="headerlink" title="3.3 unordered_set（去重+无序）"></a>3.3 unordered_set（去重+无序）</h2><h3 id="两个数组交集"><a href="#两个数组交集" class="headerlink" title="两个数组交集"></a>两个数组交集</h3><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/intersection-of-two-arrays/">349. 两个数组的交集</a></p>
+<p>给定两个数组 <code>nums1</code> 和 <code>nums2</code> ，返回 <em>它们的 交集</em> 。输出结果中的每个元素一定是 <strong>唯一</strong> 的。我们可以 <strong>不考虑输出结果的顺序</strong> </p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span>[] intersection(<span class="type">int</span>[] nums1, <span class="type">int</span>[] nums2) &#123;</span><br><span class="line">        <span class="type">int</span>[] ex1 = <span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">1005</span>];</span><br><span class="line">        <span class="type">int</span>[] ex2 = <span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">1005</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> num : nums1) &#123;</span><br><span class="line">            ex1[num] = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> num : nums2) &#123;</span><br><span class="line">            ex2[num] = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        List&lt;Integer&gt; ans = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> <span class="number">0</span>; num &lt; <span class="number">1005</span>; num ++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (ex1[num] == <span class="number">1</span> &amp;&amp; ex2[num] == <span class="number">1</span>) ans.add(num);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans.stream().mapToInt(Integer::intValue).toArray();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span>[] intersection(<span class="type">int</span>[] nums1, <span class="type">int</span>[] nums2) &#123;</span><br><span class="line">        Set&lt;Integer&gt; set = <span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;&gt;();</span><br><span class="line">        Set&lt;Integer&gt; res = <span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> num : nums1) set.add(num);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> num : nums2) &#123;</span><br><span class="line">            <span class="keyword">if</span> (set.contains(num)) res.add(num);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Collection -&gt; Array</span></span><br><span class="line">        <span class="keyword">return</span> res.stream().mapToInt(Integer::intValue).toArray();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="快乐数"><a href="#快乐数" class="headerlink" title="快乐数"></a>快乐数</h3><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/happy-number/">202. 快乐数</a></p>
+<blockquote>
+<p><strong>快速判断一个元素是否出现集合里的时候，就要考虑哈希法了</strong></p>
+<p><strong>注意无限循环的表示</strong>，这表示在<strong>求和的过程中，sum会重复出现，这对解题很重要！</strong></p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isHappy</span><span class="params">(<span class="type">int</span> n)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> check(getPow(n));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> Boolean <span class="title function_">check</span><span class="params">(<span class="type">int</span> x)</span> &#123;</span><br><span class="line">        HashSet&lt;Object&gt; s = <span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;&gt;();</span><br><span class="line">        s.add(x);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (x == <span class="number">1</span>) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 重复出现一个元素表示死循环</span></span><br><span class="line">            x = getPow(x);</span><br><span class="line">            <span class="keyword">if</span> (s.contains(x)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            s.add(x);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getPow</span><span class="params">(<span class="type">int</span> x)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">res</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (x != <span class="number">0</span>) &#123;</span><br><span class="line">            res += (x % <span class="number">10</span>) * (x % <span class="number">10</span>);</span><br><span class="line">            x /= <span class="number">10</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="3-4-unordered-map"><a href="#3-4-unordered-map" class="headerlink" title="3.4 unordered_map"></a>3.4 unordered_map</h2><h3 id="两数之和"><a href="#两数之和" class="headerlink" title="两数之和"></a>两数之和</h3><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/two-sum/">1. 两数之和</a></p>
+<p>给定一个整数数组 <code>nums</code> 和一个整数目标值 <code>target</code>，请你在该数组中找出 <strong>和为目标值</strong> <em><code>target</code></em> 的那 <strong>两个</strong> 整数，并返回它们的数组下标。</p>
+<blockquote>
+<p>为什么想到哈希表</p>
+</blockquote>
+<p><strong>快速判断一个元素是否出现集合里的时候，就要考虑哈希法了</strong></p>
+<blockquote>
+<p>为什么不用数组和Set，想到用Map</p>
+</blockquote>
+<ul>
+<li>数组的大小是受限制的，而且如果元素很少，而哈希值太大会造成内存空间的浪费。</li>
+<li>set是一个集合，里面放的元素只能是一个key</li>
+<li>因此只有map可以了，<strong>这道题目中并不需要key有序，选择std::unordered_map 效率更高</strong></li>
+</ul>
+<blockquote>
+<p>map存什么，k和v是什么</p>
+</blockquote>
+<p>map是为了存储已经访问过的元素，key是元素，value是下标</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span>[] twoSum(<span class="type">int</span>[] nums, <span class="type">int</span> target) &#123;</span><br><span class="line">        <span class="comment">// 使用哈希Map优化，可优化到O(nlogn) 时间复杂度</span></span><br><span class="line">        Map&lt;Integer, Integer&gt; ma = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">        <span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> nums.length;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; n; i ++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (ma.containsKey(target - nums[i])) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">int</span>[]&#123;ma.get(target - nums[i]), i&#125;;</span><br><span class="line">            &#125;</span><br><span class="line">            ma.put(nums[i], i);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*Set&lt;Integer&gt; keySet = ma.keySet();</span></span><br><span class="line"><span class="comment">        Iterator&lt;Integer&gt; it = keySet.iterator();</span></span><br><span class="line"><span class="comment">        // 为了防止modCount 迭代器不一致，必须用该写法</span></span><br><span class="line"><span class="comment">        while (it.hasNext()) &#123;</span></span><br><span class="line"><span class="comment">            Integer key = it.next(); // 值</span></span><br><span class="line"><span class="comment">            Integer val = ma.get(key); // 下标</span></span><br><span class="line"><span class="comment">            it.remove();</span></span><br><span class="line"><span class="comment">            if (ma.containsKey(target - key)) &#123;</span></span><br><span class="line"><span class="comment">                return new int[]&#123;val, ma.get(target - key)&#125;;</span></span><br><span class="line"><span class="comment">            &#125;</span></span><br><span class="line"><span class="comment">        &#125;*/</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="四数相加Ⅱ"><a href="#四数相加Ⅱ" class="headerlink" title="四数相加Ⅱ"></a>四数相加Ⅱ</h3><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/4sum-ii/">454. 四数相加 II</a></p>
+<p>给你四个整数数组 <code>nums1</code>、<code>nums2</code>、<code>nums3</code> 和 <code>nums4</code> ，数组长度都是 <code>n</code> ，请你计算有多少个元组 <code>(i, j, k, l)</code> 能满足：</p>
+<ul>
+<li><code>0 &lt;= i, j, k, l &lt; n</code></li>
+<li><code>nums1[i] + nums2[j] + nums3[k] + nums4[l] == 0</code></li>
+</ul>
+<p>这题区别于**<a target="_blank" rel="noopener" href="https://programmercarl.com/0015.%E4%B8%89%E6%95%B0%E4%B9%8B%E5%92%8C.html">0015.三数之和 (opens new window)</a>，<a target="_blank" rel="noopener" href="https://programmercarl.com/0018.%E5%9B%9B%E6%95%B0%E4%B9%8B%E5%92%8C.html">0018.四数之和 (opens new window)</a>**，为什么可以使用哈希法？</p>
+<p>本题是四个独立的数组，不用考虑重复的四个元素相加等于0的情况（需要对相同方案去重，使用哈希会很麻烦）</p>
+<p>所以依旧是可以通过哈希来记录元素在集合中的出现次数。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">fourSumCount</span><span class="params">(<span class="type">int</span>[] nums1, <span class="type">int</span>[] nums2, <span class="type">int</span>[] nums3, <span class="type">int</span>[] nums4)</span> &#123;</span><br><span class="line">        <span class="comment">// 数字，数量</span></span><br><span class="line">        Map&lt;Integer, Integer&gt; ma1 = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">        Map&lt;Integer, Integer&gt; ma2 = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> num1 : nums1) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> num2 : nums2) &#123;</span><br><span class="line">                ma1.put(num1 + num2, ma1.getOrDefault(num1 + num2, <span class="number">0</span>) + <span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="type">int</span> <span class="variable">res</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> num3 : nums3) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> num4 : nums4) &#123;</span><br><span class="line">                res += ma1.getOrDefault(-num3 - num4, <span class="number">0</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">        int res = 0;</span></span><br><span class="line"><span class="comment">        Set&lt;Integer&gt; keySet = ma1.keySet();</span></span><br><span class="line"><span class="comment">        // k 数字， v出现次数</span></span><br><span class="line"><span class="comment">        for (Integer key : keySet) &#123;</span></span><br><span class="line"><span class="comment">            Integer val = ma1.get(key);</span></span><br><span class="line"><span class="comment">            while (val != 0) &#123;</span></span><br><span class="line"><span class="comment">                if (ma2.containsKey(key)) &#123;</span></span><br><span class="line"><span class="comment">                    res += ma2.get(key);</span></span><br><span class="line"><span class="comment">                &#125;</span></span><br><span class="line"><span class="comment">                val --;</span></span><br><span class="line"><span class="comment">            &#125;</span></span><br><span class="line"><span class="comment">        &#125;*/</span></span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="3-5-使用hash可能遇到的难题"><a href="#3-5-使用hash可能遇到的难题" class="headerlink" title="3.5 使用hash可能遇到的难题"></a>3.5 使用hash可能遇到的难题</h2><h3 id="三数之和（去重）"><a href="#三数之和（去重）" class="headerlink" title="三数之和（去重）"></a>三数之和（去重）</h3><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/3sum/">15. 三数之和</a></p>
+<p>给你一个整数数组 <code>nums</code> ，判断是否存在三元组 <code>[nums[i], nums[j], nums[k]]</code> 满足 <code>i != j</code>、<code>i != k</code> 且 <code>j != k</code> ，同时还满足 <code>nums[i] + nums[j] + nums[k] == 0</code> 。请你返回所有和为 <code>0</code> 且不重复的三元组。</p>
+<p>**注意：**答案中不可以包含重复的三元组。</p>
+<p>使用双指针</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; <span class="title function_">threeSum</span><span class="params">(<span class="type">int</span>[] nums)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">s</span> <span class="operator">=</span> <span class="number">0</span>, p, q, size = nums.length;</span><br><span class="line">        <span class="type">int</span> num1, num2, num3;</span><br><span class="line">        List&lt;List&lt;Integer&gt;&gt; res = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        Arrays.sort(nums);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (s &lt; size - <span class="number">2</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (s &gt; <span class="number">0</span> &amp;&amp; nums[s] == nums[s - <span class="number">1</span>]) &#123;</span><br><span class="line">                s ++; <span class="comment">// 防止s重复</span></span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            p = s + <span class="number">1</span>;</span><br><span class="line">            q = size - <span class="number">1</span>;</span><br><span class="line">            num1 = nums[s];</span><br><span class="line">            <span class="keyword">if</span> (num1 &gt; <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">while</span> (p &lt; q) &#123;</span><br><span class="line">                num2 = nums[p];</span><br><span class="line">                num3 = nums[q];</span><br><span class="line">                <span class="comment">// 如果判重逻辑在这里，会漏掉0 0 0的情况</span></span><br><span class="line">                <span class="keyword">if</span> (num1 + num2 + num3 &gt; <span class="number">0</span>) num3 = nums[-- q];</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> (num1 + num2 + num3 &lt; <span class="number">0</span>) num2 = nums[++ p];</span><br><span class="line">                <span class="keyword">else</span> &#123;</span><br><span class="line">                    res.add(Arrays.asList(num1, num2, num3));</span><br><span class="line">                    <span class="comment">// 去重，p指向最右边 和q指向最左边，同时下一次搜索，应当从该位置的下一个位置收缩</span></span><br><span class="line">                    <span class="keyword">while</span> (p &lt; q &amp;&amp; nums[p] == nums[p + <span class="number">1</span>]) p ++;</span><br><span class="line">                    <span class="keyword">while</span> (p &lt; q &amp;&amp; nums[q] == nums[q - <span class="number">1</span>]) q --;</span><br><span class="line">                    p ++;</span><br><span class="line">                    q --;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            s ++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>二刷，思路顺了以后就很快了，主要是确定一个基点s，然后双指针l，r，要注意s的去重和双指针的去重（s和l保留重复的最左边的，r保留重复的最右边的即可），把去重的思路理清后，配合双指针，这题直接攻破！</p>
+<ul>
+<li>这题要注意排序的思路，双指针的题，有时候需要借助一些递增&#x2F;递减关系的，例如这题的和为0的问题上</li>
+<li>一刷的时候，通过记录值num1 num2 num3（配合指针移动赋值），依次来达到复用目的，似乎看着比较清晰一些，算是一个值得借鉴的点</li>
+<li>我始终保持循环不变量（s&lt;size-2，l&lt;r），这样就再也没有死循环的问题了，解题速度会快了很多，精力可以放到更多的其他细节上</li>
+</ul>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; <span class="title function_">threeSum</span><span class="params">(<span class="type">int</span>[] nums)</span> &#123;</span><br><span class="line">        Arrays.sort(nums);</span><br><span class="line">        <span class="type">int</span> <span class="variable">size</span> <span class="operator">=</span> nums.length;</span><br><span class="line">        <span class="type">int</span> <span class="variable">s</span> <span class="operator">=</span> <span class="number">0</span>, l = s + <span class="number">1</span>, r = size - <span class="number">1</span>;</span><br><span class="line">        List&lt;List&lt;Integer&gt;&gt; res = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        <span class="keyword">while</span> (s &lt; size - <span class="number">2</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (nums[s] &gt; <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">            <span class="type">int</span> <span class="variable">target</span> <span class="operator">=</span> -nums[s];</span><br><span class="line">            l = s + <span class="number">1</span>;</span><br><span class="line">            r = size - <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">                <span class="comment">// System.out.println(String.format(&quot;%d %d %d--&gt; %d %d %d&quot;, s, l, r, nums[s], nums[l], nums[r]));</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (nums[l] + nums[r] &lt; target) &#123;</span><br><span class="line">                    l ++; <span class="comment">// 如果连续nums[l]相等，会自动往后移</span></span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (nums[l] + nums[r] &gt; target) &#123;</span><br><span class="line">                    r --;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    res.add(List.of(nums[s], nums[l], nums[r]));</span><br><span class="line">                    <span class="keyword">while</span> (l &lt; r &amp;&amp; nums[l] == nums[l + <span class="number">1</span>]) l ++;</span><br><span class="line">                    <span class="keyword">while</span> (l &lt; r &amp;&amp; nums[r] == nums[r - <span class="number">1</span>]) r --;</span><br><span class="line">                    l ++;</span><br><span class="line">                    r --;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">while</span> (s &lt; size - <span class="number">2</span> &amp;&amp; nums[s] == nums[s + <span class="number">1</span>]) s ++;</span><br><span class="line">            s ++;  </span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="四数之和"><a href="#四数之和" class="headerlink" title="四数之和"></a>四数之和</h3><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/4sum/">18. 四数之和</a></p>
+<p>给你一个由 <code>n</code> 个整数组成的数组 <code>nums</code> ，和一个目标值 <code>target</code> 。请你找出并返回满足下述全部条件且<strong>不重复</strong>的四元组 <code>[nums[a], nums[b], nums[c], nums[d]]</code> （若两个四元组元素一一对应，则认为两个四元组重复）：</p>
+<ul>
+<li><code>0 &lt;= a, b, c, d &lt; n</code></li>
+<li><code>a</code>、<code>b</code>、<code>c</code> 和 <code>d</code> <strong>互不相同</strong></li>
+<li><code>nums[a] + nums[b] + nums[c] + nums[d] == target</code></li>
+</ul>
+<p>你可以按 <strong>任意顺序</strong> 返回答案 。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; <span class="title function_">fourSum</span><span class="params">(<span class="type">int</span>[] nums, <span class="type">int</span> target)</span> &#123;</span><br><span class="line">        <span class="type">int</span> p, q, l, r, size = nums.length;</span><br><span class="line">        List&lt;List&lt;Integer&gt;&gt; res = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        Arrays.sort(nums);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (p = <span class="number">0</span>; p &lt; size - <span class="number">3</span>; p++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (p &gt; <span class="number">0</span> &amp;&amp; nums[p] == nums[p - <span class="number">1</span>]) <span class="keyword">continue</span>; <span class="comment">// 去重p</span></span><br><span class="line"> </span><br><span class="line">            <span class="type">long</span> <span class="variable">minSumP</span> <span class="operator">=</span> (<span class="type">long</span>) nums[p] + nums[p + <span class="number">1</span>] + nums[p + <span class="number">2</span>] + nums[p + <span class="number">3</span>];</span><br><span class="line">            <span class="keyword">if</span> (minSumP &gt; target) <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">            <span class="type">long</span> <span class="variable">maxSumP</span> <span class="operator">=</span> (<span class="type">long</span>) nums[p] + nums[size - <span class="number">3</span>] + nums[size - <span class="number">2</span>] + nums[size - <span class="number">1</span>];</span><br><span class="line">            <span class="keyword">if</span> (maxSumP &lt; target) <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> (q = p + <span class="number">1</span>; q &lt; size - <span class="number">2</span>; q++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (q &gt; p + <span class="number">1</span> &amp;&amp; nums[q] == nums[q - <span class="number">1</span>]) <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">                l = q + <span class="number">1</span>;</span><br><span class="line">                r = size - <span class="number">1</span>;</span><br><span class="line">                <span class="type">int</span> numsSum;</span><br><span class="line">                <span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">                    numsSum = nums[p] + nums[q] + nums[l] + nums[r];</span><br><span class="line">                    <span class="keyword">if</span> (numsSum &lt; target) l++;</span><br><span class="line">                    <span class="keyword">else</span> <span class="keyword">if</span> (numsSum &gt; target) r--;</span><br><span class="line">                    <span class="keyword">else</span> &#123;</span><br><span class="line">                        <span class="comment">// res.add	(Arrays.asList(p, q, l, r));</span></span><br><span class="line">                        res.add(Arrays.asList(nums[p], nums[q], nums[l], nums[r]));</span><br><span class="line">                        <span class="comment">// l, r去重，注意不变量</span></span><br><span class="line">                        <span class="keyword">while</span> (l &lt; r &amp;&amp; nums[l] == nums[l + <span class="number">1</span>]) l++;</span><br><span class="line">                        <span class="keyword">while</span> (l &lt; r &amp;&amp; nums[r] == nums[r - <span class="number">1</span>]) r--;</span><br><span class="line"></span><br><span class="line">                        l++;</span><br><span class="line">                        r--;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>二刷记录</p>
+<blockquote>
+<p>坑点：</p>
+<ul>
+<li>四个数字相加可能爆int，必须要用long，计算时要考虑自动类型转换的细节（java）</li>
+</ul>
+<p>剪枝思路：</p>
+<ul>
+<li>最小和：当前数 + 后续连续的 n-1 个数（如四数之和中，p 的最小和是 p+p+1+p+2+p+3）；</li>
+<li>最大和：当前数 + 最后 n-1 个数（如四数之和中，p 的最大和是 p+size-3+size-2+size-1）；</li>
+<li>若最小和 &gt; target → 直接 break（后续数更大，无需继续）；若最大和 &lt; target → 直接 continue（当前数的所有组合都不满足）。</li>
+<li>利用排序特性，当 <code>nums[l] ≥ 0</code> 时，后续所有数都是非负的，若 <code>nums[p]+nums[q]+nums[l]</code> 已超过 target，加上更大的 <code>nums[r]</code> 必然超 target，直接终止双指针循环；</li>
+</ul>
+<p>优化：</p>
+<ul>
+<li>这里可以看到用for循环，其实一开始外层两个循环我是用while循环的，但是发现每次continue前都要手动加上s1++等操作，用for循环可以规避这个问题，减少由于遗漏自增，导致耗费的排错时间</li>
+</ul>
+<p>可以看到虽然理论时间复杂度没变，但是经过我的一套**“剪枝组合拳”<strong>后确实实际运行时间减少了一些，这题应该是代码随想录的哈希表章节毕业题目了</strong>（懂得一些题目不能用哈希表解决，要用双指针等其他思路本身，就是对哈希表的更进一层掌握呀~）**，go继续下一章的复习</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260111103628039.png" alt="image-20260111103628039" style="zoom:50%;" />	
+
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260111103704541.png" alt="image-20260111103704541" style="zoom:50%;" />	</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> List&lt;List&lt;Integer&gt;&gt; <span class="title function_">fourSum</span><span class="params">(<span class="type">int</span>[] nums, <span class="type">int</span> target)</span> &#123;</span><br><span class="line">        List&lt;List&lt;Integer&gt;&gt; res = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        <span class="type">int</span> <span class="variable">size</span> <span class="operator">=</span> nums.length;</span><br><span class="line">        Arrays.sort(nums);</span><br><span class="line">        <span class="type">int</span> <span class="variable">s1</span> <span class="operator">=</span> <span class="number">0</span>, s2 = <span class="number">1</span>, l = s2 + <span class="number">1</span>, r = size - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> (; s1 &lt; size - <span class="number">3</span>; s1 ++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (s1 &gt; <span class="number">0</span> &amp;&amp; nums[s1 - <span class="number">1</span>] == nums[s1]) <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 剪枝优化</span></span><br><span class="line">            <span class="type">long</span> <span class="variable">minSum</span> <span class="operator">=</span> (<span class="type">long</span>) nums[s1] + nums[s1 + <span class="number">1</span>] + nums[s1 + <span class="number">2</span>] + nums[s1 + <span class="number">3</span>];</span><br><span class="line">            <span class="type">long</span> <span class="variable">maxSum</span> <span class="operator">=</span> (<span class="type">long</span>) nums[s1] + nums[size - <span class="number">3</span>] + nums[size - <span class="number">2</span>] + nums[size - <span class="number">1</span>];</span><br><span class="line">            <span class="keyword">if</span> (minSum &gt; target) <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">if</span> (maxSum &lt; target) <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> (s2 = s1 + <span class="number">1</span>; s2 &lt; size - <span class="number">2</span>; s2 ++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (s2 &gt; s1 + <span class="number">1</span> &amp;&amp; nums[s2 - <span class="number">1</span>] == nums[s2]) <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 剪枝优化2</span></span><br><span class="line">                minSum = (<span class="type">long</span>) nums[s1] + nums[s2] + nums[s2 + <span class="number">1</span>] + nums[s2 + <span class="number">2</span>];</span><br><span class="line">                maxSum = (<span class="type">long</span>) nums[s1] + nums[s2] + nums[size - <span class="number">2</span>] + nums[size - <span class="number">1</span>];</span><br><span class="line">                <span class="keyword">if</span> (minSum &gt; target) <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">if</span> (maxSum &lt; target) <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">                l = s2 + <span class="number">1</span>;</span><br><span class="line">                r = size - <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (nums[l] &gt;= <span class="number">0</span> &amp;&amp; (<span class="type">long</span>) nums[s1] + nums[s2] + nums[l] &gt; target) <span class="keyword">break</span>;</span><br><span class="line">                    nums[l] = nums[l];</span><br><span class="line">                    nums[r] = nums[r];</span><br><span class="line">                    <span class="comment">// System.out.println(String.format(&quot;(%d %d %d %d) %d %d %d %d&quot;, s1, s2, l, r, nums[s1], nums[s2], nums[l], nums[r]));</span></span><br><span class="line">                    <span class="type">long</span> <span class="variable">sum</span> <span class="operator">=</span> (<span class="type">long</span>) nums[s1] + nums[s2] + nums[l] + nums[r]; <span class="comment">// 注意long类型问题 + 自动类型转换细节</span></span><br><span class="line">                    <span class="keyword">if</span> (sum &lt; target) l ++;</span><br><span class="line">                    <span class="keyword">else</span> <span class="keyword">if</span> (sum &gt; target) r --;</span><br><span class="line">                    <span class="keyword">else</span> &#123;</span><br><span class="line">                        res.add(Arrays.asList(nums[s1], nums[s2], nums[l], nums[r]));</span><br><span class="line">                        <span class="keyword">while</span> (l &lt; r &amp;&amp; nums[l] == nums[l + <span class="number">1</span>]) l ++;</span><br><span class="line">                        <span class="keyword">while</span> (l &lt; r &amp;&amp; nums[r] == nums[r - <span class="number">1</span>]) r --;</span><br><span class="line">                        l ++;</span><br><span class="line">                        r --;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="回忆：使用双指针的题目"><a href="#回忆：使用双指针的题目" class="headerlink" title="回忆：使用双指针的题目"></a>回忆：使用双指针的题目</h3><p>双指针法将时间复杂度：O(n^2)的解法优化为 O(n)的解法。也就是降一个数量级，题目如下：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://programmercarl.com/0027.%E7%A7%BB%E9%99%A4%E5%85%83%E7%B4%A0.html">27.移除元素(opens new window)</a></li>
+<li><a target="_blank" rel="noopener" href="https://programmercarl.com/0015.%E4%B8%89%E6%95%B0%E4%B9%8B%E5%92%8C.html">15.三数之和(opens new window)</a></li>
+<li><a target="_blank" rel="noopener" href="https://programmercarl.com/0018.%E5%9B%9B%E6%95%B0%E4%B9%8B%E5%92%8C.html">18.四数之和(opens new window)</a></li>
+</ul>
+<p>链表相关双指针题目：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://programmercarl.com/0206.%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8.html">206.反转链表(opens new window)</a></li>
+<li><a target="_blank" rel="noopener" href="https://programmercarl.com/0019.%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E7%9A%84%E5%80%92%E6%95%B0%E7%AC%ACN%E4%B8%AA%E8%8A%82%E7%82%B9.html">19.删除链表的倒数第N个节点(opens new window)</a></li>
+<li><a target="_blank" rel="noopener" href="https://programmercarl.com/%E9%9D%A2%E8%AF%95%E9%A2%9802.07.%E9%93%BE%E8%A1%A8%E7%9B%B8%E4%BA%A4.html">面试题 02.07. 链表相交(opens new window)</a></li>
+<li><a target="_blank" rel="noopener" href="https://programmercarl.com/0142.%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8II.html">142题.环形链表II</a></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/06/10/2.Areas%F0%9F%8C%90/03.algorithm/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/3.%E5%93%88%E5%B8%8C%E8%A1%A8/">https://yuezi2048.github.io/2025/06/10/2.Areas🌐/03.algorithm/代码随想录/3.哈希表/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/">代码随想录</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/06/09/2.Areas%F0%9F%8C%90/03.algorithm/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/2.%E9%93%BE%E8%A1%A8/" title="2.链表"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">2.链表</div></div><div class="info-2"><div class="info-item-1">二、链表2.1 理论基础单链表   双链表 	 循环链表  链表存储方式：并不是连续存储的，各个节点分布在内存空间不同的地址空间上，通过指针串联起来 链表定义和常见操作struct ListNode &#123;    int val;  // 节点上存储的元素    ListNode *next;  // 指向下一个节点的指针    ListNode(int x) : val(x), next(NULL) &#123;&#125;  // 节点的构造函数&#125;;  public class ListNode &#123;    // 结点的值    int val;    // 下一个结点    ListNode next;    // 节点的构造函数(无参)    public ListNode() &#123;    &#125;    // 节点的构造函数(有一个参数)    public ListNode(int val) &#123;        this.val = val;    &#125;    // 节点的构造函数(有两个参数)    public...</div></div></div></a><a class="pagination-related" href="/2025/06/10/2.Areas%F0%9F%8C%90/03.algorithm/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/4.%E5%AD%97%E7%AC%A6%E4%B8%B2/" title="4.字符串"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">4.字符串</div></div><div class="info-2"><div class="info-item-1">四、字符串4.1 字符串原地操作反转字符串344. 反转字符串 编写一个函数，其作用是将输入的字符串反转过来。输入字符串以字符数组 s 的形式给出。 不要给另外的数组分配额外的空间，你必须**原地修改输入数组**、使用 O(1) 的额外空间解决这一问题。 class Solution &#123;    public void reverseString(char[] s) &#123;        int l = 0, r = s.length - 1;        while (l &lt; r) swap(s, l++, r--);    &#125;    void swap(char[] s, int l, int r) &#123;        s[l] ^= s[r];        s[r] ^= s[l];        s[l] ^= s[r];    &#125;&#125;  541. 反转字符串 II 给定一个字符串 s 和一个整数 k，从字符串开头算起，每计数至 2k 个字符，就反转这 2k 字符中的前 k 个字符。  如果剩余字符少于 k...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related no-desc" href="/2025/05/31/2.Areas%F0%9F%8C%90/03.algorithm/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/0.%E5%89%8D%E7%BD%AE%E2%80%94%E7%AE%97%E6%B3%95%E6%80%A7%E8%83%BD%E8%AF%84%E4%BC%B0/" title="0.前置—算法性能评估"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-31</div><div class="info-item-2">0.前置—算法性能评估</div></div></div></a><a class="pagination-related" href="/2025/06/07/2.Areas%F0%9F%8C%90/03.algorithm/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/1.%E6%95%B0%E7%BB%84/" title="1.数组"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-07</div><div class="info-item-2">1.数组</div></div><div class="info-2"><div class="info-item-1">一、数组2.1 理论基础数组特性：数组在连续的内存空间上存储  C++中，二维数组实际内存空间是连续分布的，二维的每一维理解为一个大的一维数组的逻辑分块。vector是底层实现基于array Java中，没有指针概念，实际上不能找到内存的地址，所以每一行的头节点的地址和上一行具备连续关系 	   通过下标访问在O(1)的时间复杂度，得到数据 但增删时需整体挪动，为O(n)时间复杂度，数组的元素是不能删的，只能覆盖。  2.2 二分查找二分查数（Ologn模板）704.二分查找 给定一个 n 个元素有序的（升序）整型数组 nums 和一个目标值 target ，写一个函数搜索 nums 中的 target，如果目标值存在返回下标，否则返回 -1。 	 左闭右闭查找满足某个条件的数的通用模板 	 class Solution &#123;    public int search(int[] nums, int target) &#123;        int l = 0, r = nums.length - 1;        while (l &lt;= r) &#123; ...</div></div></div></a><a class="pagination-related" href="/2025/05/31/2.Areas%F0%9F%8C%90/03.algorithm/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/11.%E5%8D%95%E8%B0%83%E6%A0%88/" title="11.单调栈"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-31</div><div class="info-item-2">11.单调栈</div></div><div class="info-2"><div class="info-item-1">单调栈任务：找到左&#x2F;右边第一个大于&#x2F;小于的元素 739. 每日温度  注意，栈中存放的是下标，从而方便快速找到对应位置的元素  	 class Solution &#123;    public int[] dailyTemperatures(int[] temperatures) &#123;        int n = temperatures.length;        int[] res = new int[n];        Deque&lt;Integer&gt; st = new LinkedList&lt;&gt;();        st.push(0);                for (int i = 1; i &lt; n; i ++) &#123;            while (! st.isEmpty() &amp;&amp; temperatures[i] &gt; temperatures[st.peek()]) &#123;                res[st.peek()] = i -...</div></div></div></a><a class="pagination-related no-desc" href="/2025/05/31/2.Areas%F0%9F%8C%90/03.algorithm/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/12.%E5%9B%BE%E8%AE%BA/" title="12.图论"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-31</div><div class="info-item-2">12.图论</div></div></div></a><a class="pagination-related no-desc" href="/2025/05/31/2.Areas%F0%9F%8C%90/03.algorithm/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/13.%E8%A1%A5%E5%85%85%E9%A2%98%E7%9B%AE/" title="13.补充题目"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-31</div><div class="info-item-2">13.补充题目</div></div></div></a><a class="pagination-related" href="/2025/06/09/2.Areas%F0%9F%8C%90/03.algorithm/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/2.%E9%93%BE%E8%A1%A8/" title="2.链表"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-09</div><div class="info-item-2">2.链表</div></div><div class="info-2"><div class="info-item-1">二、链表2.1 理论基础单链表   双链表 	 循环链表  链表存储方式：并不是连续存储的，各个节点分布在内存空间不同的地址空间上，通过指针串联起来 链表定义和常见操作struct ListNode &#123;    int val;  // 节点上存储的元素    ListNode *next;  // 指向下一个节点的指针    ListNode(int x) : val(x), next(NULL) &#123;&#125;  // 节点的构造函数&#125;;  public class ListNode &#123;    // 结点的值    int val;    // 下一个结点    ListNode next;    // 节点的构造函数(无参)    public ListNode() &#123;    &#125;    // 节点的构造函数(有一个参数)    public ListNode(int val) &#123;        this.val = val;    &#125;    // 节点的构造函数(有两个参数)    public...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%93%88%E5%B8%8C%E6%B3%95"><span class="toc-text">三、哈希法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80"><span class="toc-text">3.1 理论基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%88%E5%B8%8C%E8%A1%A8"><span class="toc-text">哈希表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%88%E5%B8%8C%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84"><span class="toc-text">哈希存储结构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-%E6%95%B0%E7%BB%84%EF%BC%88%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D%EF%BC%89"><span class="toc-text">3.2 数组（字母异位词）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E9%A2%98%E7%9B%AE"><span class="toc-text">相关题目</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-unordered-set%EF%BC%88%E5%8E%BB%E9%87%8D-%E6%97%A0%E5%BA%8F%EF%BC%89"><span class="toc-text">3.3 unordered_set（去重+无序）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%A4%E4%B8%AA%E6%95%B0%E7%BB%84%E4%BA%A4%E9%9B%86"><span class="toc-text">两个数组交集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%AB%E4%B9%90%E6%95%B0"><span class="toc-text">快乐数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-4-unordered-map"><span class="toc-text">3.4 unordered_map</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C"><span class="toc-text">两数之和</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E6%95%B0%E7%9B%B8%E5%8A%A0%E2%85%A1"><span class="toc-text">四数相加Ⅱ</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-5-%E4%BD%BF%E7%94%A8hash%E5%8F%AF%E8%83%BD%E9%81%87%E5%88%B0%E7%9A%84%E9%9A%BE%E9%A2%98"><span class="toc-text">3.5 使用hash可能遇到的难题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E6%95%B0%E4%B9%8B%E5%92%8C%EF%BC%88%E5%8E%BB%E9%87%8D%EF%BC%89"><span class="toc-text">三数之和（去重）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E6%95%B0%E4%B9%8B%E5%92%8C"><span class="toc-text">四数之和</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9E%E5%BF%86%EF%BC%9A%E4%BD%BF%E7%94%A8%E5%8F%8C%E6%8C%87%E9%92%88%E7%9A%84%E9%A2%98%E7%9B%AE"><span class="toc-text">回忆：使用双指针的题目</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

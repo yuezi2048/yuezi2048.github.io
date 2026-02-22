@@ -1,0 +1,373 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>02.MySQL环境搭建 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="二、MySQL环境搭建1. 清除原有MySQL环境Step1：停止MySQL服务 	 Step2：软件卸载  亦可通过mysql-installer-community-8.0.26.0.msi卸载，此时安装目录也会被移除  	 Step3：残余文件清理 如果再次安装不成功，可以卸载后对残余文件进行清理后再安装。 （1）服务目录：mysql服务的安装目录 （2）数据目录：默认在C:\Program">
+<meta property="og:type" content="article">
+<meta property="og:title" content="02.MySQL环境搭建">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/05/25/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/02.MySQL%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="二、MySQL环境搭建1. 清除原有MySQL环境Step1：停止MySQL服务 	 Step2：软件卸载  亦可通过mysql-installer-community-8.0.26.0.msi卸载，此时安装目录也会被移除  	 Step3：残余文件清理 如果再次安装不成功，可以卸载后对残余文件进行清理后再安装。 （1）服务目录：mysql服务的安装目录 （2）数据目录：默认在C:\Program">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-05-25T00:55:50.000Z">
+<meta property="article:modified_time" content="2025-05-25T00:55:50.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="基础篇">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "02.MySQL环境搭建",
+  "url": "https://yuezi2048.github.io/2025/05/25/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/02.MySQL%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-05-25T00:55:50.000Z",
+  "dateModified": "2025-05-25T00:55:50.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/05/25/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/02.MySQL%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '02.MySQL环境搭建',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">02.MySQL环境搭建</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">02.MySQL环境搭建</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-05-25T00:55:50.000Z" title="发表于 2025-05-25 08:55:50">2025-05-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-05-25T00:55:50.000Z" title="更新于 2025-05-25 08:55:50">2025-05-25</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/">back-end-java</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/2-MySQL/">2.MySQL</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/2-MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/">基础篇</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>9分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="二、MySQL环境搭建"><a href="#二、MySQL环境搭建" class="headerlink" title="二、MySQL环境搭建"></a>二、MySQL环境搭建</h1><h2 id="1-清除原有MySQL环境"><a href="#1-清除原有MySQL环境" class="headerlink" title="1. 清除原有MySQL环境"></a>1. 清除原有MySQL环境</h2><p><strong>Step1：停止MySQL服务</strong></p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814083933277.png" alt="image-20240814083933277">	</p>
+<p><strong>Step2：软件卸载</strong></p>
+<ul>
+<li>亦可通过mysql-installer-community-8.0.26.0.msi卸载，此时安装目录也会被移除</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814083945930.png" alt="image-20240814083945930">	</p>
+<p><strong>Step3：残余文件清理</strong></p>
+<p>如果再次安装不成功，可以卸载后对残余文件进行清理后再安装。</p>
+<p>（1）服务目录：mysql服务的安装目录</p>
+<p>（2）数据目录：默认在C:\ProgramData\MySQL</p>
+<p>注意：请在卸载前做好数据备份</p>
+<p>在操作完以后，需要重启计算机，然后进行安装即可。如果仍然安装失败，需要继续操作如下步骤4。</p>
+<p><strong>Step4：清理注册表</strong></p>
+<p>在系统的搜索框中输入<code>regedit</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\Eventlog\Application\MySQL服务 目录删除</span><br><span class="line"></span><br><span class="line">HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\MySQL服务 目录删除</span><br><span class="line"></span><br><span class="line">HKEY_LOCAL_MACHINE\SYSTEM\ControlSet002\Services\Eventlog\Application\MySQL服务 目录删除</span><br><span class="line"></span><br><span class="line">HKEY_LOCAL_MACHINE\SYSTEM\ControlSet002\Services\MySQL服务 目录删除</span><br><span class="line"></span><br><span class="line">HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\Application\MySQL服务目录删除</span><br><span class="line"></span><br><span class="line">HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\MySQL服务删除</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>Step5：删除环境变量</strong></p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814084247669.png" alt="image-20240814084247669" style="zoom: 80%;" />	
+
+
+
+<h2 id="2-下载安装配置"><a href="#2-下载安装配置" class="headerlink" title="2. 下载安装配置"></a>2. 下载安装配置</h2><h3 id="2-1-安装"><a href="#2-1-安装" class="headerlink" title="2.1 安装"></a>2.1 安装</h3><p>官网：<a target="_blank" rel="noopener" href="https://www.mysql.com/">https://www.mysql.com</a></p>
+<p>选择：<code>MySQL Community(GPL) Downloads</code> —-&gt;  MySQL Community Server</p>
+<p>建议使用MSI安装包</p>
+<p>自定义安装–&gt; add MySQL Server (Advanced Options 编辑服务目录和数据目录) —&gt; Execute</p>
+<h3 id="2-2-配置"><a href="#2-2-配置" class="headerlink" title="2.2 配置"></a>2.2 配置</h3><p>上一步执行完后</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814084705382.png" alt="image-20240814084705382">	</p>
+<p>接下来选择Config Type，根据实际场景 对应不同的占用资源，这里个人学习的话用第一个就行</p>
+<ul>
+<li><p><code>Development Machine（开发机器）</code>：该选项代表典型个人用桌面工作站。此时机器上需要运行多个应用程序，那么MySQL服务器将占用最少的系统资源。</p>
+</li>
+<li><p><code>Server Machine（服务器）</code>：该选项代表服务器，MySQL服务器可以同其他服务器应用程序一起运行，例如Web服务器等。MySQL服务器配置成适当比例的系统资源。</p>
+</li>
+<li><p><code>Dedicated Machine（专用服务器）</code>：该选项代表只运行MySQL服务的服务器。MySQL服务器配置成使用所有可用系统资源。</p>
+</li>
+</ul>
+<p>下一步是Authentication Method，上面的选项是MySQL8.0提供的新的授权方式，采用SHA256基础的密码加密方法；下面的选项是传统授权方法（保留5.x版本兼容性）。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814084851143.png" alt="image-20240814084851143">	</p>
+<p>下一步是Accounts and Roles配置。打开设置服务器root超级管理员的密码窗口，如图所示，需要输入两次同样的登录密码。</p>
+<p>也可以通过“Add User”添加其他用户，添加其他用户时，需要指定用户名、允许该用户名在哪台&#x2F;哪些主机上登录，还可以指定用户角色等。此处暂不添加用户，用户管理在MySQL高级特性篇中讲解。</p>
+<p>下一步是配置Windwos Service</p>
+<p>本书将服务名设置为“MySQL80”。如果希望开机自启动服务，也可以勾选“Start the MySQL Server at System Startup”选项（推荐）。</p>
+<p>下面是选择以什么方式运行服务？可以选择“Standard System Account”(标准系统用户)或者“Custom User”(自定义用户)中的一个。这里推荐前者。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20240814085001710.png" alt="image-20240814085001710">	</p>
+<p>上述配置完毕，Execute执行</p>
+<p>安装好后将环境变量加入</p>
+<p>步骤1：在桌面上右击【此电脑】图标，在弹出的快捷菜单中选择【属性】菜单命令。<br>步骤2：打开【系统】窗口，单击【高级系统设置】链接。<br>步骤3：打开【系统属性】对话框，选择【高级】选项卡，然后单击【环境变量】按钮。<br>步骤4：打开【环境变量】对话框，在系统变量列表中选择path变量。<br>步骤5：单击【编辑】按钮，在【编辑环境变量】对话框中，将MySQL应用程序的bin目录（C:\Program Files\MySQL\MySQL Server 8.0\bin）添加到变量值中，用分号将其与其他路径分隔开。<br>步骤6：添加完成之后，单击【确定】按钮，这样就完成了配置path变量的操作，然后就可以直接输入MySQL命令来登录数据库了。</p>
+<h3 id="2-3-安装MySQL5-7"><a href="#2-3-安装MySQL5-7" class="headerlink" title="2.3 安装MySQL5.7"></a>2.3 安装MySQL5.7</h3><ul>
+<li><strong>安装</strong></li>
+</ul>
+<p>此版本的安装过程与上述过程除了版本号不同之外，其它环节都是相同的。所以这里省略了MySQL5.7.34版本的安装截图。</p>
+<ul>
+<li><strong>配置</strong></li>
+</ul>
+<p>配置环节与MySQL8.0版本确有细微不同。大部分情况下直接选择“Next”即可，不影响整理使用。</p>
+<p>这里配置MySQL5.7时，重点强调：<strong>与前面安装好的MySQL8.0不能使用相同的端口号。</strong></p>
+<p>安装失败原因：</p>
+<ul>
+<li>缺少.Net Framework相关软件</li>
+<li>没有完全清除相关信息</li>
+</ul>
+<h2 id="3-登录MySQL"><a href="#3-登录MySQL" class="headerlink" title="3. 登录MySQL"></a>3. 登录MySQL</h2><h3 id="3-1-启动MySQL服务"><a href="#3-1-启动MySQL服务" class="headerlink" title="3.1 启动MySQL服务"></a>3.1 启动MySQL服务</h3><p>启动服务</p>
+<ol>
+<li><p>start和stop后面的服务名应与之前配置时指定的服务名一致。</p>
+</li>
+<li><p>如果当你输入命令后，提示“拒绝服务”，请以<code>系统管理员身份</code>打开命令提示符界面重新尝试。</p>
+</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 启动 MySQL 服务命令：</span></span><br><span class="line">net start MySQL服务名</span><br><span class="line"></span><br><span class="line"><span class="comment"># 停止 MySQL 服务命令：</span></span><br><span class="line">net stop MySQL服务名</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3-2-连接MySQL服务"><a href="#3-2-连接MySQL服务" class="headerlink" title="3.2 连接MySQL服务"></a>3.2 连接MySQL服务</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mysql -h主机名 -P端口号 -u用户名 -p</span><br><span class="line">密码</span><br></pre></td></tr></table></figure>
+
+<p>注意点</p>
+<p>（1）-p与密码之间不能有空格，其他参数名与参数值之间可以有空格也可以没有空格。</p>
+<p>（2）密码建议在下一行输入，保证安全</p>
+<p>（3）客户端和服务器在同一台机器上，所以输入localhost或者IP地址127.0.0.1。同时，因为是连接本机：<br>-hlocalhost就可以省略，如果端口号没有修改：-P3306也可以省略</p>
+<p>连接成功后，有关于MySQL Server服务版本的信息，还有第几次连接的id标识。</p>
+<p>也可以在命令行通过以下方式获取MySQL Server服务版本的信息：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">c:\&gt; mysql -V</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">c:\&gt; mysql --version</span><br></pre></td></tr></table></figure>
+
+<p>或<strong>登录</strong>后，通过以下方式查看当前版本信息：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mysql&gt; <span class="keyword">select</span> version();</span><br></pre></td></tr></table></figure>
+
+<p>退出登录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">exit</span></span><br><span class="line">或</span><br><span class="line">quit</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="4-MySQL快速使用"><a href="#4-MySQL快速使用" class="headerlink" title="4. MySQL快速使用"></a>4. MySQL快速使用</h2><h3 id="4-1-MySQL的使用演示"><a href="#4-1-MySQL的使用演示" class="headerlink" title="4.1 MySQL的使用演示"></a>4.1 MySQL的使用演示</h3><p><strong>1、查看所有的数据库</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">show databases;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>“information_schema”是 MySQL 系统自带的数据库，主要保存 MySQL 数据库服务器的系统信息，比如数据库的名称、数据表的名称、字段名称、存取权限、数据文件 所在的文件夹和系统使用的文件夹，等等</p>
+<p>“performance_schema”是 MySQL 系统自带的数据库，可以用来监控 MySQL 的各类性能指标。 </p>
+<p>“sys”数据库是 MySQL 系统自带的数据库，主要作用是以一种更容易被理解的方式展示 MySQL 数据库服务器的各类性能指标，帮助系统管理员和开发人员监控 MySQL 的技术性能。 </p>
+<p>“mysql”数据库保存了 MySQL 数据库服务器运行时需要的系统信息，比如数据文件夹、当前使用的字符集、约束检查信息，等等</p>
+</blockquote>
+<p>为什么 Workbench 里面我们只能看到“demo”和“sys”这 2 个数据库呢？ </p>
+<p>这是因为，Workbench 是图形化的管理工具，主要面向开发人 员，“demo”和“sys”这 2 个数据库已经够用了。如果有特殊需求，比如，需要监控 MySQL 数据库各项性能指标、直接操作 MySQL 数据库系统文件等，可以由 DBA 通过 SQL 语句，查看其它的系统数据库。</p>
+<p><strong>2、创建自己的数据库</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#创建atguigudb数据库，该名称不能与已经存在的数据库重名。</span><br><span class="line">create database if not exists atguigudb;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>3、使用自己的数据库</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#使用atguigudb数据库</span><br><span class="line">use atguigudb;</span><br></pre></td></tr></table></figure>
+
+<p>说明：如果没有使用use语句，后面针对数据库的操作也没有加“数据名”的限定，那么会报“ERROR 1046 (3D000): No database selected”（没有选择数据库）</p>
+<p>使用完use语句之后，如果接下来的SQL都是针对一个数据库操作的，那就不用重复use了，如果要针对另一个数据库操作，那么要重新use。</p>
+<p><strong>4、查看某个库的所有表格</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">show tables;  #要求前面有use语句</span><br><span class="line"></span><br><span class="line">show tables from 数据库名;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>5、创建新的表格</strong></p>
+<p>说明：如果是最后一个字段，后面就用加逗号，因为逗号的作用是分割每个字段。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#创建学生表</span><br><span class="line">create table student(</span><br><span class="line">	id int,</span><br><span class="line">    name varchar(20)  #说名字最长不超过20个字符</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>6、查看一个表的数据</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#查看学生表的数据</span><br><span class="line">select * from student;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>7、添加一条记录</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">insert into 表名称 values(值列表);</span><br><span class="line"></span><br><span class="line">#添加两条记录到student表中</span><br><span class="line">insert into student values(1,&#x27;张三&#x27;);</span><br><span class="line">insert into student values(2,&#x27;李四&#x27;);</span><br></pre></td></tr></table></figure>
+
+<p>报错：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql&gt; insert into student values(1,&#x27;张三&#x27;);</span><br><span class="line">ERROR 1366 (HY000): Incorrect string value: &#x27;\xD5\xC5\xC8\xFD&#x27; for column &#x27;name&#x27; at row 1</span><br><span class="line">mysql&gt; insert into student values(2,&#x27;李四&#x27;);</span><br><span class="line">ERROR 1366 (HY000): Incorrect string value: &#x27;\xC0\xEE\xCB\xC4&#x27; for column &#x27;name&#x27; at row 1</span><br><span class="line">mysql&gt; show create table student;</span><br></pre></td></tr></table></figure>
+
+<p>字符集的问题。</p>
+<p>8、查看表的创建信息</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">show create table 表名称\G</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#查看student表的详细创建信息</span><br><span class="line">show create table student\G</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#结果如下</span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">       Table: student</span><br><span class="line">Create Table: CREATE TABLE `student` (</span><br><span class="line">  `id` int(11) DEFAULT NULL,</span><br><span class="line">  `name` varchar(20) DEFAULT NULL</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=latin1</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>上面的结果显示student的表格的默认字符集是“latin1”不支持中文。</p>
+<p><strong>9、查看数据库的创建信息</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">show create database 数据库名\G</span><br><span class="line"></span><br><span class="line">#查看atguigudb数据库的详细创建信息</span><br><span class="line">show create database atguigudb\G</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#结果如下</span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">       Database: atguigudb</span><br><span class="line">Create Database: CREATE DATABASE `atguigudb` /*!40100 DEFAULT CHARACTER SET latin1 */</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>上面的结果显示atguigudb数据库也不支持中文，字符集默认是latin1。</p>
+<p><strong>10、删除表格</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#删除学生表</span><br><span class="line">drop table student;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>11、删除数据库</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#删除atguigudb数据库</span><br><span class="line">drop database atguigudb;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="4-2-问题解决：编码相关"><a href="#4-2-问题解决：编码相关" class="headerlink" title="4.2 问题解决：编码相关"></a>4.2 问题解决：编码相关</h3><h4 id="MySQL5-7中"><a href="#MySQL5-7中" class="headerlink" title="MySQL5.7中"></a>MySQL5.7中</h4><p><strong>问题再现：命令行操作sql乱码问题</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql&gt; INSERT INTO t_stu VALUES(1,&#x27;张三&#x27;,&#x27;男&#x27;);</span><br><span class="line">ERROR 1366 (HY000): Incorrect string value: &#x27;\xD5\xC5\xC8\xFD&#x27; for column &#x27;sname&#x27; at row 1</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>问题解决</strong></p>
+<p>步骤1：查看编码命令</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">show variables like &#x27;character_%&#x27;;</span><br><span class="line">show variables like &#x27;collation_%&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>步骤2：修改mysql的数据目录下的my.ini配置文件</p>
+<figure class="highlight ini"><table><tr><td class="code"><pre><span class="line"><span class="section">[mysql]</span>  <span class="comment">#大概在63行左右，在其下添加</span></span><br><span class="line">... </span><br><span class="line"><span class="attr">default-character-set</span>=utf8  <span class="comment">#默认字符集</span></span><br><span class="line"></span><br><span class="line"><span class="section">[mysqld]</span>  <span class="comment"># 大概在76行左右，在其下添加</span></span><br><span class="line">...</span><br><span class="line"><span class="attr">character-set-server</span>=utf8</span><br><span class="line"><span class="attr">collation-server</span>=utf8_general_ci</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：建议修改配置文件使用notepad++等高级文本编辑器，使用记事本等软件打开修改后可能会导致文件编码修改为“含BOM头”的编码，从而服务重启失败。</p>
+</blockquote>
+<p>步骤3：重启服务</p>
+<p>步骤4：查看编码命令</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> variables <span class="keyword">like</span> <span class="string">&#x27;character_%&#x27;</span>;</span><br><span class="line"><span class="keyword">show</span> variables <span class="keyword">like</span> <span class="string">&#x27;collation_%&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<img src="/img/loading.gif" data-original="E:\mysql\mysql基础篇笔记\笔记\images\MySQL编码1.jpg" style="zoom:90%;" />	
+
+<img src="/img/loading.gif" data-original="E:\mysql\mysql基础篇笔记\笔记\images\MySQL编码2.jpg" style="zoom:90%;" />	
+
+<ul>
+<li>如果是以上配置就说明对了。接着我们就可以新创建数据库、新创建数据表，接着添加包含中文的数据了。</li>
+</ul>
+<h4 id="MySQL8-0中"><a href="#MySQL8-0中" class="headerlink" title="MySQL8.0中"></a>MySQL8.0中</h4><p>在MySQL 8.0版本之前，默认字符集为latin1，utf8字符集指向的是utf8mb3。网站开发人员在数据库设计的时候往往会将编码修改为utf8字符集。如果遗忘修改默认的编码，就会出现乱码的问题。从MySQL 8.0开始，数据库的默认编码改为<code>utf8mb4</code>，从而避免了上述的乱码问题。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/05/25/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/02.MySQL%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">https://yuezi2048.github.io/2025/05/25/2.Areas🌐/back-end-java/2.MySQL/基础篇/02.MySQL环境搭建/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%9F%BA%E7%A1%80%E7%AF%87/">基础篇</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/05/07/2.Areas%F0%9F%8C%90/back-end-java/7.SpringBoot/3.%20%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8Ethymeleaf/" title="3. 模板引擎thymeleaf"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">3. 模板引擎thymeleaf</div></div><div class="info-2"><div class="info-item-1">三、模板引擎thymeleaf3.1 简介和基本语法3.1.1 简介springboot支持第三方的模板引擎技术，我们在官方文档中的启动器中可以看到一些相关的模板引擎 	  thymeleaf官网: https://www.thymeleaf.org/  Thymeleaf is a modern server-side Java template engine for both web and standalone environments. Thymeleaf’s main goal is to bring elegant natural templates to your development workflow — HTML that can be correctly displayed in browsers and also work as static prototypes, allowing for stronger collaboration in development teams. With modules for Spring Framework, a...</div></div></div></a><a class="pagination-related" href="/2025/05/28/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/05.%E6%8E%92%E5%BA%8F%E5%92%8C%E5%88%86%E9%A1%B5/" title="05.排序和分页"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">05.排序和分页</div></div><div class="info-2"><div class="info-item-1">五、排序和分页1. 排序1.1 单列排序 使用 ORDER BY 子句排序 ASC（ascend）: 升序 DESC（descend）:降序   ORDER BY 子句在SELECT语句的结尾。 关注SELECT查询的顺序，实际场景：别名不能在where从句中使用，而可以在order by中使用  # 1. 一级排序# 如果没有使用排序操作，默认情况下查询返回的数据按照添加数据的顺序SELECT * FROM employees;-- 1.1 基本使用# 练习：按照salary从高到低显示数据(ORDER BY 通过什么来排序)# 升序:ASC(ascend) 降序：DESC(descend)SELECT employee_id, last_name, salaryFROM employeesORDER BY salary DESC;# 从低到高(没有显式写，默认升序)SELECT employee_id, last_name, salaryFROM employeesORDER BY salary ASC;-- 2. 别名# 使用列的别名进行排序SELECT...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2024/08/14/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/01.%E6%95%B0%E6%8D%AE%E5%BA%93%E6%A6%82%E8%BF%B0/" title="01.数据库概述"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-14</div><div class="info-item-2">01.数据库概述</div></div><div class="info-2"><div class="info-item-1">一、数据库概述1. 为什么要数据库 数据的持久化：将数据保存到硬盘上，可供可掉电式的存储设备使用，大多使用关系数据库实现（也可以通过文件I&#x2F;O、XML实现）  	 2. DB 和 DBMS2.1 概述 数据库DB：存储数据的仓库，本质上是一个文件系统，保存一系列有组织的数据 数据库管理系统DBMS：管理和操纵数据库的大型软件，从而建立、使用和维护数据库。用户可以使用DBMS查询数据库的数据 结构化查询语言SQL：用于数据库交互的语言  其中，DBMS可以管理多个DB，开发中，通常针对每个应用创建一个数据库，并在一个数据库中创建多个表，从而保存实体用户的数据 	 2.2 常见DBMS常见的DBMS 参考数据库最新排名:https://db-engines.com/en/ranking 	 发展趋势：https://db-engines.com/en/ranking_trend 	 Oracle 1979 年，Oracle 2 诞生，它是第一个商用的 RDBMS（关系型数据库管理系统）。随着 Oracle 软件的名气越来越大，公司也改名叫 Oracle...</div></div></div></a><a class="pagination-related" href="/2024/08/16/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/03.%E5%9F%BA%E6%9C%ACSELECT%E8%AF%AD%E5%8F%A5/" title="03.基本SELECT语句"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-16</div><div class="info-item-2">03.基本SELECT语句</div></div><div class="info-2"><div class="info-item-1">三、基本SELECT语句1. SQL概述1.1 SQL背景 1946 年，世界上第一台电脑诞生，如今，借由这台电脑发展起来的互联网已经自成江湖。在这几十年里，无数的技术、产业在这片江湖里沉浮，有的方兴未艾，有的已经几幕兴衰。但在这片浩荡的波动里，有一门技术从未消失，甚至“老当益壮”，那就是 SQL。  45 年前，也就是 1974 年，IBM 研究员发布了一篇揭开数据库技术的论文《SEQUEL：一门结构化的英语查询语言》，直到今天这门结构化的查询语言并没有太大的变化，相比于其他语言，SQL 的半衰期可以说是非常长了。   不论是前端工程师，还是后端算法工程师，都一定会和数据打交道，都需要了解如何又快又准确地提取自己想要的数据。更别提数据分析师了，他们的工作就是和数据打交道，整理不同的报告，以便指导业务决策。  SQL（Structured Query...</div></div></div></a><a class="pagination-related" href="/2025/04/24/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/04.%E8%BF%90%E7%AE%97%E7%AC%A6/" title="04.运算符"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-24</div><div class="info-item-2">04.运算符</div></div><div class="info-2"><div class="info-item-1">四、运算符1. 算数运算符算术运算符主要用于数学运算，其可以连接运算符前后的两个数值或表达式，对数值或表达式进行加（+）、减（-）、乘（*）、除（&#x2F;）和取模（%）运算。 1.1 加减法# 算数运算符：+ - * / div % mod SELECT 100, 100 + 0, 100 - 0, 100 + 50, 100 + 50 - 30, 100 + 35.5, 100 - 35.5FROM DUAL;+-----+---------+---------+----------+--------------+------------+------------+| 100 | 100 + 0 | 100 - 0 | 100 + 50 | 100 + 50 -30 | 100 + 35.5 | 100 - 35.5 |+-----+---------+---------+----------+--------------+------------+------------+| 100 |     100 |     100 |      150 |         ...</div></div></div></a><a class="pagination-related" href="/2024/08/14/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/00.%E5%9F%BA%E7%A1%80%E7%AF%87%E5%86%85%E5%AE%B9%E6%A1%86%E6%9E%B6/" title="00.基础篇内容框架"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-14</div><div class="info-item-2">00.基础篇内容框架</div></div><div class="info-2"><div class="info-item-1">MySQL数据库基础篇分为5个篇章： 1. 数据库概述与MySQL安装篇  第01章：数据库概述 第02章：MySQL环境搭建  2. SQL之SELECT使用篇  第03章：基本的SELECT语句 第04章：运算符 第05章：排序与分页 第06章：多表查询 第07章：单行函数 第08章：聚合函数 第09章：子查询  3. SQL之DDL、DML、DCL使用篇  第10章：创建和管理表 第11章：数据处理之增删改 第12章：MySQL数据类型精讲 第13章：约束  4. 其它数据库对象篇（开发用到了再学）  第14章：视图 第15章：存储过程与函数 第16章：变量、流程控制与游标 第17章：触发器  5. MySQL8 新特性篇（开发用到了再学）  第18章：MySQL8其它新特性  ps：普通开发往往积累单点技术、比如 CRUD、锁类型、索引的数据结构… 而对于技术骨干、架构师则往往需要对底层原理吃透：  数据库事务 ACID...</div></div></div></a><a class="pagination-related" href="/2025/05/28/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/05.%E6%8E%92%E5%BA%8F%E5%92%8C%E5%88%86%E9%A1%B5/" title="05.排序和分页"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-28</div><div class="info-item-2">05.排序和分页</div></div><div class="info-2"><div class="info-item-1">五、排序和分页1. 排序1.1 单列排序 使用 ORDER BY 子句排序 ASC（ascend）: 升序 DESC（descend）:降序   ORDER BY 子句在SELECT语句的结尾。 关注SELECT查询的顺序，实际场景：别名不能在where从句中使用，而可以在order by中使用  # 1. 一级排序# 如果没有使用排序操作，默认情况下查询返回的数据按照添加数据的顺序SELECT * FROM employees;-- 1.1 基本使用# 练习：按照salary从高到低显示数据(ORDER BY 通过什么来排序)# 升序:ASC(ascend) 降序：DESC(descend)SELECT employee_id, last_name, salaryFROM employeesORDER BY salary DESC;# 从低到高(没有显式写，默认升序)SELECT employee_id, last_name, salaryFROM employeesORDER BY salary ASC;-- 2. 别名# 使用列的别名进行排序SELECT...</div></div></div></a><a class="pagination-related" href="/2024/09/21/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/06.%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2/" title="06.多表查询"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-21</div><div class="info-item-2">06.多表查询</div></div><div class="info-2"><div class="info-item-1">六、多表查询多表查询，也称为关联查询，指两个或更多个表一起完成查询操作。 前提条件：这些一起查询的表之间是有关系的（一对一、一对多），它们之间一定是有关联字段，这个关联字段可能建立了外键，也可能没有建立外键。比如：员工表和部门表，这两个表依靠“部门编号”进行关联。 1. 为什么要多表查询1.1 案例	 给出这三个表，我们需要查询员工名last_name为Abel的人在哪个城市中 如果按照前置知识，需要3个SELECT语句 /*前置知识：SELECT ..., ..., ...FROM ...WHERE ... AND ... OR ... NOT ...ORDER BY ... (ASC / DESC), ...LIMIT ..., ...*/# 查询员工为Abel的人在哪个城市中SELECT *FROM employeesWHERE last_name = &#x27;Abel&#x27;; # dept_id = 80SELECT *FROM departmentsWHERE department_id = 80; # loc_id = 2500SELECT *FROM...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81MySQL%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-text">二、MySQL环境搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%B8%85%E9%99%A4%E5%8E%9F%E6%9C%89MySQL%E7%8E%AF%E5%A2%83"><span class="toc-text">1. 清除原有MySQL环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE"><span class="toc-text">2. 下载安装配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%AE%89%E8%A3%85"><span class="toc-text">2.1 安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E9%85%8D%E7%BD%AE"><span class="toc-text">2.2 配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E5%AE%89%E8%A3%85MySQL5-7"><span class="toc-text">2.3 安装MySQL5.7</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E7%99%BB%E5%BD%95MySQL"><span class="toc-text">3. 登录MySQL</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E5%90%AF%E5%8A%A8MySQL%E6%9C%8D%E5%8A%A1"><span class="toc-text">3.1 启动MySQL服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E8%BF%9E%E6%8E%A5MySQL%E6%9C%8D%E5%8A%A1"><span class="toc-text">3.2 连接MySQL服务</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-MySQL%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8"><span class="toc-text">4. MySQL快速使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-MySQL%E7%9A%84%E4%BD%BF%E7%94%A8%E6%BC%94%E7%A4%BA"><span class="toc-text">4.1 MySQL的使用演示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%EF%BC%9A%E7%BC%96%E7%A0%81%E7%9B%B8%E5%85%B3"><span class="toc-text">4.2 问题解决：编码相关</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#MySQL5-7%E4%B8%AD"><span class="toc-text">MySQL5.7中</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#MySQL8-0%E4%B8%AD"><span class="toc-text">MySQL8.0中</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

@@ -1,0 +1,719 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>3. 模板引擎thymeleaf | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="三、模板引擎thymeleaf3.1 简介和基本语法3.1.1 简介springboot支持第三方的模板引擎技术，我们在官方文档中的启动器中可以看到一些相关的模板引擎 	  thymeleaf官网: https:&#x2F;&#x2F;www.thymeleaf.org&#x2F;  Thymeleaf is a modern server-side Java template engine for both web and">
+<meta property="og:type" content="article">
+<meta property="og:title" content="3. 模板引擎thymeleaf">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/05/07/2.Areas%F0%9F%8C%90/back-end-java/7.SpringBoot/3.%20%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8Ethymeleaf/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="三、模板引擎thymeleaf3.1 简介和基本语法3.1.1 简介springboot支持第三方的模板引擎技术，我们在官方文档中的启动器中可以看到一些相关的模板引擎 	  thymeleaf官网: https:&#x2F;&#x2F;www.thymeleaf.org&#x2F;  Thymeleaf is a modern server-side Java template engine for both web and">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-05-07T10:04:50.000Z">
+<meta property="article:modified_time" content="2025-05-07T10:04:50.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="7.SpringBoot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "3. 模板引擎thymeleaf",
+  "url": "https://yuezi2048.github.io/2025/05/07/2.Areas%F0%9F%8C%90/back-end-java/7.SpringBoot/3.%20%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8Ethymeleaf/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-05-07T10:04:50.000Z",
+  "dateModified": "2025-05-07T10:04:50.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/05/07/2.Areas%F0%9F%8C%90/back-end-java/7.SpringBoot/3.%20%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8Ethymeleaf/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '3. 模板引擎thymeleaf',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">3. 模板引擎thymeleaf</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">3. 模板引擎thymeleaf</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-05-07T10:04:50.000Z" title="发表于 2025-05-07 18:04:50">2025-05-07</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-05-07T10:04:50.000Z" title="更新于 2025-05-07 18:04:50">2025-05-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/">back-end-java</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/7-SpringBoot/">7.SpringBoot</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">5.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>22分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="三、模板引擎thymeleaf"><a href="#三、模板引擎thymeleaf" class="headerlink" title="三、模板引擎thymeleaf"></a>三、模板引擎thymeleaf</h1><h2 id="3-1-简介和基本语法"><a href="#3-1-简介和基本语法" class="headerlink" title="3.1 简介和基本语法"></a>3.1 简介和基本语法</h2><h3 id="3-1-1-简介"><a href="#3-1-1-简介" class="headerlink" title="3.1.1 简介"></a>3.1.1 简介</h3><p>springboot支持第三方的模板引擎技术，我们在<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-boot/docs/2.7.18/reference/html/using.html#using.build-systems.starters">官方文档</a>中的启动器中可以看到一些相关的模板引擎</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221204730809.png" alt="image-20250221204730809" style="zoom: 67%;" />	
+
+<p>thymeleaf官网: <a target="_blank" rel="noopener" href="https://www.thymeleaf.org/">https://www.thymeleaf.org/</a></p>
+<blockquote>
+<p><strong>Thymeleaf</strong> is a modern server-side Java template engine for both web and standalone environments.</p>
+<p>Thymeleaf’s main goal is to bring elegant <em>natural templates</em> to your development workflow — HTML that can be correctly displayed in browsers and also work as static prototypes, allowing for stronger collaboration in development teams.</p>
+<p>With modules for Spring Framework, a host of integrations with your favourite tools, and the ability to plug in your own functionality, Thymeleaf is ideal for modern-day HTML5 JVM web development — although there is much more it can do.</p>
+</blockquote>
+<blockquote>
+<p>一些高并发场景，我们一般会采用前后端分离技术，而对于一些单体项目，使用thymeleaf是一个比较合适的选择</p>
+</blockquote>
+<h3 id="3-2-基本语法"><a href="#3-2-基本语法" class="headerlink" title="3.2 基本语法"></a>3.2 基本语法</h3><table>
+<thead>
+<tr>
+<th>表达式名字</th>
+<th>语法</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>变量取值</td>
+<td>${…}</td>
+<td>获取请求域 session域、对象等值</td>
+</tr>
+<tr>
+<td>选择变量</td>
+<td>*{…}</td>
+<td>获取上下文对象值</td>
+</tr>
+<tr>
+<td>消息</td>
+<td>#{…}</td>
+<td>获取国际化等值</td>
+</tr>
+<tr>
+<td>链接</td>
+<td>@{…}</td>
+<td>生成链接</td>
+</tr>
+<tr>
+<td>片段表达式</td>
+<td>~{…}</td>
+<td>jsp:include 作用，引入公共页面片</td>
+</tr>
+</tbody></table>
+<ul>
+<li>字面量<ul>
+<li>文本值: ‘one text’ , ‘Another one!’ ；数字: 0 , 34 , 3.0 , 12.3 ；布尔值: true , false </li>
+<li>空值: null </li>
+<li>变量： one，two，…. 变量不能有空格</li>
+</ul>
+</li>
+<li>文本操作<ul>
+<li>字符串拼接: + </li>
+<li>变量替换: |The name is ${name}|</li>
+</ul>
+</li>
+<li>数学运算 <ul>
+<li>运算符: + , - , * , &#x2F; , % </li>
+<li>布尔运算 运算符: and , or</li>
+<li>一元运算: ! , not </li>
+<li>比较运算 比较: &gt; , &lt; , &gt;&#x3D; , &lt;&#x3D; ( gt , lt , ge , le )</li>
+<li>等式: &#x3D;&#x3D; , !&#x3D; ( eq , ne )</li>
+<li>条件运算 </li>
+<li>If-then: (if) ? (then) </li>
+<li>If-then-else: (if) ? (then) : (else) </li>
+<li>Default: (value) ?: (defaultvalue)</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-3-快速入门"><a href="#3-3-快速入门" class="headerlink" title="3.3 快速入门"></a>3.3 快速入门</h3><h4 id="3-3-1-模板自动配置"><a href="#3-3-1-模板自动配置" class="headerlink" title="3.3.1 模板自动配置"></a>3.3.1 模板自动配置</h4><p>引入thymeleaf依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-thymeleaf<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到其自动配置类<code>ThymeleafAutoConfiguration</code>，定义了默认的路径</p>
+<ul>
+<li>所有thymeleaf的配置值都在 <code>ThymeleafProperties</code></li>
+<li>配置好了 <code>SpringTemplateEngine </code></li>
+<li>配好了 <code>ThymeleafViewResolver</code></li>
+<li>我们只需要直接开发页面</li>
+</ul>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221205400884.png" alt="image-20250221205400884" style="zoom:67%;" />		
+
+<h4 id="3-3-2-开发页面"><a href="#3-3-2-开发页面" class="headerlink" title="3.3.2 开发页面"></a>3.3.2 开发页面</h4><p>首先，必须引入Thymeleaf命名空间</p>
+<blockquote>
+<p>xmlns:th&#x3D;”<a target="_blank" rel="noopener" href="http://www.thymeleaf.org/">http://www.thymeleaf.org</a>“</p>
+</blockquote>
+<p>编写Controller</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;thymeleaf&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ThymeleafController</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;hello&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">hello</span><span class="params">(Model model)</span> &#123;</span><br><span class="line">        model.addAttribute(<span class="string">&quot;username&quot;</span>, <span class="string">&quot;eric&quot;</span>);</span><br><span class="line">        List&lt;String&gt; list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        list.add(<span class="string">&quot;Sunny&quot;</span>);</span><br><span class="line">        list.add(<span class="string">&quot;Kobe&quot;</span>);</span><br><span class="line">        list.add(<span class="string">&quot;Ketty&quot;</span>);</span><br><span class="line">        model.addAttribute(<span class="string">&quot;list&quot;</span>,list);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;success&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后编写success.html，可以通过一些类似jsp的方式来进行数据的写入，这里演示变量循环展示。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">    引入Themeleaf的命名空间，只有引入这个命名后，才可以使用thymeleaf相关的表达式</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span> <span class="attr">xmlns:th</span>=<span class="string">&quot;http://www.thymeleaf.com&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h3</span>&gt;</span>这是一个成功页面...<span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">span</span> <span class="attr">th:text</span> = <span class="string">&quot;$&#123;username&#125;&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span> <span class="attr">th:each</span> = <span class="string">&quot;str : $&#123;list&#125;&quot;</span> <span class="attr">th:text</span> = <span class="string">&quot;$&#123;str&#125;&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221205809817.png" alt="image-20250221205809817">	</p>
+<h2 id="3-2-thymeleaf案例–后台管理系统"><a href="#3-2-thymeleaf案例–后台管理系统" class="headerlink" title="3.2 thymeleaf案例–后台管理系统"></a>3.2 thymeleaf案例–后台管理系统</h2><h3 id="3-2-1-环境搭建"><a href="#3-2-1-环境搭建" class="headerlink" title="3.2.1 环境搭建"></a>3.2.1 环境搭建</h3><p>导入相关依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-thymeleaf<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-devtools<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.projectlombok<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lombok<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">scope</span>&gt;</span>annotationProcessor<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>启动类</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">App</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        SpringApplication.run(App.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>静态资源</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221211703446.png" alt="image-20250221211703446">	</p>
+<p>html内容放在templates目录下</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221211725692.png" alt="image-20250221211725692">	</p>
+<h3 id="3-2-2-登录功能"><a href="#3-2-2-登录功能" class="headerlink" title="3.2.2 登录功能"></a>3.2.2 登录功能</h3><p>其中登录页面，点击登录后交由后台Controller处理</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221211831098.png" alt="image-20250221211831098">	</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221220203406.png" alt="image-20250221220203406">	</p>
+<blockquote>
+<p>为了防止直接访问main页面，因此对main的路径也需要判断Session进行拦截</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LoginController</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 跳转到登页面</span></span><br><span class="line">    <span class="meta">@GetMapping(value = &#123;&quot;/&quot;, &quot;/login&quot;&#125;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">loginPage</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;login&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 登录，用户登录成功后跳转到主页(重定向 避免表单重复提交)</span></span><br><span class="line">    <span class="meta">@PostMapping(&quot;/login&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">login</span><span class="params">(User user, HttpSession session, Model model)</span> &#123;</span><br><span class="line">        <span class="comment">// 只要用户名为admin，密码为123456，即可登录成功</span></span><br><span class="line">        <span class="keyword">if</span> (user.getUserName().equals(<span class="string">&quot;admin&quot;</span>) &amp;&amp; user.getPassword().equals(<span class="string">&quot;123456&quot;</span>)) &#123;</span><br><span class="line">            <span class="comment">// 登录成功</span></span><br><span class="line">            session.setAttribute(<span class="string">&quot;loginUser&quot;</span>, user);</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;redirect:/main.html&quot;</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 登录不成功，转发到登录页面</span></span><br><span class="line">            model.addAttribute(<span class="string">&quot;msg&quot;</span>, <span class="string">&quot;用户名或密码输入错误&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;login&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 跳转到主页的控制器方法</span></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/main.html&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">mainPage</span><span class="params">(HttpSession session, Model model)</span> &#123;</span><br><span class="line">        <span class="comment">// 避免用户直接访问主页</span></span><br><span class="line">        <span class="type">Object</span> <span class="variable">loginUser</span> <span class="operator">=</span> session.getAttribute(<span class="string">&quot;loginUser&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (loginUser != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;main&quot;</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 转发到登录页面</span></span><br><span class="line">            model.addAttribute(<span class="string">&quot;msg&quot;</span>, <span class="string">&quot;请先登录！&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;login&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>如果用户名、密码输入正确，就跳转到主页 </li>
+<li>如果用户名、密码输入错误，就跳转到登录页，并展示失败信息</li>
+</ul>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221220258831.png" alt="image-20250221220258831" style="zoom:50%;" />	
+
+<p>在main页面上，通过Session信息展示用户数据</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221220452128.png" alt="image-20250221220452128" style="zoom:50%;" />	
+
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221220456759.png" alt="image-20250221220456759" style="zoom:50%;" />	
+
+
+
+<h3 id="3-2-3-公共内容"><a href="#3-2-3-公共内容" class="headerlink" title="3.2.3 公共内容"></a>3.2.3 公共内容</h3><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221220530553.png" alt="image-20250221220530553" style="zoom: 50%;" />	
+
+<p>对每个table进行跳转的Controller编写</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TableController</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 跳转到basic_table.html</span></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/basic_table&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">basic_table</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;table/basic_table&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 跳转到dynamic_table.html</span></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/dynamic_table&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">dynamic_table</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;table/dynamic_table&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 跳转到editable_table.html</span></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/editable_table&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">editable_table</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;table/editable_table&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 跳转到pricing_table.html</span></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/pricing_table&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">pricing_table</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;table/pricing_table&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 跳转到pricing_table.html</span></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/responsive_table&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">responsive_table</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;table/responsive_table&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><a target="_blank" rel="noopener" href="http://localhost:8080/basic_table">http://localhost:8080/basic_table</a> </p>
+<p><a target="_blank" rel="noopener" href="http://localhost:8080/dynamic_table">http://localhost:8080/dynamic_table</a> </p>
+<p><a target="_blank" rel="noopener" href="http://localhost:8080/responsive_table">http://localhost:8080/responsive_table</a> </p>
+<p><a target="_blank" rel="noopener" href="http://localhost:8080/editable_table">http://localhost:8080/editable_table</a> </p>
+</blockquote>
+<h2 id="3-3-视图解析器底层原理"><a href="#3-3-视图解析器底层原理" class="headerlink" title="3.3 视图解析器底层原理"></a>3.3 视图解析器底层原理</h2><h3 id="3-3-1-mv-ha-handle"><a href="#3-3-1-mv-ha-handle" class="headerlink" title="3.3.1 mv&#x3D;ha.handle()"></a>3.3.1 mv&#x3D;ha.handle()</h3><p>现讨论SpringBoot底层视图解析器和视图的处理原理，以登录请求为例</p>
+<p>我们发送一个登录请求，在Controller的login方法打下断点</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221220756750.png" alt="image-20250221220756750">	</p>
+<p>我们进入DispatcherServlet的ha.handle-&gt;invokeAndHandle方法</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221220945560.png" alt="image-20250221220945560" style="zoom: 80%;" />	
+
+
+
+<p>把返回值放在mavContainer对象中</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221221552904.png" alt="image-20250221221552904">	<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221221617129.png" alt="image-20250221221617129">		</p>
+<p>然后获取modelAndView对象</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221221652901.png" alt="image-20250221221652901">	</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221221710209.png" alt="image-20250221221710209">	</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221221723312.png" alt="image-20250221221723312">	</p>
+<h3 id="3-3-2-processDispatchResult"><a href="#3-3-2-processDispatchResult" class="headerlink" title="3.3.2 processDispatchResult"></a>3.3.2 processDispatchResult</h3><p>跳出mv&#x3D;ha.handle方法。继续进入this.processDispatchResult()</p>
+<p>该方法对mv进行render渲染</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221221920361.png" alt="image-20250221221920361">	</p>
+<p>首先解析视图名称</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221222002160.png" alt="image-20250221222002160">	</p>
+<p>可以看到遍历了视图解析器，可以看到跳转main页面时是<code>ThymeleafViewResolver</code>这一视图解析器（重定向使用第一个）</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221222102205.png" alt="image-20250221222102205">	</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221222506794.png" alt="image-20250221222506794"></p>
+<p>看到resolveViewName方法	可以看到内部的方法，根据方法的返回值是重定向还是转发</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221222729356.png" alt="image-20250221222729356">	</p>
+<p>回到DispatcherServlet的render方法，来看最后是如何渲染的</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221222959783.png" alt="image-20250221222959783"></p>
+<p>可以追到重定向方法，追其溯源，还是原生的Servlet进行重定向。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250221223045568.png" alt="image-20250221223045568"></p>
+<h2 id="3-4-拦截器"><a href="#3-4-拦截器" class="headerlink" title="3.4 拦截器"></a>3.4 拦截器</h2><h3 id="3-4-1-拦截器使用"><a href="#3-4-1-拦截器使用" class="headerlink" title="3.4.1 拦截器使用"></a>3.4.1 拦截器使用</h3><p>在上面案例中，我们要实现用户登录后才能访问main资源，实际上我们可以用拦截器来实现。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LoginInterceptor</span> <span class="keyword">implements</span> <span class="title class_">HandlerInterceptor</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 前置拦截，执行目标方法前拦截</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">preHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">HttpSession</span> <span class="variable">session</span> <span class="operator">=</span> request.getSession();</span><br><span class="line">        <span class="type">Object</span> <span class="variable">loginUser</span> <span class="operator">=</span> session.getAttribute(<span class="string">&quot;loginUser&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (loginUser != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        request.setAttribute(<span class="string">&quot;msg&quot;</span>, <span class="string">&quot;请先登录&quot;</span>);</span><br><span class="line">        request.getRequestDispatcher(<span class="string">&quot;/&quot;</span>).forward(request, response);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 后置拦截，执行目标方法后拦截</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">postHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        HandlerInterceptor.<span class="built_in">super</span>.postHandle(request, response, handler, modelAndView);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 最终拦截，就是在视图页面渲染完成之后进行拦截</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">afterCompletion</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        HandlerInterceptor.<span class="built_in">super</span>.afterCompletion(request, response, handler, ex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在SpringBoot中不同的是，使用注册器需要在配置类中进行注册</p>
+<p>在注册的过程中包含了：</p>
+<ul>
+<li>注册的拦截器组件对象</li>
+<li>拦截器的路径</li>
+<li>排除在外的路径</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Myconfig</span> <span class="keyword">implements</span> <span class="title class_">WebMvcConfigurer</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 注册拦截器</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addInterceptors</span><span class="params">(InterceptorRegistry registry)</span> &#123;</span><br><span class="line">        <span class="comment">// addInterceptor: 注册拦截器</span></span><br><span class="line">        <span class="comment">// addPathPatterns: 拦截器拦截的资源</span></span><br><span class="line">        <span class="comment">// excludePathPatterns: 不拦截的资源</span></span><br><span class="line">        registry.addInterceptor(<span class="keyword">new</span> <span class="title class_">LoginInterceptor</span>()).addPathPatterns(<span class="string">&quot;/**&quot;</span>).excludePathPatterns(<span class="string">&quot;/&quot;</span>, <span class="string">&quot;/login&quot;</span>, <span class="string">&quot;/css/**&quot;</span>, <span class="string">&quot;/fonts/**&quot;</span>, <span class="string">&quot;/images/**&quot;</span>, <span class="string">&quot;/js/**&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时跳转到后台主页的逻辑，直接跳转到main页面即可，无需进行额外的权限判断，该部分交由拦截器实现了。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 去main页面</span></span><br><span class="line"><span class="comment">* <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/main.html&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">mainPage</span><span class="params">(HttpSession session,Model model)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;main&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3-4-2-拦截器执行原理"><a href="#3-4-2-拦截器执行原理" class="headerlink" title="3.4.2 拦截器执行原理"></a>3.4.2 拦截器执行原理</h3><blockquote>
+<p><strong>1、根据当前请求，找到HandlerExecutionChain【可以处理请求的 handler以及handler的所有 拦截器】</strong></p>
+<p> <strong>2、先来顺序执行 所有拦截器的 preHandle方法</strong></p>
+<pre><code>		**2.1、如果当前拦截器prehandler返回为true。则执行下一个拦截器 的preHandle**
+
+	 **2.2、如果当前拦截器返回prehandler为false。直接 倒序执行所有 已经执行了的拦截器的 afterCompletion；**
+</code></pre>
+<p> <strong>3、如果任何一个拦截器返回false。直接跳出不执行目标方法</strong></p>
+</blockquote>
+<blockquote>
+<p><strong>1、倒序执行所有拦截器的postHandle方法。</strong> </p>
+<p><strong>2、前面的步骤有任何异常都会直接倒序触发 afterCompletion</strong></p>
+</blockquote>
+<blockquote>
+<p><strong>页面成功渲染完成以后，也会倒序触发 afterCompleti</strong></p>
+</blockquote>
+<p>我们还是在<code>DispatcherServlet</code>类上面的<code>doDispatch</code>方法的<code>ha.handle = getHandler</code>句子上打断点</p>
+<p>我们访问main.html</p>
+<p>可以在getHandler()方法执行后，看到我们定义的拦截器</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223192240556.png" alt="image-20250223192240556"></p>
+<p>获取到Handler后，方法值返回了mapperedHandler（<code>HandlerExecutionChain</code>类型的形式返回</p>
+<p>我们发现它包含了三个拦截器。一个是我们自定义的拦截器，还有两个是 springmvc自带的拦截器。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223192250628.png" alt="image-20250223192250628">	</p>
+<h4 id="a-applyPreHandler"><a href="#a-applyPreHandler" class="headerlink" title="a. applyPreHandler"></a>a. applyPreHandler</h4><p>而在处理时，可以看到前置处理</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223193010901.png" alt="image-20250223193010901">在前置方法中，可以看到迭代了我们的拦截器的前置方法，stepinto后就是我们自己写的preHandler方法了</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223192603348.png" alt="image-20250223192603348"></p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223192643803.png" alt="image-20250223192643803"></p>
+<p>这里我们如果返回false，那么就会倒序执行所有已执行的拦截器的<code>afterCompletion</code>方法</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223192833626.png" alt="image-20250223192833626">	</p>
+<h4 id="b-applyposthandler"><a href="#b-applyposthandler" class="headerlink" title="b. applyposthandler"></a>b. applyposthandler</h4><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223193045142.png" alt="image-20250223193045142" style="zoom:50%;" />	
+
+<p>可以看到执行后置方法的时候，也是从后往前遍历拦截器的<code>postHandler方法</code></p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223193110423.png" alt="image-20250223193110423">	</p>
+<p>可以看到，所有步骤在执行期间出现任何异常，也都会执行afterFCompletion方法</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223193238187.png" alt="image-20250223193238187"></p>
+<h4 id="c-processDispatchResult"><a href="#c-processDispatchResult" class="headerlink" title="c. processDispatchResult"></a>c. processDispatchResult</h4><p>来到处理派发结果的方法，render渲染视图后，依旧是triggerAfterCompletion方法，同样也是倒序遍历拦截器的afterCompletion方法，此时应是正常渲染页面后的倒序触发情况</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223193457220.png" alt="image-20250223193457220">	</p>
+<h2 id="3-5-文件上传"><a href="#3-5-文件上传" class="headerlink" title="3.5 文件上传"></a>3.5 文件上传</h2><h3 id="3-5-1-文件上传使用"><a href="#3-5-1-文件上传使用" class="headerlink" title="3.5.1 文件上传使用"></a>3.5.1 文件上传使用</h3><p>编写文件上传页面</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223193953474.png" alt="image-20250223193953474" style="zoom:67%;" />	
+
+<p>编写控制器方法</p>
+<ul>
+<li>单文件上传 <code>MultipartFile</code></li>
+<li>多文件上传 <code>MultipartFile[]</code></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FileUploadController</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 跳转到文件上传的页面</span></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/form_layouts&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">form_layouts</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;form/form_layouts&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 进行文件上传，多文件上传使用MultipartFile[]</span></span><br><span class="line">    <span class="meta">@PostMapping(&quot;upload&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">upload</span><span class="params">(String email,</span></span><br><span class="line"><span class="params">                         String username,</span></span><br><span class="line"><span class="params">                         MultipartFile headerImg,</span></span><br><span class="line"><span class="params">                         MultipartFile[] photos)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="keyword">if</span> (! headerImg.isEmpty()) &#123;</span><br><span class="line">            <span class="comment">// 获取原始文件的名称</span></span><br><span class="line">            <span class="type">String</span> <span class="variable">originalFilename</span> <span class="operator">=</span> headerImg.getOriginalFilename();</span><br><span class="line">            <span class="comment">// 执行单文件上传</span></span><br><span class="line">            headerImg.transferTo(<span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;C:\\Users\\ljy\\Pictures\\&quot;</span> + originalFilename));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 多文件上传</span></span><br><span class="line">        <span class="keyword">if</span> (photos.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">for</span> (MultipartFile photo : photos) &#123;</span><br><span class="line">                <span class="type">String</span> <span class="variable">originalFilename</span> <span class="operator">=</span> photo.getOriginalFilename();</span><br><span class="line">                photo.transferTo(<span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;C:\\Users\\ljy\\Pictures\\&quot;</span> + originalFilename));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;main&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3-5-2-文件上传原理"><a href="#3-5-2-文件上传原理" class="headerlink" title="3.5.2 文件上传原理"></a>3.5.2 文件上传原理</h3><blockquote>
+<p><strong>文件上传自动配置类-<code>MultipartAutoConfigurationMultipartProperties</code></strong></p>
+<p><strong>自动配置好了 StandardServletMultipartResolver 【文件上传解析器】 原理步骤</strong> </p>
+<p><strong>1、请求进来使用文件上传解析器判断（isMultipart）并封装 （resolveMultipart，返回MultipartHttpServletRequest）文 件上传请求</strong></p>
+<p> <strong>2、参数解析器来解析请求中的文件内容封装成MultipartFile</strong></p>
+<p> <strong>3、将request中文件信息封装为一个Map； MultiValueMap</strong></p>
+</blockquote>
+<h4 id="a-checkMultipart-request"><a href="#a-checkMultipart-request" class="headerlink" title="a. checkMultipart(request)"></a>a. checkMultipart(request)</h4><p>DispatcherServlet的 doDispatcher方法上面打断点</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223194253833.png" alt="image-20250223194253833">	</p>
+<p>接下来判断该请求是否为文件上传请求</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223194407572.png" alt="image-20250223194407572">	</p>
+<p>那么就是通过文件上传解析器来解析</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223194440109.png" alt="image-20250223194440109">		</p>
+<ul>
+<li>这里判断是否为文件上传时要检验开头是否为<code>multipart/</code>开头，这也解释了为什么表单要加上该属性</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223194547820.png" alt="image-20250223194547820">	</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223194507289.png" alt="image-20250223194507289" style="zoom: 80%;" />
+
+<p>继续看，最终生了一个解析器<code>StandardServletMultipartResolver</code>。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223194621375.png" alt="image-20250223194621375"></p>
+<p>在Step into，发现基于我们的原生request对象包装成了一个新的StandardMultipartHttpServletRequest对象。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223194716321.png" alt="image-20250223194716321">	</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223194702609.png" alt="image-20250223194702609">	</p>
+<h4 id="b-handle"><a href="#b-handle" class="headerlink" title="b. handle"></a>b. handle</h4><p>可以看到就是用包装后的request进行处理了。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223194933472.png" alt="image-20250223194933472">	</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223194947604.png" alt="image-20250223194947604"></p>
+<p>追到invokeHandlerMethod方法，看一看参数被哪个参数器解析了</p>
+<p>来到解析args方法</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223195310303.png" alt="image-20250223195310303"></p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223195326354.png" alt="image-20250223195326354">	</p>
+<p>对于文件的内容，使用文件上传解析器<code>RequestPartMethodArgumentResolver</code>进行解析</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223195444154.png" alt="image-20250223195444154"></p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223195149874.png" alt="image-20250223195149874" style="zoom: 50%;" />	
+
+
+
+<p>判断参数是否被<code>@RequestPart</code>注解修饰，如果没有则判断是否为文件上传类型</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223195648800.png" alt="image-20250223195648800"></p>
+<p>我们接下来看resolve的方法</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223200017610.png" alt="image-20250223200017610">	</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223200145341.png" alt="image-20250223200145341">	</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223200547848.png" alt="image-20250223200547848">	</p>
+<p>关键就在于getFiles这个方法，可以发现他将所有的参数信息封装到了一个Map&lt;String, MultipartFile&gt;中</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223200421594.png" alt="image-20250223200421594">	</p>
+<p>我上传了两次两个相同的图片，可以看到我上传的图片的part信息</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223200809898.png" alt="image-20250223200809898">	</p>
+<h2 id="3-6-异常处理"><a href="#3-6-异常处理" class="headerlink" title="3.6 异常处理"></a>3.6 异常处理</h2><h3 id="3-6-1-默认异常处理机制"><a href="#3-6-1-默认异常处理机制" class="headerlink" title="3.6.1 默认异常处理机制"></a>3.6.1 默认异常处理机制</h3><p>默认规则：template目录下寻找指定错误代码页面。</p>
+<p>error&#x2F;下的4xx，5xx页面会被自动解析</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223200939032.png" alt="image-20250223200939032" style="zoom: 50%;" />	
+
+<p>模拟异常</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@GetMapping(&quot;/basic_table&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">basic_table</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">10</span> / <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;table/basic_table&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>出现400 404 500等错误，都会跳转到对应的页面</p>
+<h3 id="3-6-2-底层组件功能分析"><a href="#3-6-2-底层组件功能分析" class="headerlink" title="3.6.2 底层组件功能分析"></a>3.6.2 底层组件功能分析</h3><p>来到Springboot错误处理的自动配置类<code>ErrorMvcAutoConfiguration</code>，发现有若干组件，现在逐一分析</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223201222405.png" alt="image-20250223201222405">	</p>
+<blockquote>
+<p>a. DefaultErrorAttributes</p>
+</blockquote>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223201243451.png" alt="image-20250223201243451">	</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223205057920.png" alt="image-20250223205057920">	</p>
+<p>发现在getErrorAttributes方法定义若干错误信息，放入了Map集合errorAttributes，从而帮助在处理错误页面时，提取出错误信息</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223205220991.png" alt="image-20250223205220991">	</p>
+<blockquote>
+<p>b. BasicErrorController</p>
+</blockquote>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223205417182.png" alt="image-20250223205417182"></p>
+<p>可以看到是一个Controller，路径error.path是<code>/error</code>，我们追溯源码时发现，在错误页面时，后端会发送一个&#x2F;error请求</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223205444304.png" alt="image-20250223205444304">	</p>
+<ul>
+<li>errorHtml：浏览器发送请求，出现错误后，默认使用该方法错误信息响应，默认响应名为error视图</li>
+<li>error：其他方式（Postman）请求后，以Json格式封装到ResponseEntity里面</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223205616389.png" alt="image-20250223205616389"></p>
+<blockquote>
+<p>c. BeanNameViewResolver</p>
+</blockquote>
+<p>我们看到BeanNameViewResolver根据视图名称解析名为error的视图</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223205853371.png" alt="image-20250223205853371">	</p>
+<p>defaultErrorView是一个StaticView类的</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223210010030.png" alt="image-20250223210010030">	</p>
+<p>进入后，可以看到render的具体渲染方法</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223210040840.png" alt="image-20250223210040840"></p>
+<p>那么大致的流程可以清楚BasicErrorController使用errorHtml方法响应 错误视图的原理</p>
+<ul>
+<li>寻找一个名为error的视图进行解析，其中error视图是StaticView类型的。</li>
+<li>通过里面的render方法进行错误视图渲染</li>
+</ul>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223210203149.png" alt="image-20250223210203149" style="zoom:67%;" />	
+
+<blockquote>
+<p>d. DefaultErrorViewResolver</p>
+</blockquote>
+<p>于此同时，发现了<code>DefaultErrorViewResolver</code>，这个执行过程解释了为什么我们要在error目录，并且要命名为状态码的原因了。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223210300086.png" alt="image-20250223210300086">	</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223210407358.png" alt="image-20250223210407358"></p>
+<h3 id="3-6-3-异常处理流程"><a href="#3-6-3-异常处理流程" class="headerlink" title="3.6.3 异常处理流程"></a>3.6.3 异常处理流程</h3><p>定义Controller</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@GetMapping(&quot;/basic_table&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">basic_table</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">10</span> / <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;table/basic_table&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>登录后请求 <a target="_blank" rel="noopener" href="http://localhost:8080/basic_table%EF%BC%8C%E6%9D%A5%E5%88%B0mv=ha.handle%EF%BC%8C%E6%89%A7%E8%A1%8C%E5%88%B0Controller%E6%96%B9%E6%B3%95%E5%90%8E%EF%BC%8C%E8%A2%ABcatch%E6%8D%95%E8%8E%B7%E5%88%B0%E5%BC%82%E5%B8%B8">http://localhost:8080/basic_table，来到mv=ha.handle，执行到Controller方法后，被catch捕获到异常</a></p>
+<h4 id="第一次：异常处理器"><a href="#第一次：异常处理器" class="headerlink" title="第一次：异常处理器"></a>第一次：异常处理器</h4><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223210855069.png" alt="image-20250223210855069" style="zoom:67%;" />	
+
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223211054004.png" alt="image-20250223211054004"></p>
+<p>执行finally方法，此时目标方法的返回值ModelAndView为Null</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223211108984.png" alt="image-20250223211108984">	</p>
+<p>来到处理派发结果</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223211201218.png" alt="image-20250223211201218">	</p>
+<p>可以发现尽管我们此时mv是null，但是在处理派发结果时，仍然是将处理结果返回ModelAndView</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223211311027.png" alt="image-20250223211311027">	</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223211225085.png" alt="image-20250223211225085"></p>
+<p>继续进入，可以看到在迭代异常处理器来处理</p>
+<ul>
+<li><code>DefaultErrorAttributes</code>（springboot默认）</li>
+<li><code>HandlerExceptionResolverComposite</code>（组合）<ul>
+<li><code>ExceptionHandlerExceptionResolver</code></li>
+<li><code>ResponseStatusExceptionResolver</code></li>
+<li><code>DefaultHandlerExceptionResolver</code></li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223211441068.png" alt="image-20250223211441068">	</p>
+<p>来看DefaultErrorAttributes如何进行异常处理 的： 我们resolver.resolveException上面step into</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223211626418.png" alt="image-20250223211626418">	</p>
+<p>发现将错误信息封装后，返回了一个null，进一步看是封装了request</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223211700949.png" alt="image-20250223211700949"></p>
+<p>来看HandlerExceptionResolverComposite是怎么resolve的，里面当然是遍历了上述3个解析器进行解析</p>
+<blockquote>
+<p><strong>ExceptionHandlerExceptionResolver(方法上标注了@ExceptionHandler 注解才解析)</strong> </p>
+<p><strong>ReponseStatusExceptionResolver(方法上标注了@ReponseStatus注解才 解析)</strong> </p>
+<p><strong>DefaultHandlerExceptionResolver帮助我们进行异常处理。具体的处理逻 辑我们不看了</strong></p>
+</blockquote>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223211850124.png" alt="image-20250223211850124"></p>
+<p><font style="color:red">以上三个异常处理器都实现了<code>HandlerExceptionResolver</code>接口，启发：我们要自定义异常处理，就需要实现这个接口</font></p>
+<blockquote>
+<p>最终结果：这个三个异常处理器最后处理的结果都为Null。也就是 ModelAndView为null。</p>
+</blockquote>
+<h4 id="第二次：-error"><a href="#第二次：-error" class="headerlink" title="第二次：&#x2F;error"></a>第二次：&#x2F;error</h4><p>重新放行，发现有一个新请求。</p>
+<p><font style="color:red">结论：当所有的错误异常处理器都不能处理的时候(目标方法的返回值 ModelAndView为null)。此时默认会转发到&#x2F;error请求</font></p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223212242863.png" alt="image-20250223212242863">	</p>
+<p>handler对象中，可以发现BasicErrorController了。我们在上一节也讨论过，里面定义了两种请求情况下响应html和json的两个方法。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223212357553.png" alt="image-20250223212357553">	</p>
+<p>进入handle方法后，进入了BasicErrorController的errorHtml方法</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223212813432.png" alt="image-20250223212813432"></p>
+<p>在resolve之前，可以看到封装了错误信息到Map中</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223212836333.png" alt="image-20250223212836333">	</p>
+<p>进入resolve方法，发现此时只有一个DefaultErrorViewResolver异常处理器。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223212908326.png" alt="image-20250223212908326">	</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223212936647.png" alt="image-20250223212936647"></p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223213018545.png" alt="image-20250223213018545">	</p>
+<h3 id="3-6-4-SpringBoot处理异常的其他方式"><a href="#3-6-4-SpringBoot处理异常的其他方式" class="headerlink" title="*3.6.4 SpringBoot处理异常的其他方式"></a>*3.6.4 SpringBoot处理异常的其他方式</h3><p>异常控制器</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;testException&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">testException</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">10</span> / <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;success&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="a-ControllerAdvice-ExceptionHandler"><a href="#a-ControllerAdvice-ExceptionHandler" class="headerlink" title="a. @ControllerAdvice+@ExceptionHandler"></a>a. @ControllerAdvice+@ExceptionHandler</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@ControllerAdvice</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">GlobalExceptionResolver</span> &#123;</span><br><span class="line">    <span class="meta">@ExceptionHandler(&#123;ArithmeticException.class,NullPointerException.class&#125;)</span> <span class="comment">//处理异常</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">handleArithException</span><span class="params">(Exception e)</span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;异常是：&quot;</span> + e);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;login&quot;</span>; <span class="comment">//视图地址</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>是由<code> ExceptionHandlerExceptionResolver</code>这个异常处理器处理的，处理过程自定义</p>
+</blockquote>
+<p>具体的过程实际上在3.6.3已经详细分析过了</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223213421466.png" alt="image-20250223213421466">	来到处理派发结果，来看用了哪个异常处理器</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223213456873.png" alt="image-20250223213456873" style="zoom: 33%;" />	
+
+<p>该情况由ExceptionHandlerExceptionResolver来处理的，具体的resolve方法执行后，我们写的方法被执行了</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223213604271.png" alt="image-20250223213604271" style="zoom:50%;" />	
+
+<p>最终由于我们的自定义操作，在mv中存了login的视图</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223213650067.png" alt="image-20250223213650067"></p>
+<p>后续就是render操作</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223213703766.png" alt="image-20250223213703766" style="zoom:50%;" />	
+
+<h4 id="b-自定义异常：-ResponseStatus"><a href="#b-自定义异常：-ResponseStatus" class="headerlink" title="b. 自定义异常：@ResponseStatus"></a>b. 自定义异常：@ResponseStatus</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@ResponseStatus(value = HttpStatus.BAD_GATEWAY, reason = &quot;id不能为负数&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CustomizeException</span> <span class="keyword">extends</span> <span class="title class_">RuntimeException</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">CustomizeException</span><span class="params">()</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">CustomizeException</span><span class="params">(String message)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(message);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>模拟异常：:<a target="_blank" rel="noopener" href="http://localhost:8080/testCustomizeException?id=-1">http://localhost:8080/testCustomizeException?id=-1</a></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@GetMapping(&quot;/testCustomizeException&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">testCustomizeException</span><span class="params">(<span class="meta">@RequestParam(&quot;id&quot;)</span> Integer id)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(id &lt; <span class="number">0</span>)&#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">CustomizeException</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;success&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><code>ResponseStatusResolver</code>解析，调用sendError方法，<font style="color:red">只要调用了sendError方法，意味着这次请求执行结束，然后 tomcat服务器会发送一个&#x2F;error请求</font></p>
+</blockquote>
+<p>只看异常处理器的resolve方法，可以看到是判断有没有注解修饰</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223213920074.png" alt="image-20250223213920074"></p>
+<p>解析来是获取错误状态码原因，调用<code>applyStatusAndReason</code>方法，将状态码和异常信息作为参数传递进 去</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223214002232.png" alt="image-20250223214002232">		</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223214021075.png" alt="image-20250223214021075"></p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223214104209.png" alt="image-20250223214104209" style="zoom:50%;" />	
+
+
+
+<h4 id="c-底层框架的处理"><a href="#c-底层框架的处理" class="headerlink" title="c. 底层框架的处理"></a>c. 底层框架的处理</h4><p>模拟400异常：:<a target="_blank" rel="noopener" href="http://localhost:8080/testCustomizeException">http://localhost:8080/testCustomizeException</a></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@GetMapping(&quot;/testCustomizeException&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">testCustomizeException</span><span class="params">(<span class="meta">@RequestParam(&quot;id&quot;)</span> Integer id)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(id &lt; <span class="number">0</span>)&#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">CustomizeException</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;success&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><code>DefaultExceptionResolver</code>处理，调用sendError方法</p>
+</blockquote>
+<p>可以看到在DispatcherServlet直接捕获到了错误</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223214312604.png" alt="image-20250223214312604" style="zoom:50%;" />	
+
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223214319749.png" alt="image-20250223214319749" style="zoom: 80%;" />	
+
+<p>而到后续的异常处理器部分，当然不是DefaultErrorAttributes进行处理，放行后，发现交给了3个组合异常处理器中的<code>DefaultExceptionResolver</code>处理</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223214506600.png" alt="image-20250223214506600"></p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223214524668.png" alt="image-20250223214524668"></p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223214615645.png" alt="image-20250223214615645" style="zoom:50%;" />	
+
+<h4 id="d-自定义异常处理器：实现HandlerExceptionResolver接口"><a href="#d-自定义异常处理器：实现HandlerExceptionResolver接口" class="headerlink" title="d. 自定义异常处理器：实现HandlerExceptionResolver接口"></a>d. 自定义异常处理器：实现HandlerExceptionResolver接口</h4><p>我们在3.6.3意识到了，如果要像前面那样实现定义异常处理器，那么首先就需要实现HandlerExceptionResolver接口</p>
+<p>来看操作，我们也可以自行定义一个sendError方法，然后返回一个null来演示。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Order(value = Ordered.HIGHEST_PRECEDENCE)</span> <span class="comment">// 设置最高优先级 (优先自定义的异常解析器生效)，因为springmvc默认的异常处理方式为优先生效。</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyExceptionHandler</span> <span class="keyword">implements</span> <span class="title class_">HandlerExceptionResolver</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> ModelAndView <span class="title function_">resolveException</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object o, Exception ex)</span> &#123;</span><br><span class="line">        <span class="type">ModelAndView</span> <span class="variable">mv</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ModelAndView</span>();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            response.sendError(<span class="number">555</span>, <span class="string">&quot;出现了错误!!!!&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> mv;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223214819582.png" alt="image-20250223214819582" style="zoom:67%;" />	
+
+<h2 id="3-7-原生Servlet组件"><a href="#3-7-原生Servlet组件" class="headerlink" title="3.7 原生Servlet组件"></a>3.7 原生Servlet组件</h2><ul>
+<li>由于SpringBoot默认用jar包启动嵌入式Servlet容器，没有web.xml，可以通过配置类来注册</li>
+</ul>
+<blockquote>
+<p><code>ServletRegistrationBean</code>注册Servlet组件</p>
+<p> <code>FilterRegistrationBean</code> 注册Filter组件 </p>
+<p><code>ServletListenerRegistrationBean</code> 注册监听器组件</p>
+</blockquote>
+<h3 id="3-7-1-web容器中使用web三大组件"><a href="#3-7-1-web容器中使用web三大组件" class="headerlink" title="3.7.1 web容器中使用web三大组件"></a>3.7.1 web容器中使用web三大组件</h3><p>编写Servlet</p>
+<p>测试 <a target="_blank" rel="noopener" href="http://localhost:8080/demo1">http://localhost:8080/demo1</a></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@WebServlet(&quot;/demo1&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ServletDemo1</span> <span class="keyword">extends</span> <span class="title class_">HttpServlet</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">doGet</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> ServletException, IOException &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;servletDemo1 run ... &quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编写Filter</p>
+<p>测试 访问：<a target="_blank" rel="noopener" href="http://localhost:8080/demo1">http://localhost:8080/demo1</a></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyFilter</span> <span class="keyword">implements</span> <span class="title class_">Filter</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 执行过滤业务的方法</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">doFilter</span><span class="params">(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)</span> <span class="keyword">throws</span> IOException, ServletException &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;filter run...&quot;</span>);</span><br><span class="line">        filterChain.doFilter(servletRequest, servletResponse);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编写监听器</p>
+<p>测试： 当启动&#x2F;退出springboot项目，监听器的监听servlet上下文对象的方法执行了</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyListener</span> <span class="keyword">implements</span> <span class="title class_">ServletContextListener</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 监听servlet容器创建方法</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">contextInitialized</span><span class="params">(ServletContextEvent sce)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;ServletContext create ...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 监听servlet容器销毁的方法</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">contextDestroyed</span><span class="params">(ServletContextEvent sce)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;servletContext destroy...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注册Web三大组件使其生效</p>
+<ul>
+<li>对象 + 路径</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyConfig</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 注册servlet到SpringBoot中</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> ServletRegistrationBean <span class="title function_">servletRegistrationBean</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">ServletRegistrationBean</span> <span class="variable">servletRegistrationBean</span> <span class="operator">=</span></span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">ServletRegistrationBean</span>(<span class="keyword">new</span> <span class="title class_">ServletDemo1</span>(), <span class="string">&quot;/demo1&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> servletRegistrationBean;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 注册filter到SpringBoot中</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> FilterRegistrationBean <span class="title function_">filterRegistrationBean</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">FilterRegistrationBean</span> <span class="variable">filterRegistrationBean</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FilterRegistrationBean</span>();</span><br><span class="line">        filterRegistrationBean.setFilter(<span class="keyword">new</span> <span class="title class_">MyFilter</span>());</span><br><span class="line">        filterRegistrationBean.setUrlPatterns(Arrays.asList(<span class="string">&quot;/demo1&quot;</span>));</span><br><span class="line">        <span class="keyword">return</span> filterRegistrationBean;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 注册listener到SpringBoot中</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> ServletListenerRegistrationBean <span class="title function_">servletListenerRegistrationBean</span><span class="params">()</span> &#123;</span><br><span class="line">        ServletListenerRegistrationBean&lt;MyListener&gt; servletListenerRegistrationBean =</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">ServletListenerRegistrationBean</span>(<span class="keyword">new</span> <span class="title class_">MyListener</span>());</span><br><span class="line">        <span class="keyword">return</span> servletListenerRegistrationBean;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-7-2-DispatcherServlet注册原理"><a href="#3-7-2-DispatcherServlet注册原理" class="headerlink" title="3.7.2 DispatcherServlet注册原理"></a>3.7.2 DispatcherServlet注册原理</h3><p>既然我们定义的Servlet交由ServletRegistrationBean进行注入，那么springMVC的DispatcherServlet作为一个Servlet是如何被注入的呢？</p>
+<blockquote>
+<p>通过<code>ServletRegistrationBean </code>把 DispatcherServlet 配置进来。默认 映射的是 &#x2F; 路径</p>
+</blockquote>
+<p>来到Servlet自动配置类<code>DispatcherServletRegistrationConfiguration</code></p>
+<ul>
+<li>发现我们绑定的spirng.mvc开头的配置信息绑定到WebMvc属性上，作为DispatcherServletRegistration方法的参数，该方法应当是注入到容器内</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223215851808.png" alt="image-20250223215851808">	</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223215843437.png" alt="image-20250223215843437"></p>
+<p>而返回值类DispatcherServletRegistrationBean继承了ServletRegistrationBean</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223220017672.png" alt="image-20250223220017672"></p>
+<p>我们看到其赋值了webMvcProperties.getServlet().getPath()，默认就是“&#x2F;*”</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223220536992.png" alt="image-20250223220536992"></p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223220634165.png" alt="image-20250223220634165">	</p>
+<blockquote>
+<p>因此我们也可以在配置文件中修改DispatcherServlet默认映射路径  <strong>spring.mvc.servlet.path&#x3D;&#x2F;boot</strong></p>
+</blockquote>
+<h2 id="3-8-SpringBoot嵌入式容器"><a href="#3-8-SpringBoot嵌入式容器" class="headerlink" title="3.8 SpringBoot嵌入式容器"></a>3.8 SpringBoot嵌入式容器</h2><h3 id="3-8-1-嵌入式Servlet容器原理"><a href="#3-8-1-嵌入式Servlet容器原理" class="headerlink" title="3.8.1 嵌入式Servlet容器原理"></a>3.8.1 嵌入式Servlet容器原理</h3><blockquote>
+<p>在底层，Spring Boot 使用不同类型的ApplicationContext嵌入式 servlet 容器支持。</p>
+<p><code>ServletWebServerApplicationContext</code>是一种特殊的 ApplicationContext。</p>
+<p>通常通过<strong>TomcatServletWebServerFactory、 JettyServletWebServerFactory或者UndertowServletWebServerFactory</strong> 来进行加载。</p>
+</blockquote>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223220739354.png" alt="image-20250223220739354" style="zoom:67%;" />	
+
+<p>来到<code>ServletWebServerApplicationContext</code>源码</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223220952261.png" alt="image-20250223220952261"></p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223221006177.png" alt="image-20250223221006177"></p>
+<p>发现其继承了<code>ApplicationContext</code>接口，因此确实是web容器</p>
+<ul>
+<li>导入web启动器之后，web应用会创建一个 <code>ServletWebServerApplicationContext</code> 容器</li>
+<li>ServletWebServerApplicationContext启动的时候，会找 <code>ServletWebServletFactory</code>。<ul>
+<li>ServletWebServletFactory工厂有很多，比如 TomcatServletWebServerFactory , JettyServletWebServerFactory , or UndertowServletWebServerFactory 。</li>
+<li>需要注意的是这些ServletWebServletFactory我们都不用配，springboot 底层会给我们自动进行这些工厂的配置。</li>
+</ul>
+</li>
+<li>springboot通过<code>ServletWebServerFactoryAutoConfiguration</code> 配 置类给我们配置好了这些ServletWebServletFactory。</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223221228916.png" alt="image-20250223221228916"></p>
+<p>我们发现 ServletWebServerFactoryAutoConfiguration 分别导入了 <strong>EmbeddedTomcat.class， EmbeddedJetty.class, EmbeddedUndertow.class。</strong> </p>
+<p>我们点击EmbeddedTomcat.class，发现跳转到了 ServletWebServerFactoryConfiguration</p>
+<p>我们发现，这个类里面都配置了<strong>UndertowServletWebServerFactory、 JettyServletWebServerFactory、TomcatServletWebServerFactory</strong>这些 工厂类。这就正好应证了官网的描述。 </p>
+<p>但是注意的是，这个类在注入的时候，都是按照条件进行注入的，也就是 <code>@ConditionalOnClass({Servlet.class, Tomcat.class, UpgradeProtocol.class})</code>。 也就只有导入对应的服务器的包，才会注入对应的服务器工厂。比如 我们导入的是tomcat的包，就只会注入 TomcatServletWebServerFactory。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223222730067.png" alt="image-20250223222730067">	</p>
+<blockquote>
+<p>ServletWebServerFactoryConfiguration 配置类 动态 判断系统中到底导入了那个Web服务器的包。（默认是web-starter导入 tomcat包），容器中就有 TomcatServletWebServerFactory。</p>
+</blockquote>
+<p>接下来看springboot的web容器是怎么初始化的。我们回到ServletWebServerApplicationContext类</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223223349781.png" alt="image-20250223223349781">	</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223223411832.png" alt="image-20250223223411832">	</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223223425916.png" alt="image-20250223223425916">	</p>
+<p>来具体看this.createWebServer();</p>
+<p>发现使用getWebServerFactory方法获取 ServletWebServletFactory：</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223223602719.png" alt="image-20250223223602719"></p>
+<p>继续看getWebServerFactory方法</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223223740638.png" alt="image-20250223223740638"></p>
+<p>来看创建容器的方法factory.getWebServer(new ServletContextInitializer[]{this.getSelfInitializer()});</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223223901127.png" alt="image-20250223223901127">	</p>
+<p>最终工厂返回的对象</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223223925164.png" alt="image-20250223223925164">	</p>
+<h3 id="3-8-2-自定义嵌入式web容器"><a href="#3-8-2-自定义嵌入式web容器" class="headerlink" title="3.8.2 自定义嵌入式web容器"></a>3.8.2 自定义嵌入式web容器</h3><p>springboot内置的web容器是tomcat服务器，如果我们不想使用，使用别 的web容器。我们也可以自定义。比如jetty服务器</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">exclusions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">exclusion</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-tomcat<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">exclusions</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-jetty<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223224027856.png" alt="image-20250223224027856" style="zoom:50%;" />	
+
+<p>启动后就可以看到自动为我们嵌入了jetty的web容器</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250223224046579.png" alt="image-20250223224046579"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/05/07/2.Areas%F0%9F%8C%90/back-end-java/7.SpringBoot/3.%20%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8Ethymeleaf/">https://yuezi2048.github.io/2025/05/07/2.Areas🌐/back-end-java/7.SpringBoot/3. 模板引擎thymeleaf/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/7-SpringBoot/">7.SpringBoot</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/05/07/2.Areas%F0%9F%8C%90/back-end-java/6.SSM/Spring%20MVC/9.%20%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" title="9. 异常处理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">9. 异常处理</div></div><div class="info-2"><div class="info-item-1">九、异常处理如果用户操作过程中出现了异常，会默认的返回异常界面，非常影响用户体验，通过JavaEE框架中的SprignMVC，可以帮助开发者对异常进行自定义处理。 	 编写控制器方法，模拟出现异常  其中，CustomizedException是自定义异常类，分别模拟以下异常：  除0异常 空指针异常 数组下标越界异常 400参数异常   /** * @author yuezi2048 * @version 1.0 */@Controller@RequestMapping(&quot;exception&quot;)public class ExceptionController &#123;    /**     * 模拟出现除0异常     * @return     */    @RequestMapping(&quot;demo1&quot;)    public String demo1() &#123;        int i = 1 / 0;        return &quot;success&quot;;    &#125;    /**     *...</div></div></div></a><a class="pagination-related" href="/2025/05/25/2.Areas%F0%9F%8C%90/back-end-java/2.MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/02.MySQL%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" title="02.MySQL环境搭建"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">02.MySQL环境搭建</div></div><div class="info-2"><div class="info-item-1">二、MySQL环境搭建1. 清除原有MySQL环境Step1：停止MySQL服务 	 Step2：软件卸载  亦可通过mysql-installer-community-8.0.26.0.msi卸载，此时安装目录也会被移除  	 Step3：残余文件清理 如果再次安装不成功，可以卸载后对残余文件进行清理后再安装。 （1）服务目录：mysql服务的安装目录 （2）数据目录：默认在C:\ProgramData\MySQL 注意：请在卸载前做好数据备份 在操作完以后，需要重启计算机，然后进行安装即可。如果仍然安装失败，需要继续操作如下步骤4。 Step4：清理注册表 在系统的搜索框中输入regedit HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\Eventlog\Application\MySQL服务 目录删除HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\MySQL服务...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/02/18/2.Areas%F0%9F%8C%90/back-end-java/7.SpringBoot/1.%20SpringBoot%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D%E5%9F%BA%E7%A1%80/" title="1. SpringBoot自动装配基础"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-02-18</div><div class="info-item-2">1. SpringBoot自动装配基础</div></div><div class="info-2"><div class="info-item-1">一、SpringBoot自动装配基础1.1 Sping基本介绍 springboot的好处：  定义大量第三方依赖的版本号，使用这些依赖时无需自己再额外指定版本号 少数依赖，官方仲裁的版本号不一定合适我们的项目，此时我们就需要自定义依赖的版本号（version标签或者properties标签指定）    而在web启动器中，内部定义了一组依赖：包含json tomcat springMVC的相关依赖  如果我们需要这些功能，只需导入web启动器即可，无需手动导入这些依赖，因为启动器已经自动将这些依赖集成好了 启动器的分类 官方的启动器，命名规则 spring-boot-starter-* 第三方启动器，但不能以spring-boot开头命名，即xxx-spring-boot-starter     1.1.1 Spring生态介绍官网地址 	  Spring生态 可以看到Spring为我们提供了若干问题的快速解决方案，有以下Feature：  创建独立Spring应用  内嵌web服务器  自动starter依赖，简化构建配置  自动配置Spring以及第三方功能...</div></div></div></a><a class="pagination-related" href="/2025/02/21/2.Areas%F0%9F%8C%90/back-end-java/7.SpringBoot/2.%20SpringBoot2%E6%A0%B8%E5%BF%83%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF/" title="2. SpringBoot2核心开发技术"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-02-21</div><div class="info-item-2">2. SpringBoot2核心开发技术</div></div><div class="info-2"><div class="info-item-1">二、SpringBoot2核心开发技术2.1 YML文件语法在SpringBoot中，全局配置文件的配置文件名是固定的：application.properties &#x2F; application.yml  k:(空格)v：表示一对键值对（空格必须有）； 以缩进来控制层级关系；只要是左对齐的一列数据，都是同一个层级的； 属性和值也是大小写敏感； #表示注释； 字符串无需加引号，如果要加，’ ‘与” “表示字符串内容 会被转义&#x2F;不转义  server:  port: 8088 # 修改项目的端口号# 注：定义字符串数据时，不需要加双引号，引号有其他的作用uname: lisiage: 12  2.1.1 普通数据类型 普通数据类型  定义pojo类Demo1 @Component@Data@NoArgsConstructor@AllArgsConstructorpublic class Demo1 &#123;    @Value(&quot;$&#123;uname&#125;&quot;)    private String username;   ...</div></div></div></a><a class="pagination-related" href="/2025/02/25/2.Areas%F0%9F%8C%90/back-end-java/7.SpringBoot/4.%20%E6%95%B4%E5%90%88%E6%95%B0%E6%8D%AE%E6%8C%81%E4%B9%85%E5%B1%82/" title="4. 整合数据持久层"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-02-25</div><div class="info-item-2">4. 整合数据持久层</div></div><div class="info-2"><div class="info-item-1">四、整合数据持久层我们可以看到SpringBoot官方为我们提供了持久层的启动器，导入启动器后，我们可以开启场景的自动配置，因此可以通过这些启动器帮助我们自动配置。  spring-boot-starter-data开头的都是数据持久层场景相关的启动器  	 4.1 整合JDBC在pom文件导入spring-boot-starter-data-jdbc启动器即可。 &lt;!-- 导入jdbc启动器 --&gt;&lt;dependency&gt;    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;    &lt;artifactId&gt;spring-boot-starter-data-jdbc&lt;/artifactId&gt;&lt;/dependency&gt;  	 可以发现，JDBC启动器并没有为我们配置数据库驱动。因为SpringBoot不知道我们要用什么数据库，因此需要手动配置。 例如mysql &lt;!-- 导入数据库驱动 --&gt;&lt;dependency&gt;   ...</div></div></div></a><a class="pagination-related" href="/2025/04/12/2.Areas%F0%9F%8C%90/back-end-java/7.SpringBoot/5.%20%E6%95%B4%E5%90%88JUnit/" title="5. 整合JUnit"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-12</div><div class="info-item-2">5. 整合JUnit</div></div><div class="info-2"><div class="info-item-1">五、整合JUnit5.1 Junit5简介Junit5的框架主要有三个部分组成分别是：Junit Platform + Junit Jupiter + Junit Vintage3  Junit Platform : 其主要作用是在 JVM 上启动测试框架。它定义了一个抽象的 TestEngine API 来定义运行在平台上的测试框架；也就是说其他的自动 化测试引擎或开发人员自己定制的引擎都可以接入 Junit 实现对接和执 行。同时还支持通过命令行、Gradle 和 Maven 来运行平台（这对于我 们做自动化测试至关重要）  Junit Jupiter: 这是 Junit5 的核心，可以看作是承载 Junit4 原有功能的演进，包含了 JUnit 5 最新的编程模型和扩展机制；很多丰富的新特性使 JUnit 自动化 测试更加方便、功能更加丰富和强大。也是测试需要重点学习的地方； Jupiter 本身也是一一个基于 Junit Platform 的引擎实现，对 JUnit 5 而 言，JUnit Jupiter API 只是另一个 API！。 Junit Vintage3...</div></div></div></a><a class="pagination-related" href="/2025/04/12/2.Areas%F0%9F%8C%90/back-end-java/7.SpringBoot/6.%20%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7/" title="6. 指标监控"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-12</div><div class="info-item-2">6. 指标监控</div></div><div class="info-2"><div class="info-item-1">六、指标监控6.1 Actuator和endpoint在生产环境中，每一个微服务在部署以后，我们都需要对其进行监控、追踪、审计、控制等。SpringBoot就抽取了Actuator场景，使得我们每个微服务快速引用即可获得生产级别的应用监控、审计等功能 首先导入Actuator启动依赖 &lt;!-- actuator启动器 --&gt; &lt;dependency&gt;     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;     &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt; &lt;/dependency&gt;  导入后对actuator监控的端点进行暴露 # acturator配置management:  endpoints:    enabled-by-default: true # 暴露所有端点    web:      exposure:        include: &#x27;*&#x27;...</div></div></div></a><a class="pagination-related" href="/2025/04/12/2.Areas%F0%9F%8C%90/back-end-java/7.SpringBoot/7.%20%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" title="7. 高级特性"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-12</div><div class="info-item-2">7. 高级特性</div></div><div class="info-2"><div class="info-item-1">七、高级特性7.1 Profile环境切换7.1.1 配置文件环境切换实际工作，我们会分为开发环境，测试环境，生产环境。 不同的环境，我们项目的配置文件是不一样的，比如我们数据库的配置信息。 因此我们需要切换配置文件环境，不过springBoot已经集成该功能了。  导入依赖后编写启动器  @SpringBootApplicationpublic class SpringbootDay04Demo4Application &#123;    public static void main(String[] args) &#123;        SpringApplication.run(SpringbootDay04Demo4Application.class, args);    &#125;&#125;   编写控制器动态获取不同环境下的name值  @RestControllerpublic class HelloController &#123;    @Value(&quot;$&#123;person.name:李四&#125;&quot;) //...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8Ethymeleaf"><span class="toc-text">三、模板引擎thymeleaf</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-%E7%AE%80%E4%BB%8B%E5%92%8C%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95"><span class="toc-text">3.1 简介和基本语法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-1-%E7%AE%80%E4%BB%8B"><span class="toc-text">3.1.1 简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95"><span class="toc-text">3.2 基本语法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8"><span class="toc-text">3.3 快速入门</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-1-%E6%A8%A1%E6%9D%BF%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="toc-text">3.3.1 模板自动配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-2-%E5%BC%80%E5%8F%91%E9%A1%B5%E9%9D%A2"><span class="toc-text">3.3.2 开发页面</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-thymeleaf%E6%A1%88%E4%BE%8B%E2%80%93%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F"><span class="toc-text">3.2 thymeleaf案例–后台管理系统</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-1-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-text">3.2.1 环境搭建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-2-%E7%99%BB%E5%BD%95%E5%8A%9F%E8%83%BD"><span class="toc-text">3.2.2 登录功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-3-%E5%85%AC%E5%85%B1%E5%86%85%E5%AE%B9"><span class="toc-text">3.2.3 公共内容</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-%E8%A7%86%E5%9B%BE%E8%A7%A3%E6%9E%90%E5%99%A8%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86"><span class="toc-text">3.3 视图解析器底层原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-1-mv-ha-handle"><span class="toc-text">3.3.1 mv&#x3D;ha.handle()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-2-processDispatchResult"><span class="toc-text">3.3.2 processDispatchResult</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-4-%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="toc-text">3.4 拦截器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-1-%E6%8B%A6%E6%88%AA%E5%99%A8%E4%BD%BF%E7%94%A8"><span class="toc-text">3.4.1 拦截器使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-2-%E6%8B%A6%E6%88%AA%E5%99%A8%E6%89%A7%E8%A1%8C%E5%8E%9F%E7%90%86"><span class="toc-text">3.4.2 拦截器执行原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#a-applyPreHandler"><span class="toc-text">a. applyPreHandler</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#b-applyposthandler"><span class="toc-text">b. applyposthandler</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#c-processDispatchResult"><span class="toc-text">c. processDispatchResult</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-5-%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0"><span class="toc-text">3.5 文件上传</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-1-%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E4%BD%BF%E7%94%A8"><span class="toc-text">3.5.1 文件上传使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-2-%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%8E%9F%E7%90%86"><span class="toc-text">3.5.2 文件上传原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#a-checkMultipart-request"><span class="toc-text">a. checkMultipart(request)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#b-handle"><span class="toc-text">b. handle</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-6-%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86"><span class="toc-text">3.6 异常处理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-6-1-%E9%BB%98%E8%AE%A4%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%BA%E5%88%B6"><span class="toc-text">3.6.1 默认异常处理机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-6-2-%E5%BA%95%E5%B1%82%E7%BB%84%E4%BB%B6%E5%8A%9F%E8%83%BD%E5%88%86%E6%9E%90"><span class="toc-text">3.6.2 底层组件功能分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-6-3-%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B"><span class="toc-text">3.6.3 异常处理流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AC%A1%EF%BC%9A%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E5%99%A8"><span class="toc-text">第一次：异常处理器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AC%A1%EF%BC%9A-error"><span class="toc-text">第二次：&#x2F;error</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-6-4-SpringBoot%E5%A4%84%E7%90%86%E5%BC%82%E5%B8%B8%E7%9A%84%E5%85%B6%E4%BB%96%E6%96%B9%E5%BC%8F"><span class="toc-text">*3.6.4 SpringBoot处理异常的其他方式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#a-ControllerAdvice-ExceptionHandler"><span class="toc-text">a. @ControllerAdvice+@ExceptionHandler</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#b-%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BC%82%E5%B8%B8%EF%BC%9A-ResponseStatus"><span class="toc-text">b. 自定义异常：@ResponseStatus</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#c-%E5%BA%95%E5%B1%82%E6%A1%86%E6%9E%B6%E7%9A%84%E5%A4%84%E7%90%86"><span class="toc-text">c. 底层框架的处理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#d-%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E5%99%A8%EF%BC%9A%E5%AE%9E%E7%8E%B0HandlerExceptionResolver%E6%8E%A5%E5%8F%A3"><span class="toc-text">d. 自定义异常处理器：实现HandlerExceptionResolver接口</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-7-%E5%8E%9F%E7%94%9FServlet%E7%BB%84%E4%BB%B6"><span class="toc-text">3.7 原生Servlet组件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-7-1-web%E5%AE%B9%E5%99%A8%E4%B8%AD%E4%BD%BF%E7%94%A8web%E4%B8%89%E5%A4%A7%E7%BB%84%E4%BB%B6"><span class="toc-text">3.7.1 web容器中使用web三大组件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-7-2-DispatcherServlet%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86"><span class="toc-text">3.7.2 DispatcherServlet注册原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-8-SpringBoot%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AE%B9%E5%99%A8"><span class="toc-text">3.8 SpringBoot嵌入式容器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-8-1-%E5%B5%8C%E5%85%A5%E5%BC%8FServlet%E5%AE%B9%E5%99%A8%E5%8E%9F%E7%90%86"><span class="toc-text">3.8.1 嵌入式Servlet容器原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-8-2-%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B5%8C%E5%85%A5%E5%BC%8Fweb%E5%AE%B9%E5%99%A8"><span class="toc-text">3.8.2 自定义嵌入式web容器</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

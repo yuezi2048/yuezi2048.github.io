@@ -1,0 +1,239 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>59.Selector | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Selector是**Java NIO（New I&#x2F;O）**中用于实现I&#x2F;O多路复用的组件，该组件可以通过单独的线程来监视多个通道Channel的事件。 	 作用：  管理多个Channel：一个Selector实例就可以监听多个通道的I&#x2F;O事件（可读可写，连接就绪等），从而使得一个线程管理多个连接变得高效 非阻塞I&#x2F;O：Selector通常与非阻塞通道（如">
+<meta property="og:type" content="article">
+<meta property="og:title" content="59.Selector">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/04/26/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E5%9F%BA%E7%A1%80/59.Selector/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="Selector是**Java NIO（New I&#x2F;O）**中用于实现I&#x2F;O多路复用的组件，该组件可以通过单独的线程来监视多个通道Channel的事件。 	 作用：  管理多个Channel：一个Selector实例就可以监听多个通道的I&#x2F;O事件（可读可写，连接就绪等），从而使得一个线程管理多个连接变得高效 非阻塞I&#x2F;O：Selector通常与非阻塞通道（如">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-04-26T13:25:00.000Z">
+<meta property="article:modified_time" content="2025-04-26T13:25:00.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="Java基础">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "59.Selector",
+  "url": "https://yuezi2048.github.io/2025/04/26/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E5%9F%BA%E7%A1%80/59.Selector/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-04-26T13:25:00.000Z",
+  "dateModified": "2025-04-26T13:25:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/04/26/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E5%9F%BA%E7%A1%80/59.Selector/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '59.Selector',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">59.Selector</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">59.Selector</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-04-26T13:25:00.000Z" title="发表于 2025-04-26 21:25:00">2025-04-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-04-26T13:25:00.000Z" title="更新于 2025-04-26 21:25:00">2025-04-26</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/">02.面经记录</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E5%9F%BA%E7%A1%80/">Java基础</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">798</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>2分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p><code>Selector</code>是**Java NIO（New I&#x2F;O）**中用于实现I&#x2F;O多路复用的组件，该组件可以通过单独的线程来监视多个通道Channel的事件。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/upload/image-20241103152523948.png" alt="image-20241103152523948">	</p>
+<p>作用：</p>
+<ul>
+<li><strong>管理多个Channel</strong>：一个Selector实例就可以监听多个通道的I&#x2F;O事件（可读可写，连接就绪等），从而使得一个线程管理多个连接变得高效</li>
+<li><strong>非阻塞I&#x2F;O</strong>：<code>Selector</code>通常与非阻塞通道（如SocketChannel）配合，实现高效非阻塞的I&#x2F;O操作，这样程序无需为每个连接创建线程，减少线程开销</li>
+</ul>
+<p>Selector事件类型：</p>
+<ul>
+<li><strong>OP_READ</strong>：通道有数据可读</li>
+<li><strong>OP_WRITE</strong>：可以向通道写入</li>
+<li><strong>OP_CONNECT</strong>：通道完成连接</li>
+<li><strong>OP_ACCEPT</strong>：通道接收新连接</li>
+</ul>
+<p><strong>拓展</strong></p>
+<h2 id="SelectionKey和通道的关系"><a href="#SelectionKey和通道的关系" class="headerlink" title="SelectionKey和通道的关系"></a>SelectionKey和通道的关系</h2><p>SelectionKey：</p>
+<ul>
+<li>通道注册到Selector时，会生成一个<code>SelectionKey</code>对象，表示通道与选择器之间的关系</li>
+<li>SelectionKey用于表示通道的注册状态与事件类型，通过SelectionKey确定当前通道的可操作事件（isReadable()、isWriteable()等）</li>
+</ul>
+<p>SelectionKey的具体操作</p>
+<ul>
+<li><strong>获取通道</strong>：<code>SelectionKey.channel()</code>获取关联的通道</li>
+<li><strong>取消注册</strong>：<code>SelectionKey.cancel()</code>取消通道与Selector的注册关系</li>
+<li><strong>附加对象</strong>：<code>SelectionKey.attach</code>方法将自定义对象附加到SelectionKey上，便于事件处理时获取数据</li>
+</ul>
+<h2 id="Selector常见方法"><a href="#Selector常见方法" class="headerlink" title="Selector常见方法"></a><strong>Selector常见方法</strong></h2><ul>
+<li><strong>select()</strong>：阻塞并等待一个通道的事件发生</li>
+<li><strong>selectNow()</strong>：非阻塞检查通道事件，如果没有事件，立即返回</li>
+<li><strong>select(long timeout)</strong>：指定超时事件，控制最大等待时间</li>
+<li><strong>wakeup()</strong>：强制中断<code>select()</code>阻塞状态，场景：多线程环境下的通知机制</li>
+</ul>
+<p><strong>性能优化</strong></p>
+<ul>
+<li>减少空轮询：频繁调用<code>selectNow()</code>方法，会导致CPU占用率高，要根据实际情况选择合适的select方法</li>
+<li>事件处理后清理：处理完SelectionKey后，要调用**selectedKeys().clear()**清空已处理的事件集合，防止重复处理</li>
+</ul>
+<h2 id="Selector管理连接的实现"><a href="#Selector管理连接的实现" class="headerlink" title="Selector管理连接的实现"></a>Selector管理连接的实现</h2><ul>
+<li>创建一个线程，死循环调用Selector.select()捕捉事件，可以减少线程上下文切换，节省线程资源<ul>
+<li><strong>int selectNow()</strong>：无论有没有事件，直接返回（返回值是就绪的通道数，大于0就可以进行后续操作）</li>
+<li><strong>int select(long time out)</strong>：指定最大等待时间</li>
+<li><strong>int select()</strong> 阻塞等待事件的发生（直到事件发生或者被唤醒）</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><code>Selector.wakeup()</code>方法可以唤醒被阻塞的Selector</p>
+<p>并且如果Channel要配合Selector，必须是非阻塞，即需要配置<strong>channel.configureBlocking(false);</strong></p>
+</blockquote>
+<h3 id="a-创建连接关系"><a href="#a-创建连接关系" class="headerlink" title="a. 创建连接关系"></a>a. 创建连接关系</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Selector</span> <span class="variable">selector</span> <span class="operator">=</span> Selector.open(); <span class="comment">// 创建Selector</span></span><br><span class="line">channel.configureBlocking(<span class="literal">false</span>); <span class="comment">// 非阻塞通道</span></span><br><span class="line"><span class="type">SelectionKey</span> <span class="variable">key</span> <span class="operator">=</span> channel.register(selector, Selectionkey.OP_READ | SelectionKey.OP_WRITE); <span class="comment">// 将被管理的channel注册到selector上</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="b-具体捕捉过程"><a href="#b-具体捕捉过程" class="headerlink" title="b. 具体捕捉过程"></a>b. 具体捕捉过程</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">readyNum</span> <span class="operator">=</span> selector.select();</span><br><span class="line">    <span class="keyword">if</span> (readNum == <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="type">Set</span> <span class="variable">selectedKeys</span> <span class="operator">=</span> selector.selectedKeys(); <span class="comment">//isReadble() isAcceptable等属性，获取attachment等</span></span><br><span class="line">    <span class="type">Iterator</span> <span class="variable">keyIterator</span> <span class="operator">=</span> selectedKeys.iterator();</span><br><span class="line">    <span class="keyword">while</span> (keyIterator.hasNext()) &#123;</span><br><span class="line">        SelectionKey = keyIterator.next();</span><br><span class="line">        <span class="keyword">if</span> (key.isAcceptable) &#123;</span><br><span class="line">            <span class="comment">// a connection was accepted by a ServerSocketChannel</span></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (key.isConnectable) &#123;</span><br><span class="line">            <span class="comment">// a connection was established with a remote server</span></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (key.isReadable) &#123;</span><br><span class="line">            <span class="comment">// a channel is ready for reading</span></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (key.isWritable) &#123;</span><br><span class="line">            <span class="comment">// a channel is ready for writing</span></span><br><span class="line">        &#125;</span><br><span class="line">        keyIterator.remove(); <span class="comment">// 移除</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到Selector处理事件必须要快，否则其他连接的事件不会被及时处理，造成客户端阻塞。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/04/26/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E5%9F%BA%E7%A1%80/59.Selector/">https://yuezi2048.github.io/2025/04/26/2.Areas🌐/02.面经记录/Java基础/59.Selector/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java%E5%9F%BA%E7%A1%80/">Java基础</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/04/26/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E5%9F%BA%E7%A1%80/58.Channel%E6%98%AF%E4%BB%80%E4%B9%88/" title="58.Channel是什么"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">58.Channel是什么</div></div><div class="info-2"><div class="info-item-1">Channel是NIO（New...</div></div></div></a><a class="pagination-related" href="/2025/04/26/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E9%9B%86%E5%90%88/1.HashMap%E7%9A%84%E5%8E%9F%E7%90%86/" title="1.HashMap的原理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">1.HashMap的原理</div></div><div class="info-2"><div class="info-item-1"> HashMap基于哈希表的存储结构，主要存储键值对。Java8以前使用数组+链表，Java8及以后数组+链表+红黑树实现 HashMap是计算key的hashCode()得到哈希值，映射到对应的数组位置（Jdk7使用indexFor方法，Jdk8采用（n-1）&amp; hash)，哈希值会经过扰动处理，使得分布不均匀，减少冲突出现的概率，找到下标以后，如果对应下标没元素，直接添加，否则判断该元素key与待添加的key是否相等 如果相等，就替换val 否则进一步对链表&#x2F;红黑树的后续结点 逐个进行判断 如果没有找到，就加入新元素(容量不够需扩容resize)   HashMap默认初始容量capacity16，负载因子loadFactor为0.75，到达12个后触发扩容机制（capacity 16–&gt;32），扩容操作会有性能开销。 16(12)-&gt;32(24)-&gt;64(48)…    	 拓展点HashMap红黑树Java8以后，为了优化多个映射到同一个哈希桶的查找性能。这个结构会使得最坏的查找时间复杂度...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/04/09/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E5%9F%BA%E7%A1%80/1.%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%8E%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" title="1.序列化与反序列化"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-09</div><div class="info-item-2">1.序列化与反序列化</div></div><div class="info-2"><div class="info-item-1">...</div></div></div></a><a class="pagination-related" href="/2025/04/15/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E5%9F%BA%E7%A1%80/10.%E5%86%85%E9%83%A8%E7%B1%BB/" title="10.内部类"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-15</div><div class="info-item-2">10.内部类</div></div><div class="info-2"><div class="info-item-1">内部类：可以直接访问外部类的成员变量和方法（包括私有成员），也能体现出类的包含关系，如Car.Air 内部类分为：成员内部类、局部内部类、匿名内部类、静态内部类。 作用：  **封装：**体现出类的包含关系，提高内聚性 **访问外部类成员：**内部类可以访问外部类的成员变量和方法，操作外部类对象的场景非常适用 **简化代码：**对于只在小地方实用的临时类，实用内部类可以减少冗余代码 **事件处理：**匿名内部类在回调函数 &#x2F; 事件监听有广泛的应用，在实现接口 &#x2F; 抽象类的场景下简化了代码结构  扩展：  成员内部类：非静态，看作是外部类的一个成员，能够访问外部类所有成员，包括私有成员 局部内部类：定义在方法或代码块内的类，仅在方法&#x2F;代码块作用域可见，一般是用于临时对象构建 匿名内部类：没有类名的内部类，一般是短期实用类的实例，接口回调&#x2F; 事件处理场景下广泛使用 静态内部类：static...</div></div></div></a><a class="pagination-related" href="/2025/04/15/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E5%9F%BA%E7%A1%80/11.jdk8%E6%96%B0%E7%89%B9%E6%80%A7/" title="11.jdk8新特性"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-15</div><div class="info-item-2">11.jdk8新特性</div></div><div class="info-2"><div class="info-item-1"> 元空间替代永久代  JDK8将JRockit虚拟机与Hotspot虚拟机融合，由于JRockit虚拟机没有永久代，所以去掉了Hotspot的永久代，永久代本身也存在内存不足、GC效率低的问题   Lambda表达式  Java8引入的匿名函数，本质是函数式接口的实例   引入日期类、接口默认方法 &#x2F; 静态方法  LocalDateTime解决了时区信息、引入不可变，解决线程安全的问题 允许接口中定义默认实现和静态方法，将相关方法内聚在接口中无需创建新对象   新增Stream流式接口  处理数据集合、惰性求值、并行处理   引入Optional接口  用优雅的方式解决了NullPointerException问题   新增CompletableFuture、StampedLock等并发实现类  提供了新的异步编程模型，简化异步任务的编写和管理    </div></div></div></a><a class="pagination-related" href="/2025/04/15/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E5%9F%BA%E7%A1%80/12.StringBuffer_StringBuilder/" title="12String_StringBuffer_StringBuilder"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-15</div><div class="info-item-2">12String_StringBuffer_StringBuilder</div></div><div class="info-2"><div class="info-item-1">区别在于可变性、性能安全和性能。  **String: ** 不可变类，每次修改都要创建新的String对象，底层有final修饰，适用于内容不频繁变化场景 **StringBuffer: ** 可变类，线程安全，内部使用sychronized关键字，适用于多线程环境频繁修改字符串场景 **StringBuilder: ** 可变类，舍弃了同步锁，不保证线程安全，性能比StringBuffer高，适用于单线程中高性能的字符串处理  拓展  Java8对于字符串常量拼接底层做了优化处理：字符串拼接自动转为StringBuilder进行操作，提高代码性能。 但动态拼接和并发场景下还是需要手动使用StringBuufer&#x2F;StringBuilder    </div></div></div></a><a class="pagination-related" href="/2025/04/15/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E5%9F%BA%E7%A1%80/13.StringBuilder%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B/" title="13.StringBuilder实现过程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-15</div><div class="info-item-2">13.StringBuilder实现过程</div></div><div class="info-2"><div class="info-item-1">StringBuilder主要是解决String对象不可变，提供高效的字符串拼接 &#x2F; 修改操作，例如append、insert等 实现过程：  使用内部字符数组（char[] value)存储字符序列d 进行append insert等操作的时候，直接修改内部字符数组，而不是像String那样创建新对象 每次进行字符串操作时，如果容量不足，会通过扩展数组容量来容纳新字符，每次按2倍容量扩展，减少扩展次数，提高性能  拓展：  实际上，StringBuilder底层使用char数组存储字符，有一个count来记录字符数 和String存储value的区别： String被final所修饰，且内部的char也被private 和...</div></div></div></a><a class="pagination-related" href="/2025/04/17/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Java%E5%9F%BA%E7%A1%80/14.Java%E5%8C%85%E8%A3%85%E7%B1%BB%E5%92%8C%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%8C%BA%E5%88%AB/" title="14.Java包装类和基本类型的区别"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-17</div><div class="info-item-2">14.Java包装类和基本类型的区别</div></div><div class="info-2"><div class="info-item-1">基本类型：java有八种数据类型 int 、long 、float	 、char 、byte 、boolean 、short是直接存储数值的变量，存储在栈中，性能比较高，不支持null  局部变量在栈中，成员变量在堆中，静态(类)字段存储在方法区  包装类型：每个基本类型都有对应的包装类，包装类对应的是类，存储在堆中，可以用于面向对象编程，支持null  	 区别：  性能：基本类型占用内存小，效率高，适合频繁使用的简单操作，包装类型是对象，涉及内存分配 垃圾回收，性能相对低 &#x3D;&#x3D;的含义：基本类型是直接比较数值，而包装类是判断内存地址是否相同，equal()才是判断对象的值 默认值不同：基本类型默认值是0 false等，包装类是null 初始化方式不同：基本类型直接赋值，包装类要new 存储方式不同：基本类型作为一个变量（成员变量在堆，局部变量在栈），而包装类随着对象一起保存在堆上（如果不考虑成员变量...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#SelectionKey%E5%92%8C%E9%80%9A%E9%81%93%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-text">SelectionKey和通道的关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Selector%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95"><span class="toc-text">Selector常见方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Selector%E7%AE%A1%E7%90%86%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-text">Selector管理连接的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#a-%E5%88%9B%E5%BB%BA%E8%BF%9E%E6%8E%A5%E5%85%B3%E7%B3%BB"><span class="toc-text">a. 创建连接关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#b-%E5%85%B7%E4%BD%93%E6%8D%95%E6%8D%89%E8%BF%87%E7%A8%8B"><span class="toc-text">b. 具体捕捉过程</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

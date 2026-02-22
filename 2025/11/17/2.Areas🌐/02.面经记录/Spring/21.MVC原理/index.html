@@ -1,0 +1,222 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>21.MVC原理 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="1）客户端请求：客户端发送HTTP请求，所有请求被DispatcherServlet接收  2）请求映射：DispatcherServlet根据配置的处理器映射器HandlerMapping查找请求URL对应的控制器Controller  3）调用控制器方法：找到控制器后，DispatcherServlet将请求转发给对应的控制器方法处理，控制器方法处理完业务逻辑后，通常返回ModelAndVie">
+<meta property="og:type" content="article">
+<meta property="og:title" content="21.MVC原理">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/11/17/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/21.MVC%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="1）客户端请求：客户端发送HTTP请求，所有请求被DispatcherServlet接收  2）请求映射：DispatcherServlet根据配置的处理器映射器HandlerMapping查找请求URL对应的控制器Controller  3）调用控制器方法：找到控制器后，DispatcherServlet将请求转发给对应的控制器方法处理，控制器方法处理完业务逻辑后，通常返回ModelAndVie">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-11-17T13:13:06.000Z">
+<meta property="article:modified_time" content="2025-11-17T13:13:06.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="Spring">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "21.MVC原理",
+  "url": "https://yuezi2048.github.io/2025/11/17/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/21.MVC%E5%8E%9F%E7%90%86/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-11-17T13:13:06.000Z",
+  "dateModified": "2025-11-17T13:13:06.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/11/17/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/21.MVC%E5%8E%9F%E7%90%86/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '21.MVC原理',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">21.MVC原理</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">21.MVC原理</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-11-17T13:13:06.000Z" title="发表于 2025-11-17 21:13:06">2025-11-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-11-17T13:13:06.000Z" title="更新于 2025-11-17 21:13:06">2025-11-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/">02.面经记录</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/">Spring</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>3分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p><strong>1）客户端请求</strong>：客户端发送HTTP请求，所有请求被DispatcherServlet接收</p>
+<p> <strong>2）请求映射</strong>：DispatcherServlet根据配置的处理器映射器<code>HandlerMapping</code>查找请求URL对应的控制器<code>Controller</code></p>
+<p> <strong>3）调用控制器方法</strong>：找到控制器后，DispatcherServlet将请求转发给对应的控制器方法处理，控制器方法处理完业务逻辑后，通常返回ModelAndView，包含数据模型和视图名称</p>
+<p> <strong>4）视图解析</strong>：DispatcherServlet 根据控制器返回的视图名称，使用视图解析器（ViewResolver）将逻辑视图名称解析为实际的视图（如 JSP、Thymeleaf 等）。</p>
+<p> <strong>5）视图渲染返回</strong>：视图渲染引擎根据数据模型渲染视图，并将生成的 HTML 响应返回给客户端</p>
+<blockquote>
+<p>Spring MVC 还支持返回 JSON 数据响应，用于构建 RESTful Web 服务，因此上述视图解析部分， 如果是 JSON 响应，则 Spring MVC 会将对象序列化为 JSON，后续返回给客户端。</p>
+<p>追问：拦截器的执行时机了解吗？</p>
+<p>拦截器（Interceptor）允许开发者在请求进入控制器之前、控制器处理完成之后以及视图渲染前后执行自定义逻辑。常见的应用场景包括日志记录、用户认证、权限校验等。</p>
+<ol>
+<li><strong><code>preHandle()</code></strong>：在控制器方法执行之前调用。如果该方法返回 <code>false</code>，请求将被拦截，不会进入控制器方法。</li>
+<li><strong><code>postHandle()</code></strong>：在控制器方法执行之后，视图渲染之前调用。可以用于修改模型数据或视图。</li>
+<li><strong><code>afterCompletion()</code></strong>：在视图渲染完成后调用，用于清理资源或记录执行时间等。</li>
+</ol>
+</blockquote>
+<h2 id="扩展知识"><a href="#扩展知识" class="headerlink" title="扩展知识"></a>扩展知识</h2><h3 id="Spring-MVC-工作详细流程"><a href="#Spring-MVC-工作详细流程" class="headerlink" title="Spring MVC 工作详细流程"></a>Spring MVC 工作详细流程</h3><ol>
+<li><strong>客户端请求</strong>：用户发送 HTTP 请求，<code>DispatcherServlet</code> 接收请求。</li>
+<li><strong>执行拦截器的 <code>preHandle()</code></strong>：如果配置了拦截器，Spring MVC 会首先执行 <code>preHandle()</code> 方法。如果返回 <code>false</code>，请求处理终止；否则，继续处理。</li>
+<li><strong>请求映射</strong>：<code>DispatcherServlet</code> 通过 <code>HandlerMapping</code> 找到对应的 <code>HandlerExecutionChain</code>（这里面包含了很多定义的 <code>HandlerInterceptor</code>，拦截器）然后通过 HandlerAdapter 适配器的适配（适配器模式）后，执行 handler，即通过 controller 的调用。</li>
+<li><strong>执行控制器方法</strong>：如果返回的是视图（如 JSP、Thymeleaf），则执行视图解析器进行视图解析和渲染；如果返回的是对象（如 JSON），则通过消息转换器（如 <code>MappingJackson2HttpMessageConverter</code>）将对象转换为 JSON 数据。</li>
+<li><strong>执行拦截器的 <code>postHandle()</code></strong>：如果返回视图，拦截器的 <code>postHandle()</code> 方法会在视图渲染之前执行。对于 JSON 响应，该方法仍然会执行。</li>
+<li><strong>视图渲染或 JSON 响应</strong>：对于视图，视图解析器会解析视图名称，并将其渲染为 HTML 页面。对于 JSON 响应，Spring MVC 会将对象序列化为 JSON，并返回给客户端。</li>
+<li><strong>执行拦截器的 <code>afterCompletion()</code></strong>：视图渲染或 JSON 响应完成后，Spring MVC 调用拦截器的 <code>afterCompletion()</code> 方法，进行资源清理或日志记录。</li>
+<li><strong>响应客户端</strong>：最终将渲染的视图或 JSON 数据返回给客户端。</li>
+</ol>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20251117210810617.png" alt="image-20251117210810617"></p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20251117210820653.png" alt="image-20251117210820653"></p>
+<h3 id="拦截器的工作流程"><a href="#拦截器的工作流程" class="headerlink" title="拦截器的工作流程"></a>拦截器的工作流程</h3><p>拦截器（Interceptor）在 Spring MVC 的请求处理流程中起到类似过滤器的作用，但比过滤器更具灵活性。它允许开发者在请求进入控制器之前、控制器处理完成之后以及视图渲染前后执行自定义逻辑。常见的应用场景包括日志记录、用户认证、权限校验等。</p>
+<h4 id="拦截器三个核心方法"><a href="#拦截器三个核心方法" class="headerlink" title="拦截器三个核心方法"></a>拦截器三个核心方法</h4><ol>
+<li><strong><code>preHandle()</code></strong>：在控制器方法执行之前调用。如果该方法返回 <code>false</code>，请求将被拦截，不会进入控制器方法。</li>
+<li><strong><code>postHandle()</code></strong>：在控制器方法执行之后，视图渲染之前调用。可以用于修改模型数据或视图。</li>
+<li><strong><code>afterCompletion()</code></strong>：在视图渲染完成后调用，用于清理资源或记录执行时间等。</li>
+</ol>
+<h4 id="拦截器的配置"><a href="#拦截器的配置" class="headerlink" title="拦截器的配置"></a>拦截器的配置</h4><p>在 Spring MVC 中，可以通过实现 <code>HandlerInterceptor</code> 接口来定义拦截器，并在配置文件或 Java 配置类中注册拦截器。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyInterceptor</span> <span class="keyword">implements</span> <span class="title class_">HandlerInterceptor</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">preHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="comment">// 在处理器方法调用前进行拦截</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">postHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="comment">// 处理器方法执行后，但视图渲染前执行</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">afterCompletion</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="comment">// 视图渲染后执行</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在配置类中注册拦截器：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">WebConfig</span> <span class="keyword">implements</span> <span class="title class_">WebMvcConfigurer</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addInterceptors</span><span class="params">(InterceptorRegistry registry)</span> &#123;</span><br><span class="line">        registry.addInterceptor(<span class="keyword">new</span> <span class="title class_">MyInterceptor</span>())</span><br><span class="line">                .addPathPatterns(<span class="string">&quot;/**&quot;</span>) <span class="comment">// 拦截所有路径</span></span><br><span class="line">                .excludePathPatterns(<span class="string">&quot;/login&quot;</span>, <span class="string">&quot;/error&quot;</span>); <span class="comment">// 排除某些路径</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/11/17/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/21.MVC%E5%8E%9F%E7%90%86/">https://yuezi2048.github.io/2025/11/17/2.Areas🌐/02.面经记录/Spring/21.MVC原理/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Spring/">Spring</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/20.SpringMVC%E7%90%86%E8%A7%A3/" title="20.SpringMVC理解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">20.SpringMVC理解</div></div><div class="info-2"><div class="info-item-1">它是 Spring 中基于经典的 MVC 模式（Model-View-Controller）进行扩展来开发 Web 应用的模块。 MVC 分为：模型层（Model）、视图层（View）和控制层（Controller）。 SpringMVC 对传统 MVC 的 Model 层进行了扩展，新增前端控制器 DispatcherServlet 解决了传统 Servlet+JSP 模式的痛点，无需手动编写大量 Servlet 类，大幅简化了 Web 开发流程。 Spring MVC 的核心就是 DispatcherServlet，即一个前端控制器。它通过注解、配置等方式，将 HTTP 请求映射到控制器方法，然后由控制器处理请求逻辑并将数据返回给视图层进行渲染。 它的主要功能：包括请求映射、数据绑定、视图解析、表单处理、异常处理等，帮助我们快速构建 Web 应用。  注意，有人说 Spring MVC 将 Model 层分的更细，但是这其实是不准确。 虽然传统 MVC 是三层：Model、View、Controller，而在 Spring...</div></div></div></a><a class="pagination-related" href="/2025/11/17/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/22.MVC%E7%9A%84%E7%88%B6%E5%AD%90%E5%AE%B9%E5%99%A8/" title="22.MVC的父子容器"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">22.MVC的父子容器</div></div><div class="info-2"><div class="info-item-1">父容器：父容器是Spring的跟容器，由 Spring 应用上下文（ApplicationContext）加载，具体的实现包括ContextLoaderListener ContextLoaderServlet 等，主要是管理应用全局Bean，服务层Service、数据访问层DAO等。 子容器：是说Web容器，对应每个 DispatcherServlet 实例都会创建一个子容器，用于管理 Web 层（如控制器和拦截器）中的 Bean。 父子容器的关系：  子容器可以访问父容器的 Bean：如果一个 Bean 在父容器中定义，子容器也可以直接访问它。这种机制有助于 Web 层（子容器）使用服务层或 DAO 层（父容器）中的 Bean。 父容器不能访问子容器的 Bean：父容器无法访问子容器中的 Bean，这是 Spring MVC 的设计之一。父容器中的 Bean 和子容器中的 Bean 被分开管理，避免了不必要的耦合。  	 这样的好处就是：将web层与服务层分离出来，能分离业务逻辑、避免Bean重复定义、并且管理分模块。 扩展知识Spring 父子容器的初始化过程在...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/1.%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/" title="1.循环依赖"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">1.循环依赖</div></div><div class="info-2"><div class="info-item-1">循环依赖（Circular Dependency）是说多个模块，组件之间相互依赖，形成闭环（A依赖B，B依赖A），从而无法确定加载&#x2F;初始化的顺序 扩展知识简单示例看下方的代码就知晓了 @Servicepublic class A &#123;    @Autowired    private B b;&#125;@Servicepublic class B &#123;    @Autowired    private A a;&#125;//或者自己依赖自己@Servicepublic class A &#123;    @Autowired    private A a;&#125;  上面这两种方式都是循环依赖，应该很好理解，当然也可以是三个 Bean 甚至更多 Bean 相互依赖，原理都是一样的。 	 这种循环依赖可能会产生问题，例如 A 要依赖 B，发现 B 还没创建，于是开始创建 B ，创建的过程发现 B 要依赖 A， 而 A 还没创建好呀，因为它要等 B 创建好，就这样它们俩就搁这卡 bug 了。 关联面试题 578. Spring...</div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/10.FactoryBean/" title="10.FactoryBean"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">10.FactoryBean</div></div><div class="info-2"><div class="info-item-1">FactoryBean是Spring的特殊接口，允许开发者通过实现接口来创建复杂的Bean实例（通过FactoryBean创建的Bean除了FactoryBean本身，也可以是他生产的对象）  核心概念：FactoryBean 是一个实现了 FactoryBean&lt;T&gt; 接口的 Bean，通过它可以自定义复杂对象的创建逻辑。Spring 容器会调用 getObject() 方法来获取实际的 Bean 实例。 使用场景： 通常用于需要创建复杂对象或需要使用代理模式生成 Bean 的场景。  扩展知识FactoryBean 的主要方法 getObject()：这是 FactoryBean 最重要的方法，返回实际的 Bean 实例。Spring 容器会调用这个方法来获取 Bean。 getObjectType()：返回由 getObject() 方法所返回的对象类型，Spring 可以根据这个类型进行 Bean 的类型检查。 isSingleton()：用于确定 getObject() 返回的 Bean 是否为单例。如果返回 true，那么 Spring...</div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/11.ObjectFactory/" title="11.ObjectFactory"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">11.ObjectFactory</div></div><div class="info-2"><div class="info-item-1">ObjectFactory是 Spring 框架中的一个接口，主要用于延迟获取 Bean 实例。 ObjectFactory 提供了一种延迟加载的机制，它通过 getObject() 方法返回一个 Bean 的实例。使用 ObjectFactory 可以避免在容器启动时立即创建所有 Bean，即只有在真正需要使用 Bean 时才会从 Spring 容器中获取该 Bean 实例，有助于优化性能。 扩展知识ObjectFactory 的使用场景 懒加载 Bean：当某个 Bean 的创建过程可能耗时较长或依赖的资源较重时，可以通过 ObjectFactory 进行懒加载，避免容器启动时不必要的 Bean 创建。这能有效提升系统的启动速度。 避免循环依赖：在某些情况下，两个 Bean 可能相互依赖，导致循环依赖问题。通过使用 ObjectFactory，可以延迟其中一个 Bean 的创建，避免循环依赖。  在 Spring 的循环依赖里就用到它了，三级缓存的 map 里面存储的就是 ObjectFactory，用于延迟代理对象的创建。 并且在某些需要在运行时决定动态 Bean...</div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/12.ApplicationContext/" title="12.ApplicationContext"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">12.ApplicationContext</div></div><div class="info-2"><div class="info-item-1">ApplicationContext 是多个底层接口组合后的接口。从类图中我们可以看到，它主要提供了五大功能。  核心容器 BeanFactory 国际化 MessageSource 资源获取 ResourceLoader 环境信息 EnvironmentCapable 事件发布 ApplicationEventPublisher   ApplicationContext有多个实现类，如ClassPathXmlApplicationContext和FileSystemXmlApplicationContext等，适用于不同的应用场景。通过这些实现类，开发者可以根据具体需求选择合适的ApplicationContext来实现Spring应用程序的各种功能‌。   扩展知识下面，我们使用 SpringBoot 返回的 ConfigurableApplicationContext 来进行讲解。 @SpringBootApplicationpublic class Main &#123;    public static void main(String[] args) throws...</div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/13.Bean%E4%BD%9C%E7%94%A8%E5%9F%9F/" title="13.Bean作用域"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">13.Bean作用域</div></div><div class="info-2"><div class="info-item-1">一共有六种作用域：  整体作用  singleton：默认是单例，含义不用解释了吧，一个 IOC 容器内部仅此一个 prototype：原型，多实例   分块作用  request：每个请求都会新建一个属于自己的 Bean 实例，这种作用域仅存在 Spring Web 应用中 session：一个 http session 中有一个 bean 的实例，这种作用域仅存在 Spring Web 应用中 application：整个 ServletContext 生命周期里，只有一个 bean，这种作用域仅存在 Spring Web 应用中 websocket：一个 WebSocket 生命周期内一个 bean 实例，这种作用域仅存在 Spring Web 应用中    官网最新截图：  </div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/14.spring%E6%B3%A8%E5%85%A5%E6%96%B9%E5%BC%8F/" title="14.spring注入方式"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">14.spring注入方式</div></div><div class="info-2"><div class="info-item-1"> 推荐方式  构造器注入，Spring 倡导构造函数注入，因为构造器注入返回给客户端使用的时候一定是完整的。 setter 注入，可选的注入方式，好处是在有变更的情况下，可以重新注入。   其他  字段注入，就是平日我们用 @Autowired 标记字段 方法注入，就是平日我们用 @Autowired 标记方法 接口回调注入，就是实现 Spring 定义的一些内建接口，例如 BeanFactoryAware，会进行 BeanFactory 的注入    其实官网上关于注入就写了构造器和setter ： 	 像字段注入其实官方是不推荐的使用的，因为依赖注解，后没有控制注入顺序且无法注入静态字段。 </div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A9%E5%B1%95%E7%9F%A5%E8%AF%86"><span class="toc-text">扩展知识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring-MVC-%E5%B7%A5%E4%BD%9C%E8%AF%A6%E7%BB%86%E6%B5%81%E7%A8%8B"><span class="toc-text">Spring MVC 工作详细流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%A6%E6%88%AA%E5%99%A8%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-text">拦截器的工作流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8B%A6%E6%88%AA%E5%99%A8%E4%B8%89%E4%B8%AA%E6%A0%B8%E5%BF%83%E6%96%B9%E6%B3%95"><span class="toc-text">拦截器三个核心方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8B%A6%E6%88%AA%E5%99%A8%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="toc-text">拦截器的配置</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

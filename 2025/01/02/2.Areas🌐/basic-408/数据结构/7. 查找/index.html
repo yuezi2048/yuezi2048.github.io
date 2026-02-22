@@ -1,0 +1,610 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>7. 查找 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="连地址法链地址法（拉链法 链接法）：一个地址处只能存放同义词，不存放非同义词，将同义词组成链表，存在对应的地址处即可 不同情况下的ASL：查找一个数据的比较次数 ASL平均查找长度：查找n个数查找长度和 &#x2F; n 开放地址法  ASL成功查找长度 ASL失败查找长度  链地址法  ASL成功查找长度  #include&lt;stdio.h&gt;#include&lt;stdlib.h&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="7. 查找">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/01/02/2.Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/7.%20%E6%9F%A5%E6%89%BE/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="连地址法链地址法（拉链法 链接法）：一个地址处只能存放同义词，不存放非同义词，将同义词组成链表，存在对应的地址处即可 不同情况下的ASL：查找一个数据的比较次数 ASL平均查找长度：查找n个数查找长度和 &#x2F; n 开放地址法  ASL成功查找长度 ASL失败查找长度  链地址法  ASL成功查找长度  #include&lt;stdio.h&gt;#include&lt;stdlib.h&amp;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-01-02T13:44:05.000Z">
+<meta property="article:modified_time" content="2025-01-02T13:44:05.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="数据结构">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "7. 查找",
+  "url": "https://yuezi2048.github.io/2025/01/02/2.Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/7.%20%E6%9F%A5%E6%89%BE/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-01-02T13:44:05.000Z",
+  "dateModified": "2025-01-02T13:44:05.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/01/02/2.Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/7.%20%E6%9F%A5%E6%89%BE/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '7. 查找',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">7. 查找</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">7. 查找</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-01-02T13:44:05.000Z" title="发表于 2025-01-02 21:44:05">2025-01-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-01-02T13:44:05.000Z" title="更新于 2025-01-02 21:44:05">2025-01-02</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/basic-408/">basic-408</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">8.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>35分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="连地址法"><a href="#连地址法" class="headerlink" title="连地址法"></a>连地址法</h2><p>链地址法（拉链法 链接法）：一个地址处只能存放同义词，不存放非同义词，将同义词组成链表，存在对应的地址处即可</p>
+<p>不同情况下的ASL：查找一个数据的比较次数</p>
+<p>ASL平均查找长度：查找n个数查找长度和 &#x2F; n</p>
+<p>开放地址法</p>
+<ul>
+<li>ASL成功查找长度</li>
+<li>ASL失败查找长度</li>
+</ul>
+<p>链地址法</p>
+<ul>
+<li>ASL成功查找长度</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> size 13</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 链表的节点结构</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="title class_">Node</span> &#123;</span><br><span class="line">    <span class="type">int</span> data;</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">Node</span> *next;</span><br><span class="line">&#125;HNode, *HLink;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">Hash</span><span class="params">(<span class="type">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> k % <span class="number">13</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Insert</span><span class="params">(HLink hash[], <span class="type">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> i = <span class="built_in">Hash</span>(k);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 申请链表节点</span></span><br><span class="line">    HNode* p = (HNode*)<span class="built_in">malloc</span>(<span class="built_in">sizeof</span>(HNode));</span><br><span class="line">    p-&gt;data = k;</span><br><span class="line">    <span class="comment">// 头插</span></span><br><span class="line">    p-&gt;next = hash[i];</span><br><span class="line">    hash[i] = p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Search</span><span class="params">(HLink hash[], <span class="type">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> i = <span class="built_in">Hash</span>(k);</span><br><span class="line">    HNode *p = hash[i];</span><br><span class="line">    <span class="keyword">while</span> (p != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (p-&gt;data == k) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;查找成功&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        p = p-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (p == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;查找失败&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Delet</span><span class="params">(HLink hash[], <span class="type">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> i = <span class="built_in">Hash</span>(k);</span><br><span class="line">    HNode *p = hash[i];</span><br><span class="line">    HNode *pre = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">while</span> (p != <span class="literal">NULL</span> &amp;&amp; p-&gt;data != k) &#123;</span><br><span class="line">        pre = p;</span><br><span class="line">        p = p-&gt;next;</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="comment">// 保证一定能找到k，这里是不带头节点的链表，需要判断</span></span><br><span class="line">    <span class="keyword">if</span> (pre == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        hash[i] = p-&gt;next;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;删除成功\n&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        pre-&gt;next = p-&gt;next;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;删除成功\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">free</span>(p);</span><br><span class="line">    p = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> n, k;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;n);</span><br><span class="line"></span><br><span class="line">    HLink hash[size];</span><br><span class="line">    <span class="comment">// HLink* hash = (HLink *)malloc(sizeof(HLink));</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化哈希表</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; size; i ++) &#123;</span><br><span class="line">        hash[i] = <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i ++) &#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;k);</span><br><span class="line">        <span class="built_in">Insert</span>(hash, k);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 查找k</span></span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;k);</span><br><span class="line">    <span class="built_in">Search</span>(hash, k);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;k);</span><br><span class="line">    <span class="comment">// 删除某个数据k</span></span><br><span class="line">    <span class="built_in">Delet</span>(hash, k);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">12 </span></span><br><span class="line"><span class="comment">19 74 23 1 68 20 84 27 5 11 10 79</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="高级搜索树"><a href="#高级搜索树" class="headerlink" title="高级搜索树"></a>高级搜索树</h2><ul>
+<li><p>二叉树 —有序性 —&gt;  BST —-平衡性—-&gt; AVL（旋转）</p>
+</li>
+<li><p>AVL树的缺点：</p>
+<ul>
+<li>（1）不直观（需要计算每个节点的平衡因子）；</li>
+<li>（2）频繁的插入和删除操作，需要不断的旋转调整，比较复杂  —&gt; 需要大量的调整操作 —&gt; 引申出高级搜索树：红黑树 B树 B+树<ul>
+<li>自平衡：通过引入一些调整手段，在插入、删除等操作导致失衡后，能够自行调整平衡</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>多路平衡查找树（B树）</p>
+<ul>
+<li>一个节点有多个数据，同时有多个孩子（如外存中存放多个数据块，减少IO次数），一个节点有n-1个数据，就有n个孩子</li>
+<li>是绝对平衡的（平衡因子全部是0） +  满足有序性</li>
+</ul>
+</li>
+<li><p>2-3树（3阶B树）：可以是空树，或者由2-节点 和 3-节点组成，并且绝对平衡：即根节点到任意一个叶子节点的深度相同</p>
+<ul>
+<li>2-节点：含有一个数据，两个孩子的节点，并且满足顺序性：左孩子&lt;父亲&lt;右孩子</li>
+<li>3-节点：含有两个数据，三个孩子的节点，并且满足顺序性：最左孩子&lt;父亲第一个数据&lt;中间孩子&lt;父亲第二个数据&lt;最右孩子</li>
+<li>度为3</li>
+</ul>
+</li>
+<li><p>2-3-4树（4阶B树）：由2-节点、3-节点、4-节点组成</p>
+</li>
+<li><p>2-3-4-…m树（m阶B树）</p>
+</li>
+</ul>
+<blockquote>
+<p>将上述的度取名为阶</p>
+</blockquote>
+<blockquote>
+<p>对于B树和红黑树：</p>
+<ul>
+<li>内部节点：非空节点</li>
+<li>外部节点：最下面一层非空节点的空孩子节点 -— 叶子节点（空节点）</li>
+</ul>
+</blockquote>
+<p>红黑树：本质上就是2-3-4树（或者2-3树）</p>
+<ul>
+<li>为了进行查找遍历，通过分裂下移，对3&#x2F;4阶B树转换成BST二叉树</li>
+<li>为了后续进行整合，对分裂的节点标记为红色</li>
+</ul>
+<p>红黑树的性质</p>
+<ul>
+<li>（1）具有顺序性</li>
+<li>（2）每个节点一定是黑色或者红色的</li>
+<li>（3）根（转换后的BST）和叶子节点（空节点）一定是黑色的</li>
+<li>（4）不存在两个相连的红色节点（红色节点的父亲和孩子一定是黑色节点，是B树原来的节点）</li>
+<li>（5）对于每个节点来说，从该节点到其下面任一叶子节点的路径上的黑色节点的数目是相同的</li>
+</ul>
+<blockquote>
+<p>口诀：左根右，根叶黑，不红红，黑路同（记住）</p>
+</blockquote>
+<hr>
+<p>黑高：在一颗红黑树中，从一个节点x出发，到其下一个叶子节点的简单路径所包含的黑色节点的个数（注：不含起点）</p>
+<ul>
+<li><p>结论1：从根节点出发，到叶子节点的最长路径不超过短路径的两倍 </p>
+<ul>
+<li>最短路径：黑高</li>
+<li>最长路径：树的高度（临界情况：该路径上每个非空黑色节点都往下拆分一个红色节点）</li>
+<li>$h  ≤ 2b_h$</li>
+</ul>
+</li>
+<li><p>推论1：红黑树也是平衡的，一个节点其矮的节点高度为h，另外一个节点高度就不能超过2h + 1（矮的路径h+1，高的路径不超过2(h + 1)，所以高度2(h + 1) - 1  ）</p>
+<ul>
+<li>红黑树相对于AVL树，平衡的限制放宽，因此增删后，调整不会太频繁，但是就单次调整来说会复杂很多，适合增删频繁的场景</li>
+</ul>
+</li>
+<li><p>结论2：有n个内部节点的红黑树，其高度 $h ≤ 2log(n+1)$  —&gt; 计算红黑树操作的复杂度</p>
+<ul>
+<li>通过结论1证明</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241217202853330.png" alt="image-20241217202853330">	</p>
+<p>红黑树的应用</p>
+<ul>
+<li>编程语言中，大多数自平衡BST库函数，都是基于红黑树实现的（C++ map set，Java TreeSet TreeMap）</li>
+<li>Linux操作系统的CPU调度，有一个完全公平调度，也是基于红黑树实现的</li>
+<li>Linux提供的epoll多路复用的底层结构</li>
+</ul>
+<hr>
+<h3 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h3><p>红黑树的操作：查找、插入、删除</p>
+<ul>
+<li>查找：就是BST的查找操作</li>
+<li>插入操作：在红黑树新插入一个数据，也就是插入一个新节点<ul>
+<li>先执行BST的插入操作，去找z应该插入的位置，首先满足顺序性</li>
+<li>插入后，考虑z的颜色：初始颜色设定为红色（注：如果是空树插入，插入之后要把z变成黑色满足根叶黑性质）<ul>
+<li>z的初始颜色是黑色：一定破坏了黑路同性质，每次插入后都得进行调整</li>
+<li>z的初始颜色是红色，可能破坏不红红的性质，只有插入后z的父亲节点也是红色才破坏性质，需要调整</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>*如果破坏了不红红性质，如何进行调整？ —&gt; 染色 + 旋转</p>
+<ul>
+<li>染色：红色变黑色，黑色变红色</li>
+<li>旋转：LL  LR  RR  RL，和AVL树的旋转一模一样</li>
+</ul>
+<blockquote>
+<p>除了递推分析破坏性质修复，也可以换一种思路理解：看成是一个拆分错误的B树，组合成一个正确的B树</p>
+</blockquote>
+<hr>
+<h4 id="插入操作"><a href="#插入操作" class="headerlink" title="插入操作"></a>插入操作</h4><p>假设插入节点z，z初始为红色</p>
+<ul>
+<li><p>首先执行BST的插入操作</p>
+</li>
+<li><p>具体的调整：</p>
+<ul>
+<li><p>空树插入：z是根节点，z直接变黑色即可</p>
+</li>
+<li><p>非空树插入：z不是根节点</p>
+</li>
+<li><p>z-&gt;parent是黑色，不破坏红黑树的性质，插入结束，不需要调整</p>
+</li>
+<li><p>z-&gt;parent是红色，破坏了不红红，需要进行调整</p>
+<ul>
+<li>z是红色</li>
+<li>z-&gt;parent是红色</li>
+<li>爷爷节点g &#x3D; z-&gt;parent-&gt;parent不可能是根节点，是黑色</li>
+<li>z的叔叔节点u：红色&#x2F;黑色（空节点也是黑的）</li>
+</ul>
+</li>
+<li><p>情况1：z-&gt;parent父亲节点是g的右孩子，叔叔节点是左孩子，此时u&#x3D;g-&gt;left</p>
+<ul>
+<li><p>如果叔叔u是红色，则将z的父亲、叔叔和爷爷变色：父亲和叔叔变黑，爷爷变红，如果爷爷的父亲也是红色或者爷爷是根节点，把爷爷节点看成新的需要调整的节点z，看爷爷节点满足哪种情况，对爷爷不断向上调整即可，直到某个需要调整的节点z父亲是黑色，或者z是根节点就停止</p>
+</li>
+<li><p>如果叔叔u是黑色</p>
+<ul>
+<li><p>新节点z是其父亲的右孩子，z相对于g来说是RR，父亲，爷爷染色（父亲变黑色，爷爷变红色），以爷爷为中心左旋</p>
+</li>
+<li><p>新节点z是其父亲的左孩子，z相当于g来说是RL，关于父亲右旋，并交换z指针和p指针，转换成RR的情况，按照RR的方式处理</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241217220001481.png" alt="image-20241217220001481"></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>情况2：z-&gt;parent父亲节点是g的左孩子，叔叔节点是右孩子（u &#x3D; g-&gt;right 情况1的对称问题）</p>
+<ul>
+<li>如果叔叔u是红色，则将z的父亲、叔叔和爷爷变色：父亲和叔叔变黑，爷爷变红，如果爷爷的父亲也是红色或者爷爷是根节点，把爷爷节点看成新的需要调整的节点z，看爷爷节点满足哪种情况，对爷爷不断向上调整即可，直到某个需要调整的节点z父亲是黑色，或者z是根节点就停止</li>
+<li>如果叔叔u是黑色<ul>
+<li>新节点z是其父亲的左孩子，z相对于g来说是LL，父亲，爷爷染色（父亲变黑色，爷爷变红色），以爷爷为中心右旋</li>
+<li>新节点z是其父亲的右孩子，z相当于g来说是LR，关于父亲左旋，并交换z指针和p指针，转换成LL的情况，按照LL的方式处理</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> RED 0</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BLACK 1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="title class_">RBTNode</span> &#123;</span><br><span class="line">    <span class="type">int</span> data;</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">RBTNode</span> *l, *r, *p; <span class="comment">// 左右孩子 父亲</span></span><br><span class="line">    <span class="type">int</span> color; <span class="comment">// 颜色</span></span><br><span class="line">&#125;RBTNode, *RBTree;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 根据关键字key创建新节点</span></span><br><span class="line"><span class="function">RBTNode* <span class="title">CreateNode</span><span class="params">(<span class="type">int</span> key, RBTNode *left, RBTNode *right, RBTNode *parent)</span> </span>&#123;</span><br><span class="line">    RBTNode* x = (RBTNode*)<span class="built_in">malloc</span>(<span class="built_in">sizeof</span>(RBTNode));</span><br><span class="line">    <span class="comment">// if x == NULL</span></span><br><span class="line">    x-&gt;color = RED; <span class="comment">// 初始颜色为红色</span></span><br><span class="line">    x-&gt;data = key;</span><br><span class="line">    x-&gt;l = left;</span><br><span class="line">    x-&gt;r = right;</span><br><span class="line">    x-&gt;p = parent;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对以root根的红黑树中x节点为中心进行红黑树左旋</span></span><br><span class="line"><span class="function">RBTree <span class="title">left_rotate</span><span class="params">(RBTree root, RBTNode *x)</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    RBTNode *y = x-&gt;r; <span class="comment">// y指向x右孩子</span></span><br><span class="line">    x-&gt;r = y-&gt;l; <span class="comment">// y的左孩子指向x右孩子</span></span><br><span class="line">    <span class="keyword">if</span> (y-&gt;l != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        y-&gt;l-&gt;p = x; <span class="comment">// 更新y左孩子的父亲，注意可能会有空指针</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 2.处理y和x父亲的关系</span></span><br><span class="line">    y-&gt;p = x-&gt;p;</span><br><span class="line">    <span class="keyword">if</span> (x-&gt;p == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        root = y; <span class="comment">// 如果旋转之前x是根节点，旋转之后y是根节点</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123; <span class="comment">// 如果x不是根节点，则x的父亲孩子指针指向y</span></span><br><span class="line">        <span class="keyword">if</span> (x == x-&gt;p-&gt;l) &#123;</span><br><span class="line">            x-&gt;p-&gt;l = y;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            x-&gt;p-&gt;r = y;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 3. 处理y和x关系</span></span><br><span class="line">    y-&gt;l = x;</span><br><span class="line">    x-&gt;p = y;</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对以root根的红黑树中x节点为中心进行红黑树右旋</span></span><br><span class="line"><span class="function">RBTree <span class="title">right_rotate</span><span class="params">(RBTree root, RBTNode *x)</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    RBTNode *y = x-&gt;l; <span class="comment">// y指向x左孩子</span></span><br><span class="line">    x-&gt;l = y-&gt;r; <span class="comment">// y的右孩子指向x左孩子</span></span><br><span class="line">    <span class="keyword">if</span> (y-&gt;r != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        y-&gt;r-&gt;p = x; <span class="comment">// 更新y右孩子的父亲，注意可能会有空指针</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 2.处理y和x父亲的关系</span></span><br><span class="line">    y-&gt;p = x-&gt;p;</span><br><span class="line">    <span class="keyword">if</span> (x-&gt;p == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        root = y; <span class="comment">// 如果旋转之前x是根节点，旋转之后y是根节点</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123; <span class="comment">// 如果x不是根节点，则x的父亲孩子指针指向y</span></span><br><span class="line">        <span class="keyword">if</span> (x == x-&gt;p-&gt;l) &#123;</span><br><span class="line">            x-&gt;p-&gt;l = y;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            x-&gt;p-&gt;r = y;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 3. 处理y和x关系</span></span><br><span class="line">    y-&gt;r = x;</span><br><span class="line">    x-&gt;p = y;</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在以root为根的红黑树中，z是红色，z-&gt;p也是红色，破坏了不红红，进行调整</span></span><br><span class="line"><span class="comment">// z是待调整的节点</span></span><br><span class="line"><span class="function">RBTree <span class="title">fixup</span><span class="params">(RBTree root, RBTNode* z)</span> </span>&#123;</span><br><span class="line">    RBTNode* p = z-&gt;p; <span class="comment">// 父亲节点</span></span><br><span class="line">    RBTNode* g = <span class="literal">NULL</span>; <span class="comment">// 爷爷节点</span></span><br><span class="line">    RBTNode* u = <span class="literal">NULL</span>; <span class="comment">// 叔叔节点</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// z需要不断向上调整，使用while判断父亲存在且为红色则需要调整</span></span><br><span class="line">    <span class="keyword">while</span> (p != <span class="literal">NULL</span> &amp;&amp; p-&gt;color == RED) &#123;</span><br><span class="line">        g = p-&gt;p; <span class="comment">// 因为p是红色，那么就保证了一定存在根节点</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 父亲在右，叔叔在左</span></span><br><span class="line">        <span class="keyword">if</span> (p == g-&gt;r) &#123;</span><br><span class="line">            u = g-&gt;l;</span><br><span class="line">            <span class="keyword">if</span> (u != <span class="literal">NULL</span> &amp;&amp; u-&gt;color == RED) &#123;</span><br><span class="line">                p-&gt;color =BLACK;</span><br><span class="line">                u-&gt;color = BLACK;</span><br><span class="line">                g-&gt;color = RED;</span><br><span class="line">                <span class="comment">// 爷爷做新的调整的节点</span></span><br><span class="line">                z = g;</span><br><span class="line">                p = z-&gt;p;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (z == p-&gt;l) &#123; <span class="comment">// RL（先写RL可以和RR复用代码）</span></span><br><span class="line">                    root = <span class="built_in">right_rotate</span>(root, p);</span><br><span class="line">                    RBTNode *t = z;</span><br><span class="line">                    z = p;</span><br><span class="line">                    p = t;</span><br><span class="line">                &#125; <span class="comment">// 转换为RR的情况</span></span><br><span class="line">                g-&gt;color = RED;</span><br><span class="line">                p-&gt;color = BLACK;</span><br><span class="line">                root = <span class="built_in">left_rotate</span>(root, g);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; <span class="comment">// 父亲在左，叔叔在右</span></span><br><span class="line">            u = g-&gt;r;</span><br><span class="line">            <span class="keyword">if</span> (u != <span class="literal">NULL</span> &amp;&amp; u-&gt;color == RED) &#123;</span><br><span class="line">                p-&gt;color =BLACK;</span><br><span class="line">                u-&gt;color = BLACK;</span><br><span class="line">                g-&gt;color = RED;</span><br><span class="line">                <span class="comment">// 爷爷做新的调整的节点</span></span><br><span class="line">                z = g;</span><br><span class="line">                p = z-&gt;p;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (z == p-&gt;r) &#123; <span class="comment">// LR（先写LR可以和LL复用代码）</span></span><br><span class="line">                    root = <span class="built_in">left_rotate</span>(root, p);</span><br><span class="line">                    RBTNode *t = z;</span><br><span class="line">                    z = p;</span><br><span class="line">                    p = t;</span><br><span class="line">                &#125; <span class="comment">// 转换为LL的情况</span></span><br><span class="line">                g-&gt;color = RED;</span><br><span class="line">                p-&gt;color = BLACK;</span><br><span class="line">                root = <span class="built_in">right_rotate</span>(root, g);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (p == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        root-&gt;color = BLACK; <span class="comment">// 小技巧 怕忘记提前写上这个，没有if无所谓</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> root; <span class="comment">// 返回调整好的树</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">RBTree <span class="title">Insert</span><span class="params">(RBTree root, <span class="type">int</span> key)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 如果是空树，直接插入，变为黑色</span></span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        root = <span class="built_in">CreateNode</span>(key, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">        root-&gt;color = BLACK;</span><br><span class="line">        <span class="keyword">return</span> root;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 非空树插入</span></span><br><span class="line">    <span class="comment">// 首先执行BST插入，先找key插入的位置和父亲的情况</span></span><br><span class="line">    RBTNode* z = root; <span class="comment">// z是遍历指针</span></span><br><span class="line">    RBTNode* zp = <span class="literal">NULL</span>; <span class="comment">// 指向z的父亲</span></span><br><span class="line">    <span class="keyword">while</span> (z != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        zp = z;</span><br><span class="line">        <span class="keyword">if</span> (key &lt; z-&gt;data) &#123;</span><br><span class="line">            z = z-&gt;l;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            z = z-&gt;r;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 创建新结点，并完成插入</span></span><br><span class="line">    z = <span class="built_in">CreateNode</span>(key, <span class="literal">NULL</span>, <span class="literal">NULL</span>, zp);</span><br><span class="line">    <span class="keyword">if</span> (key &lt; zp-&gt;data) &#123;</span><br><span class="line">        zp-&gt;l = z;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        zp-&gt;r = z;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 判断是否需要调整</span></span><br><span class="line">    <span class="keyword">if</span> (zp-&gt;color == RED) &#123;</span><br><span class="line">        root = <span class="built_in">fixup</span>(root, z);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Inorder</span><span class="params">(RBTree root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">Inorder</span>(root-&gt;l);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d %d &quot;</span>, root-&gt;data, root-&gt;color);</span><br><span class="line">        <span class="keyword">if</span> (root-&gt;p != <span class="literal">NULL</span>) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, root-&gt;p-&gt;data);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">        <span class="built_in">Inorder</span>(root-&gt;r);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> n, key;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;n);</span><br><span class="line">    RBTree root = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i ++) &#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;key);</span><br><span class="line">        root = <span class="built_in">Insert</span>(root, key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">Inorder</span>(root);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">9</span></span><br><span class="line"><span class="comment">10 40 30 60 90 70 20 50 80</span></span><br><span class="line"><span class="comment">10 1 30</span></span><br><span class="line"><span class="comment">20 0 10</span></span><br><span class="line"><span class="comment">30 1 </span></span><br><span class="line"><span class="comment">40 1 60</span></span><br><span class="line"><span class="comment">50 0 40</span></span><br><span class="line"><span class="comment">60 0 30</span></span><br><span class="line"><span class="comment">70 0 80</span></span><br><span class="line"><span class="comment">80 1 60</span></span><br><span class="line"><span class="comment">90 0 80</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="删除操作"><a href="#删除操作" class="headerlink" title="删除操作"></a>删除操作</h4><p>是否满足红黑树的性质，要看y和x的颜色（y是free掉的节点，x是y的子孩子），根据排序组合有以下情况（注：不会有两个红色的情况）：</p>
+<ul>
+<li><p>y红，x黑（不会破坏任何性质，不需要调整）</p>
+</li>
+<li><p>y黑，x红（一定破坏黑路同）</p>
+<ul>
+<li><p>如果y的父亲是红色，那么会破坏不红红，此时只需要把x调整成为黑色就可以（包括y的父亲是根节点的情况）</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241220202436178.png" alt="image-20241220202436178"></p>
+</li>
+<li><p>如果y的父亲是黑色，那么不会破坏其他性质</p>
+</li>
+</ul>
+</li>
+<li><p>y黑，x黑：复杂情况</p>
+</li>
+</ul>
+<p>对于y黑，x黑的情况，要关注以下节点：</p>
+<ul>
+<li><p>以删除之前的关系来说</p>
+<ul>
+<li>y节点：黑色</li>
+<li>x节点：黑色，y是x父亲</li>
+<li>w节点：红色&#x2F;黑色，是y的兄弟，x的叔叔（删除之后，w是x的兄弟）</li>
+<li>p节点：红色&#x2F;黑色，y的父亲节点，x的爷爷节点（删除之后p是x的父亲节点）</li>
+</ul>
+</li>
+<li><p>y（x）在右，w在左，删除y后，x顶替y的位置，x和w成为兄弟（x是黑）</p>
+<ul>
+<li><p>a）w是黑色且w至少有一个红色的孩子RED（p是黑色&#x2F;红色）</p>
+<ul>
+<li><p>a.1）LL：RED节点是w的左孩子，RED相对于p是LL</p>
+<ul>
+<li>w变成p的颜色，再对p右旋，最后red和p变黑</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241220204829550.png" alt="image-20241220204829550"></p>
+</li>
+<li><p>a.2）LR：RED节点是w的右孩子，RED相对于p是LR</p>
+<ul>
+<li>思想：LR变成LL，对w进行左旋，然后red变黑，w变红。再交换red和w指针 —&gt; a.1</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241220210336359.png" alt="image-20241220210336359"></p>
+</li>
+</ul>
+</li>
+<li><p>b）w是黑色且w没有红色的孩子（w两个孩子都是黑色，p是黑色&#x2F;红色）</p>
+<ul>
+<li>双黑节点：只是在删除逻辑中存在的，删除黑色的y后，我们认为节点释放了但是颜色留下了，然后黑色的x顶替了y的位置。认为x拥有两层黑色，x就称为双黑节点，双黑节点对黑高的贡献是2</li>
+<li>此时目标是让双黑节点x退掉一层黑色，w陪着退掉一层黑色（即w变成红色），为了维持子树的黑高，退的一层黑还给p<ul>
+<li>如果p是红色，则变成黑，调整结束</li>
+<li>如果p为黑节点，p作为新的要调整的节点，直到碰到红色节点或者根节点为止（整体少一个黑高） ——循环向上调整</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>c）w是红色节点（x是黑色，p是黑色，w的孩子也是黑色）</p>
+<ul>
+<li>对p右旋，w变黑，p变红，w&#x3D;p-&gt;l ，此时转换成情况a或者情况b的情况</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241220213834942.png" alt="image-20241220213834942"></p>
+</li>
+</ul>
+</li>
+<li><p>y（x）在左，w在右</p>
+<ul>
+<li>a）w是黑色且w至少有一个红色的孩子RED（p是黑色&#x2F;红色）<ul>
+<li>a.1）RR：RED节点是w的右孩子，RED相对于p是RR<ul>
+<li>w变成p的颜色，再对p左旋，最后red和p变黑</li>
+</ul>
+</li>
+<li>a.2）RL：RED节点是w的左孩子，RED相对于p是RL</li>
+<li>思想：RR变成RL，对w进行右旋，然后red变黑，w变红。再交换red和w指针 —&gt; a.1</li>
+</ul>
+</li>
+<li>b）w是黑色且w没有红色的孩子（w两个孩子都是黑色，p是黑色&#x2F;红色）<ul>
+<li>双黑节点：只是在删除逻辑中存在的，删除黑色的y后，我们认为节点释放了但是颜色留下了，然后黑色的x顶替了y的位置。认为x拥有两层黑色，x就称为双黑节点，双黑节点对黑高的贡献是2</li>
+<li>此时目标是让双黑节点x退掉一层黑色，w陪着退掉一层黑色（即w变成红色），为了维持子树的黑高，退的一层黑还给p<ul>
+<li>如果p是红色，则变成黑，调整结束</li>
+<li>如果p为黑节点，p作为新的要调整的节点，直到碰到红色节点或者根节点为止（整体少一个黑高） ——循环向上调整</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>c）w是红色节点（x是黑色，p是黑色，w的孩子也是黑色）<ul>
+<li>对p左旋，w变黑，p变红，w&#x3D;p-&gt;r ，此时转换成情况a或者情况b的情况</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>时间复杂度 O(logn)</p>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> RED 0</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BLACK 1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="title class_">RBTNode</span> &#123;</span><br><span class="line">    <span class="type">int</span> data;</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">RBTNode</span> *l, *r, *p; <span class="comment">// 左右孩子 父亲</span></span><br><span class="line">    <span class="type">int</span> color; <span class="comment">// 颜色</span></span><br><span class="line">&#125;RBTNode, *RBTree;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 根据关键字key创建新节点</span></span><br><span class="line"><span class="function">RBTNode* <span class="title">CreateNode</span><span class="params">(<span class="type">int</span> key, RBTNode *left, RBTNode *right, RBTNode *parent)</span> </span>&#123;</span><br><span class="line">    RBTNode* x = (RBTNode*)<span class="built_in">malloc</span>(<span class="built_in">sizeof</span>(RBTNode));</span><br><span class="line">    <span class="comment">// if x == NULL</span></span><br><span class="line">    x-&gt;color = RED; <span class="comment">// 初始颜色为红色</span></span><br><span class="line">    x-&gt;data = key;</span><br><span class="line">    x-&gt;l = left;</span><br><span class="line">    x-&gt;r = right;</span><br><span class="line">    x-&gt;p = parent;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对以root根的红黑树中x节点为中心进行红黑树左旋</span></span><br><span class="line"><span class="function">RBTree <span class="title">left_rotate</span><span class="params">(RBTree root, RBTNode *x)</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    RBTNode *y = x-&gt;r; <span class="comment">// y指向x右孩子</span></span><br><span class="line">    x-&gt;r = y-&gt;l; <span class="comment">// y的左孩子指向x右孩子</span></span><br><span class="line">    <span class="keyword">if</span> (y-&gt;l != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        y-&gt;l-&gt;p = x; <span class="comment">// 更新y左孩子的父亲，注意可能会有空指针</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 2.处理y和x父亲的关系</span></span><br><span class="line">    y-&gt;p = x-&gt;p;</span><br><span class="line">    <span class="keyword">if</span> (x-&gt;p == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        root = y; <span class="comment">// 如果旋转之前x是根节点，旋转之后y是根节点</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123; <span class="comment">// 如果x不是根节点，则x的父亲孩子指针指向y</span></span><br><span class="line">        <span class="keyword">if</span> (x == x-&gt;p-&gt;l) &#123;</span><br><span class="line">            x-&gt;p-&gt;l = y;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            x-&gt;p-&gt;r = y;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 3. 处理y和x关系</span></span><br><span class="line">    y-&gt;l = x;</span><br><span class="line">    x-&gt;p = y;</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对以root根的红黑树中x节点为中心进行红黑树右旋</span></span><br><span class="line"><span class="function">RBTree <span class="title">right_rotate</span><span class="params">(RBTree root, RBTNode *x)</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    RBTNode *y = x-&gt;l; <span class="comment">// y指向x左孩子</span></span><br><span class="line">    x-&gt;l = y-&gt;r; <span class="comment">// y的右孩子指向x左孩子</span></span><br><span class="line">    <span class="keyword">if</span> (y-&gt;r != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        y-&gt;r-&gt;p = x; <span class="comment">// 更新y右孩子的父亲，注意可能会有空指针</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 2.处理y和x父亲的关系</span></span><br><span class="line">    y-&gt;p = x-&gt;p;</span><br><span class="line">    <span class="keyword">if</span> (x-&gt;p == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        root = y; <span class="comment">// 如果旋转之前x是根节点，旋转之后y是根节点</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123; <span class="comment">// 如果x不是根节点，则x的父亲孩子指针指向y</span></span><br><span class="line">        <span class="keyword">if</span> (x == x-&gt;p-&gt;l) &#123;</span><br><span class="line">            x-&gt;p-&gt;l = y;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            x-&gt;p-&gt;r = y;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 3. 处理y和x关系</span></span><br><span class="line">    y-&gt;r = x;</span><br><span class="line">    x-&gt;p = y;</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在以root为根的红黑树中，z是红色，z-&gt;p也是红色，破坏了不红红，进行调整</span></span><br><span class="line"><span class="comment">// z是待调整的节点</span></span><br><span class="line"><span class="function">RBTree <span class="title">fixup</span><span class="params">(RBTree root, RBTNode* z)</span> </span>&#123;</span><br><span class="line">    RBTNode* p = z-&gt;p; <span class="comment">// 父亲节点</span></span><br><span class="line">    RBTNode* g = <span class="literal">NULL</span>; <span class="comment">// 爷爷节点</span></span><br><span class="line">    RBTNode* u = <span class="literal">NULL</span>; <span class="comment">// 叔叔节点</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// z需要不断向上调整，使用while判断父亲存在且为红色则需要调整</span></span><br><span class="line">    <span class="keyword">while</span> (p != <span class="literal">NULL</span> &amp;&amp; p-&gt;color == RED) &#123;</span><br><span class="line">        g = p-&gt;p; <span class="comment">// 因为p是红色，那么就保证了一定存在根节点</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 父亲在右，叔叔在左</span></span><br><span class="line">        <span class="keyword">if</span> (p == g-&gt;r) &#123;</span><br><span class="line">            u = g-&gt;l;</span><br><span class="line">            <span class="keyword">if</span> (u != <span class="literal">NULL</span> &amp;&amp; u-&gt;color == RED) &#123;</span><br><span class="line">                p-&gt;color =BLACK;</span><br><span class="line">                u-&gt;color = BLACK;</span><br><span class="line">                g-&gt;color = RED;</span><br><span class="line">                <span class="comment">// 爷爷做新的调整的节点</span></span><br><span class="line">                z = g;</span><br><span class="line">                p = z-&gt;p;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (z == p-&gt;l) &#123; <span class="comment">// RL（先写RL可以和RR复用代码）</span></span><br><span class="line">                    root = <span class="built_in">right_rotate</span>(root, p);</span><br><span class="line">                    RBTNode *t = z;</span><br><span class="line">                    z = p;</span><br><span class="line">                    p = t;</span><br><span class="line">                &#125; <span class="comment">// 转换为RR的情况</span></span><br><span class="line">                g-&gt;color = RED;</span><br><span class="line">                p-&gt;color = BLACK;</span><br><span class="line">                root = <span class="built_in">left_rotate</span>(root, g);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; <span class="comment">// 父亲在左，叔叔在右</span></span><br><span class="line">            u = g-&gt;r;</span><br><span class="line">            <span class="keyword">if</span> (u != <span class="literal">NULL</span> &amp;&amp; u-&gt;color == RED) &#123;</span><br><span class="line">                p-&gt;color =BLACK;</span><br><span class="line">                u-&gt;color = BLACK;</span><br><span class="line">                g-&gt;color = RED;</span><br><span class="line">                <span class="comment">// 爷爷做新的调整的节点</span></span><br><span class="line">                z = g;</span><br><span class="line">                p = z-&gt;p;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (z == p-&gt;r) &#123; <span class="comment">// LR（先写LR可以和LL复用代码）</span></span><br><span class="line">                    root = <span class="built_in">left_rotate</span>(root, p);</span><br><span class="line">                    RBTNode *t = z;</span><br><span class="line">                    z = p;</span><br><span class="line">                    p = t;</span><br><span class="line">                &#125; <span class="comment">// 转换为LL的情况</span></span><br><span class="line">                g-&gt;color = RED;</span><br><span class="line">                p-&gt;color = BLACK;</span><br><span class="line">                root = <span class="built_in">right_rotate</span>(root, g);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (p == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        root-&gt;color = BLACK; <span class="comment">// 小技巧 怕忘记提前写上这个，没有if无所谓</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> root; <span class="comment">// 返回调整好的树</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">RBTree <span class="title">Insert</span><span class="params">(RBTree root, <span class="type">int</span> key)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 如果是空树，直接插入，变为黑色</span></span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        root = <span class="built_in">CreateNode</span>(key, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">        root-&gt;color = BLACK;</span><br><span class="line">        <span class="keyword">return</span> root;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 非空树插入</span></span><br><span class="line">    <span class="comment">// 首先执行BST插入，先找key插入的位置和父亲的情况</span></span><br><span class="line">    RBTNode* z = root; <span class="comment">// z是遍历指针</span></span><br><span class="line">    RBTNode* zp = <span class="literal">NULL</span>; <span class="comment">// 指向z的父亲</span></span><br><span class="line">    <span class="keyword">while</span> (z != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        zp = z;</span><br><span class="line">        <span class="keyword">if</span> (key &lt; z-&gt;data) &#123;</span><br><span class="line">            z = z-&gt;l;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            z = z-&gt;r;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 创建新结点，并完成插入</span></span><br><span class="line">    z = <span class="built_in">CreateNode</span>(key, <span class="literal">NULL</span>, <span class="literal">NULL</span>, zp);</span><br><span class="line">    <span class="keyword">if</span> (key &lt; zp-&gt;data) &#123;</span><br><span class="line">        zp-&gt;l = z;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        zp-&gt;r = z;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 判断是否需要调整</span></span><br><span class="line">    <span class="keyword">if</span> (zp-&gt;color == RED) &#123;</span><br><span class="line">        root = <span class="built_in">fixup</span>(root, z);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Inorder</span><span class="params">(RBTree root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">Inorder</span>(root-&gt;l);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d %d &quot;</span>, root-&gt;data, root-&gt;color);</span><br><span class="line">        <span class="keyword">if</span> (root-&gt;p != <span class="literal">NULL</span>) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, root-&gt;p-&gt;data);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">        <span class="built_in">Inorder</span>(root-&gt;r);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//--------------------------删除--------------------------</span></span><br><span class="line"><span class="function">RBTNode* <span class="title">Search</span><span class="params">(RBTree root, <span class="type">int</span> z)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (root-&gt;data == z) &#123;</span><br><span class="line">        <span class="keyword">return</span> root;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (z &lt; root-&gt;data) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">Search</span>(root-&gt;l, z);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">Search</span>(root-&gt;r, z);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">RBTree <span class="title">delet_fixup</span><span class="params">(RBTree root, RBTNode *x, RBTNode *p)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 声明叔叔节点w</span></span><br><span class="line">    RBTNode *w = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 注：顺序上先写x为黑的情况，因为可以转换为其他的情况，不用重新写代码</span></span><br><span class="line">    <span class="comment">// 而我们实际写的时候先写情况简单的情况，再写复杂的情况，防止错过一些情况</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// x为黑色（两种情况）</span></span><br><span class="line">    <span class="comment">// 细节1：由于是循环向上调整，要调整的节点最终会到根节点结束</span></span><br><span class="line">    <span class="comment">// 细节2：x为黑色时，p不可能为空，因此不用考虑p为空指针，因为当p为空时，x一定是红色</span></span><br><span class="line">    <span class="keyword">while</span> (x == <span class="literal">NULL</span> || (x != <span class="literal">NULL</span> &amp;&amp; x != root &amp;&amp; x-&gt;color == BLACK)) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 1. x在右，w在左</span></span><br><span class="line">        <span class="keyword">if</span> (x == p-&gt;r) &#123;</span><br><span class="line">            w = p-&gt;l;</span><br><span class="line">            <span class="comment">// c. w为红色</span></span><br><span class="line">            <span class="keyword">if</span> (w != <span class="literal">NULL</span> &amp;&amp; w-&gt;color == RED) &#123; <span class="comment">// 注意细节判断颜色要判空</span></span><br><span class="line">                w-&gt;color = BLACK;</span><br><span class="line">                p-&gt;color = RED;</span><br><span class="line">                <span class="built_in">right_rotate</span>(root, p);</span><br><span class="line">                w = p-&gt;l;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 此时w一定是黑色，a/b情况</span></span><br><span class="line">            <span class="comment">// b) w的孩子都是黑色</span></span><br><span class="line">            <span class="keyword">if</span> (((w-&gt;l == <span class="literal">NULL</span>) || (w-&gt;l != <span class="literal">NULL</span> &amp;&amp; w-&gt;l-&gt;color == BLACK)) &amp;&amp; ((w-&gt;r == <span class="literal">NULL</span>) || (w-&gt;r != <span class="literal">NULL</span> &amp;&amp; w-&gt;r-&gt;color == BLACK))) &#123;</span><br><span class="line">                w-&gt;color = RED; <span class="comment">// w褪色为红色</span></span><br><span class="line">                <span class="comment">/*if (p-&gt;color == RED) &#123;</span></span><br><span class="line"><span class="comment">                    p-&gt;color = BLACK;</span></span><br><span class="line"><span class="comment">                    break;</span></span><br><span class="line"><span class="comment">                &#125; else &#123;</span></span><br><span class="line"><span class="comment">                    // 继续循环调整</span></span><br><span class="line"><span class="comment">                    x = p;</span></span><br><span class="line"><span class="comment">                    p = x-&gt;p; </span></span><br><span class="line"><span class="comment">                &#125;*/</span></span><br><span class="line">               x = p;</span><br><span class="line">               p = x-&gt;p;</span><br><span class="line"></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123; <span class="comment">// a.至少有一个红色孩子</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">// (a.2) LR：w的左孩子是黑色，右孩子是红色，判断左孩子是黑色就可以</span></span><br><span class="line">                RBTNode *red = <span class="literal">NULL</span>;</span><br><span class="line">                <span class="keyword">if</span> (w-&gt;l == <span class="literal">NULL</span> || (w-&gt;l != <span class="literal">NULL</span> &amp;&amp; w-&gt;l-&gt;color == BLACK)) &#123;</span><br><span class="line">                    red = w-&gt;r;</span><br><span class="line">                    root = <span class="built_in">left_rotate</span>(root, w);</span><br><span class="line">                    red-&gt;color = BLACK;</span><br><span class="line">                    w-&gt;color = RED;</span><br><span class="line">                    RBTNode *t = w;</span><br><span class="line">                    w = red;</span><br><span class="line">                    red = t;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// (a.1) LL：w的左孩子一定为红色</span></span><br><span class="line">                red = w-&gt;l;</span><br><span class="line">                w-&gt;color = p-&gt;color;</span><br><span class="line">                <span class="built_in">right_rotate</span>(root, p);</span><br><span class="line">                red-&gt;color = BLACK;</span><br><span class="line">                p-&gt;color = BLACK;</span><br><span class="line">                <span class="keyword">break</span>; <span class="comment">// a情况不需要循环向上调整，此时调整结束</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; <span class="comment">// 2. x在左，w在右</span></span><br><span class="line"></span><br><span class="line">            w = p-&gt;r;</span><br><span class="line">            <span class="comment">// c. w为红色</span></span><br><span class="line">            <span class="keyword">if</span> (w != <span class="literal">NULL</span> &amp;&amp; w-&gt;color == RED) &#123; <span class="comment">// 注意细节判断颜色要判空</span></span><br><span class="line">                w-&gt;color = BLACK;</span><br><span class="line">                p-&gt;color = RED;</span><br><span class="line">                <span class="built_in">left_rotate</span>(root, p);</span><br><span class="line">                w = p-&gt;r;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 此时w一定是黑色，a/b情况</span></span><br><span class="line">            <span class="comment">// b) w的孩子都是黑色</span></span><br><span class="line">            <span class="keyword">if</span> (((w-&gt;l == <span class="literal">NULL</span>) || (w-&gt;l != <span class="literal">NULL</span> &amp;&amp; w-&gt;l-&gt;color == BLACK)) &amp;&amp; ((w-&gt;r == <span class="literal">NULL</span>) || (w-&gt;r != <span class="literal">NULL</span> &amp;&amp; w-&gt;r-&gt;color == BLACK))) &#123;</span><br><span class="line">                w-&gt;color = RED; <span class="comment">// w褪色为红色</span></span><br><span class="line">                <span class="comment">/*if (p-&gt;color == RED) &#123;</span></span><br><span class="line"><span class="comment">                    p-&gt;color = BLACK;</span></span><br><span class="line"><span class="comment">                    break;</span></span><br><span class="line"><span class="comment">                &#125; else &#123;</span></span><br><span class="line"><span class="comment">                    // 继续循环调整</span></span><br><span class="line"><span class="comment">                    x = p;</span></span><br><span class="line"><span class="comment">                    p = x-&gt;p; </span></span><br><span class="line"><span class="comment">                &#125;*/</span></span><br><span class="line">               x = p;</span><br><span class="line">               p = x-&gt;p;</span><br><span class="line"></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123; <span class="comment">// a.至少有一个红色孩子</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">// (a.2) RL：w的右孩子是黑色，左孩子是红色，判断右孩子是黑色就可以</span></span><br><span class="line">                RBTNode *red = <span class="literal">NULL</span>;</span><br><span class="line">                <span class="keyword">if</span> (w-&gt;r == <span class="literal">NULL</span> || (w-&gt;r != <span class="literal">NULL</span> &amp;&amp; w-&gt;r-&gt;color == BLACK)) &#123;</span><br><span class="line">                    red = w-&gt;l;</span><br><span class="line">                    root = <span class="built_in">right_rotate</span>(root, w);</span><br><span class="line">                    red-&gt;color = BLACK;</span><br><span class="line">                    w-&gt;color = RED;</span><br><span class="line">                    RBTNode *t = w;</span><br><span class="line">                    w = red;</span><br><span class="line">                    red = t;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// (a.1) RR：w的右孩子一定为红色</span></span><br><span class="line">                red = w-&gt;r;</span><br><span class="line">                w-&gt;color = p-&gt;color;</span><br><span class="line">                <span class="built_in">left_rotate</span>(root, p);</span><br><span class="line">                red-&gt;color = BLACK;</span><br><span class="line">                p-&gt;color = BLACK;</span><br><span class="line">                <span class="keyword">break</span>; <span class="comment">// a情况不需要循环向上调整，此时调整结束</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// x为红色</span></span><br><span class="line">    <span class="keyword">if</span> (x-&gt;color == RED) &#123;</span><br><span class="line">        x-&gt;color = BLACK;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 红黑树删除操作</span></span><br><span class="line"><span class="function">RBTree <span class="title">Delet</span><span class="params">(RBTree root, <span class="type">int</span> z)</span> </span>&#123;</span><br><span class="line">    RBTNode *y = <span class="built_in">Search</span>(root, z);</span><br><span class="line">    <span class="keyword">if</span> (y == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;z不存在\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> root;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 度为2转换为度为1的情况</span></span><br><span class="line">    <span class="keyword">if</span> (y-&gt;l != <span class="literal">NULL</span> &amp;&amp; y-&gt;r != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        RBTNode* replace = y-&gt;r; <span class="comment">// 这里找y的后继节点</span></span><br><span class="line">        <span class="keyword">while</span> (replace-&gt;l != <span class="literal">NULL</span>) &#123;</span><br><span class="line">            replace = replace-&gt;l;</span><br><span class="line">        &#125;</span><br><span class="line">        y-&gt;data = replace-&gt;data;</span><br><span class="line">        y = replace; <span class="comment">// 此时问题转换为删除y节点</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 此时y的度为1或0，统一用度为1的方式处理，这里需要考虑父指针</span></span><br><span class="line">    RBTNode* x = <span class="literal">NULL</span>; <span class="comment">// 指向y唯一的孩子（包含空）</span></span><br><span class="line">    RBTNode* p = y-&gt;p; <span class="comment">// p指向y的父亲（包含空）</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// x指向y唯一的孩子</span></span><br><span class="line">    <span class="keyword">if</span> (y-&gt;l != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        x = y-&gt;l;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        x = y-&gt;r;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 处理x和p的双向关系:删除y以后，p就是x的父亲（排除x为空的情况），并考虑p是空节点的情况</span></span><br><span class="line">    <span class="keyword">if</span> (x != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        x-&gt;p = p;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (p == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        root = x;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (y == p-&gt;l) &#123;</span><br><span class="line">            p-&gt;l = x;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            p-&gt;r = x;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> yc = y-&gt;color;</span><br><span class="line">    <span class="built_in">free</span>(y);</span><br><span class="line">    y = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 如果删除前的y是红色，无需调整，y是黑色有两种情况要调整</span></span><br><span class="line">    <span class="keyword">if</span> (yc == BLACK) &#123;</span><br><span class="line">        root = <span class="built_in">delet_fixup</span>(root, x, p);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ----------------------------------------------</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> n, key;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;n);</span><br><span class="line">    RBTree root = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i ++) &#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;key);</span><br><span class="line">        root = <span class="built_in">Insert</span>(root, key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">Inorder</span>(root);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;---------------------------\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;key);</span><br><span class="line">        <span class="keyword">if</span> (key == <span class="number">-1</span>) &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        root = <span class="built_in">Delet</span>(root, key);</span><br><span class="line">        <span class="built_in">Inorder</span>(root);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;---------------------------\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">9</span></span><br><span class="line"><span class="comment">10 40 30 60 90 70 20 50 80</span></span><br><span class="line"><span class="comment">10 1 30</span></span><br><span class="line"><span class="comment">20 0 10</span></span><br><span class="line"><span class="comment">30 1 </span></span><br><span class="line"><span class="comment">40 1 60</span></span><br><span class="line"><span class="comment">50 0 40</span></span><br><span class="line"><span class="comment">60 0 30</span></span><br><span class="line"><span class="comment">70 0 80</span></span><br><span class="line"><span class="comment">80 1 60</span></span><br><span class="line"><span class="comment">90 0 80</span></span><br><span class="line"><span class="comment">30</span></span><br><span class="line"><span class="comment">20</span></span><br><span class="line"><span class="comment">10</span></span><br><span class="line"><span class="comment">70</span></span><br><span class="line"><span class="comment">80</span></span><br><span class="line"><span class="comment">90</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="B树"><a href="#B树" class="headerlink" title="B树"></a>B树</h3><p>应用场景</p>
+<ul>
+<li>B树一个节点中可以存放多个数据，相比于自平衡的二叉树来说，树的高度矮很多</li>
+<li>减少磁盘I&#x2F;O次数，对外存进行分块，一块就是一个外存的节点</li>
+</ul>
+<hr>
+<p>B树的性质</p>
+<ul>
+<li>每个节点最多m-1个关键字，最多m个孩子节点</li>
+<li>每个非根节点最少有ceil(m &#x2F; 2) - 1个关键字，最少有ceil(m &#x2F; 2)个孩子节点</li>
+<li>根节点中，最少有1个关键字，最少有2两个孩子</li>
+<li>一个节点中如果有x个孩子节点，该节点一定有x - 1个关键字</li>
+<li>顺序性：集结点内部有多个数据，满足顺序性，节点之间也要满足顺序性</li>
+<li>绝对平衡</li>
+</ul>
+<hr>
+<p>B树的操作</p>
+<ul>
+<li>查找</li>
+<li>插入</li>
+<li>删除</li>
+</ul>
+<p>查找：基于顺序性进行查找，类似于BST，考虑节点中有多个关键字即可。</p>
+<p>假设查找k</p>
+<ul>
+<li>先让k和根节点中的第一个数据进行比较，如果相等，查找成功</li>
+<li>如果不相等，继续和第二个、第三个关键字比较，如果有数据和k相等，则找到</li>
+<li>否则，找到第一个大于k的数据就停止，继续向该数据所对应的左孩子中进行查找，如果没有大于k的数据，则在最右边的孩子进行查找，继续上面的过程</li>
+<li>直到找到k或者找到空节点就停止</li>
+</ul>
+<p>插入：回溯插入法、主动插入法，本质是一样的：查找插入位置–按顺序插入–分裂上传</p>
+<blockquote>
+<p>回溯插入法：在一颗B树中插入关键字k</p>
+</blockquote>
+<ul>
+<li>情况1：空树插入，新建根节点，把k放到根节点中即可</li>
+<li>情况2：非空树插入<ul>
+<li>（1）查找插入的位置：先对k执行查找操作，肯定会查找失败，会找到一个空节点，空节点的父亲节点k就是应该插入的节点（终端节点）</li>
+<li>（2）按顺序插入</li>
+<li>（3）插入之后，被插入节点关键字个数&lt;&#x3D; m - 1，插入结束，如果&gt; m - 1，进行分裂该节点（分裂回溯上传）<ul>
+<li>分裂回溯上传：从该节点数据数组的 s &#x3D; ceil(m &#x2F; 2)的位置分开，数据数组分成3部分（1—s-1 ，s ，s + 1—-m）<ul>
+<li>1 – s -1放到一个节点中，s + 1—m放到一个节点中，此时一个节点被分裂为两个节点，s节点则插入到父亲节点中</li>
+<li>对父亲进行判断，关键字个数是否超过上限，如果超过了上限，继续对父亲分裂回溯上传，直到某个父亲节点接受孩子后不超上限位置，或者上传到了根节点，根节点的个数也超过了上限，根节点分裂，新建一个根节点，停止</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>主动插入法</p>
+</blockquote>
+<ul>
+<li>情况1：空树插入，新建根节点，把k放到根节点中即可</li>
+<li>情况2：非空树插入<ul>
+<li>在查找过程中就把有分裂隐患的节点（关键字 &#x3D; m-1）提前进行分裂，避免一些节点插入关键字后，避免插入关键字后，关键字个数&gt; m - 1</li>
+</ul>
+</li>
+</ul>
+<p>删除操作：假设删除节点k（兄弟够借则借，否则合并）</p>
+<ul>
+<li>（1）查找。首先进行查找k的位置，后面的位置往前移</li>
+<li>（2）删除：最后转换成在终端节点删除数据x<ul>
+<li>情况1：x是终端节点，按顺序删除即可，执行顺序表的删除</li>
+<li>情况2：x是非终端节点，转换为情况1即可，去找k的中序遍历前驱&#x2F;后继 k1 及其所在的节点x1（后继好找），让k1覆盖k，转换为在x1中k1，此时x1节点一定是终端节点</li>
+</ul>
+</li>
+<li>（3）删除关键字之后，如果x中关键字个数 &gt;&#x3D; ceil(m &#x2F; 2) - 1，删除结束，否则进行调整：<ul>
+<li>够借：先去看x相邻的亲兄弟节点够不够借（关键字个数 &gt; ceil(m &#x2F; 2) - 1），注意借关键字时，要保证顺序性，左兄弟借最大关键字，给父亲，然后父亲的节点对应的关键字给x。同理，右兄弟借最小的关键字</li>
+<li>不够借：相邻两个兄弟节点关键字个数 &#x3D;&#x3D; ceil(m &#x2F; 2) - 1，则合并一个兄弟节点，合并时要把父亲节点的关键字一起合并，由于父亲节点少了一个关键字，如果小于下限就继续调整，如此循环直到父亲节点符合要求，或者最终合并到根节点为止。（注：根节点的关键字下限是1）</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241225202859586.png" alt="image-20241225202859586">	</p>
+<p>对于m阶B树，$O(log_mn)$</p>
+<h3 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a>B+树</h3><ul>
+<li><p>内部非终端节点的数据域，只存放一条记录的关键字，而不存放数据指针</p>
+</li>
+<li><p>内部终端节点的数据域，既存放关键字又存放数据指针</p>
+</li>
+<li><p>内部非终端节点只存在索引的作用，所有关键字和数据都存放在终端节点中，上层节点是下层节点的索引</p>
+</li>
+</ul>
+<p>B+树的优势：</p>
+<ul>
+<li>相比于B树更矮胖</li>
+<li>支持区间查找（通过终端节点之间指针相互链接）</li>
+</ul>
+<p>B+树的性质（m阶，实际上有两个阶m和n，m控制内部非终端节点，n控制内部终端节点）</p>
+<ul>
+<li>一个节点中的关键字个数和孩子个数相等</li>
+<li>对于非根节点来说，关键字和孩子个数上限是m，下限ceil(m &#x2F; 2)</li>
+<li>对于根节点来说，关键字下限是1，上限是m</li>
+<li>终端节点通过指针相连，形成类似链表的结构，支持区间查找</li>
+<li>满足B树的性质：顺序性、绝对平衡</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20250102210355048.png" alt="image-20250102210355048">	</p>
+<p>操作：查找、插入、删除</p>
+<blockquote>
+<p>查找</p>
+</blockquote>
+<ul>
+<li>单点查找：查找某一个关键字k（基于顺序性）<ul>
+<li>从根节点开始比较，在节点中找第一个大于等于k的数k1</li>
+<li>去k1对应的孩子节点中继续查找，直到找到终端节点为止</li>
+<li>对于终端节点中第一个大于等于k的k1，如果等于k&#x3D;&#x3D;k1，说明找到，否则说明不存在</li>
+</ul>
+</li>
+<li>区间查找<ul>
+<li>先对左边界数据lk进行单点查找，找到第一个大于等于lk的数</li>
+<li>从该数开始在终端节点上遍历查找即可</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>插入，类似B树</p>
+</blockquote>
+<ul>
+<li><p>在B+树中插入关键字k</p>
+<ul>
+<li>查找插入位置（一定是在终端节点上）</li>
+<li>执行顺序表的插入</li>
+<li>因为上层节点是下层节点的索引，即上层节点保存了下层节点的最大值，如果插入后导致节点的最大值发生变化，此时需要向上更新索引</li>
+<li>判断插入数据的节点关键字个数是否超过上限，如果超过了上限，分裂上传：<ul>
+<li>一分为二：s &#x3D; (m + 1) &#x2F; 2， [1，s]，[s + 1，m + 1] 分别放在两个节点中，再把新建立节点的最大值插入到父亲节点中</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>为了更加实用，在实现B+树时，每个节点均不保存最右边孩子的索引，一个m阶的B+树关键字个数的上限就是m - 1，孩子个数的上限就是m</p>
+</li>
+</ul>
+<blockquote>
+<p>删除</p>
+</blockquote>
+<p>在B+树中插入关键字k</p>
+<ul>
+<li>查找插入位置（一定是在终端节点上）</li>
+<li>判断被删除数据的节点的关键字个数是否低于下限，如果低于下限，就进行调整（兄弟够借则借，不够则合并）<ul>
+<li>借兄弟时无需经过父亲节点，此时问题转换为兄弟节点删除借的节点</li>
+<li>合并时，靠左的节点固定合并到靠右的节点，删掉原先左节点的索引即可，并更新终端节点的链表，此时问题转换为父亲删除对应的关键字问题</li>
+</ul>
+</li>
+<li>如果删除的数据是该节点的最大值，需要向上更新父亲节点中的索引</li>
+</ul>
+<p>时间复杂度：logm(n)</p>
+<hr>
+<p>总结</p>
+<ul>
+<li>基础查找：顺序、折半、分块、哈希</li>
+<li>高级搜索树：红黑树、B树、B+树</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/01/02/2.Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/7.%20%E6%9F%A5%E6%89%BE/">https://yuezi2048.github.io/2025/01/02/2.Areas🌐/basic-408/数据结构/7. 查找/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2024/12/31/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/A%20survey%20on%20causal%20infer.../" title="A survey on causal infer..."><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">A survey on causal infer...</div></div><div class="info-2"><div class="info-item-1">Treatment effect estimation 用于 policy evaluation 用药领域，如果我们想要评估一个药对寿命的影响那么要回答一个问题：如果强制复用该药物，患者在L年内存活的可能性是多少一个比较好的方式是大规模随机对照实验（large-scale randomized controlled trial）  但是有成本乃至道德上的问题  因此我们只能从非随机观测数据中估计结果：  药物与生存的相关性并不意味着有因果关系，比如年龄、性别、疾病等严重程度等因素可能影响结果  推荐系统中的因果关系，也被用于评估策略估计的一个提升模型最近几年，才倾向于应用因果推断来进行模型的训练 因果推理可以应用到CTR，点击后指标预测、以及RS各个阶段：数据搜集、用户的表示学习、无偏嵌入，以及目标优化和在线&#x2F;离线策略评估 具有的优势：  模型中的因果。推荐系统主要也是依赖于统计方法，着重关注变量之间的相关性，但是在应用中，应当更加关注因果关系而不是相关性 传统推荐系统学习到的虚假关联spurious...</div></div></div></a><a class="pagination-related" href="/2025/01/09/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/DA-CL/" title="DA-CL"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">DA-CL</div></div><div class="info-2"><div class="info-item-1">Awesome Contrastive Learning &amp; Data Augmentation RS Paper &amp; CodeThis repository collects the latest research progress of Contrastive Learning (CL) and Data Augmentation (DA) in Recommender Systems.Comments and contributions are welcome. CF &#x3D; Collaborative Filtering, SSL &#x3D; Self-Supervised Learning  Survey&#x2F;Tutorial&#x2F;Framework Total Papers: 8 Only Data Augmentation Total Papers: 62 Graph Models with CL Total Papers: 164 Sequential Models with CL Total Papers:...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2024/10/05/2.Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/1.%20C%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/" title="1. C语言基础"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-05</div><div class="info-item-2">1. C语言基础</div></div><div class="info-2"><div class="info-item-1">一、基础语法1.1 编译过程程序为什么要被编译器编译之后才能运行？  机器识别的只有机器语言（由二进制的0和1组成） 因此我们必须将高级语言翻译为能让机器识别的机器语言程序  转换成机器语言的过程是怎么样的？  预处理：展开头文件&#x2F;宏替换&#x2F;去注释&#x2F;条件编译 编译：检查语法，生成汇编代码 汇编：将汇编代码转化为二进制的机器码 链接合成可执行的程序，并在声明的文件找相关的定义  1.2 宏定义和typedef关键字define  使用一个标识符来表示一个字符串，这就是宏，标识符叫宏名 替换文本可以是常数、表达式、字符串、基本数据类型、简单函数  typedef  为数据类型定义新名称，常用于结构体（对struct {} 起一个别名）  #include &lt;stdio.h&gt;#define ll long long#define Max 20#define MAX(x, y) ((x) &gt; (y) ? (x) : (y))typedef long long lll;ll a;lll b;int aa[Max];    typedef...</div></div></div></a><a class="pagination-related" href="/2024/10/15/2.Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/3.%E6%A0%88%E5%92%8C%E9%98%9F%E5%88%97/" title="3.栈和队列"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-15</div><div class="info-item-2">3.栈和队列</div></div><div class="info-2"><div class="info-item-1">一、栈1.1 受限逻辑结构栈：受限的线性表（逻辑结构）—&gt; 顺序表和链表是物理结构 线性表：可以在任意位置进行操作 对线性表的操作进行约束：只允许在一端进行添加或者删除，另一端及中间位置不能操作：栈（Stack），生活例子：弹夹  允许操作的一端：栈顶 不允许操作的一段：栈底 如果没有元素：空栈  栈相关方法：  操作 入栈 出栈   判断 判满 判空  性质：先进后出 应用场景：  函数调用的实现（递归） 倒着走的业务逻辑（历史记录 撤销） 内存的堆栈：物理 STL库：stack容器  –&gt; 栈  1.2 顺序存储实现存储结构 顺序存储实现栈：顺序栈 —-&gt; 数组a[MAX_SIZE] 初始化栈：栈底固定不动，在下标0位置。栈顶是活动的，需要变量（int）标记栈顶：top —&gt; 为了描述方便，通常借用指针称呼top变量：栈顶指针  top &#x3D; -1 —&gt; top指向栈顶元素真正的位置 入栈：需判满，top++，指向新的栈顶位置，再在top下标位置放入元素  –&gt; a[++top] &#x3D;...</div></div></div></a><a class="pagination-related" href="/2024/09/12/2.Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/2.DS%E6%A6%82%E8%BF%B0%E5%92%8C%E9%A1%BA%E5%BA%8F%E8%A1%A8/" title="2.DS概述和顺序表"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-12</div><div class="info-item-2">2.DS概述和顺序表</div></div><div class="info-2"><div class="info-item-1">一、数据结构基本概念1.1 抽象数据类型我们现在有基本数据类型：  int表示2^32个数字：[-2^31, 2^31-1]  为了表示更多的数据类型表示实际复杂的业务，我们需要一个抽象数据类型 抽象数据类型（可自定义）：静态的数据 + 动态的操作（函数） 引出数据结构Data Structure：数据（data）和数据之间的关系（structure） 我们使用抽象数据类型来定义一个数据结构  分析问题：找到数据之间逻辑的关系（逻辑结构） 解决问题：如何把数据和数据之间的关系存入存储器（存储结构&#x2F;物理结构&#x2F;映像） 关系：存储结构是用计算机语言实现的逻辑结构  1.2 逻辑结构和存储结构数据结构可分为两块：逻辑结构和存储结构 逻辑结构  线性逻辑结构：一对一（线性表 栈 队列） 非线性逻辑结构：一对多（树形结构）、多对多（图型结构）  存储结构  顺序存储：逻辑上相邻的元素，在存储中位置也相邻（数组） 链式存储：逻辑上相邻的元素，存储器的位置可以不相邻，但需要实现逻辑上的相邻（链表） 索引存储，散列存储（Hash）...</div></div></div></a><a class="pagination-related" href="/2025/03/25/2.Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/4.%E6%A0%91/" title="4.树"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-03-25</div><div class="info-item-2">4.树</div></div><div class="info-2"><div class="info-item-1">〇、前置知识——递归 递归：某个函数直接或间接的调用自身（递进 回归）  （基于栈实现）   递归的本质：函数调用（创建副本）  如何理解递归代码：画出递归调用图  递归函数组成  递归出口 &#x2F; 终止条件 &#x2F; 边界条件：停止递归调用的条件（避免栈溢出 &#x2F; 爆内存） 特别注意：这里往往出问题（条件找错 &#x2F; 没找全条件）   递归体   解决的问题  如果一个问题能分成若干个小问题，并且小问题的解决思路和大问题一样 大问题和小问题的数据规模不一样   开发中怎么写递归函数  写的时候不要往深层次想执行过程，只需要知道函数解决什么问题的（一次递归的结果），该怎么分配子问题 即编码的时候更多的看成是黑盒问题而不是白盒问题，验证和复盘的时候可以追究白盒      #include&lt;stdio.h&gt;#include&lt;stdlib.h&gt;// 累加问题 1 + 2 + 3 + ... + n/*	5	15*/int add(int n) &#123;    if (n == 1) &#123; // 递归出口       ...</div></div></div></a><a class="pagination-related" href="/2025/04/07/2.Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/5.%E5%9B%BE/" title="5.图"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-07</div><div class="info-item-2">5.图</div></div><div class="info-2"><div class="info-item-1">五、图5.1 基本概念 图：用来描述事物之间相互联系或相互作用的多对多的关系 图是由两个有限集合构成的，分别是点集V和边集E，其中边是通过两个端点来描述的 分类标准1：有无自边和重边，分为简单图（默认）和非简单图 分类标准2：根据边是否有方向性$&lt;v_i,v_j&gt;$，分为有向图和无向图 对于有向图来说，起点$v_i$是弧尾，终点$v_j$是弧头 一条无向边相当于两条有向边（为图的存储铺垫） 环&#x2F;回路：从图中某点出发，沿着边走，最终回到起点 —&gt; 有向无环图（DAG图） 完全有向图：图有n个点，一共有$n(n-1)$个边 完全无向图：图有n个点，一共有$\frac{n(n-1)}{2}$个边   分类标准3：根据边的数目 分为稠密图和稀疏图 分类标准4：根据边是否有权值 分为...</div></div></div></a><a class="pagination-related" href="/2024/12/10/2.Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/6.%20%E6%8E%92%E5%BA%8F/" title="6. 排序"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-10</div><div class="info-item-2">6. 排序</div></div><div class="info-2"><div class="info-item-1">六、排序（默认升序）  就地排序、非就地排序 –&gt; 空间复杂度 内部排序、外部排序（只能拿一部分数据在内存中排，其他的存在外存中）—&gt; 基本上是内部排序 稳定性：重复数据的相对位置如果不发生变化，那么就是稳定交换 时间复杂度  排序算法包括：  插入：直接插入排序、shell排序（缩小增量排序） 交换：冒泡排序、快速排序 选择：简单选择排序、堆排序（堆） 归并排序：2-路归并 计数排序：桶排序、基数排序  约定  上课案例：a[1] - a[n] 数组分成两部分：乱序区、有序区 初始：整个数组是乱序区 乱序区不断缩小，有序区不断增大 最终：整个数组是有序区    6.1 插入6.1.1 插入排序 初始：a[1]是有序区、a[2]-a[n]是乱序区 每次把乱序区的一个数据插入到有序区中的合适位置，有序区长度+1，乱序区长度-1，执行n-1次为止   如何把数据插入到有序区的合适位置，即对于a[1]~a[i-1]的有序区，如何将a[i]加入到有序区中   找位置：a[i]从后往前比，直到遇到第一个小于等于a[i]的数a[k]，则 k+1...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9E%E5%9C%B0%E5%9D%80%E6%B3%95"><span class="toc-text">连地址法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AB%98%E7%BA%A7%E6%90%9C%E7%B4%A2%E6%A0%91"><span class="toc-text">高级搜索树</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91"><span class="toc-text">红黑树</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%92%E5%85%A5%E6%93%8D%E4%BD%9C"><span class="toc-text">插入操作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E6%93%8D%E4%BD%9C"><span class="toc-text">删除操作</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B%E6%A0%91"><span class="toc-text">B树</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-%E6%A0%91"><span class="toc-text">B+树</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

@@ -1,0 +1,544 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>2.大模型应用开发 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="• Prompt 工程基本概念 • Prompt 优化技巧 • AI 恋爱大师应用需求分析 • AI 恋爱大师应用方案设计 • Spring AI ChatClient &#x2F; Advisor &#x2F; ChatMemory 特性 • 多轮对话 AI 应用开发 • Spring AI 自定义 Advisor • Spring AI 结构化输出 - 恋爱报告功能 • Spring AI 对">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2.大模型应用开发">
+<meta property="og:url" content="https://yuezi2048.github.io/2026/01/26/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/2.%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="• Prompt 工程基本概念 • Prompt 优化技巧 • AI 恋爱大师应用需求分析 • AI 恋爱大师应用方案设计 • Spring AI ChatClient &#x2F; Advisor &#x2F; ChatMemory 特性 • 多轮对话 AI 应用开发 • Spring AI 自定义 Advisor • Spring AI 结构化输出 - 恋爱报告功能 • Spring AI 对">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2026-01-26T14:24:44.000Z">
+<meta property="article:modified_time" content="2026-01-26T14:24:44.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="临时记录">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "2.大模型应用开发",
+  "url": "https://yuezi2048.github.io/2026/01/26/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/2.%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2026-01-26T14:24:44.000Z",
+  "dateModified": "2026-01-26T14:24:44.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2026/01/26/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/2.%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '2.大模型应用开发',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">2.大模型应用开发</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">2.大模型应用开发</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-01-26T14:24:44.000Z" title="发表于 2026-01-26 22:24:44">2026-01-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-01-26T14:24:44.000Z" title="更新于 2026-01-26 22:24:44">2026-01-26</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/">临时记录</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">5.5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>21分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>• Prompt 工程基本概念</p>
+<p>• Prompt 优化技巧</p>
+<p>• AI 恋爱大师应用需求分析</p>
+<p>• AI 恋爱大师应用方案设计</p>
+<p>• Spring AI ChatClient &#x2F; Advisor &#x2F; ChatMemory 特性</p>
+<p>• 多轮对话 AI 应用开发</p>
+<p>• Spring AI 自定义 Advisor</p>
+<p>• Spring AI 结构化输出 - 恋爱报告功能</p>
+<p>• Spring AI 对话记忆持久化</p>
+<p>• Spring AI Prompt 模板特性</p>
+<p>• 多模态概念和开发</p>
+<h2 id="Prompt工程"><a href="#Prompt工程" class="headerlink" title="Prompt工程"></a>Prompt工程</h2><p>Prompt工程：通过精心设计和优化提示词，引导AI模型的高质量输出</p>
+<h3 id="Prompt分类"><a href="#Prompt分类" class="headerlink" title="Prompt分类"></a>Prompt分类</h3><blockquote>
+<p>基于角色</p>
+</blockquote>
+<ul>
+<li>User Prompt：实际的指令</li>
+<li>System Prompt：模型行为规则，角色定位隐藏指令</li>
+<li>Assisant Prompt：响应内容（多轮对话中之前回复的内容）</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260126162306389.png" alt="image-20260126162306389"></p>
+<blockquote>
+<p>基于功能</p>
+</blockquote>
+<ul>
+<li>Instructional Prompts：指令型</li>
+<li>Conversational Prompts：对话型</li>
+<li>Creative Prompts：创意型，故事诗歌等</li>
+<li>Role-playing Prompts：角色扮演</li>
+<li>Few-Shot Prompts：少样本学习（提供一些示例）</li>
+</ul>
+<blockquote>
+<p>基于复杂度</p>
+</blockquote>
+<ul>
+<li>Simple Prompts：简单提示词</li>
+<li>Compound Prompts：复杂提示词（多个指令）</li>
+<li>Chain Prompts：链式提示词（第一步，第二步…）</li>
+<li>Template Prompts：模板提示词（可替换变量）</li>
+</ul>
+<h3 id="提示词优化"><a href="#提示词优化" class="headerlink" title="提示词优化"></a>提示词优化</h3><p>Token： 100个单词大概75<del>150token，100个中文大概100</del>200token，成本&#x3D;输入token * 输入单价 + 输出token * 输出单价 ，实际需要对比各家的价格</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://platform.openai.com/tokenizer">openAI官方token计算</a></li>
+<li><a target="_blank" rel="noopener" href="https://tiktoken.aigc2d.com/">非官方token计算</a></li>
+</ul>
+<blockquote>
+<p>系统提示词、用户提示词、输出内容都算做token，需要从这些角度优化token</p>
+<ul>
+<li>提示词精简<ul>
+<li>向量检索代替直接输入</li>
+<li>结构化代替自然语言（如表格、列表等结构化代替长段的文本描述）</li>
+</ul>
+</li>
+<li>定期清理上下文</li>
+</ul>
+</blockquote>
+<p>各家的提示词优化文档（authropics注意地区限制）：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.promptingguide.ai/zh">promptingguide</a></li>
+<li><a target="_blank" rel="noopener" href="http://docs.spring.io/spring-ai/reference/api/prompt.html#_prompt_engineering">SpringAI</a></li>
+<li><a target="_blank" rel="noopener" href="https://platform.openai.com/docs/guides/prompt-engineering">OpenAI</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/anthropics/prompt-eng-interactive-tutorial">anthropics提示词开源仓库</a></li>
+<li><a target="_blank" rel="noopener" href="https://claude.com/app-unavailable-in-region">anthropics提示词指南</a></li>
+<li><a target="_blank" rel="noopener" href="https://open.bigmodel.cn/dev/guidelines/LanguageModels">智谱AI</a></li>
+</ul>
+<p>提示词库</p>
+<ul>
+<li>文本：<a target="_blank" rel="noopener" href="https://claude.com/app-unavailable-in-region">Authropic提示词库</a></li>
+<li>图像：<a target="_blank" rel="noopener" href="https://promptlibrary.org/">midjourney提示词库</a></li>
+</ul>
+<p>提示词优化思路：</p>
+<ul>
+<li>迭代式提示词优化：多轮对话改进</li>
+<li>边界测试：给出极限的情况来优化</li>
+<li>提示词模板化：统一输出形式便于调试</li>
+<li>错误分析与纠正：系统分析模型的错误，针对性优化提示词（要让ai注意到这些问题点）</li>
+</ul>
+<blockquote>
+<p>总结：任务越复杂， 越要给Prompt<a target="_blank" rel="noopener" href="https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md">补充细节</a></p>
+</blockquote>
+<h2 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h2><p>需求分析：针对ai给出的需求文档进行评审即可</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">我要开发一个【恋爱大师】AI 应用，用户在恋爱过程中难免遇到各种难题，让 AI 为用户提供贴心情感指导。</span><br><span class="line">请你帮我进行需求分析，满足我的目标。</span><br><span class="line"></span><br><span class="line">具体需要:</span><br><span class="line">1. 分析目标用户群体及其核心需求</span><br><span class="line">2. 提出主要功能模块和服务内容</span><br><span class="line">3. 考虑产品的差异化竞争点</span><br><span class="line">4. 分析可能的技术挑战和解决方案</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><code>最小可行产品策略</code>（MVP）：优先开发核心内容，根据用户反馈决定下一步是深挖对话功能还是扩展功能点</p>
+</blockquote>
+<h2 id="系统实现方案"><a href="#系统实现方案" class="headerlink" title="系统实现方案"></a>系统实现方案</h2><p>AI实现方案设计：</p>
+<blockquote>
+<ul>
+<li>系统提示词</li>
+<li>多轮对话</li>
+</ul>
+</blockquote>
+<h3 id="系统提示词设计"><a href="#系统提示词设计" class="headerlink" title="系统提示词设计"></a>系统提示词设计</h3><p>系统提示词设计：可借助AI优化，比如专家需要提供一些引导性的问题来深入了解（开发前最好在大模型平台中进行测试和调优）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">扮演深耕恋爱心理领域的专家。开场向用户表明身份，告知用户可倾诉恋爱难题。围绕单身、恋爱、已婚三种状态提问：单身状态询问社交圈拓展及追求心仪对象的困扰；恋爱状态询问沟通、习惯差异引发的矛盾；已婚状态询问家庭责任与亲属关系处理的问题。引导用户详述事情经过、对方反应及自身想法，以便给出专属解决方案。</span><br></pre></td></tr></table></figure>
+
+<h3 id="多轮对话"><a href="#多轮对话" class="headerlink" title="多轮对话"></a>多轮对话</h3><h4 id="chatClient特性"><a href="#chatClient特性" class="headerlink" title="chatClient特性"></a>chatClient特性</h4><p>这里通过SpringAI <a target="_blank" rel="noopener" href="https://docs.spring.io/spring-ai/reference/api/chatclient.html">ChatClient的API</a>来实现更复杂的链式调用（Fluent API，这是ChatClient和ChatModal的区别）</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 基础用法(ChatModel)</span></span><br><span class="line"><span class="type">ChatResponse</span> <span class="variable">response</span> <span class="operator">=</span> chatModel.call(<span class="keyword">new</span> <span class="title class_">Prompt</span>(<span class="string">&quot;你好&quot;</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 高级用法(ChatClient)</span></span><br><span class="line"><span class="comment">// 方式1：使用构造器注入</span></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ChatService</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ChatClient chatClient;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ChatService</span><span class="params">(ChatClient.Builder builder)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.chatClient = builder</span><br><span class="line">            .defaultSystem(<span class="string">&quot;你是恋爱顾问&quot;</span>)</span><br><span class="line">            .build();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 方式2：使用建造者模式</span></span><br><span class="line"><span class="type">ChatClient</span> <span class="variable">chatClient</span> <span class="operator">=</span> ChatClient.builder(chatModel)</span><br><span class="line">    .defaultSystem(<span class="string">&quot;你是恋爱顾问&quot;</span>)</span><br><span class="line">    .build();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>值得注意的是，ChatClient可以返回多种形式</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// ChatClient支持多种响应格式</span></span><br><span class="line"><span class="comment">// 1. 返回 ChatResponse 对象（包含元数据如 token 使用量）</span></span><br><span class="line"><span class="type">ChatResponse</span> <span class="variable">chatResponse</span> <span class="operator">=</span> chatClient.prompt()</span><br><span class="line">    .user(<span class="string">&quot;Tell me a joke&quot;</span>)</span><br><span class="line">    .call()</span><br><span class="line">    .chatResponse();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 返回实体对象（自动将 AI 输出映射为 Java 对象）</span></span><br><span class="line"><span class="comment">// 2.1 返回单个实体</span></span><br><span class="line"><span class="keyword">record</span> <span class="title class_">ActorFilms</span><span class="params">(String actor, List&lt;String&gt; movies)</span> &#123;&#125;</span><br><span class="line"><span class="type">ActorFilms</span> <span class="variable">actorFilms</span> <span class="operator">=</span> chatClient.prompt()</span><br><span class="line">    .user(<span class="string">&quot;Generate the filmography for a random actor.&quot;</span>)</span><br><span class="line">    .call()</span><br><span class="line">    .entity(ActorFilms.class);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2.2 返回泛型集合</span></span><br><span class="line">List&lt;ActorFilms&gt; multipleActors = chatClient.prompt()</span><br><span class="line">    .user(<span class="string">&quot;Generate filmography for Tom Hanks and Bill Murray.&quot;</span>)</span><br><span class="line">    .call()</span><br><span class="line">    .entity(<span class="keyword">new</span> <span class="title class_">ParameterizedTypeReference</span>&lt;List&lt;ActorFilms&gt;&gt;() &#123;&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. 流式返回（适用于打字机效果）</span></span><br><span class="line">Flux&lt;String&gt; streamResponse = chatClient.prompt()</span><br><span class="line">    .user(<span class="string">&quot;Tell me a story&quot;</span>)</span><br><span class="line">    .stream()</span><br><span class="line">    .content();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 也可以流式返回ChatResponse</span></span><br><span class="line">Flux&lt;ChatResponse&gt; streamWithMetadata = chatClient.prompt()</span><br><span class="line">    .user(<span class="string">&quot;Tell me a story&quot;</span>)</span><br><span class="line">    .stream()</span><br><span class="line">    .chatResponse();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>预设系统提示词（后续可以支持默认对话选项、默认拦截器、默认函数调用等）</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 定义默认系统提示词</span></span><br><span class="line"><span class="type">ChatClient</span> <span class="variable">chatClient</span> <span class="operator">=</span> ChatClient.builder(chatModel)</span><br><span class="line">        .defaultSystem(<span class="string">&quot;You are a friendly chat bot that answers question in the voice of a &#123;voice&#125;&quot;</span>)</span><br><span class="line">        .build();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对话时动态更改系统提示词的变量</span></span><br><span class="line">chatClient.prompt()</span><br><span class="line">        .system(sp -&gt; sp.param(<span class="string">&quot;voice&quot;</span>, voice))</span><br><span class="line">        .user(message)</span><br><span class="line">        .call()</span><br><span class="line">        .content());</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="Advisors"><a href="#Advisors" class="headerlink" title="Advisors"></a>Advisors</h4><p><strong>Advisors顾问</strong>（可插拔的拦截器，调用前后的额外操作）</p>
+<ul>
+<li>调用前：检查提示词是否安全</li>
+<li>调用后：记录日志，处理返回结果</li>
+</ul>
+<blockquote>
+<p>这里给出对话记忆、RAG检索增强的功能示例</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">var</span> <span class="variable">chatClient</span> <span class="operator">=</span> ChatClient.builder(chatModel)</span><br><span class="line">    .defaultAdvisors(</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">MessageChatMemoryAdvisor</span>(chatMemory), <span class="comment">// 对话记忆 advisor</span></span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">QuestionAnswerAdvisor</span>(vectorStore)    <span class="comment">// RAG 检索增强 advisor</span></span><br><span class="line">    )</span><br><span class="line">    .build();</span><br><span class="line"></span><br><span class="line"><span class="type">String</span> <span class="variable">response</span> <span class="operator">=</span> <span class="built_in">this</span>.chatClient.prompt()</span><br><span class="line">    <span class="comment">// 对话时动态设定拦截器参数，比如指定对话记忆的 id 和长度</span></span><br><span class="line">    .advisors(advisor -&gt; advisor.param(<span class="string">&quot;chat_memory_conversation_id&quot;</span>, <span class="string">&quot;678&quot;</span>)</span><br><span class="line">            .param(<span class="string">&quot;chat_memory_response_size&quot;</span>, <span class="number">100</span>))</span><br><span class="line">    .user(userText)</span><br><span class="line">    .call()</span><br><span class="line">	.content();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h5 id="执行原理"><a href="#执行原理" class="headerlink" title="执行原理"></a>执行原理</h5><blockquote>
+<p>Advisors执行原理（Prompt-&gt;AdvisedRequest-&gt;【Prompt-&gt;ChatResponse】-&gt;AdvisedResponse-&gt;ChatResponse，AdvisorContext可传递信息）：</p>
+<ol>
+<li>Spring AI 框架从用户的 Prompt 创建一个 AdvisedRequest，同时创建一个空的 AdvisorContext 对象，用于传递信息。</li>
+<li>链中的每个 advisor 处理这个请求，可能会对其进行修改。或者，它也可以选择不调用下一个实体来阻止请求继续传递，这时该 advisor 负责填充响应内容。</li>
+<li>由框架提供的最终 advisor 将请求发送给聊天模型 ChatModel。</li>
+<li>聊天模型的响应随后通过 advisor 链传回，并被转换为 AdvisedResponse。后者包含了共享的 AdvisorContext 实例。</li>
+<li>每个 advisor 都可以处理或修改这个响应。</li>
+<li>最终的 AdvisedResponse 通过提取 ChatCompletion 返回给客户端。</li>
+</ol>
+<p>拦截器链是有顺序的（责任链设计模式），通过getOrder可得到顺序，值越低越优先</p>
+<ul>
+<li>如上述案例先MessageMemory添加历史记录到提示词中，再将所有的内容进行知识库检索。</li>
+</ul>
+<p>拦截器支持流式和非流式返回值，如果要自主实现拦截逻辑，逻辑一样但返回值不同，最好都实现一下</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260126173601329.png" alt="image-20260126173601329" style="zoom:50%;" />	</blockquote>
+<h5 id="ChatMemoryAdvisor"><a href="#ChatMemoryAdvisor" class="headerlink" title="ChatMemoryAdvisor"></a>ChatMemoryAdvisor</h5><p>ChatMemoryAdvisor（三种存储方式，提示词&#x2F;系统提示词&#x2F;向量数据库）</p>
+<ul>
+<li>MessageChatMemoryAdvisor: 从记忆中检索历史对话, 并将其作为消息集合添加到提示词中（建议使用，保证上下文连贯性）</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">[</span></span><br><span class="line">  <span class="punctuation">&#123;</span><span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;user&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;你好&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="punctuation">&#123;</span><span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;assistant&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;你好！有什么我能帮助你的吗？&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="punctuation">&#123;</span><span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;user&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;讲个笑话&quot;</span><span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">]</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>PromptChatMemoryAdvisor: 从记忆中检索历史对话, 并将其添加到提示词的系统文本中（没有边界信息）</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">以下是之前的对话历史：</span><br><span class="line">用户<span class="punctuation">:</span> 你好</span><br><span class="line">助手<span class="punctuation">:</span> 你好！有什么我能帮助你的吗？</span><br><span class="line">用户<span class="punctuation">:</span> 讲个笑话</span><br><span class="line"></span><br><span class="line">现在请继续回答用户的问题。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>VectorStoreChatMemoryAdvisor: 可以用向量数据库来存储检索历史对话</li>
+</ul>
+<p>ChatMemoryAdvisor依赖于<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-ai/reference/api/chatclient.html#_chat_memory">ChatMemory</a>构建历史对话，提供增删查的方式，内置存储方式：</p>
+<p>• InMemoryChatMemory：内存存储<br>• CassandraChatMemory：在 Cassandra 中带有过期时间的持久化存储<br>• Neo4jChatMemory：在 Neo4j 中没有过期时间限制的持久化存储<br>• JdbcChatMemory：在 JDBC 中没有过期时间限制的持久化存储</p>
+<h2 id="应用实现及单元测试"><a href="#应用实现及单元测试" class="headerlink" title="应用实现及单元测试"></a>应用实现及单元测试</h2><p>在app&#x2F;LovaApp下创建恋爱大师的应用：</p>
+<ul>
+<li>系统提示词预设</li>
+<li>初始化<ul>
+<li>创建基于内存的ChatMemory</li>
+<li>通过构造器方式构建chatClient对象便于复用</li>
+</ul>
+</li>
+<li>对话<ul>
+<li>调用chatClient，传入用户Prompt，设置advisor指定对话id和对话记忆大小</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Component</span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LoveApp</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ChatClient chatClient;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">SYSTEM_PROMPT</span> <span class="operator">=</span> <span class="string">&quot;扮演深耕恋爱心理领域的专家。开场向用户表明身份，告知用户可倾诉恋爱难题。&quot;</span> +</span><br><span class="line">            <span class="string">&quot;围绕单身、恋爱、已婚三种状态提问：单身状态询问社交圈拓展及追求心仪对象的困扰；&quot;</span> +</span><br><span class="line">            <span class="string">&quot;恋爱状态询问沟通、习惯差异引发的矛盾；已婚状态询问家庭责任与亲属关系处理的问题。&quot;</span> +</span><br><span class="line">            <span class="string">&quot;引导用户详述事情经过、对方反应及自身想法，以便给出专属解决方案。&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">LoveApp</span><span class="params">(ChatModel dashscopeChatModel)</span> &#123;</span><br><span class="line">        <span class="comment">// 初始化基于内存的对话记忆</span></span><br><span class="line">        <span class="type">ChatMemory</span> <span class="variable">chatMemory</span> <span class="operator">=</span> MessageWindowChatMemory.builder()</span><br><span class="line">                .maxMessages(<span class="number">10</span>)</span><br><span class="line">                .build();</span><br><span class="line"></span><br><span class="line">        chatClient = ChatClient.builder(dashscopeChatModel)</span><br><span class="line">                .defaultSystem(SYSTEM_PROMPT)</span><br><span class="line">                .defaultAdvisors(</span><br><span class="line">                        MessageChatMemoryAdvisor.builder(chatMemory).build(),</span><br><span class="line">                        <span class="keyword">new</span> <span class="title class_">LogAdvisor</span>()</span><br><span class="line">                        <span class="comment">// new ReReadingAdvisor()</span></span><br><span class="line">                )</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">doChat</span><span class="params">(String message, String chatId)</span> &#123;</span><br><span class="line">        <span class="type">ChatResponse</span> <span class="variable">chatResponse</span> <span class="operator">=</span> chatClient</span><br><span class="line">                .prompt()</span><br><span class="line">                .user(message)</span><br><span class="line">                .advisors(spec -&gt; spec.param(ChatMemory.CONVERSATION_ID, chatId))</span><br><span class="line">                .call()</span><br><span class="line">                .chatResponse();</span><br><span class="line">        <span class="comment">// log.info(&quot;content: &#123;&#125;&quot;, content);</span></span><br><span class="line">        <span class="keyword">return</span> chatResponse.getResult().getOutput().getText();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>单元测试</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootTest</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">LoveAppTest</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    <span class="keyword">private</span> LoveApp loveApp;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">testChat</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">chatId</span> <span class="operator">=</span> UUID.randomUUID().toString();</span><br><span class="line">        <span class="comment">// 第一轮</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> <span class="string">&quot;你好，我是程序员鱼皮&quot;</span>;</span><br><span class="line">        <span class="type">String</span> <span class="variable">answer</span> <span class="operator">=</span> loveApp.doChat(message, chatId);</span><br><span class="line">        Assertions.assertNotNull(answer);</span><br><span class="line">        <span class="comment">// // 第二轮</span></span><br><span class="line">        message = <span class="string">&quot;我想让另一半（编程导航）更爱我&quot;</span>;</span><br><span class="line">        answer = loveApp.doChat(message, chatId);</span><br><span class="line">        Assertions.assertNotNull(answer);</span><br><span class="line">        <span class="comment">// // 第三轮</span></span><br><span class="line">        message = <span class="string">&quot;我的另一半叫什么来着？刚跟你说过，帮我回忆一下&quot;</span>;</span><br><span class="line">        answer = loveApp.doChat(message, chatId);</span><br><span class="line">        Assertions.assertNotNull(answer);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>接下来是一些拓展的AI应用：</p>
+<h2 id="SpringAI拓展"><a href="#SpringAI拓展" class="headerlink" title="SpringAI拓展"></a>SpringAI拓展</h2><h3 id="自定义Advisor"><a href="#自定义Advisor" class="headerlink" title="自定义Advisor"></a>自定义Advisor</h3><p><a target="_blank" rel="noopener" href="https://docs.spring.io/spring-ai/reference/api/advisors.html#_implementing_an_advisor">自定义Advisor拦截器</a>（建议同时实现流式CallAdvisor接口的adviseCall、非流式,treamAdvisor接口的adviseStream环绕方法）：</p>
+<blockquote>
+<p>设计原则：</p>
+<p>1）保持单一职责：每个 Advisor 应专注于一项特定任务</p>
+<p>2）注意执行顺序：合理设置 getOrder() 值确保 Advisor 按正确顺序执行</p>
+<p>3）同时支持流式和非流式：尽可能同时实现两种接口以提高灵活性</p>
+<p>4）高效处理请求：避免在 Advisor 中执行耗时操作</p>
+<p>5）测试边界情况：确保 Advisor 能够优雅处理异常和边界情况</p>
+<p>6）对于需要更复杂处理的流式场景，可以使用 Reactor 的操作符：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> Flux&lt;AdvisedResponse&gt; <span class="title function_">aroundStream</span><span class="params">(AdvisedRequest advisedRequest, StreamAroundAdvisorChain chain)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> Mono.just(advisedRequest)</span><br><span class="line">           .publishOn(Schedulers.boundedElastic())</span><br><span class="line">           .map(request -&gt; &#123;</span><br><span class="line">               <span class="comment">// 请求前处理逻辑</span></span><br><span class="line">               <span class="keyword">return</span> modifyRequest(request);</span><br><span class="line">           &#125;)</span><br><span class="line">           .flatMapMany(request -&gt; chain.nextAroundStream(request))</span><br><span class="line">           .map(response -&gt; &#123;</span><br><span class="line">               <span class="comment">// 响应处理逻辑</span></span><br><span class="line">               <span class="keyword">return</span> modifyResponse(response);</span><br><span class="line">           &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>7）可通过adviceContext在Advisor中共享状态</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 更新上下文</span></span><br><span class="line">advisedRequest = advisedRequest.updateContext(context -&gt; &#123;</span><br><span class="line">    context.put(<span class="string">&quot;key&quot;</span>, <span class="string">&quot;value&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> context;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 读取上下文</span></span><br><span class="line"><span class="type">Object</span> <span class="variable">value</span> <span class="operator">=</span> advisedResponse.adviseContext().get(<span class="string">&quot;key&quot;</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure></blockquote>
+<p>自定义日志拦截器</p>
+<blockquote>
+<p>注：SpringAI默认是Debug级别，要看到日志信息的话，通过配置文件指定日志输出级别即可，但如果需要更灵活的控制，可以通过拦截器来完成</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">logging:</span></span><br><span class="line">  <span class="attr">level:</span></span><br><span class="line">    <span class="attr">org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor:</span> <span class="string">debug</span></span><br></pre></td></tr></table></figure></blockquote>
+<ul>
+<li>流式处理通过ChatClientMessageAggregator工具类将Flux响应聚合为单个AdviseResponse，这样可以观察到整个流而不是每个独立项（注：该操作是只读操作）</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 自定义日志 Advisor</span></span><br><span class="line"><span class="comment"> * 打印 info 级别日志、只输出单次用户提示词和 AI 回复的文本</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LogAdvisor</span> <span class="keyword">implements</span> <span class="title class_">CallAdvisor</span>, StreamAdvisor &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getName</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>.getClass().getSimpleName();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getOrder</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> ChatClientResponse <span class="title function_">adviseCall</span><span class="params">(ChatClientRequest chatClientRequest, CallAdvisorChain callAdvisorChain)</span> &#123;</span><br><span class="line">        logRequest(chatClientRequest);</span><br><span class="line"></span><br><span class="line">        <span class="type">ChatClientResponse</span> <span class="variable">chatClientResponse</span> <span class="operator">=</span> callAdvisorChain.nextCall(chatClientRequest);</span><br><span class="line"></span><br><span class="line">        logResponse(chatClientResponse);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> chatClientResponse;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Flux&lt;ChatClientResponse&gt; <span class="title function_">adviseStream</span><span class="params">(ChatClientRequest chatClientRequest,</span></span><br><span class="line"><span class="params">                                                 StreamAdvisorChain streamAdvisorChain)</span> &#123;</span><br><span class="line">        logRequest(chatClientRequest);</span><br><span class="line"></span><br><span class="line">        Flux&lt;ChatClientResponse&gt; chatClientResponses = streamAdvisorChain.nextStream(chatClientRequest);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">ChatClientMessageAggregator</span>().aggregateChatClientResponse(chatClientResponses, <span class="built_in">this</span>::logResponse);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">logRequest</span><span class="params">(ChatClientRequest request)</span> &#123;</span><br><span class="line">        log.info(<span class="string">&quot;request: &#123;&#125;&quot;</span>, request);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">logResponse</span><span class="params">(ChatClientResponse chatClientResponse)</span> &#123;</span><br><span class="line">        log.info(<span class="string">&quot;response: &#123;&#125;&quot;</span>, chatClientResponse);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>Re2拦截器增强提示词，但是有额外token成本，面向C端需要谨慎使用</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ReReadingAdvisor</span> <span class="keyword">implements</span> <span class="title class_">BaseAdvisor</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">DEFAULT_RE2_ADVISE_TEMPLATE</span> <span class="operator">=</span> <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">			&#123;re2_input_query&#125;</span></span><br><span class="line"><span class="string">			Read the question again: &#123;re2_input_query&#125;</span></span><br><span class="line"><span class="string">			&quot;&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> String re2AdviseTemplate;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="type">int</span> <span class="variable">order</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="title function_">ReReadingAdvisor</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="built_in">this</span>(DEFAULT_RE2_ADVISE_TEMPLATE);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="title function_">ReReadingAdvisor</span><span class="params">(String re2AdviseTemplate)</span> &#123;</span><br><span class="line">		<span class="built_in">this</span>.re2AdviseTemplate = re2AdviseTemplate;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> ChatClientRequest <span class="title function_">before</span><span class="params">(ChatClientRequest chatClientRequest, AdvisorChain advisorChain)</span> &#123;</span><br><span class="line">		<span class="type">String</span> <span class="variable">augmentedUserText</span> <span class="operator">=</span> PromptTemplate.builder()</span><br><span class="line">			.template(<span class="built_in">this</span>.re2AdviseTemplate)</span><br><span class="line">			.variables(Map.of(<span class="string">&quot;re2_input_query&quot;</span>, chatClientRequest.prompt().getUserMessage().getText()))</span><br><span class="line">			.build()</span><br><span class="line">			.render();</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> chatClientRequest.mutate()</span><br><span class="line">			.prompt(chatClientRequest.prompt().augmentUserMessage(augmentedUserText))</span><br><span class="line">			.build();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> ChatClientResponse <span class="title function_">after</span><span class="params">(ChatClientResponse chatClientResponse, AdvisorChain advisorChain)</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> chatClientResponse;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getOrder</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="built_in">this</span>.order;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> ReReadingAdvisor <span class="title function_">withOrder</span><span class="params">(<span class="type">int</span> order)</span> &#123;</span><br><span class="line">		<span class="built_in">this</span>.order = order;</span><br><span class="line">		<span class="keyword">return</span> <span class="built_in">this</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="结构化输出"><a href="#结构化输出" class="headerlink" title="结构化输出"></a>结构化输出</h3><p><a target="_blank" rel="noopener" href="https://docs.spring.io/spring-ai/reference/api/structured-output-converter.html">Structured Output Converter</a>可以将大模型输出内容转换成JSON等结构化格式</p>
+<ul>
+<li>调用前：转换器在提示词后面添加格式指令，引导模型生成特定格式响应</li>
+<li>调用后：转换器将模型输出转换成结构化类型实例（JSON XML等数据结构）</li>
+</ul>
+<blockquote>
+<p>注：结构化输出转换器仅能尽最大努力输出，AI不一定保证可以按要求输出，建议需要有验证机制或异常处理保证模型输出符合预期</p>
+</blockquote>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/structured-output-architecture.jpg" alt="Structured Output Converter Architecture" style="zoom: 33%;" />	
+
+<blockquote>
+<p>最佳实践</p>
+<ol>
+<li><p>尽量为模型提供清晰的格式指导</p>
+</li>
+<li><p>实现输出验证机制和异常处理逻辑，确保结构化数据符合预期</p>
+</li>
+<li><p>选择支持结构化输出的合适模型</p>
+</li>
+<li><p>对于复杂数据结构，考虑使用 ParameterizedTypeReference</p>
+</li>
+</ol>
+</blockquote>
+<p>相关API</p>
+<p>结构化输出接口<code>StructuredOutputConverter</code>实现结构化输出，继承了两个接口</p>
+<ul>
+<li>Converter接口（Spring自带）：将模型文本转换成指定目标类型T</li>
+<li>FormatProvider接口：特定的指令格式</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">StructuredOutputConverter</span>&lt;T&gt; <span class="keyword">extends</span> <span class="title class_">Converter</span>&lt;String, T&gt;, FormatProvider &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>具体内置实现：</p>
+<ul>
+<li>AbstractConversionServiceOutputConverter: 提供预配置的 GenericConversionService, 用于将 LLM 输出转换为所需格式<ul>
+<li>ListOutputConverter: 用于将输出转换为 List 结构</li>
+</ul>
+</li>
+<li>AbstractMessageOutputConverter: 支持 Spring AI Message 的转换<ul>
+<li>MapOutputConverter: 用于将输出转换为 Map 结构</li>
+</ul>
+</li>
+<li>BeanOutputConverter: 用于将输出转换为 Java Bean 对象 (基于 ObjectMapper 实现)</li>
+</ul>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/structured-output-hierarchy4.jpg" alt="Structured Output Class Hierarchy" style="zoom: 33%;" />	
+
+
+
+<p>具体工作流程：</p>
+<p>（1）FormatProvider给AI提供类型指令</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Your response should be in JSON format.</span><br><span class="line">The data structure <span class="keyword">for</span> the JSON should match <span class="built_in">this</span> Java class: java.util.HashMap</span><br><span class="line">Do not include any explanations, only provide a RFC8259 compliant JSON response following <span class="built_in">this</span> format without deviation.</span><br></pre></td></tr></table></figure>
+
+<p>一般通过PromptTemplate将格式放到用户输入提示词末尾：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">StructuredOutputConverter</span> <span class="variable">outputConverter</span> <span class="operator">=</span> ...</span><br><span class="line"><span class="type">String</span> <span class="variable">userInputTemplate</span> <span class="operator">=</span> <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        ... 用户文本输入 ....</span></span><br><span class="line"><span class="string">        &#123;format&#125;</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span>; <span class="comment">// 用户输入，包含一个“format”占位符。</span></span><br><span class="line"><span class="type">Prompt</span> <span class="variable">prompt</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Prompt</span>(</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">PromptTemplate</span>(</span><br><span class="line">                <span class="built_in">this</span>.userInputTemplate,</span><br><span class="line">                Map.of(..., <span class="string">&quot;format&quot;</span>, outputConverter.getFormat()) <span class="comment">// 用转换器的格式替换“format”占位符</span></span><br><span class="line">        ).createMessage());</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>（2）生成的文本字符被Converter转换成指定的格式输出</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/structured-output-api.jpg" alt="Structured Output API"></p>
+<blockquote>
+<p>官方提供的示例</p>
+<p>BeanOutputConverter输出指定Java类</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 定义一个记录类</span></span><br><span class="line"><span class="keyword">record</span> <span class="title class_">ActorsFilms</span><span class="params">(String actor, List&lt;String&gt; movies)</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用高级 ChatClient API</span></span><br><span class="line"><span class="type">ActorsFilms</span> <span class="variable">actorsFilms</span> <span class="operator">=</span> ChatClient.create(chatModel).prompt()</span><br><span class="line">        .user(<span class="string">&quot;Generate 5 movies for Tom Hanks.&quot;</span>)</span><br><span class="line">        .call()</span><br><span class="line">        .entity(ActorsFilms.class);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>支持ParameterizedTypeReference的构造函数指定更复杂的类结构</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 可以转换为对象列表</span></span><br><span class="line">List&lt;ActorsFilms&gt; actorsFilms = ChatClient.create(chatModel).prompt()</span><br><span class="line">        .user(<span class="string">&quot;Generate the filmography of 5 movies for Tom Hanks and Bill Murray.&quot;</span>)</span><br><span class="line">        .call()</span><br><span class="line">        .entity(<span class="keyword">new</span> <span class="title class_">ParameterizedTypeReference</span>&lt;List&lt;ActorsFilms&gt;&gt;() &#123;&#125;);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>MapOutputConverter输出数字列表的Map</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Map&lt;String, Object&gt; result = ChatClient.create(chatModel).prompt()</span><br><span class="line">        .user(u -&gt; u.text(<span class="string">&quot;Provide me a List of &#123;subject&#125;&quot;</span>)</span><br><span class="line">                    .param(<span class="string">&quot;subject&quot;</span>, <span class="string">&quot;an array of numbers from 1 to 9 under they key name &#x27;numbers&#x27;&quot;</span>))</span><br><span class="line">        .call()</span><br><span class="line">        .entity(<span class="keyword">new</span> <span class="title class_">ParameterizedTypeReference</span>&lt;Map&lt;String, Object&gt;&gt;() &#123;&#125;);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>ListOutputConverter输出字符串 List</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; flavors = ChatClient.create(chatModel).prompt()</span><br><span class="line">                .user(u -&gt; u.text(<span class="string">&quot;List five &#123;subject&#125;&quot;</span>)</span><br><span class="line">                            .param(<span class="string">&quot;subject&quot;</span>, <span class="string">&quot;ice cream flavors&quot;</span>))</span><br><span class="line">                .call()</span><br><span class="line">                .entity(<span class="keyword">new</span> <span class="title class_">ListOutputConverter</span>(<span class="keyword">new</span> <span class="title class_">DefaultConversionService</span>()));</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>注：一些AI模型具备原生内置JSON，提高输出可靠性（见官方文档<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-ai/reference/api/structured-output-converter.html#_supported_ai_models">Supported Models for Native Structured Output</a>）</p>
+</blockquote>
+<p>项目中使用</p>
+<p>引入JSON Schema生成依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.github.victools<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jsonschema-generator<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.38.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在app中通过JDK14快速定义类型，通过chatClient补充提示词，并添加结构化输出的结构（BeanOutputConverter）</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">record</span> <span class="title class_">LoveReport</span><span class="params">(String title, List&lt;String&gt; suggestions)</span> &#123;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">public</span> LoveReport <span class="title function_">doChatWithReport</span><span class="params">(String message, String chatId)</span> &#123;</span><br><span class="line">       <span class="keyword">return</span> chatClient</span><br><span class="line">               .prompt()</span><br><span class="line">               .system(SYSTEM_PROMPT + <span class="string">&quot;每次对话后都要生成恋爱结果，标题为&#123;用户名&#125;的恋爱报告，内容为建议列表&quot;</span>)</span><br><span class="line">               .user(message)</span><br><span class="line">               .advisors(spec -&gt; spec.param(ChatMemory.CONVERSATION_ID, chatId))</span><br><span class="line">               .call()</span><br><span class="line">               .entity(LoveReport.class);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">doChatWithReport</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">String</span> <span class="variable">chatId</span> <span class="operator">=</span> UUID.randomUUID().toString();</span><br><span class="line">    <span class="comment">// 第一轮</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> <span class="string">&quot;你好，我是程序员鱼皮，我想让另一半（编程导航）更爱我，但我不知道该怎么做&quot;</span>;</span><br><span class="line">    LoveApp.<span class="type">LoveReport</span> <span class="variable">loveReport</span> <span class="operator">=</span> loveApp.doChatWithReport(message, chatId);</span><br><span class="line">    Assertions.assertNotNull(loveReport);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在我们之前写的log断点调试，确实看到了有格式转换的上下文</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260126213937975.png" alt="image-20260126213937975"></p>
+<p>结果调试</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260126214142963.png" alt="image-20260126214142963"></p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260126214243342.png" alt="image-20260126214243342"></p>
+<h3 id="对话记忆持久化"><a href="#对话记忆持久化" class="headerlink" title="对话记忆持久化"></a>对话记忆持久化</h3><p>我们有时需要将对话保存到文件、数据库、redis中</p>
+<p>在<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-ai/reference/api/chatclient.html#_chat_memory">对话记忆的官方文档</a>中，可以发现有JdbcChatMemoryRepository可以持久化到数据库中，但<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-ai/reference/api/chat-memory.html#_jdbcchatmemoryrepository">官方</a>对这个介绍比较少</p>
+<p>我们还是建议通过自定义ChatMemory实现（参考已实现的InMemoryChatMemory设计），也可以更灵活地设计</p>
+<p>ChatMemory中只有增删查的方法，而在InMemoryChatMemory中，通过ConcurrentHashMap（key是会话id，value是id的消息列表）维护对话信息，我们参考该思路实现。</p>
+<p>难点：消息和文本之间如何转换。消息持久化时，要将消息从Message对象转换成文本，而从持久化层读取消息时，需要将文本转换成Message对象。</p>
+<p>思路是通过JSON反序列化，但问题是：</p>
+<ul>
+<li>持久化的Message是一个接口，对应多个不同的子类实现（UserMessage SystemMessage等）<ul>
+<li>而每个子类的结构不统一，并且子类无法保证序列化，无参构造函数等</li>
+</ul>
+</li>
+</ul>
+<p>Message类图如下：</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260126220406676.png" alt="image-20260126220406676" style="zoom: 50%;" />	
+
+<p>一种解决思路是通过<a target="_blank" rel="noopener" href="https://github.com/EsotericSoftware/kryo">Kyro序列化库</a>来实现转换，通过我们写好的转换后的FileBasedChatMemory对增删相应的方法增强后就可以了。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="title function_">LoveApp</span><span class="params">(ChatModel dashscopeChatModel)</span> &#123;</span><br><span class="line">    <span class="comment">// 初始化基于文件的对话记忆</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">fileDir</span> <span class="operator">=</span> System.getProperty(<span class="string">&quot;user.dir&quot;</span>) + <span class="string">&quot;/chat-memory&quot;</span>;</span><br><span class="line">    <span class="type">ChatMemory</span> <span class="variable">chatMemory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileBasedChatMemory</span>(fileDir);</span><br><span class="line">    chatClient = ChatClient.builder(dashscopeChatModel)</span><br><span class="line">            .defaultSystem(SYSTEM_PROMPT)</span><br><span class="line">            .defaultAdvisors(</span><br><span class="line">                    <span class="keyword">new</span> <span class="title class_">MessageChatMemoryAdvisor</span>(chatMemory)</span><br><span class="line">            )</span><br><span class="line">            .build();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="PromptTemplate模板"><a href="#PromptTemplate模板" class="headerlink" title="PromptTemplate模板"></a>PromptTemplate模板</h3><p><a target="_blank" rel="noopener" href="https://docs.spring.io/spring-ai/reference/api/prompt.html#_prompttemplate">官方文档</a></p>
+<p>这是构建提示词的核心组件之一，通过动态替换占位符来生成一些固定但局部有变动的提示词（数据库预编译、记录日志的变量占位符、模板引擎等场景）</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 定义带有变量的模板</span></span><br><span class="line"><span class="type">String</span> <span class="variable">template</span> <span class="operator">=</span> <span class="string">&quot;你好，&#123;name&#125;。今天是&#123;day&#125;，天气&#123;weather&#125;。&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建模板对象</span></span><br><span class="line"><span class="type">PromptTemplate</span> <span class="variable">promptTemplate</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">PromptTemplate</span>(template);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 准备变量映射</span></span><br><span class="line">Map&lt;String, Object&gt; variables = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">variables.put(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;鱼皮&quot;</span>);</span><br><span class="line">variables.put(<span class="string">&quot;day&quot;</span>, <span class="string">&quot;星期一&quot;</span>);</span><br><span class="line">variables.put(<span class="string">&quot;weather&quot;</span>, <span class="string">&quot;晴朗&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 生成最终提示文本</span></span><br><span class="line"><span class="type">String</span> <span class="variable">prompt</span> <span class="operator">=</span> promptTemplate.render(variables);</span><br><span class="line"><span class="comment">// 结果: &quot;你好，鱼皮。今天是星期一，天气晴朗。&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>PromptTemplate 在以下场景特别有用:</p>
+<ol>
+<li>动态个性化交互: 根据用户信息、上下文或业务规则定制提示词</li>
+<li>多语言支持: 使用相同的变量但不同的模板文件支持多种语言</li>
+<li>A&#x2F;B测试: 轻松切换不同版本的提示词进行效果对比</li>
+<li>提示词版本管理: 将提示词外部化, 便于版本控制和迭代优化</li>
+</ol>
+<p>内部原理说明：</p>
+<p>SpringAI中，实现了PromptTemplateActions、PromptTemplateMessageActions接口，这些接口提供了一些文本生成的方法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PromptTemplate</span> <span class="keyword">implements</span> <span class="title class_">PromptTemplateActions</span>, PromptTemplateMessageActions &#123;</span><br><span class="line">    <span class="comment">// 实现细节</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260126221344483.png" alt="image-20260126221344483" style="zoom:50%;" />	
+
+<p>SpringAI提供了几种专用的模板类，对应不同角色的消息:</p>
+<ol>
+<li>SystemPromptTemplate: 用于系统消息, 设置 AI 的行为和背景</li>
+<li>AssistantPromptTemplate: 用于助手消息, 用于设置 AI 回复的结构</li>
+<li>FunctionPromptTemplate: 目前没用</li>
+</ol>
+<p>比如系统消息模板可以快速构造一个Prompt，或者设置回复结构</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">String userText؜ = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Tell me about three﻿ famous pirates from the Golde؜n Age of Piracy and why they d‏id.</span></span><br><span class="line"><span class="string">    Write at least a sente⁡nce for each pirate.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">Message</span> <span class="variable">userMessage</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">UserMessage</span>(userText);</span><br><span class="line"></span><br><span class="line">String sy؜stemText = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">  ﻿You are a helpful؜ AI assistant tha‏t helps people fi⁡nd information.</span></span><br><span class="line"><span class="string">  Your name is &#123;name&#125;</span></span><br><span class="line"><span class="string">  You should reply to the user&#x27;s request with your name and also in the style of a &#123;voice&#125;.</span></span><br><span class="line"><span class="string">  &quot;&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">SystemPromptTemplate</span> <span class="variable">systemPromptTemplate</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SystemPromptTemplate</span>(systemText);</span><br><span class="line"><span class="type">Message</span> <span class="variable">systemMessage</span> <span class="operator">=</span> systemPromptTemplate.createMessage(Map.of(<span class="string">&quot;name&quot;</span>, name, <span class="string">&quot;voice&quot;</span>, voice));</span><br><span class="line"></span><br><span class="line"><span class="type">Prompt</span> <span class="variable">prompt</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Prompt</span>(List.of(userMessage, systemMessage));</span><br><span class="line"></span><br><span class="line">List&lt;Generation&gt; response = chatModel.call(prompt).getResults();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>另外，可以从文件中加载模板便于管理（多场景支持，在修改提示词模板时可以不修改代码，开闭原则，推荐）</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 从类路径资源加载系统提示模板</span></span><br><span class="line"><span class="meta">@Value(&quot;classpath:/prompts/system-message.st&quot;)</span></span><br><span class="line"><span class="keyword">private</span> Resource systemResource;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 直接使用资源创建模板</span></span><br><span class="line"><span class="type">SystemPromptTemplate</span> <span class="variable">systemPromptTemplate</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SystemPromptTemplate</span>(systemResource);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="多模态"><a href="#多模态" class="headerlink" title="多模态"></a>多模态</h3><p><a target="_blank" rel="noopener" href="https://docs.spring.io/spring-ai/reference/api/multimodality.html">SpringAI官方文档</a></p>
+<p><a target="_blank" rel="noopener" href="https://docs.spring.io/spring-ai/reference/api/chat/comparison.html">多模态(Multimodality)支持的模型</a>：主流的Google VertexAI Gemini、 OpenAI都支持的</p>
+<p>选择好模型后，可以查看对应模型的API进行使用：如<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-ai/reference/api/chat/vertexai-gemini-chat.html">VertexAI Gemini Chat</a></p>
+<p>允许发送图片等资源：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">byte</span>[] data = <span class="keyword">new</span> <span class="title class_">ClassPathResource</span>(<span class="string">&quot;/vertex-test.png&quot;</span>).getContentAsByteArray();</span><br><span class="line"></span><br><span class="line"><span class="type">var</span> <span class="variable">userMessage</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">UserMessage</span>(<span class="string">&quot;Explain what do you see on this picture?&quot;</span>,</span><br><span class="line">        List.of(<span class="keyword">new</span> <span class="title class_">Media</span>(MimeTypeUtils.IMAGE_PNG, <span class="built_in">this</span>.data)));</span><br><span class="line"></span><br><span class="line"><span class="type">ChatResponse</span> <span class="variable">response</span> <span class="operator">=</span> chatModel.call(<span class="keyword">new</span> <span class="title class_">Prompt</span>(List.of(<span class="built_in">this</span>.userMessage)));</span><br></pre></td></tr></table></figure>
+
+<p>也可以通过ChatClient</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">response</span> <span class="operator">=</span> ChatClient.create(chatModel).prompt()</span><br><span class="line">		.user(u -&gt; u.text(<span class="string">&quot;Explain what do you see on this picture?&quot;</span>)</span><br><span class="line">				    .media(MimeTypeUtils.IMAGE_PNG, <span class="keyword">new</span> <span class="title class_">ClassPathResource</span>(<span class="string">&quot;/multimodal.test.png&quot;</span>)))</span><br><span class="line">		.call()</span><br><span class="line">		.content();</span><br></pre></td></tr></table></figure>
+
+
+
+<p>方式2，可以调用国产大模型的SDK，如<a target="_blank" rel="noopener" href="https://help.aliyun.com/zh/model-studio/qwen-api-reference/#d0e30636ad3s3">通义千问API</a>接入多模态</p>
+<p>后续工作：</p>
+<ol>
+<li>自定义 Advisor, 比如权限校验、违禁词校验 Advisor</li>
+<li>自定义对话记忆, 比如持久化对话到 MySQL 或 Redis 存储中</li>
+<li>编写一套包含变量的 Prompt 模板, 并保存为资源文件, 从文件加载模板</li>
+<li>开发一个多模态对话助手, 能够让 AI 解释图片 (建议使用国内的 AI 大模型)</li>
+<li>阅读 Spring AI 官方的 ChatMemory 文档, 了解如何自主构建 ChatMemory</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2026/01/26/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/2.%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/">https://yuezi2048.github.io/2026/01/26/2.Areas🌐/临时记录/2.大模型应用开发/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/">临时记录</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/11/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/mybatis/17.Mybatis%E7%BC%BA%E7%82%B9/" title="17.Mybatis缺点"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">17.Mybatis缺点</div></div><div class="info-2"><div class="info-item-1">Mybtis 的缺点有以下几点： 1）半ORM：MyBatis 不会像全自动 ORM 框架（如 Hibernate）那样自动生成 SQL 语句， 对于一些简单的查询修改操作，也需要自己写 SQL，增加了工作量。 2）大量XML维护：对大型项目来说，可能需要大量的 xml 文件，会导致配置的复杂性和维护的困难。 3）SQL无法自动生成：因为 MyBatis 缺乏 SQL 自动能力，因此维护成本会高一些，例如修改了表结构或字段名或迁移了数据库，都需要手动修改相应的 SQL，还容易漏改。 </div></div></div></a><a class="pagination-related" href="/2026/01/26/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/1.%E5%A4%A7%E6%A8%A1%E5%9E%8B%E6%8E%A5%E5%85%A5%E6%96%B9%E6%A1%88/" title="1.大模型接入方案"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">1.大模型接入方案</div></div><div class="info-2"><div class="info-item-1">来源：大模型接入 相关文档 ai知识库学习  主流的AI库  lanchain4j文档 支持的模型 整合了国产模型的社区版本   springAI文档 支持的模型   springAI Alibaba文档 使用Spring AI Alibaba集成阿里云百炼大模型应用    AI接入服务：  阿里云百炼：可视化平台（智能体、工作流、智能体编排） 应用调用文档 dashScope(灵积)：API接口   ollama本地部署  AI客户端：  cherry studio cursor  大模型开发工作流	 程序如何交互大模型程序与大模型交互的实现思路（demo.invoke目录）：  SDK 依赖DashScope接入SDK——maven 平台申请API key 访问API：通义千问API参考   HTTP 有SDK优先SDK 设置API密钥、请求头、请求体 发送请求，处理响应   Spring AI  spring:  application:    name: spring-ai-alibaba-qwq-chat-client-example  ai:   ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/01/26/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/1.%E5%A4%A7%E6%A8%A1%E5%9E%8B%E6%8E%A5%E5%85%A5%E6%96%B9%E6%A1%88/" title="1.大模型接入方案"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-26</div><div class="info-item-2">1.大模型接入方案</div></div><div class="info-2"><div class="info-item-1">来源：大模型接入 相关文档 ai知识库学习  主流的AI库  lanchain4j文档 支持的模型 整合了国产模型的社区版本   springAI文档 支持的模型   springAI Alibaba文档 使用Spring AI Alibaba集成阿里云百炼大模型应用    AI接入服务：  阿里云百炼：可视化平台（智能体、工作流、智能体编排） 应用调用文档 dashScope(灵积)：API接口   ollama本地部署  AI客户端：  cherry studio cursor  大模型开发工作流	 程序如何交互大模型程序与大模型交互的实现思路（demo.invoke目录）：  SDK 依赖DashScope接入SDK——maven 平台申请API key 访问API：通义千问API参考   HTTP 有SDK优先SDK 设置API密钥、请求头、请求体 发送请求，处理响应   Spring AI  spring:  application:    name: spring-ai-alibaba-qwq-chat-client-example  ai:   ...</div></div></div></a><a class="pagination-related" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-27</div><div class="info-item-2">3.RAG</div></div><div class="info-2"><div class="info-item-1">使用RAG（Retrieval Augmentation Generation 检索增强生成）的需求分析：  知识扩展，给出更精准的回答  减小幻觉  个性化输出：特色服务和回答风格  推销：推销我们的产品和服务   工作机制概览  文档收集和切割  向量转换和存储  文档过滤和检索  查询增强和关联    文档收集与切割 收集的来源：网页、PDF、数据库等原始文档 预处理：清洗、标准化格式 切割：长文档划分为适当的片段（chunks） 基于固定大小（如512token） 基于语义边界（段落 章节） 基于递归分割策略（递归字符 n-gram）    向量转换和存储向量转换：将文本通过Embedding模型转化为高维向量，可捕获到语义特征 向量存储：存入向量数据库，支持相似度搜索   embedding 经典的有Word2Vec文本、ResNet图像，一般纬度越高语义信息越丰富但占用空间越多 向量数据库：存储向量的数据库，支持索引算法快速相似度搜索，支持k近邻查询（注：传统数据库也可以支持，如PGVector插件，Redis...</div></div></div></a><a class="pagination-related" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-30</div><div class="info-item-2">4.RAG进阶</div></div><div class="info-2"><div class="info-item-1">我们先前已经了解RAG的整体工作流程，为了生成更加定制化的内容，现在要进行一些细节的RAG学习 	  RAG进阶学习文档收集与切割（ETL）ETLSpringAI-ETL ETL中的文档实际上不局限于文本，还有一系列的元信息MetaData、多媒体附件MediaContent 		  而针对于ETL，遵循一定的流程，对应着三大组件：  读取文档：DocumentReader负责从数据源加载文档 转换文档：根据需求将文档处理为指定的格式（如去除冗余信息、分词、词性标注等），可通过DocumentTransformer实现 写入文档：DocumentWriter将文档以特定格式保存到存储中，如以嵌入向量的形式写入向量数据库，或者通过k-v键值对保存到Redis等数据库中      Extract_DocumentReader实现了Supplier函数式接口，从数据源中得到Document集合 public interface DocumentReader extends Supplier&lt;List&lt;Document&gt;&gt; &#123;    default...</div></div></div></a><a class="pagination-related" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-31</div><div class="info-item-2">5.工具调用</div></div><div class="info-2"><div class="info-item-1">具体内容包括: • 工具调用介绍 • Spring AI 工具开发 • 主流工具开发 • 文件操作 • 联网搜索 • 网页抓取 • 终端操作 • 资源下载 • PDF 生成 • 工具进阶知识 (原理和高级特性) 需求分析：现在通过RAG技术让AI可以根据外部知识库获取信息回答的能力，但是可能需要一些外部工具的场景：  联网搜索：如智能推荐约会地点（如cursor的联网搜索，阿里云百炼API也提供该选项支持） 网页抓取：如查看百度贴吧其他吧友是怎么解决情感问题的 资源下载：下载约会时的钢琴曲 终端操作：Python生成恋爱分析报告 文件操作：保存恋爱档案 PDF生成：生成七夕约会计划PDF，餐厅预订-活动流程-礼物清单   以上工具可进行组合搭配使用。让ai不再是简单的问答系统，而是能完成任务的智能体  工具调用 Tool Calling目的：让AI来使用外部工具完成自己做不到的事情，如查询天气，AI本身没有这些知识，但是可以通过联网搜索来完成任务 官方文档 工具调用支持的模型 工具调用的流程：  工具定义: 程序告诉 AI “你可以使用这些工具”,...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Prompt%E5%B7%A5%E7%A8%8B"><span class="toc-text">Prompt工程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Prompt%E5%88%86%E7%B1%BB"><span class="toc-text">Prompt分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E7%A4%BA%E8%AF%8D%E4%BC%98%E5%8C%96"><span class="toc-text">提示词优化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90"><span class="toc-text">需求分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88"><span class="toc-text">系统实现方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E6%8F%90%E7%A4%BA%E8%AF%8D%E8%AE%BE%E8%AE%A1"><span class="toc-text">系统提示词设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E8%BD%AE%E5%AF%B9%E8%AF%9D"><span class="toc-text">多轮对话</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#chatClient%E7%89%B9%E6%80%A7"><span class="toc-text">chatClient特性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Advisors"><span class="toc-text">Advisors</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E5%8E%9F%E7%90%86"><span class="toc-text">执行原理</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#ChatMemoryAdvisor"><span class="toc-text">ChatMemoryAdvisor</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%AE%9E%E7%8E%B0%E5%8F%8A%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="toc-text">应用实现及单元测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SpringAI%E6%8B%93%E5%B1%95"><span class="toc-text">SpringAI拓展</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89Advisor"><span class="toc-text">自定义Advisor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E5%8C%96%E8%BE%93%E5%87%BA"><span class="toc-text">结构化输出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E8%AF%9D%E8%AE%B0%E5%BF%86%E6%8C%81%E4%B9%85%E5%8C%96"><span class="toc-text">对话记忆持久化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PromptTemplate%E6%A8%A1%E6%9D%BF"><span class="toc-text">PromptTemplate模板</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E6%A8%A1%E6%80%81"><span class="toc-text">多模态</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

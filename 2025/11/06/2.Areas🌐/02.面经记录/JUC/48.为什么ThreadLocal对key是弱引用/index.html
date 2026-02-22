@@ -1,0 +1,234 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>48.为什么ThreadLocal对key是弱引用 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="key弱引用的目的：防止内存泄露。具体来说，当不再需要的线程强引用ThreadLocal实例时，线程结束后，对应的数据可能无法回收（比如线程池复用线程的情况）。 那么弱引用就可以允许在内存不足的时候GC，只要没有强引用指向ThreadLocal实例，就可以被及时回收。  追问：不用的线程回收不就好了？这样强引用没了不就可以自动回收了吗？ 理论上确实是对的，问题就在于我们一般会用线程池来复用线程（生">
+<meta property="og:type" content="article">
+<meta property="og:title" content="48.为什么ThreadLocal对key是弱引用">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/11/06/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JUC/48.%E4%B8%BA%E4%BB%80%E4%B9%88ThreadLocal%E5%AF%B9key%E6%98%AF%E5%BC%B1%E5%BC%95%E7%94%A8/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="key弱引用的目的：防止内存泄露。具体来说，当不再需要的线程强引用ThreadLocal实例时，线程结束后，对应的数据可能无法回收（比如线程池复用线程的情况）。 那么弱引用就可以允许在内存不足的时候GC，只要没有强引用指向ThreadLocal实例，就可以被及时回收。  追问：不用的线程回收不就好了？这样强引用没了不就可以自动回收了吗？ 理论上确实是对的，问题就在于我们一般会用线程池来复用线程（生">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-11-06T14:14:53.000Z">
+<meta property="article:modified_time" content="2025-11-06T14:14:53.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="JUC">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "48.为什么ThreadLocal对key是弱引用",
+  "url": "https://yuezi2048.github.io/2025/11/06/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JUC/48.%E4%B8%BA%E4%BB%80%E4%B9%88ThreadLocal%E5%AF%B9key%E6%98%AF%E5%BC%B1%E5%BC%95%E7%94%A8/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-11-06T14:14:53.000Z",
+  "dateModified": "2025-11-06T14:14:53.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/11/06/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JUC/48.%E4%B8%BA%E4%BB%80%E4%B9%88ThreadLocal%E5%AF%B9key%E6%98%AF%E5%BC%B1%E5%BC%95%E7%94%A8/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '48.为什么ThreadLocal对key是弱引用',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">48.为什么ThreadLocal对key是弱引用</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">48.为什么ThreadLocal对key是弱引用</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-11-06T14:14:53.000Z" title="发表于 2025-11-06 22:14:53">2025-11-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-11-06T14:14:53.000Z" title="更新于 2025-11-06 22:14:53">2025-11-06</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/">02.面经记录</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JUC/">JUC</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>5分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>key弱引用的目的：<strong>防止内存泄露</strong>。具体来说，当不再需要的线程强引用ThreadLocal实例时，线程结束后，对应的数据可能无法回收（比如线程池复用线程的情况）。</p>
+<p>那么弱引用就可以允许在内存不足的时候GC，只要没有强引用指向ThreadLocal实例，就可以被及时回收。</p>
+<blockquote>
+<p>追问：不用的线程回收不就好了？这样强引用没了不就可以自动回收了吗？</p>
+<p>理论上确实是对的，问题就在于我们一般会用线程池来复用线程（生命周期相对于ThreadLocal要长很多）。所以他是不会被清理的，那么引用链就会保持。所以 <strong>key到ThreadLocal的引用需要弱化</strong>，保证即使线程复用，对应的Entry能及时清理。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f79657373696d6964612f63646e5f696d6167652f696d672f32303232303132333136353134362e706e67_mianshiya.png" alt="68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f79657373696d6964612f63646e5f696d6167652f696d672f32303232303132333136353134362e706e67.png"></p>
+<p>值得注意的是，栈中的ThreadLocal指向ThreadLocal对象是强引用，在GC的时候不会回收。当对应线程执行完了，栈帧弹出了就可以被回收，也这就是你说的这种强引用回收情况。</p>
+<p>追问：那既然你说key指向ThreadLocal的对象清除了，那value的值呢？不是还有内存泄露的问题吗？</p>
+<p> key 被回收了之后，会发生 Entry 中 key 为 null 的情况，因为有 Thread-&gt;ThreadLocalMap -&gt;Entry 这条强引用在，那么确实存在内存泄露问题。</p>
+<p>这也算是为了填一个坑又挖了一个新坑的场景了。那么开发者就是选择了把这个坑给填上去，他在多个操作里会额外进行清理无用Entry的操作，比如查找Entry的时候，如果下标没有命中，会往后遍历数组，遇到key为null的，就会清理Entry，扩容的时候也是同理。</p>
+<p>追问：那为什么value就不能像key一样用弱引用呢？</p>
+<p>value一般是局部变量赋值，栈帧出栈后，value的引用就没了，那么GC一次后肯定就把value回收了。虽然是可以解决value的内存泄露问题，一次GC后value释放了的话，要用的时候根据key来找之后，value就没了。</p>
+<p>（key的话他是基于线程HashCode【原子累加计算的】， 那么GC回收掉的就是我不需要的线程，也就回到了最开始的回答，这样逻辑就闭环了，也很清晰）</p>
+</blockquote>
+<h2 id="扩展知识"><a href="#扩展知识" class="headerlink" title="扩展知识"></a>扩展知识</h2><h3 id="详细分析"><a href="#详细分析" class="headerlink" title="详细分析"></a>详细分析</h3><p>那为什么要这样设计呢？</p>
+<p>假设 Entry 对 key 的引用是强引用，那么来看一下这个引用链：</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f79657373696d6964612f63646e5f696d6167652f696d672f32303232303132333136353133362e706e67_mianshiya.png" alt="68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f79657373696d6964612f63646e5f696d6167652f696d672f32303232303132333136353133362e706e67.png">	</p>
+<p>从这条引用链可以得知，如果线程一直在，那么相关的 ThreadLocal 对象肯定会一直在，因为它一直被强引用着。</p>
+<p>看到这里，可能有人会说那线程被回收之后就好了呀。</p>
+<p>重点来了！线程在我们应用中，常常是以线程池的方式来使用的，比如 Tomcat 的线程池处理了一堆请求，而线程池中的线程一般是不会被清理掉的，所以这个引用链就会一直在，那么 ThreadLocal 对象即使没有用了，也会随着线程的存在，而一直存在着！</p>
+<p>所以这条引用链需要弱化一下，而能操作的只有 Entry 和 key 之间的引用，所以它们之间用弱引用来实现。</p>
+<p>与之对应的还有一个条引用链，我结合着上面的线程引用链都画出来：</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f79657373696d6964612f63646e5f696d6167652f696d672f32303232303132333136353134362e706e67_mianshiya.png" alt="68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f79657373696d6964612f63646e5f696d6167652f696d672f32303232303132333136353134362e706e67.png"></p>
+<p>另一条引用链就是栈上的 ThreadLocal 引用指向堆中的 ThreadLocal 对象，这个引用是强引用。</p>
+<p>如果有这条强引用存在，那说明此时的 ThreadLocal 是有用的，此时如果发生 GC 则 ThreadLocal 对象不会被清除，因为有个强引用存在。</p>
+<p>当随着方法的执行完毕，相应的栈帧也出栈了，此时这条强引用链就没了，如果没有别的栈有对 ThreadLocal 对象的引用，那么说明 ThreadLocal 对象无法再被访问到(定义成静态变量的另说)。</p>
+<p>那此时 ThreadLocal 只存在与 Entry 之间的弱引用，那此时发生 GC 它就可以被清除了，因为它无法被外部使用了，那就等于没用了，是个垃圾，应该被处理来节省空间。</p>
+<p>至此，想必你已经明白为什么 Entry 和 key 之间要设计为弱引用，就是因为平日线程的使用方式基本上都是线程池，所以线程的生命周期就很长，可能从你部署上线后一直存在，而 ThreadLocal 对象的生命周期可能没这么长。</p>
+<p>所以为了能让已经没用 ThreadLocal 对象得以回收，所以 Entry 和 key 要设计成弱引用，不然 Entry 和 key 是强引用的话，ThreadLocal 对象就会一直在内存中存在。</p>
+<p>但是这样设计就可能产生内存泄漏。</p>
+<p>那什么叫<strong>内存泄漏</strong>？就是指：程序中已经无用的内存无法被释放，造成系统内存的浪费。</p>
+<p>当 Entry 中的 key 即 ThreadLocal 对象被回收了之后，会发生 Entry 中 key 为 null 的情况，其实这个 Entry 就已经没用了，但是又无法被回收，因为有 Thread-&gt;ThreadLocalMap -&gt;Entry 这条强引用在，这样没用的内存无法被回收就是内存泄露。</p>
+<blockquote>
+<p>那既然会有内存泄漏还这样实现？</p>
+</blockquote>
+<p>设计者当然知道会出现这种情况，所以在多个地方都做了清理无用 Entry ，即 key 已经被回收的 Entry 的操作。</p>
+<p>比如通过 key 查找 Entry 的时候，如果下标无法直接命中，那么就会向后遍历数组，此时遇到 key 为 null 的 Entry 就会清理掉，再贴一下这个方法：</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f79657373696d6964612f63646e5f696d6167652f696d672f32303232303132333136353135352e706e67_mianshiya.png" alt="68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f79657373696d6964612f63646e5f696d6167652f696d672f32303232303132333136353135352e706e67.png"></p>
+<p>这个方法也很简单，我们来看一下它的实现：</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f79657373696d6964612f63646e5f696d6167652f696d672f32303232303132333136353230362e706e67_mianshiya.png" alt="68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f79657373696d6964612f63646e5f696d6167652f696d672f32303232303132333136353230362e706e67.png"></p>
+<p>所以在查找 Entry 的时候，就会顺道清理无用的 Entry ，这样就能防止一部分的内存泄露啦！</p>
+<p>还有像扩容的时候也会清理无用的 Entry：</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f79657373696d6964612f63646e5f696d6167652f696d672f32303232303132333136353231392e706e67_mianshiya.png" alt="68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f79657373696d6964612f63646e5f696d6167652f696d672f32303232303132333136353231392e706e67.png"></p>
+<p>其它还有，我就不贴了，反正知晓设计者是做了一些操作来回收无用的 Entry 的即可。</p>
+<h3 id="如果将-value-也设置为弱引用，是否可以防止内存泄漏？"><a href="#如果将-value-也设置为弱引用，是否可以防止内存泄漏？" class="headerlink" title="如果将 value 也设置为弱引用，是否可以防止内存泄漏？"></a>如果将 value 也设置为弱引用，是否可以防止内存泄漏？</h3><p>答案肯定是可以的。value 一般都是局部变量赋值，栈帧出栈后，局部变量的强引用没了，如果 Entry 对其是弱引用，那么发生一次 gc 后 value 就被回收了，肯定没内存泄漏问题。</p>
+<p>但是一次 gc 就没了，等用到的时候不就找不到 value 了？<strong>所以 value 不能被设置为弱引用</strong>。</p>
+<h3 id="强引用、软引用、弱引用和虚引用"><a href="#强引用、软引用、弱引用和虚引用" class="headerlink" title="强引用、软引用、弱引用和虚引用"></a>强引用、软引用、弱引用和虚引用</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://www.mianshiya.com/question/1780933295211573249">532. Java 中的强引用、软引用、弱引用和虚引用分别是什么？</a></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/11/06/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JUC/48.%E4%B8%BA%E4%BB%80%E4%B9%88ThreadLocal%E5%AF%B9key%E6%98%AF%E5%BC%B1%E5%BC%95%E7%94%A8/">https://yuezi2048.github.io/2025/11/06/2.Areas🌐/02.面经记录/JUC/48.为什么ThreadLocal对key是弱引用/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/JUC/">JUC</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/11/06/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JUC/49.ThreadLock%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" title="49.ThreadLock最佳实践"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">49.ThreadLock最佳实践</div></div><div class="info-2"><div class="info-item-1"> 避免滥用ThreadLocal：适合每个线程维护独立副本的场景（数据库连接 用户会话 事务上下文 临时缓存） 能通过参数传递的上下文信息，就不需要使用ThreadLocal处理，避免不合理的设计和差可读性   避免内存泄露：虽然ThreadLocal的key是弱引用，但value仍是强引用，这需要在合适的时机调用remove方法清除ThreadLocal的值，避免内存泄露（特别是线程池的情况，线程会被重用） 使用静态变量存放ThreadLocal：通过类的静态变量保存，可以保证同一个线程局部变量在生命周期内都可以访问到，避免对象的频繁创建 合理的生命周期：使用ThreadLocal完成后及时释放，避免由于线程未结束导致资源浪费（尤其是长时间服务&#x2F;线程池情况，任务结束后要及时清理ThreadLocal变量）   注意：如Tomcat会隐式创建线程池，所以会出现线程复用的情况，所以及时释放的操作很有必要。  扩展知识合理初始化 ThreadLocal使用 ThreadLocal 时，可以通过重写 initialValue() 方法来提供默认值，这样可以避免在第一次调用...</div></div></div></a><a class="pagination-related" href="/2025/11/06/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JUC/50.InheritableThreadLocal%E6%98%AF%E4%BB%80%E4%B9%88/" title="50.InheritableThreadLocal是什么"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">50.InheritableThreadLocal是什么</div></div><div class="info-2"><div class="info-item-1">InheritableThreadLocal 是ThreadLocal一个拓展，用于线程创建时将父线程的ThreadLocal变量副本传递给子线程，使得子线程可以访问到父线程的本地变量。解决了 ThreadLocal 无法在子线程中继承父线程本地变量的问题。 工作原理：  当创建子线程时，InheritableThreadLocal 的值会被自动拷贝到子线程中。 子线程可以修改自己的副本，但不会影响父线程的值。   InheritableThreadLocal有一个缺陷，在线程池的预创建场景下，调用的时候无法直接使用，引出阿里的TransmittableThreadLocal。大致思想是：从线程池获取到ThreadLocal，复制ThreadLocal，holder变量维护本地变量。finally提交的时候把本地数据复原，防止内存泄露使用弱引用。  扩展知识源码分析原理其实很简单，在 Thread 中已经包含了这个成员：  在父线程创建子线程的时候，子线程的构造函数可以得到父线程，然后判断下父线程的 InheritableThreadLocal...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/11/03/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JUC/1.Java%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" title="1.Java线程同步"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-03</div><div class="info-item-2">1.Java线程同步</div></div><div class="info-2"><div class="info-item-1">线程同步：在多线程环境下，为了避免多个线程对共享资源（变量 对象 文件等）进行访问，从而引发数据不一致等问题（因为线程对共享资源非原子性操作）的机制。具体是通过对关键代码加锁，使得同一时刻只有持有锁的线程能访问共享资源。  常见线程同步的方式：  synchronized ：wait、notify、notifyAll ReentrantLock：await、signal、signalall（配合Condition对象使用） 其他同步类 CountDownLatch CyclicBarrier Semaphore     扩展知识Java 中常见的同步方式synchronizedJava 提供的加锁关键字，用于在方法或代码块上加锁，以确保同一时刻只有一个线程能够执行被同步的方法或代码块。 在 synchronized 可以使用 wait()、notify() 和 notifyAll()...</div></div></div></a><a class="pagination-related" href="/2025/11/03/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JUC/10.%E5%B9%B6%E5%8F%91%E5%BA%93%E6%8F%90%E4%BE%9B%E4%BA%86%E5%93%AA%E4%BA%9B%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%AE%9E%E7%8E%B0_%E5%8C%BA%E5%88%AB/" title="10.并发库提供了哪些线程池实现_区别"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-03</div><div class="info-item-2">10.并发库提供了哪些线程池实现_区别</div></div><div class="info-2"><div class="info-item-1">Java 并发库中提供了 5 种常见的线程池实现，主要通过 Executors...</div></div></div></a><a class="pagination-related" href="/2025/11/03/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JUC/11.%E7%BA%BF%E7%A8%8B%E6%A0%B8%E5%BF%83%E6%95%B0%E8%BF%90%E8%A1%8C%E6%97%B6%E5%A6%82%E4%BD%95%E4%BF%AE%E6%94%B9/" title="11.线程核心数运行时如何修改"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-03</div><div class="info-item-2">11.线程核心数运行时如何修改</div></div><div class="info-2"><div class="info-item-1">线程核心数支持动态修改。Java 的 ThreadPoolExecutor 提供了动态调整核心线程数和最大线程数的方法ThreadPoolExecutor.setCorePoolSize(int corePoolSize)。corePoolSize表示线程池的核心线程数。  注：  如果此时核心线程数大于池中线程数，则会在线程池运行过程中创建新的核心线程并修改生效，这个过程不会中断当前线程 同时也可以减少核心线程数，但如果当前线程池中的线程数量超过了新的核心线程数，多余的线程不会立即被销毁，直到这些线程空闲后被回收。  补充：可以设计一个管理接口来调用 setCorePoolSize() 方法，这样就可以在程序运行期间通过外部请求动态调整线程池的核心线程数，也可以添加中间件 Apollo 结合起来构建动态线程池，类似nacos动态修改配置  扩展知识：核心线程数和最大线程数的区别： 核心线程数 (corePoolSize)：线程池会维持这个数量的线程，即使这些线程是空闲的。当有新任务提交时，如果现有线程小于核心线程数，会直接创建新的线程来处理任务。 最大线程数...</div></div></div></a><a class="pagination-related" href="/2025/11/03/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JUC/12.%E7%BA%BF%E7%A8%8B%E6%B1%A0shutdown%E5%92%8Cshutdownnow/" title="12.线程池shutdown和shutdownnow"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-03</div><div class="info-item-2">12.线程池shutdown和shutdownnow</div></div><div class="info-2"><div class="info-item-1">shutdown() 和 shutdownNow()...</div></div></div></a><a class="pagination-related" href="/2025/11/03/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JUC/13.%E5%86%85%E9%83%A8%E4%BB%BB%E5%8A%A1%E5%87%BA%E5%BC%82%E5%B8%B8%E5%A6%82%E4%BD%95%E6%8E%92%E6%9F%A5%E6%98%AF%E5%93%AA%E4%B8%AA%E7%BA%BF%E7%A8%8B/" title="13.内部任务出异常如何排查是哪个线程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-03</div><div class="info-item-2">13.内部任务出异常如何排查是哪个线程</div></div><div class="info-2"><div class="info-item-1">默认线程池不会报告哪个线程出现异常，一般可以手动通过打日志信息来判断，具体方法： 1）自定义线程池的 ThreadFactory + 异常处理器 ：  通过自定义 ThreadFactory，为每个线程设置一个异常处理器（UncaughtExceptionHandler），在其中记录发生异常的线程信息。  2）使用 Future：  提交任务时使用 submit() 方法，而不是 execute()，这样可以通过 Future 对象捕获并检查任务的执行结果和异常。  3）任务内部手动捕获异常并记录：  在任务的 run() 方法内部，使用 try-catch 结构捕获异常，并记录或处理异常，同时记录线程信息。   追问：既然你提到了线程池中的异常，那线程池中的线程在执行任务的时候，抛异常了，线程池如何处置这些线程？  如果使用 execute()...</div></div></div></a><a class="pagination-related" href="/2025/11/04/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JUC/14.%20DelayQueue%20%E5%92%8C%20ScheduledThreadPool%20%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB/" title="14. DelayQueue 和 ScheduledThreadPool 有什么区别"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-04</div><div class="info-item-2">14. DelayQueue 和 ScheduledThreadPool 有什么区别</div></div><div class="info-2"><div class="info-item-1">DelayQueue是阻塞队列，ScheduledThreadPool 是线程池：  DelayQueue是基于优先队列存储元素 插入元素：插入元素，如果这个元素是需要最需要执行的任务，则通过condition 的 signal 唤醒其他线程立马处理该元素 获取元素：取出最老的任务，如果到了执行时间，则出队，反之就返回null，或者阻塞等待任务超时   ScheduleThreadPool内部是基于DelayedWorkQueue，实现底层都是优先队列，支持多线程执行任务，定时任务（每隔一段执行）  扩展DelayQueue 源码分析首先，DelayQueue 中存储的所有元素必须实现 Delayed 接口，内部使用了优先级队列来存储元素，PriorityQueue 能保证优先级最高的元素优先出队。  添加元素在添加元素的时候，会利用 ReentrantLock 上锁，实现添加元素的并发安全：  q.peek() 会返回优先级队列中最小的元素，这里的最小指的是延迟时间最短，最快需要执行的元素。 如果这个元素就是刚插入的元素，说明这个元素可能需要马上执行，因此立马通过...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A9%E5%B1%95%E7%9F%A5%E8%AF%86"><span class="toc-text">扩展知识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90"><span class="toc-text">详细分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E5%B0%86-value-%E4%B9%9F%E8%AE%BE%E7%BD%AE%E4%B8%BA%E5%BC%B1%E5%BC%95%E7%94%A8%EF%BC%8C%E6%98%AF%E5%90%A6%E5%8F%AF%E4%BB%A5%E9%98%B2%E6%AD%A2%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%EF%BC%9F"><span class="toc-text">如果将 value 也设置为弱引用，是否可以防止内存泄漏？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%BA%E5%BC%95%E7%94%A8%E3%80%81%E8%BD%AF%E5%BC%95%E7%94%A8%E3%80%81%E5%BC%B1%E5%BC%95%E7%94%A8%E5%92%8C%E8%99%9A%E5%BC%95%E7%94%A8"><span class="toc-text">强引用、软引用、弱引用和虚引用</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>5.编译执行和解释执行 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="编译执行：程序执行之前，编译器将源代码直接编译为机器码，然后在CPU上运行 优势：编译后速度快，机器代码针对目标平台直接生成，不需要运行时再编译 缺点：对每个平台必须重新编译，同时机器代码较难调试和逆向工程   解释执行：在运行时通过解释器逐行翻译并执行，Python Ruby等也是解释语言 优势：跨平台好，每个平台通过对应平台的解释器运行，开发周期更短 缺点：运行速度慢，每次执行时需要动态翻译">
+<meta property="og:type" content="article">
+<meta property="og:title" content="5.编译执行和解释执行">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/10/12/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JVM/5.%E7%BC%96%E8%AF%91%E6%89%A7%E8%A1%8C%E5%92%8C%E8%A7%A3%E9%87%8A%E6%89%A7%E8%A1%8C/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="编译执行：程序执行之前，编译器将源代码直接编译为机器码，然后在CPU上运行 优势：编译后速度快，机器代码针对目标平台直接生成，不需要运行时再编译 缺点：对每个平台必须重新编译，同时机器代码较难调试和逆向工程   解释执行：在运行时通过解释器逐行翻译并执行，Python Ruby等也是解释语言 优势：跨平台好，每个平台通过对应平台的解释器运行，开发周期更短 缺点：运行速度慢，每次执行时需要动态翻译">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-10-12T07:14:23.000Z">
+<meta property="article:modified_time" content="2025-10-12T07:14:23.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="JVM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "5.编译执行和解释执行",
+  "url": "https://yuezi2048.github.io/2025/10/12/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JVM/5.%E7%BC%96%E8%AF%91%E6%89%A7%E8%A1%8C%E5%92%8C%E8%A7%A3%E9%87%8A%E6%89%A7%E8%A1%8C/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-10-12T07:14:23.000Z",
+  "dateModified": "2025-10-12T07:14:23.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/10/12/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JVM/5.%E7%BC%96%E8%AF%91%E6%89%A7%E8%A1%8C%E5%92%8C%E8%A7%A3%E9%87%8A%E6%89%A7%E8%A1%8C/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '5.编译执行和解释执行',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">5.编译执行和解释执行</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">5.编译执行和解释执行</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-10-12T07:14:23.000Z" title="发表于 2025-10-12 15:14:23">2025-10-12</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-10-12T07:14:23.000Z" title="更新于 2025-10-12 15:14:23">2025-10-12</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/">02.面经记录</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JVM/">JVM</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">364</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>1分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><ul>
+<li>编译执行：程序执行之前，编译器将源代码直接编译为机器码，然后在CPU上运行<ul>
+<li>优势：编译后速度快，机器代码针对目标平台直接生成，不需要运行时再编译</li>
+<li>缺点：对每个平台必须重新编译，同时机器代码较难调试和逆向工程</li>
+</ul>
+</li>
+<li>解释执行：在运行时通过解释器逐行翻译并执行，Python Ruby等也是解释语言<ul>
+<li>优势：跨平台好，每个平台通过对应平台的解释器运行，开发周期更短</li>
+<li>缺点：运行速度慢，每次执行时需要动态翻译和解释</li>
+</ul>
+</li>
+<li>JVM使用的是<strong>编译执行 + 解释执行</strong> 混合的方式<ul>
+<li>解释执行：逐行结束时执行字节码，一般是初次运行时，有助于跨平台性。</li>
+<li>即时编译（Just-In-Time Compiler, JIT）：程序运行时将热代码编译为本地代码，避免反复解释，提升性能</li>
+</ul>
+</li>
+</ul>
+<p>通俗理解：编译执行时是直接翻译为中文，运行的时候直接看中文，解释执行时看一行理解一行的实时翻译模式。</p>
+<p>因此编译执行更快，但是解释执行的翻译兼容性更好。</p>
+<p><strong>JVM的逻辑是：正常情况解释执行，在热点代码通过JIT即时编译成机器码，进行编译执行。</strong></p>
+<p><strong>扩展</strong></p>
+<ul>
+<li>JIT（Just-In-Time）</li>
+<li>AOT（Ahead-Of Time）</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/10/12/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JVM/5.%E7%BC%96%E8%AF%91%E6%89%A7%E8%A1%8C%E5%92%8C%E8%A7%A3%E9%87%8A%E6%89%A7%E8%A1%8C/">https://yuezi2048.github.io/2025/10/12/2.Areas🌐/02.面经记录/JVM/5.编译执行和解释执行/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/JVM/">JVM</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/10/11/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/5.Session%E5%85%B1%E4%BA%AB%E5%88%86%E5%B8%83%E5%BC%8F%E7%99%BB%E5%BD%95/" title="5.Session共享分布式登录"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">5.Session共享分布式登录</div></div><div class="info-2"><div class="info-item-1">改造用户中心单机登录改为分布式session登录  spring security 可以有更细粒度的权限 注：用jwt其实也是有缺陷的：https://zhuanlan.zhihu.com/p/108999941（适合短期验证的场景） 我们使用技术要考虑需求和成本  为了演示分布式，打包项目，然后换一个端口运行后端 java -jar yupao-my-backend-0.0.1-SNAPSHOT.jar  server.port=8081  发现由于是同一个域名下，在另外一个项目运行后，sessionID会发生变化。  中session的时候要注意范围，cookie.domain（aaa.yupi.com和bbb.yupi.com）  特别注意：如果读不到内容，可能是由于域名的限制！！  如果要共享cookie，我们可以种一个更高层的公共域名，比如yupi.com 这里是设置只有localhost域名下可携带cookie server:  port: 8080  servlet:    context-path: /api    session:      cookie:  ...</div></div></div></a><a class="pagination-related" href="/2025/10/12/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JVM/6.JVM%E5%86%85%E5%AD%98%E5%88%92%E5%88%86/" title="6.JVM内存划分"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">6.JVM内存划分</div></div><div class="info-2"><div class="info-item-1">内存区域：方法区、堆、虚拟机栈、本地方法栈**、程序计数器**  方法区（Method Area）：类信息、常量、静态变量 属于线程共享区域，所有线程共享内存 JDK8前使用永久代（PermGen），JDK8之后使用元空间（MetaSpace），使用的是本地内存（Native Memory）   堆（Heap）：所有线程共享的对象、数组，是垃圾回收主要区域 虚拟机栈（JVM Stack）：每个线程创建一个栈，保存局部变量、操作数栈、动态连接、方法出口信息 局部变量表存储基本数据类型和对象引用 属于线程私有，生命周期跟线程相同 本地方法栈（Native Method Stack）：JNI调用的本地代码在此分配内存 属于线程私有   程序计数器（Program Counter Register）：保存当前线程字节码的地址&#x2F;行号 线程私有，每个线程有独立的计数器     注：JVM外还有一个直接内存（Direct...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/09/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JVM/1.%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95/" title="1.垃圾回收算法"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-27</div><div class="info-item-2">1.垃圾回收算法</div></div><div class="info-2"><div class="info-item-1">有三种GC方式  标记-清除算法 （Mark-Sweep）：遍历堆中对象，标记所有存活对象，然后清除未标记对象 优势：简单，能处理堆中所有对象 缺点：标记和清楚会产生内存碎片，影响内存分配效率   标记-整理算法 （Mark-Compact）：标记所有存活对象，将存活的放到一边，然后清除未标记对象 优势：解决了内存碎片问题 缺点：整理阶段移动对象引入了额外时间开销   标记-复制算法（...</div></div></div></a><a class="pagination-related" href="/2025/10/13/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JVM/10.%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98%EF%BC%88%E5%A0%86%E5%A4%96%E5%86%85%E5%AD%98%EF%BC%89/" title="10.直接内存（堆外内存）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-13</div><div class="info-item-2">10.直接内存（堆外内存）</div></div><div class="info-2"><div class="info-item-1">直接内存（Direct Memory）是操作系统分配的区域，不受JVM堆的内存管理限制（堆外内存）。  通过nio包的ByteBuffer.allocateDirect()方法分配的，绕过了JVM垃圾回收机制，直接与系统的内存交互  拓展 直接内存的优势：直接内存不需要在堆进行分配和复制，所以在操作系统的I&#x2F;O操作上，可以减少一次从堆到内存的复制操作，文件 &#x2F; 网络传输这些场景使用直接内存有优势。 性能优化策略：  缓存机制：缓存ByteBuffer.allocateDirect()分配的缓冲区，减少频繁内存分配 jVM参数：虽然堆外内存不受JVM限制，但可通过 -XX:MaxDirectMemorySize设置直接内存最大使用量  直接内存 vs...</div></div></div></a><a class="pagination-related" href="/2025/10/13/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JVM/11.Java%E5%B8%B8%E9%87%8F%E6%B1%A0/" title="11.Java常量池"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-13</div><div class="info-item-2">11.Java常量池</div></div><div class="info-2"><div class="info-item-1">常量池是存储运行时常量 &#x2F; 符号的区域，他有两块：  运行时常量池：每个类&#x2F;接口的class编译生成的常量信息，通过类加载进入JVM方法区（JDK8是MetaSpace，之前是PermGen永久代） 字符串常量池：存储字符串，通过String类的intern方法可以将字符串加入字符串常量池或者已经存在的化，获取对应常量池引用（JDK7及以后字符串常量池在堆中，之前是和运行时常量池在一块）  拓展 创建字符串：  String s &#x3D; “hello”，存储在常量池中 String s &#x3D; new String(“hello”)，无论是否常量池有hello，堆中必创建该String对象实例  运行时常量池的内容：  基本数据类型字面量 类和接口引用 方法&#x2F;字段的符号引用（用于动态连接）  intern方法：将字符串加入字符串常量中，如果池中已存在，则返回池引用，否则就加入 String str1 = new String(&quot;abc&quot;);String str2 =...</div></div></div></a><a class="pagination-related" href="/2025/10/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JVM/12.%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/" title="12.类加载器"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-14</div><div class="info-item-2">12.类加载器</div></div><div class="info-2"><div class="info-item-1">类加载器ClassLoader是JVM动态加载类的组件，将.class文件字节码加载到内存中，并转换成class对象，以供JVM执行。 具体地：  动态加载类：运行时根据需要加载类，而不是在编译时加载所有类 隔离类命名空间：通过不同类加载器，隔离同名类，使得不会相互冲突  	  扩展  启动类加载器BootStrap ClassLoader:  基于C++（JDK9之后是java）实现，是根加载类 加载&lt;JAVA_HOME&gt;\lib目录 &#x2F; 被 -Xbootclasspath指定路径中被虚拟机识别的文件   扩展类加载器Extension ClassLoader： 独立于JVM，基于java实现 加载&lt;JAVA_HOME&gt;\lib\ext目录 &#x2F; 被java.ext.dirs系统变量指定的路径类库 JDK9后，原先的rt.jar等拆成了jmod文件，引入模块化机制，此时去除了而ext目录，重命名为平台类加载器PlantClassLoader，加载module-info.java定义的类   应用程序类加载器Application...</div></div></div></a><a class="pagination-related" href="/2025/10/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JVM/13.JIT(Just-In-Time)/" title="13.JIT(Just-In-Time)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-14</div><div class="info-item-2">13.JIT(Just-In-Time)</div></div><div class="info-2"><div class="info-item-1">JIT（即时编译）：在程序运行时将字节码转换成字节码的技术，因为是在程序运行时进行，因此叫Just-In-Time  当java发现热点代码时，就会将该代码编译成机器码，减少解释执行的开销，使得更接近本地代码的性能  拓展  热点代码：是JIT重点优化热点代码（多次调用&#x2F;循环执行的代码），通过分析代码执行频率，JIT可以识别这些热点并优化编译 具体优化编译技术：方法内联（Inlining）、逃逸分析（Escape Analysis）、循环展开（Loop Unrolling）    JIT编译类型：  C1（Client Compiler）：客户端应用程序，适合快速启动的轻量级的优化 C2（Server Compiler）：服务端应用程序，适合长时间运行的重度优化  JiT调优：-XX:+PrintComplation输出编译信息，-XX:TieredStopAtLevel控制JIT编译级别等，实现在启动时间和运行性能之间的平衡。  拓展：AOT  </div></div></div></a><a class="pagination-related" href="/2025/10/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JVM/14.JIT%E7%BC%96%E8%AF%91%E5%90%8E%E4%BB%A3%E7%A0%81%E6%94%BE%E5%9C%A8%E5%93%AA/" title="14.JIT编译后代码放在哪"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-14</div><div class="info-item-2">14.JIT编译后代码放在哪</div></div><div class="info-2"><div class="info-item-1">JIT编译后的机器码在Code Cache（代码缓存区 不是在堆内） JVM提供参数调整Code Cache起始大小、最大大小等  -XX:InitialCodeCacheSize -XX:ReservedCodeCacheSize -XX:+PrintCodeCache Code Cache编译信息  拓展 code cache有以下特点：  固定大小：大小由JVM配置（有最大值），默认大小依赖JVM版本和运行环境（HotSpot JVM在java8默认是48MB） 分层结构：Java8引入分层编译（Tiered Compilation）机制，Code Cache分成多个区域，存储不同级别的编译代码： 非方法代码（Non-method Code）：JVM调试代码 &#x2F; 模板代码 方法代码（Method Code）：存储普通JIT编译代码 轮廓代码（Profile Code）：优化级别更高的代码    查看本地的Code Cache配置 (base) ljy@TP-T480S:~$ java -XX:+PrintFlagsFinal -version | grep...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

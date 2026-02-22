@@ -1,0 +1,252 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>8.hash | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="hash是键值对，将多个字段和值存储在一个键中，便于管理关联数据 适合：  存储小数据，使用哈希表实现，在内存中高效存储和操作 支持快速字段crud操作，非常适合对象树形  场景：  在鱼泡项目中，我使用到了session共享分布式登录，通过spring-session-data-redis依赖，只需通过少量配置和session的原生操作就能自动将session的登录态键对应信息推到了redis的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="8.hash">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/10/12/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Redis/8.hash/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="hash是键值对，将多个字段和值存储在一个键中，便于管理关联数据 适合：  存储小数据，使用哈希表实现，在内存中高效存储和操作 支持快速字段crud操作，非常适合对象树形  场景：  在鱼泡项目中，我使用到了session共享分布式登录，通过spring-session-data-redis依赖，只需通过少量配置和session的原生操作就能自动将session的登录态键对应信息推到了redis的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-10-12T09:42:32.000Z">
+<meta property="article:modified_time" content="2025-10-12T09:42:32.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "8.hash",
+  "url": "https://yuezi2048.github.io/2025/10/12/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Redis/8.hash/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-10-12T09:42:32.000Z",
+  "dateModified": "2025-10-12T09:42:32.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/10/12/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Redis/8.hash/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '8.hash',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">8.hash</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">8.hash</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-10-12T09:42:32.000Z" title="发表于 2025-10-12 17:42:32">2025-10-12</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-10-12T09:42:32.000Z" title="更新于 2025-10-12 17:42:32">2025-10-12</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/">02.面经记录</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Redis/">Redis</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>3分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>hash是键值对，将多个字段和值存储在一个键中，便于管理关联数据</p>
+<p>适合：</p>
+<ul>
+<li>存储小数据，使用哈希表实现，在内存中高效存储和操作</li>
+<li>支持快速字段crud操作，非常适合对象树形</li>
+</ul>
+<p>场景：</p>
+<ul>
+<li>在鱼泡项目中，我使用到了session共享分布式登录，通过spring-session-data-redis依赖，只需通过少量配置和session的原生操作就能自动将session的登录态键对应信息推到了redis的存储桶上，实现分布式系统共享session的需求</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20251013185054198.png" alt="image-20251013185054198"></p>
+<p><strong>扩展</strong></p>
+<ul>
+<li>HSET：<code>HSET user:1001 name &quot;mianshiya&quot;</code></li>
+<li>HGET：<code>HGET user:1001 name</code></li>
+<li>HMSET：<code>HMSET user:1001 name &quot;mianshiya&quot; age &quot;18&quot; city &quot;shanghai&quot;</code></li>
+<li>HMGET：<code>HMGET user:1001 name age</code></li>
+<li>HDEL：<code>HDEL user:1001 age</code>  删除一个或多个字段</li>
+<li>HINCRBY：<code>HINCRBY user:1001 age 1</code> 自增整数值</li>
+</ul>
+<h3 id="Hash底层"><a href="#Hash底层" class="headerlink" title="Hash底层"></a>Hash底层</h3><p>hash支持redis存储2^32-1个键值对（40亿），底层结构有两种：</p>
+<ul>
+<li>Redis6.0前，<strong>zipList + hashTable</strong></li>
+<li>Redis6.0后，<strong>ListPack + hashTable</strong></li>
+</ul>
+<blockquote>
+<ul>
+<li>zipList和listpack查找key效率类似，O(n)，区别在于listpack解决了<strong>级联更新</strong>的问题（注：redis7.0考虑到兼容性，并没有删除zipList）</li>
+<li>使用ziplist &#x2F; hashTable条件：hash-max-listpack-entries（ziplist），hash-max-listpack-value（ziplist）对应键的个数（512）和字段名 &#x2F; 字段值长度（64），小于这两个值，则使用listpack&#x2F;ziplist，否则使用hashtable</li>
+<li>转换成hashtable后，没有退化机制</li>
+<li>默认的entries和value长度限制参数可修改</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20251013185945377.png" alt="image-20251013185945377"></p>
+</blockquote>
+<h3 id="聊聊redis的HashTable"><a href="#聊聊redis的HashTable" class="headerlink" title="聊聊redis的HashTable"></a>聊聊redis的HashTable</h3><p>底层结构为：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictht</span> &#123;</span></span><br><span class="line">    <span class="comment">//哈希表数组</span></span><br><span class="line">    dictEntry **table;</span><br><span class="line">    <span class="comment">//哈希表大小</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> size;  </span><br><span class="line">    <span class="comment">//哈希表大小掩码，用于计算索引值</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> sizemask;</span><br><span class="line">    <span class="comment">//该哈希表已有的节点数量</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> used;</span><br><span class="line">&#125; dictht;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>table：存数据的载体，是由哈希节点（<code>dictEntry</code>）组成的<code>数组</code>（理解为java外面包装了mask和used参数）</li>
+<li>size</li>
+<li>sizemask：哈希表大小掩码，恒为size-1，可求得索引位置：hash值 &amp; sizemask</li>
+<li>used：使用的节点数量</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20251013190028757.png" alt="image-20251013190028757"></p>
+<p>来到dictEntry内部：可以看到value是一个union联合体，可以指向指针、64位无符号整数、整数、double，设计目的就是为了节省内存空间，整数&#x2F;浮点数可以直接将值存在哈希节点中，不用指针指向，可以节省空间（jvm栈 方法区类比）</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span> &#123;</span></span><br><span class="line">    <span class="comment">//键值对中的键</span></span><br><span class="line">    <span class="type">void</span> *key;</span><br><span class="line">  </span><br><span class="line">    <span class="comment">//键值对中的值</span></span><br><span class="line">    <span class="class"><span class="keyword">union</span> &#123;</span></span><br><span class="line">        <span class="type">void</span> *val;</span><br><span class="line">        <span class="type">uint64_t</span> u64;</span><br><span class="line">        <span class="type">int64_t</span> s64;</span><br><span class="line">        <span class="type">double</span> d;</span><br><span class="line">    &#125; v;</span><br><span class="line">    <span class="comment">//指向下一个哈希表节点，形成链表</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125; dictEntry;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="渐进式扩容"><a href="#渐进式扩容" class="headerlink" title="渐进式扩容"></a>渐进式扩容</h4><p>如果面试官聊到了redis的hashtable，一定绕不开渐进式扩容：扩容不是一次性的，而是逐步扩容的过程</p>
+<p>操作细节：设计两个<code>dictht</code>哈希表实现渐进式逻辑</p>
+<ul>
+<li>正常插入数据写入ht[0]，ht[1]此时是空表</li>
+<li>触发扩容条件后，进行<code>渐进式扩容</code>（指出java hashmap扩容思想 + JVM GC标记-复制算法类似思想，引导面试官追问相关细节 ）：<ul>
+<li>ht[1]分配2倍used空间（和jdk1.8以后hashmap实现类似，要求2次方幂大小，追问：为什么？见集合章节），如used&#x3D;1024，扩容后大小为2048，字典的<code>rehashidx</code>索引值从-1转变为0，开始数据迁移</li>
+<li>数据一致性：数据迁移时，每次的crud操作，会将<code>rehashidx</code>对应的数据从ht[0]迁移到ht[1]上，然后<code>rehashidx+1</code>（插入数据直接插入到2表即可），所以迁移是多次、渐进式的完成</li>
+<li>最终ht[0]数据全部迁移到ht[1]上，指针对象互换，ht[0]指向为空，<code>rehashidx</code>设置为-1</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20251013190633133.png" alt="image-20251013190633133"></p>
+<blockquote>
+<p>扩容条件：根据负载因子来判断（负载因子&#x3D; 保存节点数量 &#x2F; 哈希表大小）</p>
+<ul>
+<li>≥1，空间比较紧张，如果没有RDB快照&#x2F;AOF重写的持久化机制，就会rehash</li>
+<li>≥5，hash冲突非常严重，无论是否有持久化机制，强制rehash</li>
+</ul>
+<p>缩容条件：负载因子 &lt; 0.1，为used最近的2次方幂，如used&#x3D;1000，则缩容大小1024（没有RDB&#x2F;AOF持久化机制条件下才会缩容）</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/10/12/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Redis/8.hash/">https://yuezi2048.github.io/2025/10/12/2.Areas🌐/02.面经记录/Redis/8.hash/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Redis/">Redis</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/10/12/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/MySQL/10.%E7%B4%A2%E5%BC%95%E4%B8%8B%E6%8E%A8/" title="10.索引下推"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">10.索引下推</div></div><div class="info-2"><div class="info-item-1">索引下推（Index Condition PushDown ICP）是一种减少回表查询，提高查询效率的技术。 在使用索引查找数据时，部分查询条件下会推到存储引擎层过滤，减少需要从表中读取的数据行，减少了I&#x2F;O（而过滤本该在Server操作，所以把交给存储引擎来做的方法叫作“下推”） 拓展 对于people表索引INDEX(zipcode, lastname, firstname) SELECT * FROM people  WHERE zipcode=&#x27;95054&#x27;  AND lastname LIKE &#x27;%etrunia%&#x27;  AND address LIKE &#x27;%Main Street%&#x27;;  在这个条件中，联合索引只能用上zipcode条件（开头的%模糊查询破坏了最左匹配原则） 如果没有索引下推，此时就只能得到...</div></div></div></a><a class="pagination-related" href="/2025/10/12/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Redis/7.%E8%B7%B3%E8%A1%A8/" title="7.跳表"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">7.跳表</div></div><div class="info-2"><div class="info-item-1">跳表是通过多层链表实现，底层链表保存所有元素，上面每一层都是下一层的子集  插入：从最高层开始找插入位置，随机决定新节点的层数，在相应的层插入节点并更新指针 删除：从最高层找要删除的节点，各层更新指针，保持跳表结构 查找：最高层开始找，逐层向下，直到找到目标元素或确定元素不存在。查找效率平均O(logn)   注：Redis的跳表引入了回退（前驱）指针简化操作逻辑，无须变更指针时找前驱节点了。  扩展 跳表：一句话就是多层索引的链表，每一层的索引可以在最底层找到元素。绿色是最底层。  查找操作：传统操作是沿着最底层的绿表，O(n)时间复杂度 跳表则只需要从最上面开始，找到最后一个&lt;&#x3D;50的，往下跳，以此循环，完整查找如图 平均时间复杂度O(n)，最坏还是会退化到O(n)  插入元素，比如插入48  同样的定位方式，可以定位到蓝色的50位置。 定位到节点后，随机确定增加的层级，假设是2层 定位层级后，下面每一层链表节点补齐，插入和链表操作一样   注：随机逻辑 # 以下源码来自 redis7.0#define ZSKIPLIST_MAXLEVEL 32 /*...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/09/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Redis/1.Redis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/" title="1.Redis主从复制"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-27</div><div class="info-item-2">1.Redis主从复制</div></div><div class="info-2"><div class="info-item-1">主从复制：Redis实例（主节点）将数据copy到 多个从节点，从节点通过主节点获取到数据同步。 具体过程：  开始同步：从节点向主节点发送PSYNC命令发起同步 全量复制：如果是第一次（或者是之前连接失效），从节点请求全量复制，主节点将数据快照（RDB）发送给从节点 增量复制：全量复制完毕后，主从保持长连接，主节点会通过该连接将后续写操作传递给从节点执行，保证数据的一致性。  扩展 主从架构可以实现读写分离，即主节点用来处理写请求，从节点用来处理读请求，主从节点通过复制同步数据，保证数据一致性，而读请求被分散到了多个节点，可以提高redis的吞吐量，可用性。 	  主从复制全量同步 runid是主服务器的run ID，节点第一次不知道主节点id，因此发送？ offset是复制进度，初始化为-1 主要是关注全量同步过程中新写入的命令，会存储到replication...</div></div></div></a><a class="pagination-related" href="/2025/10/13/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Redis/11.%E6%95%B0%E6%8D%AE%E8%BF%87%E6%9C%9F%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5/" title="11.数据过期删除策略"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-13</div><div class="info-item-2">11.数据过期删除策略</div></div><div class="info-2"><div class="info-item-1">定期删除、惰性删除两种策略（达到maxmemory 淘汰机制 的兜底）。  定期删除：每隔一段时间（100ms）随机抽查一定数量的key，如果过期就删除，可以在后台持续清理过期数据防止内存膨胀 惰性删除：每次访问key时，检查key是否过期，过期则删除，该策略只保证在使用过程中删除不需要的数据  扩展 定期删除是Redis内部定时任务，周期性扫描设置过期时间的key  不是一次性全部扫描，这会消耗大量CPU，每次扫描会限制扫描时间和数量，避免对性能造成影响，因此会有一部分key不能及时删除 具体过程：每次拉20个key看是否过期，如果占比超过25%就再拉20个，小于25%停止（总体删除时间要求在时间限制25ms范围内）  惰性删除分析：  优势：减少CPU占用，查询到相关数据才删除，不需要主动定时删除 缺点：如果一直不查，就有可能不会被删除，存在内存泄露问题  内存回收机制：实际上，key还有内存淘汰策略，当内存到达maxmemory时，触发内存回收机制，策略有：  volatile&#x2F;allkeys - lru : Least Recently...</div></div></div></a><a class="pagination-related" href="/2025/10/13/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Redis/10.%E4%BA%8B%E5%8A%A1/" title="10.事务"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-13</div><div class="info-item-2">10.事务</div></div><div class="info-2"><div class="info-item-1">redis支持事务，但是事务的概念与mysql的ACID不同。Redis的事务指的是保证操作原子性，所有命令在原子操作中进行，不被打断。（注：redis的事务不支持回滚） 拓展  开始事务：MULTI开始，之后的命令进入队列 添加命令：添加命令，不会被立即执行，而是存储在队列 执行事务：EXEC原子性执行上述命令 取消事务：DISCARD清空命令，放弃事务 监视：WATCH监视一个&#x2F;多个键，如果EXEC前被键修改了，EXEC不会执行，保证数据一致性。  Redis不支持回滚：所有命令都会被应用，即使某个步骤失败，依旧会执行，所以在设计时要充分考虑错误。 Redis2.6.5后，服务器在累计命令的过程中检测到错误，会拒绝执行事务，返回错误并丢弃该事务。 但是在执行过程中，仍会继续执行剩下的命令，不会进行回滚（这是和MySQL最不同的点，也不支持隔离级别设置，因为是单线程，只能是串行隔离级别），所以我们理解为是一个残血版的事务。  </div></div></div></a><a class="pagination-related" href="/2025/10/13/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Redis/12.%E5%86%85%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5/" title="12.内存淘汰策略"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-13</div><div class="info-item-2">12.内存淘汰策略</div></div><div class="info-2"><div class="info-item-1">...</div></div></div></a><a class="pagination-related" href="/2025/10/17/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Redis/14.pipeline/" title="17.pipeline"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-17</div><div class="info-item-2">17.pipeline</div></div><div class="info-2"><div class="info-item-1">pipeline允许客户端一次在网络请求中发送多条指令，减少网络延迟以提高性能。 通过将命令打包发送，客户端可以在不等待命令响应的情况下继续发送其他命令，显著提高吞吐量 优势：  节省网络传输时间 减少Redis服务器上下文切换的开销  拓展 注意将pipeline与redis事务进行区分：  pipeline不保证原子性（当然也不支持事务特性），某个命令失败，其他命令也会执行 事务通过MULTI、EXEC执行，可以保证一组命令的原子性   注：pipeline的长度不宜过长，否则会造成客户端长时间等待，且对服务器造成较大的内存存储压力，官方建议最多一次10k命令。 且pipeline不支持原子性，要使用原子性需要用到lua脚本 &#x2F; 事务  性能  使用pipeline 可以显著减少与redis的交互延迟，适合高负载下的优化  	 分析：正常执行命令 	 使用pipeline后，只需要一次连接交互，服务端将命令暂存到缓存后，逐个执行将最终结果返回给客户端。可知：  节省了RTT（Round Trip Time）往返时间（所有快递装到卡车 vs...</div></div></div></a><a class="pagination-related" href="/2025/10/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Redis/13.Lua%E8%84%9A%E6%9C%AC%E6%98%AF%E4%BB%80%E4%B9%88%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8/" title="13.Lua脚本是什么如何使用"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-14</div><div class="info-item-2">13.Lua脚本是什么如何使用</div></div><div class="info-2"><div class="info-item-1">Lua脚本允许用户在Redis服务端执行Lua脚本，实现原子性和复杂逻辑：  原子性：所有命令执行过程中是原子的，避免并发带来的修改问题 减少网络往返次数：在服务端执行脚本，减少C-S的网络往返次数 复杂操作：Lua脚本可以实现复杂逻辑，如批量更新、条件更新等，超过了redis单条命令能力  场景：Redis分布式锁就需要结合Lua脚本实现  注：Lua脚本本身不是原子性的，但是Redis是单线程执行的，会把Lua看作一个命令执行，通过阻塞其他接收到的指令来实现Lua脚本的原子性  拓展 调用redis命令：  redis.call  调用Redis原生命令 redis.pcall  安全调用指令，如果命令失效可以捕获错误（不会中断执行），可以在脚本中处理错误  参数说明：KEYS：键名数组，ARGV：参数数组 示例1：get和set操作：获取mykey的值 redis.call(‘GET’, KEYS[1])    如果不存在，设置为default_value 否则，返回mykey当前值  EVAL &quot;local value =...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Hash%E5%BA%95%E5%B1%82"><span class="toc-text">Hash底层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%81%8A%E8%81%8Aredis%E7%9A%84HashTable"><span class="toc-text">聊聊redis的HashTable</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B8%90%E8%BF%9B%E5%BC%8F%E6%89%A9%E5%AE%B9"><span class="toc-text">渐进式扩容</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>43.@RequestBody和@ResponseBody | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="@RequestBody 和 @ResponseBody用于处理HTTP请求和响应的注解 1）@RequestBody：HTTP请求体绑定到方法参数上，将JSON &#x2F; XML等格式请求转换为java对象，传递给Conroller方法参数 2）@ResponseBody：控制器返回结果写入HTTP响应结果，一般是JSON &#x2F; XML，而不是视图页面  追问：工作原理是什么？ @R">
+<meta property="og:type" content="article">
+<meta property="og:title" content="43.@RequestBody和@ResponseBody">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/11/18/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/43.@RequestBody%E5%92%8C@ResponseBody/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="@RequestBody 和 @ResponseBody用于处理HTTP请求和响应的注解 1）@RequestBody：HTTP请求体绑定到方法参数上，将JSON &#x2F; XML等格式请求转换为java对象，传递给Conroller方法参数 2）@ResponseBody：控制器返回结果写入HTTP响应结果，一般是JSON &#x2F; XML，而不是视图页面  追问：工作原理是什么？ @R">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-11-18T02:54:04.000Z">
+<meta property="article:modified_time" content="2025-11-18T02:54:04.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="Spring">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "43.@RequestBody和@ResponseBody",
+  "url": "https://yuezi2048.github.io/2025/11/18/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/43.@RequestBody%E5%92%8C@ResponseBody/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-11-18T02:54:04.000Z",
+  "dateModified": "2025-11-18T02:54:04.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/11/18/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/43.@RequestBody%E5%92%8C@ResponseBody/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '43.@RequestBody和@ResponseBody',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">43.@RequestBody和@ResponseBody</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">43.@RequestBody和@ResponseBody</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-11-18T02:54:04.000Z" title="发表于 2025-11-18 10:54:04">2025-11-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-11-18T02:54:04.000Z" title="更新于 2025-11-18 10:54:04">2025-11-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/">02.面经记录</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/">Spring</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>4分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p><code>@RequestBody</code> 和 <code>@ResponseBody</code>用于处理HTTP请求和响应的注解</p>
+<p>1）<strong><code>@RequestBody</code></strong>：HTTP请求体绑定到方法参数上，将JSON &#x2F; XML等格式请求转换为java对象，传递给Conroller方法参数</p>
+<p>2）<strong><code>@ResponseBody</code></strong>：控制器返回结果写入HTTP响应结果，一般是JSON &#x2F; XML，而不是视图页面</p>
+<blockquote>
+<p>追问：工作原理是什么？</p>
+<p>@RequestBody</p>
+<ul>
+<li>请求体的JSON&#x2F;XML转换成Java对象核心是通过消息转换器（<code>HttpMessageConverter</code>），Spirng默认通过<code>MappingJackson2HttpMessageConverter</code> 来处理 JSON 数据</li>
+<li>Spring通过拿到请求头的 <code>Content-Type</code> （客户端请求的类型） 选择合适的消息转换器。</li>
+</ul>
+<p>@ResponseBody</p>
+<ul>
+<li>和 <code>@RequestBody</code> 类似，也是通过消息转换器（<code>HttpMessageConverter</code>）将 Java 对象转换为 HTTP 响应体的 JSON &#x2F; XML </li>
+<li>Spring根据响应头中的 <code>Accept</code> （客户端需要接收的类型）选择合适的消息转换器。</li>
+</ul>
+<p>补充：如果需要处理自定义格式的数据，可以通过实现 <code>HttpMessageConverter</code> 接口来自定义消息转换器。</p>
+</blockquote>
+<h2 id="扩展知识"><a href="#扩展知识" class="headerlink" title="扩展知识"></a>扩展知识</h2><h3 id="RequestBody-的详细说明"><a href="#RequestBody-的详细说明" class="headerlink" title="@RequestBody 的详细说明"></a><strong><code>@RequestBody</code> 的详细说明</strong></h3><p><code>@RequestBody</code> 注解用于将请求体中的数据直接绑定到控制器方法的参数上。它通常用于处理 <code>POST</code>、<code>PUT</code>、<code>DELETE</code> 等请求方法，其中请求体中的数据一般是 JSON、XML 或表单数据。</p>
+<h4 id="使用场景："><a href="#使用场景：" class="headerlink" title="使用场景："></a>使用场景：</h4><ul>
+<li>处理 RESTful 接口中的 JSON 数据请求。</li>
+<li>将客户端提交的复杂数据结构（如 JSON）直接映射为 Java 对象。</li>
+</ul>
+<p><strong>示例</strong>：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserController</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostMapping(&quot;/users&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">createUser</span><span class="params">(<span class="meta">@RequestBody</span> User user)</span> &#123;</span><br><span class="line">        <span class="comment">// 通过 @RequestBody 自动将请求体中的 JSON 转换为 User 对象</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Mianshiya User created: &quot;</span> + user.getName();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>请求示例</strong>：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">POST /users HTTP/<span class="number">1.1</span></span><br><span class="line">Content-Type<span class="punctuation">:</span> application/json</span><br><span class="line"></span><br><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;mianshiya&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;age&quot;</span><span class="punctuation">:</span> <span class="number">18</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>在上述示例中，Spring 会将请求体中的 JSON 数据自动解析为 <code>User</code> 对象，并传递给 <code>createUser()</code> 方法的参数 <code>user</code>。</p>
+<h4 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h4><ul>
+<li>Spring 使用消息转换器（<code>HttpMessageConverter</code>）将请求体中的 JSON 或 XML 数据解析为 Java 对象。默认情况下，Spring 使用 <code>MappingJackson2HttpMessageConverter</code> 来处理 JSON 数据。</li>
+<li>请求头中的 <code>Content-Type</code> 告诉 Spring 请求数据的格式，Spring 会根据这个格式选择合适的消息转换器。</li>
+</ul>
+<h3 id="ResponseBody-的详细说明"><a href="#ResponseBody-的详细说明" class="headerlink" title="@ResponseBody 的详细说明"></a><strong><code>@ResponseBody</code> 的详细说明</strong></h3><p><code>@ResponseBody</code> 注解用于将控制器方法的返回值直接写入 HTTP 响应体中，而不是返回一个视图名称。通常用于返回 JSON 或 XML 格式的数据，适用于 RESTful API。</p>
+<h4 id="使用场景：-1"><a href="#使用场景：-1" class="headerlink" title="使用场景："></a>使用场景：</h4><ul>
+<li>用于返回 JSON、XML 数据，而不是传统的 HTML 页面。</li>
+<li>RESTful 风格的接口通常使用该注解返回数据，尤其是在前后端分离的场景中。</li>
+</ul>
+<p><strong>示例</strong>：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserController</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/users/&#123;id&#125;&quot;)</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="keyword">public</span> User <span class="title function_">getUser</span><span class="params">(<span class="meta">@PathVariable</span> Long id)</span> &#123;</span><br><span class="line">        <span class="comment">// 模拟从数据库中获取用户数据</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">User</span>(id, <span class="string">&quot;mianshiya&quot;</span>, <span class="number">18</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>响应示例</strong>：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">HTTP/<span class="number">1.1</span> <span class="number">200</span> OK</span><br><span class="line">Content-Type<span class="punctuation">:</span> application/json</span><br><span class="line"></span><br><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;mianshiya&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;age&quot;</span><span class="punctuation">:</span> <span class="number">18</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，<code>getUser()</code> 方法返回了一个 <code>User</code> 对象。<code>@ResponseBody</code> 告诉 Spring 将 <code>User</code> 对象自动转换为 JSON 格式，并写入 HTTP 响应体中。</p>
+<h4 id="工作原理："><a href="#工作原理：" class="headerlink" title="工作原理："></a>工作原理：</h4><ul>
+<li>和 <code>@RequestBody</code> 类似，Spring 使用消息转换器（<code>HttpMessageConverter</code>）将 Java 对象转换为 HTTP 响应体中的 JSON 或 XML 数据。</li>
+<li>响应头中的 <code>Accept</code> 告诉 Spring 客户端希望接收到的数据格式，Spring 会根据 <code>Accept</code> 头选择合适的消息转换器。</li>
+</ul>
+<h3 id="RestController-与-ResponseBody-的关系"><a href="#RestController-与-ResponseBody-的关系" class="headerlink" title="@RestController 与 @ResponseBody 的关系"></a><strong><code>@RestController</code> 与 <code>@ResponseBody</code> 的关系</strong></h3><p><code>@RestController</code> 是 <code>@Controller</code> 和 <code>@ResponseBody</code> 的组合注解。它标注在类上，表示该类的所有控制器方法都默认返回 JSON 或 XML 数据，而不需要为每个方法单独加 <code>@ResponseBody</code>。</p>
+<p><strong>示例</strong>：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserController</span> &#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@GetMapping(&quot;/users/&#123;id&#125;&quot;)</span></span><br><span class="line">  <span class="keyword">public</span> User <span class="title function_">getUser</span><span class="params">(<span class="meta">@PathVariable</span> Long id)</span> &#123;</span><br><span class="line">      <span class="comment">// 自动返回 JSON，无需额外的 @ResponseBody</span></span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">User</span>(id, <span class="string">&quot;John&quot;</span>, <span class="number">30</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>作用</strong>：简化 RESTful 风格接口的开发，减少手动添加 <code>@ResponseBody</code> 的工作量。</p>
+<h3 id="消息转换器（HttpMessageConverter）"><a href="#消息转换器（HttpMessageConverter）" class="headerlink" title="消息转换器（HttpMessageConverter）"></a><strong>消息转换器（<code>HttpMessageConverter</code>）</strong></h3><p><code>@RequestBody</code> 和 <code>@ResponseBody</code> 的工作原理都依赖于 Spring 的消息转换器（<code>HttpMessageConverter</code>）。Spring 默认支持多种格式的消息转换器，最常用的是 JSON 和 XML。</p>
+<h4 id="常见的消息转换器"><a href="#常见的消息转换器" class="headerlink" title="常见的消息转换器"></a>常见的消息转换器</h4><ul>
+<li><strong><code>MappingJackson2HttpMessageConverter</code></strong>：将 JSON 数据转换为 Java 对象，或将 Java 对象转换为 JSON 数据。默认使用 Jackson 库。</li>
+<li><strong><code>Jaxb2RootElementHttpMessageConverter</code></strong>：将 XML 数据转换为 Java 对象，或将 Java 对象转换为 XML 数据。</li>
+<li><strong><code>StringHttpMessageConverter</code></strong>：处理 <code>text/plain</code> 类型的请求和响应，将请求体转换为字符串。</li>
+</ul>
+<h4 id="自定义消息转换器"><a href="#自定义消息转换器" class="headerlink" title="自定义消息转换器"></a>自定义消息转换器</h4><p>如果需要处理自定义格式的数据，可以通过实现 <code>HttpMessageConverter</code> 接口来自定义消息转换器。</p>
+<p><strong>示例</strong>：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">WebConfig</span> <span class="keyword">extends</span> <span class="title class_">WebMvcConfigurerAdapter</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">configureMessageConverters</span><span class="params">(List&lt;HttpMessageConverter&lt;?&gt;&gt; converters)</span> &#123;</span><br><span class="line">        <span class="comment">// 添加自定义的消息转换器</span></span><br><span class="line">        converters.add(<span class="keyword">new</span> <span class="title class_">MyCustomMessageConverter</span>());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/11/18/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/43.@RequestBody%E5%92%8C@ResponseBody/">https://yuezi2048.github.io/2025/11/18/2.Areas🌐/02.面经记录/Spring/43.@RequestBody和@ResponseBody/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Spring/">Spring</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/11/18/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/42.@PostConstruct%E5%92%8C@PreDestroy/" title="42.@PostConstruct和@PreDestroy"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">42.@PostConstruct和@PreDestroy</div></div><div class="info-2"><div class="info-item-1">@PostConstruct 和 @PreDestroy 是Java标准的注解，Spring可通过它们管理Bean的生命周期  @PostConstruct：标记方法，当依赖注入完成后，在 Bean 初始化完成后调用，这个方法会自动被调用。常用于进行初始化逻辑。 如依赖注入后连接外部系统，或者需要验证关键属性是否配置   @PreDestroy：标记方法，在 Bean 即将被销毁时调用。常用于进行资源的释放、清理工作。 资源清理（数据库连接、文件句柄、线程池等），会话管理等，一般随着Spring容器关闭执行   注意原型bean不受生命周期影响，不会执行方法  扩展知识@PostConstruct 的使用场景与示例@PostConstruct 注解用于标识某个方法是 Bean 初始化后的回调方法。当 Spring 完成对 Bean 的依赖注入之后，它会自动调用带有 @PostConstruct 注解的方法。这个方法通常用于执行一些初始化逻辑，例如设置默认值、检查依赖等。 使用场景： 依赖注入后做额外的初始化工作：例如，某个服务需要在依赖注入后连接外部系统。 进行状态检查：在...</div></div></div></a><a class="pagination-related" href="/2025/11/18/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/44.@PathVariable/" title="44.@PathVariable"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">44.@PathVariable</div></div><div class="info-2"><div class="info-item-1">@PathVariable 是Spring MVC用于在URL模板中提取变量值的注解，是为了在处理HTTP请求时，从URL路径中获取变量，绑定到控制器的参数上 如http://example.com/users/123 后端 Java 可以按下面代码接收，适合RESTful风格的URL设计 @GetMapping(&quot;/users/&#123;userId&#125;&quot;)public ResponseEntity&lt;User&gt; getUserById(@PathVariable(&quot;userId&quot;) String userId) &#123;    User user = userService.getUserById(userId);    if (user != null) &#123;        return ResponseEntity.ok(user);    &#125; else &#123;        return ResponseEntity.notFound().build();   ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/1.%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/" title="1.循环依赖"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">1.循环依赖</div></div><div class="info-2"><div class="info-item-1">循环依赖（Circular Dependency）是说多个模块，组件之间相互依赖，形成闭环（A依赖B，B依赖A），从而无法确定加载&#x2F;初始化的顺序 扩展知识简单示例看下方的代码就知晓了 @Servicepublic class A &#123;    @Autowired    private B b;&#125;@Servicepublic class B &#123;    @Autowired    private A a;&#125;//或者自己依赖自己@Servicepublic class A &#123;    @Autowired    private A a;&#125;  上面这两种方式都是循环依赖，应该很好理解，当然也可以是三个 Bean 甚至更多 Bean 相互依赖，原理都是一样的。 	 这种循环依赖可能会产生问题，例如 A 要依赖 B，发现 B 还没创建，于是开始创建 B ，创建的过程发现 B 要依赖 A， 而 A 还没创建好呀，因为它要等 B 创建好，就这样它们俩就搁这卡 bug 了。 关联面试题 578. Spring...</div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/10.FactoryBean/" title="10.FactoryBean"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">10.FactoryBean</div></div><div class="info-2"><div class="info-item-1">FactoryBean是Spring的特殊接口，允许开发者通过实现接口来创建复杂的Bean实例（通过FactoryBean创建的Bean除了FactoryBean本身，也可以是他生产的对象）  核心概念：FactoryBean 是一个实现了 FactoryBean&lt;T&gt; 接口的 Bean，通过它可以自定义复杂对象的创建逻辑。Spring 容器会调用 getObject() 方法来获取实际的 Bean 实例。 使用场景： 通常用于需要创建复杂对象或需要使用代理模式生成 Bean 的场景。  扩展知识FactoryBean 的主要方法 getObject()：这是 FactoryBean 最重要的方法，返回实际的 Bean 实例。Spring 容器会调用这个方法来获取 Bean。 getObjectType()：返回由 getObject() 方法所返回的对象类型，Spring 可以根据这个类型进行 Bean 的类型检查。 isSingleton()：用于确定 getObject() 返回的 Bean 是否为单例。如果返回 true，那么 Spring...</div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/11.ObjectFactory/" title="11.ObjectFactory"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">11.ObjectFactory</div></div><div class="info-2"><div class="info-item-1">ObjectFactory是 Spring 框架中的一个接口，主要用于延迟获取 Bean 实例。 ObjectFactory 提供了一种延迟加载的机制，它通过 getObject() 方法返回一个 Bean 的实例。使用 ObjectFactory 可以避免在容器启动时立即创建所有 Bean，即只有在真正需要使用 Bean 时才会从 Spring 容器中获取该 Bean 实例，有助于优化性能。 扩展知识ObjectFactory 的使用场景 懒加载 Bean：当某个 Bean 的创建过程可能耗时较长或依赖的资源较重时，可以通过 ObjectFactory 进行懒加载，避免容器启动时不必要的 Bean 创建。这能有效提升系统的启动速度。 避免循环依赖：在某些情况下，两个 Bean 可能相互依赖，导致循环依赖问题。通过使用 ObjectFactory，可以延迟其中一个 Bean 的创建，避免循环依赖。  在 Spring 的循环依赖里就用到它了，三级缓存的 map 里面存储的就是 ObjectFactory，用于延迟代理对象的创建。 并且在某些需要在运行时决定动态 Bean...</div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/12.ApplicationContext/" title="12.ApplicationContext"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">12.ApplicationContext</div></div><div class="info-2"><div class="info-item-1">ApplicationContext 是多个底层接口组合后的接口。从类图中我们可以看到，它主要提供了五大功能。  核心容器 BeanFactory 国际化 MessageSource 资源获取 ResourceLoader 环境信息 EnvironmentCapable 事件发布 ApplicationEventPublisher   ApplicationContext有多个实现类，如ClassPathXmlApplicationContext和FileSystemXmlApplicationContext等，适用于不同的应用场景。通过这些实现类，开发者可以根据具体需求选择合适的ApplicationContext来实现Spring应用程序的各种功能‌。   扩展知识下面，我们使用 SpringBoot 返回的 ConfigurableApplicationContext 来进行讲解。 @SpringBootApplicationpublic class Main &#123;    public static void main(String[] args) throws...</div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/13.Bean%E4%BD%9C%E7%94%A8%E5%9F%9F/" title="13.Bean作用域"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">13.Bean作用域</div></div><div class="info-2"><div class="info-item-1">一共有六种作用域：  整体作用  singleton：默认是单例，含义不用解释了吧，一个 IOC 容器内部仅此一个 prototype：原型，多实例   分块作用  request：每个请求都会新建一个属于自己的 Bean 实例，这种作用域仅存在 Spring Web 应用中 session：一个 http session 中有一个 bean 的实例，这种作用域仅存在 Spring Web 应用中 application：整个 ServletContext 生命周期里，只有一个 bean，这种作用域仅存在 Spring Web 应用中 websocket：一个 WebSocket 生命周期内一个 bean 实例，这种作用域仅存在 Spring Web 应用中    官网最新截图：  </div></div></div></a><a class="pagination-related" href="/2025/11/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/Spring/14.spring%E6%B3%A8%E5%85%A5%E6%96%B9%E5%BC%8F/" title="14.spring注入方式"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-14</div><div class="info-item-2">14.spring注入方式</div></div><div class="info-2"><div class="info-item-1"> 推荐方式  构造器注入，Spring 倡导构造函数注入，因为构造器注入返回给客户端使用的时候一定是完整的。 setter 注入，可选的注入方式，好处是在有变更的情况下，可以重新注入。   其他  字段注入，就是平日我们用 @Autowired 标记字段 方法注入，就是平日我们用 @Autowired 标记方法 接口回调注入，就是实现 Spring 定义的一些内建接口，例如 BeanFactoryAware，会进行 BeanFactory 的注入    其实官网上关于注入就写了构造器和setter ： 	 像字段注入其实官方是不推荐的使用的，因为依赖注解，后没有控制注入顺序且无法注入静态字段。 </div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A9%E5%B1%95%E7%9F%A5%E8%AF%86"><span class="toc-text">扩展知识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#RequestBody-%E7%9A%84%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E"><span class="toc-text">@RequestBody 的详细说明</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%EF%BC%9A"><span class="toc-text">使用场景：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-text">工作原理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ResponseBody-%E7%9A%84%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E"><span class="toc-text">@ResponseBody 的详细说明</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%EF%BC%9A-1"><span class="toc-text">使用场景：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%EF%BC%9A"><span class="toc-text">工作原理：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RestController-%E4%B8%8E-ResponseBody-%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-text">@RestController 与 @ResponseBody 的关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E8%BD%AC%E6%8D%A2%E5%99%A8%EF%BC%88HttpMessageConverter%EF%BC%89"><span class="toc-text">消息转换器（HttpMessageConverter）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E6%B6%88%E6%81%AF%E8%BD%AC%E6%8D%A2%E5%99%A8"><span class="toc-text">常见的消息转换器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E8%BD%AC%E6%8D%A2%E5%99%A8"><span class="toc-text">自定义消息转换器</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

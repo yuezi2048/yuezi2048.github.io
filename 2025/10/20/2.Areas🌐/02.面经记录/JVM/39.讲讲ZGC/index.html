@@ -1,0 +1,292 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>39.讲讲ZGC | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="ZGC（Z Garbage Collector）是Java11引入的低延迟垃圾回收器，支持大内存（4TB 理论16TB）的应用程序，并保持低GC延迟。 特点：  并发收集：ZGC收集过程大部分和应用程序同时进行 指针压缩：减少内存占用 毫秒级停顿：停顿主要是在GC roots上，受堆大小影响小，且有一系列优化机制（如果重新标记超过1ms会再次进入并发标记阶段）   注：  ZGC超过G1很重要的一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="39.讲讲ZGC">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/10/20/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JVM/39.%E8%AE%B2%E8%AE%B2ZGC/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="ZGC（Z Garbage Collector）是Java11引入的低延迟垃圾回收器，支持大内存（4TB 理论16TB）的应用程序，并保持低GC延迟。 特点：  并发收集：ZGC收集过程大部分和应用程序同时进行 指针压缩：减少内存占用 毫秒级停顿：停顿主要是在GC roots上，受堆大小影响小，且有一系列优化机制（如果重新标记超过1ms会再次进入并发标记阶段）   注：  ZGC超过G1很重要的一">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-10-20T10:27:43.000Z">
+<meta property="article:modified_time" content="2025-10-20T10:27:43.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="JVM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "39.讲讲ZGC",
+  "url": "https://yuezi2048.github.io/2025/10/20/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JVM/39.%E8%AE%B2%E8%AE%B2ZGC/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-10-20T10:27:43.000Z",
+  "dateModified": "2025-10-20T10:27:43.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/10/20/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JVM/39.%E8%AE%B2%E8%AE%B2ZGC/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '39.讲讲ZGC',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">39.讲讲ZGC</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">39.讲讲ZGC</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-10-20T10:27:43.000Z" title="发表于 2025-10-20 18:27:43">2025-10-20</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-10-20T10:27:43.000Z" title="更新于 2025-10-20 18:27:43">2025-10-20</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/">02.面经记录</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JVM/">JVM</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>5分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>ZGC（Z Garbage Collector）是Java11引入的<strong>低延迟垃圾回收器</strong>，支持大内存（4TB 理论16TB）的应用程序，并保持低GC延迟。</p>
+<p>特点：</p>
+<ul>
+<li>并发收集：ZGC收集过程大部分和应用程序同时进行</li>
+<li>指针压缩：减少内存占用</li>
+<li>毫秒级停顿：停顿主要是在GC roots上，受堆大小影响小，且有一系列优化机制（<strong>如果重新标记超过1ms会再次进入并发标记阶段</strong>）</li>
+</ul>
+<blockquote>
+<p>注：</p>
+<ul>
+<li>ZGC超过G1很重要的一点在于<strong>并发转移</strong></li>
+<li>到那时要注意内存分配过快导致的线程阻塞（设置 ParallelGCThreads 并行线程和 ConcGCThreads和并发线程加快回收速度，不能设置过多）</li>
+<li>ZGC的STW和GC Roots有关，在多线程、动态加载ClassLoader频繁的场景下也会增加ZGC停顿时间</li>
+</ul>
+</blockquote>
+<p>机制：</p>
+<ul>
+<li>分代收集：分代年轻代和老年代（JDK21后支持）</li>
+<li><strong>记录和重标记</strong>：记忆集跟踪对象引用关系，在GC过程中快速识别活动对象。</li>
+</ul>
+<blockquote>
+<p><strong>染色指针和读屏障是 ZGC 能实现并发转移的关键所在</strong></p>
+</blockquote>
+<p><strong>拓展</strong></p>
+<h3 id="ZGC概览"><a href="#ZGC概览" class="headerlink" title="ZGC概览"></a>ZGC概览</h3><p>ZGC的核心目标是<code>低延迟</code>，不管堆有多大 &#x2F; 存活对象有多少</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20251020175758543.png" alt="image-20251020175758543" style="zoom:50%;" />	
+
+<p>关键字：并发、基于Region、整理内存、支持NUMA、用了染色指针、用了读屏障，对了 ZGC 用的是 STAB。</p>
+<ul>
+<li><strong>Concurrent</strong>：和应用程序并发执行，有10个阶段，只有3个阶段是短暂STW</li>
+<li><strong>Region-based</strong>：支持细粒度的内存分配（2MB 32MB X*MB[内存系统]），回收的策略是优先收集小区，中、大区尽量不回收</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20251020175735806.png" alt="image-20251020175735806"></p>
+<ul>
+<li><strong>非一致内存访问 （Non-Uniform Memory Access，NUMA）</strong>：G1原先不支持现在也支持，小分区优先交给本地内存，中大对象交由操作系统管理，减少内存不平衡的情况（远程内存效率低下）<ul>
+<li>前端总线-北桥-内存————SMP （Symmetric Multi-Processor）一致内存访问（Uniform Memory Access， UMA ）——非一致内存访问</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20251020175945729.png" alt="image-20251020175945729"></p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20251020175836366.png" alt="image-20251020175836366"></p>
+<ul>
+<li><strong>染色指针</strong>：Marked0、Marked1、Remapped、Finalizable四位标识对象状态<ul>
+<li>42-45位标记位，基于<code>多重映射</code>实现多个标志位都能指向同一对象</li>
+<li>虽然X86_64指令集是64位，但总线只有48条，所以理论上是16TB，这里只用了4TB，给到了42+4位</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20251020180021781.png" alt="image-20251020180021781"></p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20251020180033969.png" alt="image-20251020180033969"></p>
+<ul>
+<li><strong>使用读屏障</strong>：保证读取时引用的正确性（判断对象是否被转移），使其可以并发转移对象<ul>
+<li>读取应用对象时上读屏障，基于指针标志判断对象是否被转移，转移了就修正对象引用（“自愈”，不仅赋值的引用a是最新的，自身引用也修正了obj.foo对象本身，本质上是修正<code>forwardingTable</code>上的引用。）</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20251020180221581.png" alt="image-20251020180221581"></p>
+<h3 id="ZGC过程分析"><a href="#ZGC过程分析" class="headerlink" title="ZGC过程分析"></a><strong>ZGC过程分析</strong></h3><p>在G1基础上加入了基于重定位的并发转移</p>
+<ul>
+<li>标记：从根开始标记所有存活对象</li>
+<li>转移：选择部分活跃对象转移到新的内存空间上</li>
+<li>重定位：因为对象地址变了，所以之前指向老对象的指针都要换到新对象地址上。</li>
+</ul>
+<blockquote>
+<p>注：第一次GC标记后，转移对象，不会重定位，只记录转移到哪里，后续发现对象被转移了才重定位。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20251020180635455.png" alt="image-20251020180635455"></p>
+</blockquote>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20251020175455274.png" alt="image-20251020175455274"></p>
+<ul>
+<li><strong>初始标记：STW</strong>，标记根节点可达对象，压倒标记栈中（重置TLAB  判断清除软引用…）</li>
+<li>并发标记：并发遍历对象图并统计region存活对象<ul>
+<li>标记栈只有一个，但并发标记线程有多个，这样减少之间的竞争，每个线程分到不同的标记带（类比<code>HashMap1.7的segment</code>）</li>
+<li>每个线程速度不一样，<strong>标记快的线程会窃取别人的任务执行</strong>实现负载均衡（<code>ForkJoinPool工作窃取机制</code>）</li>
+</ul>
+</li>
+<li>**再标记：STW，**修改对象引用标记漏标的情况<ul>
+<li>ZGC目标是低延迟，如果该阶段再标记延迟时间过长，会重新执行并发标记</li>
+<li>实际上，这个阶段还会做非强根并行标记：系统字典 JVMTI JFR 字符串表（注：有些强根不能并发）</li>
+</ul>
+</li>
+<li>非强引用并行&#x2F;并发处理：软引用、弱引用、虚引用并发处理</li>
+<li>初始转移：<ul>
+<li>重置转移集：在新一轮GC中，对转移分区的映射集复位（标记阶段重定位——即读屏障用到的forwardingtable映射集）</li>
+<li>回收无效分区：回收物理内存释放后的无效虚拟内存（<strong>分区需要在新一轮标记后才能释放</strong>）</li>
+<li>选择待回收分区：同G1，筛选垃圾多的分区，作为本次垃圾回收的集合</li>
+<li>初始化待转移集合转移表：初始化forwardingTable</li>
+<li><strong>初始转移（STW）</strong>：从根集合触发，如果在分区集合则在新分区分配空间，否则标记为Remapped，只转移根直接可达对象</li>
+</ul>
+</li>
+<li>并发转移：和并发标记类似，优化了G1转移对象需要STW的问题，延迟少了很多</li>
+</ul>
+<blockquote>
+<p>分析染色指针的标记位：M0、M1、Remappe</p>
+<ol>
+<li>Remapped 是对象的 “正常状态视图”，GC 没运行时所有对象都处于这个视图，应用线程平时访问的就是它；在标记时，如果是活跃状态，则会置为状态试图的值（M0&#x2F;M1，否则就是不活跃）</li>
+<li>M0 和 M1 是 “交替使用的活跃标记位”，每轮 GC 只用其中一个（比如本轮用 M0 标活跃，下轮就用 M1），避免上轮未转移的旧标记和本轮新标记混淆；</li>
+<li>标记阶段用当前轮的标记位（M0&#x2F;M1）标活跃对象，转移阶段把这些对象切回 Remapped，下轮 GC 换另一个标记位重复这个过程。</li>
+</ol>
+<p>总结：引入<code>地址视图</code>（此时地址指针的标记位，标记位为 M0，就是 M0 视图。）的概念，交替判断本轮垃圾回收的对象（M1）和上一轮回收被标记但没有被转移的对象（M0）和不活跃对象Remapped</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20251020181725163.png" alt="image-20251020181725163"></p>
+</blockquote>
+<p>总结：</p>
+<ul>
+<li>多阶段并发+短暂STW实现低延迟——核心技术是<strong>指针染色 + 读屏障</strong></li>
+<li>现代垃圾回收期在往并发上靠，减少停顿时间，要注意内存分配速率，因为<strong>并发导致一次垃圾回收总的时间变长了</strong>。</li>
+<li>同时内存分配不宜过快，需要预留内存空间或者说要更大的内存空间来应对快速的分配速率</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/10/20/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JVM/39.%E8%AE%B2%E8%AE%B2ZGC/">https://yuezi2048.github.io/2025/10/20/2.Areas🌐/02.面经记录/JVM/39.讲讲ZGC/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/JVM/">JVM</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/10/20/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JVM/38.CMS%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%B5%81%E7%A8%8B/" title="38.CMS垃圾回收流程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">38.CMS垃圾回收流程</div></div><div class="info-2"><div class="info-item-1">注意并发和并行的区别。  初始标记：STW，快速标记根对象（栈的引用等）直接可达对象  并发标记：和应用线程并发执行，从根直接可达对象开始tracing，递归扫描可达对象  预处理  并发预处理（Concurrent precleaning）：在重标记前的工作，扫描卡表脏数据，新晋升到老年代对象等 可中断预处理（AbortablePreclean)：与上一阶段一致，但是可中断   重新标记（瓶颈）：STW，由于并发阶段引用关系变化，需要重新遍历新生代对象，GCRoots、卡表来修正标记  并发清理：和应用线程并发运行，清除标记不可达的对象  并发重置：重置内部状态    CMS...</div></div></div></a><a class="pagination-related" href="/2025/10/20/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/%E8%AE%B0%E4%B8%80%E6%AC%A1idea_cpu%E5%8D%A0%E7%94%A8%E7%8E%87%E9%AB%98%E7%9A%84%E9%97%AE%E9%A2%98/" title="记一次idea_cpu占用率高的问题"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">记一次idea_cpu占用率高的问题</div></div><div class="info-2"><div class="info-item-1">https://blog.csdn.net/csdn_life18/article/details/124185006 https://www.cnblogs.com/kuro-liang/articles/16139586.html 每次输入内容的时候，CPU就给我爆满，导致输入卡顿搞得很难受，一度怀疑自己CPU不行，后来通过分析工具发现主要是JIT的锅。。  通过配置jvm参数解决 	  #堆栈设置-Xms4096m-Xmx4096m-Xmn3072m-XX:MetaspaceSize=1024m-XX:MaxMetaspaceSize=1024m-XX:+AlwaysPreTouch-XX:InitialCodeCacheSize=1200m-XX:ReservedCodeCacheSize=1200m-XX:+UseCompressedOops-Dfile.encoding=UTF-8# 采用何种垃圾回收参数-XX:+UseConcMarkSweepGC-XX:ParallelGCThreads=4-XX:SoftRefLRUPolicyMSPerMB=50-ea#...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/09/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JVM/1.%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95/" title="1.垃圾回收算法"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-27</div><div class="info-item-2">1.垃圾回收算法</div></div><div class="info-2"><div class="info-item-1">有三种GC方式  标记-清除算法 （Mark-Sweep）：遍历堆中对象，标记所有存活对象，然后清除未标记对象 优势：简单，能处理堆中所有对象 缺点：标记和清楚会产生内存碎片，影响内存分配效率   标记-整理算法 （Mark-Compact）：标记所有存活对象，将存活的放到一边，然后清除未标记对象 优势：解决了内存碎片问题 缺点：整理阶段移动对象引入了额外时间开销   标记-复制算法（...</div></div></div></a><a class="pagination-related" href="/2025/10/13/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JVM/10.%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98%EF%BC%88%E5%A0%86%E5%A4%96%E5%86%85%E5%AD%98%EF%BC%89/" title="10.直接内存（堆外内存）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-13</div><div class="info-item-2">10.直接内存（堆外内存）</div></div><div class="info-2"><div class="info-item-1">直接内存（Direct Memory）是操作系统分配的区域，不受JVM堆的内存管理限制（堆外内存）。  通过nio包的ByteBuffer.allocateDirect()方法分配的，绕过了JVM垃圾回收机制，直接与系统的内存交互  拓展 直接内存的优势：直接内存不需要在堆进行分配和复制，所以在操作系统的I&#x2F;O操作上，可以减少一次从堆到内存的复制操作，文件 &#x2F; 网络传输这些场景使用直接内存有优势。 性能优化策略：  缓存机制：缓存ByteBuffer.allocateDirect()分配的缓冲区，减少频繁内存分配 jVM参数：虽然堆外内存不受JVM限制，但可通过 -XX:MaxDirectMemorySize设置直接内存最大使用量  直接内存 vs...</div></div></div></a><a class="pagination-related" href="/2025/10/13/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JVM/11.Java%E5%B8%B8%E9%87%8F%E6%B1%A0/" title="11.Java常量池"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-13</div><div class="info-item-2">11.Java常量池</div></div><div class="info-2"><div class="info-item-1">常量池是存储运行时常量 &#x2F; 符号的区域，他有两块：  运行时常量池：每个类&#x2F;接口的class编译生成的常量信息，通过类加载进入JVM方法区（JDK8是MetaSpace，之前是PermGen永久代） 字符串常量池：存储字符串，通过String类的intern方法可以将字符串加入字符串常量池或者已经存在的化，获取对应常量池引用（JDK7及以后字符串常量池在堆中，之前是和运行时常量池在一块）  拓展 创建字符串：  String s &#x3D; “hello”，存储在常量池中 String s &#x3D; new String(“hello”)，无论是否常量池有hello，堆中必创建该String对象实例  运行时常量池的内容：  基本数据类型字面量 类和接口引用 方法&#x2F;字段的符号引用（用于动态连接）  intern方法：将字符串加入字符串常量中，如果池中已存在，则返回池引用，否则就加入 String str1 = new String(&quot;abc&quot;);String str2 =...</div></div></div></a><a class="pagination-related" href="/2025/10/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JVM/12.%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/" title="12.类加载器"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-14</div><div class="info-item-2">12.类加载器</div></div><div class="info-2"><div class="info-item-1">类加载器ClassLoader是JVM动态加载类的组件，将.class文件字节码加载到内存中，并转换成class对象，以供JVM执行。 具体地：  动态加载类：运行时根据需要加载类，而不是在编译时加载所有类 隔离类命名空间：通过不同类加载器，隔离同名类，使得不会相互冲突  	  扩展  启动类加载器BootStrap ClassLoader:  基于C++（JDK9之后是java）实现，是根加载类 加载&lt;JAVA_HOME&gt;\lib目录 &#x2F; 被 -Xbootclasspath指定路径中被虚拟机识别的文件   扩展类加载器Extension ClassLoader： 独立于JVM，基于java实现 加载&lt;JAVA_HOME&gt;\lib\ext目录 &#x2F; 被java.ext.dirs系统变量指定的路径类库 JDK9后，原先的rt.jar等拆成了jmod文件，引入模块化机制，此时去除了而ext目录，重命名为平台类加载器PlantClassLoader，加载module-info.java定义的类   应用程序类加载器Application...</div></div></div></a><a class="pagination-related" href="/2025/10/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JVM/13.JIT(Just-In-Time)/" title="13.JIT(Just-In-Time)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-14</div><div class="info-item-2">13.JIT(Just-In-Time)</div></div><div class="info-2"><div class="info-item-1">JIT（即时编译）：在程序运行时将字节码转换成字节码的技术，因为是在程序运行时进行，因此叫Just-In-Time  当java发现热点代码时，就会将该代码编译成机器码，减少解释执行的开销，使得更接近本地代码的性能  拓展  热点代码：是JIT重点优化热点代码（多次调用&#x2F;循环执行的代码），通过分析代码执行频率，JIT可以识别这些热点并优化编译 具体优化编译技术：方法内联（Inlining）、逃逸分析（Escape Analysis）、循环展开（Loop Unrolling）    JIT编译类型：  C1（Client Compiler）：客户端应用程序，适合快速启动的轻量级的优化 C2（Server Compiler）：服务端应用程序，适合长时间运行的重度优化  JiT调优：-XX:+PrintComplation输出编译信息，-XX:TieredStopAtLevel控制JIT编译级别等，实现在启动时间和运行性能之间的平衡。  拓展：AOT  </div></div></div></a><a class="pagination-related" href="/2025/10/14/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/JVM/14.JIT%E7%BC%96%E8%AF%91%E5%90%8E%E4%BB%A3%E7%A0%81%E6%94%BE%E5%9C%A8%E5%93%AA/" title="14.JIT编译后代码放在哪"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-14</div><div class="info-item-2">14.JIT编译后代码放在哪</div></div><div class="info-2"><div class="info-item-1">JIT编译后的机器码在Code Cache（代码缓存区 不是在堆内） JVM提供参数调整Code Cache起始大小、最大大小等  -XX:InitialCodeCacheSize -XX:ReservedCodeCacheSize -XX:+PrintCodeCache Code Cache编译信息  拓展 code cache有以下特点：  固定大小：大小由JVM配置（有最大值），默认大小依赖JVM版本和运行环境（HotSpot JVM在java8默认是48MB） 分层结构：Java8引入分层编译（Tiered Compilation）机制，Code Cache分成多个区域，存储不同级别的编译代码： 非方法代码（Non-method Code）：JVM调试代码 &#x2F; 模板代码 方法代码（Method Code）：存储普通JIT编译代码 轮廓代码（Profile Code）：优化级别更高的代码    查看本地的Code Cache配置 (base) ljy@TP-T480S:~$ java -XX:+PrintFlagsFinal -version | grep...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#ZGC%E6%A6%82%E8%A7%88"><span class="toc-text">ZGC概览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ZGC%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90"><span class="toc-text">ZGC过程分析</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

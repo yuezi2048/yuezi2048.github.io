@@ -1,0 +1,396 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>POWERec(模态提示+弱模态增强) | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="POWERec论文总结当前领域存在的问题 多模态用户兴趣建模效率低：现有方法为每个用户在不同模态上使用独立的嵌入向量，忽略了不同模态间用户兴趣的潜在关联，且显著增加了内存开销。 弱模态学习不足：现有方法无法确保所有模态的用户兴趣都被充分学习，某些模态（弱模态）可能学习不足，导致预测不可靠，影响最终推荐效果。  现有做法 早期融合方法：先将物品的多模态特征融合为一个嵌入向量，再基于该向量预测用户评分">
+<meta property="og:type" content="article">
+<meta property="og:title" content="POWERec(模态提示+弱模态增强)">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/07/19/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/POWERec(%E6%A8%A1%E6%80%81%E6%8F%90%E7%A4%BA+%E5%BC%B1%E6%A8%A1%E6%80%81%E5%A2%9E%E5%BC%BA)/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="POWERec论文总结当前领域存在的问题 多模态用户兴趣建模效率低：现有方法为每个用户在不同模态上使用独立的嵌入向量，忽略了不同模态间用户兴趣的潜在关联，且显著增加了内存开销。 弱模态学习不足：现有方法无法确保所有模态的用户兴趣都被充分学习，某些模态（弱模态）可能学习不足，导致预测不可靠，影响最终推荐效果。  现有做法 早期融合方法：先将物品的多模态特征融合为一个嵌入向量，再基于该向量预测用户评分">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-07-19T07:35:59.000Z">
+<meta property="article:modified_time" content="2025-07-19T07:35:59.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="论文梳理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "POWERec(模态提示+弱模态增强)",
+  "url": "https://yuezi2048.github.io/2025/07/19/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/POWERec(%E6%A8%A1%E6%80%81%E6%8F%90%E7%A4%BA+%E5%BC%B1%E6%A8%A1%E6%80%81%E5%A2%9E%E5%BC%BA)/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-07-19T07:35:59.000Z",
+  "dateModified": "2025-07-19T07:35:59.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/07/19/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/POWERec(%E6%A8%A1%E6%80%81%E6%8F%90%E7%A4%BA+%E5%BC%B1%E6%A8%A1%E6%80%81%E5%A2%9E%E5%BC%BA)/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'POWERec(模态提示+弱模态增强)',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">POWERec(模态提示+弱模态增强)</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">POWERec(模态提示+弱模态增强)</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-07-19T07:35:59.000Z" title="发表于 2025-07-19 15:35:59">2025-07-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-07-19T07:35:59.000Z" title="更新于 2025-07-19 15:35:59">2025-07-19</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/">science</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/">小论文准备</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/">论文复现总结</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/">论文梳理</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>8分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="POWERec论文总结"><a href="#POWERec论文总结" class="headerlink" title="POWERec论文总结"></a>POWERec论文总结</h1><h2 id="当前领域存在的问题"><a href="#当前领域存在的问题" class="headerlink" title="当前领域存在的问题"></a>当前领域存在的问题</h2><ol>
+<li><strong>多模态用户兴趣建模效率低</strong>：现有方法为每个用户在不同模态上使用独立的嵌入向量，忽略了不同模态间用户兴趣的潜在关联，且显著增加了内存开销。</li>
+<li><strong>弱模态学习不足</strong>：现有方法无法确保所有模态的用户兴趣都被充分学习，某些模态（弱模态）可能学习不足，导致预测不可靠，影响最终推荐效果。</li>
+</ol>
+<h2 id="现有做法"><a href="#现有做法" class="headerlink" title="现有做法"></a>现有做法</h2><ol>
+<li><strong>早期融合方法</strong>：先将物品的多模态特征融合为一个嵌入向量，再基于该向量预测用户评分。缺点是无法建模用户对不同模态的特定兴趣。</li>
+<li><strong>晚期融合方法</strong>：先分别学习用户对每个模态的评分（模态特定用户评分），再融合这些评分得到最终评分。虽然性能较好，但仍存在上述两个问题。</li>
+</ol>
+<h2 id="本文提出的方法（POWERec）"><a href="#本文提出的方法（POWERec）" class="headerlink" title="本文提出的方法（POWERec）"></a>本文提出的方法（POWERec）</h2><p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250719151959436.png" alt="image-20250719151959436">	</p>
+<h3 id="1-基于提示的多模态用户兴趣学习（Multimodal-Prompted-User-Interest-Learning）"><a href="#1-基于提示的多模态用户兴趣学习（Multimodal-Prompted-User-Interest-Learning）" class="headerlink" title="1. 基于提示的多模态用户兴趣学习（Multimodal Prompted User Interest Learning）"></a>1. 基于提示的多模态用户兴趣学习（Multimodal Prompted User Interest Learning）</h3><ul>
+<li><strong>基准模型</strong>：使用单一用户嵌入向量作为基础用户表示。</li>
+<li><strong>创新点</strong>：<ul>
+<li><strong>模态提示（Modality Prompts）</strong>：为每个模态设计少量可学习的提示嵌入向量（Prompt Embeddings），通过将提示向量与基础用户嵌入相加，生成不同模态的用户表示。</li>
+<li><strong>作用</strong>：通过共享的基础用户嵌入和模态特定的提示，既建模了模态间的关联，又减少了内存开销。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-弱模态增强训练（Weak-Modality-Enhanced-Training）"><a href="#2-弱模态增强训练（Weak-Modality-Enhanced-Training）" class="headerlink" title="2. 弱模态增强训练（Weak-Modality Enhanced Training）"></a>2. 弱模态增强训练（Weak-Modality Enhanced Training）</h3><ul>
+<li><strong>创新点</strong>：<ul>
+<li><strong>弱模态识别</strong>：计算用户对正负物品在每个模态上的评分差异，差异最小的模态被识别为弱模态。</li>
+<li><strong>硬负样本生成</strong>：构造一个仅在弱模态上与正样本不同的硬负样本。</li>
+<li><strong>弱模态正则化</strong>：通过优化目标函数，强制模型在弱模态上更好地区分正样本和硬负样本。</li>
+</ul>
+</li>
+<li><strong>作用</strong>：增强弱模态的用户兴趣学习，确保所有模态的预测都可靠。</li>
+</ul>
+<h2 id="实验效果"><a href="#实验效果" class="headerlink" title="实验效果"></a>实验效果</h2><p>在Amazon的Baby和Clothing数据集上，POWERec显著优于现有方法（如DualGNN、SLMRec等），同时减少了内存开销。例如，在Clothing数据集上，Recall@10提升了1.8%，NDCG@10提升了1.7%。</p>
+<h2 id="代码地址"><a href="#代码地址" class="headerlink" title="代码地址"></a>代码地址</h2><p><a target="_blank" rel="noopener" href="https://github.com/hello-dx/POWERec">GitHub代码链接</a></p>
+<p>以下是针对论文《Prompt-based and weak-modality enhanced multimodal recommendation》的方法步骤总结，包含关键公式和流程：</p>
+<hr>
+<h3 id="方法步骤总结"><a href="#方法步骤总结" class="headerlink" title="方法步骤总结"></a><strong>方法步骤总结</strong></h3><h4 id="1-问题定义"><a href="#1-问题定义" class="headerlink" title="1. 问题定义"></a><strong>1. 问题定义</strong></h4><ul>
+<li><strong>输入</strong>：<ul>
+<li>用户集合 $\mathcal{U}$，物品集合 $\mathcal{I}$，模态集合 $\mathcal{M}$。</li>
+<li>每个用户 $u \in \mathcal{U}$ 有历史交互物品 $\mathcal{I}_u$。</li>
+<li>每个物品 $i \in \mathcal{I}$ 有多模态特征 ${f_i^m | m &#x3D; 1, …, |\mathcal{M}|}$，其中 $f_i^m$ 是第 $m$ 个模态的特征。</li>
+</ul>
+</li>
+<li><strong>目标</strong>：基于用户交互和多模态特征预测用户对物品的评分 $y_{u,i}$。</li>
+</ul>
+<h4 id="2-方法框架（POWERec）"><a href="#2-方法框架（POWERec）" class="headerlink" title="2. 方法框架（POWERec）"></a><strong>2. 方法框架（POWERec）</strong></h4><p>框架包含两个核心组件：</p>
+<ol>
+<li><strong>多模态提示用户兴趣学习（Multimodal Prompted User Interest Learning）</strong></li>
+<li><strong>弱模态增强训练（Weak-Modality Enhanced Training）</strong></li>
+</ol>
+<hr>
+<h3 id="2-1-多模态提示用户兴趣学习"><a href="#2-1-多模态提示用户兴趣学习" class="headerlink" title="2.1 多模态提示用户兴趣学习"></a><strong>2.1 多模态提示用户兴趣学习</strong></h3><h4 id="a-物品多模态嵌入（Item-Multimodal-Embedding）"><a href="#a-物品多模态嵌入（Item-Multimodal-Embedding）" class="headerlink" title="(a) 物品多模态嵌入（Item Multimodal Embedding）"></a><strong>(a) 物品多模态嵌入（Item Multimodal Embedding）</strong></h4><ol>
+<li><p><strong>模态特征编码</strong>：对物品 $i$ 的第 $m$ 个模态特征 $f_i^m$，通过多层感知机（MLP）映射到 $d$ 维空间：<br>$$<br>e_i^m &#x3D; \text{Tanh}(W_2^m (\text{Tanh}(W_1^m f_i^m + b_1^m)) + b_2^m)<br>$$<br>其中 $W_l^m, b_l^m$ 是第 $m$ 个模态的MLP参数，$\text{Tanh}$ 是激活函数。</p>
+</li>
+<li><p><strong>多模态拼接</strong>：将所有模态嵌入拼接为物品的多模态嵌入：<br>$$<br>e_i &#x3D; [e_i^1, …, e_i^{|\mathcal{M}|}]<br>$$</p>
+</li>
+</ol>
+<h4 id="b-用户多模态嵌入（User-Multimodal-Embedding）"><a href="#b-用户多模态嵌入（User-Multimodal-Embedding）" class="headerlink" title="(b) 用户多模态嵌入（User Multimodal Embedding）"></a><strong>(b) 用户多模态嵌入（User Multimodal Embedding）</strong></h4><ol>
+<li><strong>基础用户嵌入</strong>：每个用户 $u$ 用一个共享的基础嵌入 $f_u \in \mathbb{R}^d$ 表示。</li>
+<li><strong>模态提示（Modality Prompts）</strong>：<ul>
+<li>为每个模态 $m$ 定义可学习的提示嵌入 $P^m &#x3D; [p_1^m, …, p_Q^m]$（$Q$ 是提示数量）。</li>
+<li>通过提示调整基础嵌入，得到模态特定的用户嵌入：<br>$$<br>e_u^m &#x3D; f_u + \text{sum}(P^m)<br>$$<br>其中 $\text{sum}(P^m)$ 是提示嵌入的元素求和。</li>
+</ul>
+</li>
+<li><strong>多模态拼接</strong>：<br>$$<br>e_u &#x3D; [e_u^1, …, e_u^{|\mathcal{M}|}]<br>$$</li>
+</ol>
+<h4 id="c-用户-物品交互建模"><a href="#c-用户-物品交互建模" class="headerlink" title="(c) 用户-物品交互建模"></a><strong>(c) 用户-物品交互建模</strong></h4><ol>
+<li><strong>模态特定评分</strong>：对每个模态 $m$，用交互函数 $\mathcal{F}$（如BPR或LightGCN）预测评分：<br>$$<br>y_{u,i}^m \leftarrow \mathcal{F}(e_u^m, e_i^m)<br>$$</li>
+<li><strong>最终评分</strong>：融合所有模态评分：<br>$$<br>y_{u,i} &#x3D; \sum_m y_{u,i}^m<br>$$</li>
+</ol>
+<hr>
+<h3 id="2-2-弱模态增强训练"><a href="#2-2-弱模态增强训练" class="headerlink" title="2.2 弱模态增强训练"></a><strong>2.2 弱模态增强训练</strong></h3><h4 id="a-基础BPR损失"><a href="#a-基础BPR损失" class="headerlink" title="(a) 基础BPR损失"></a><strong>(a) 基础BPR损失</strong></h4><ul>
+<li>构建训练三元组 $(u, i, k)$，其中 $i$ 是正样本，$k$ 是负样本。</li>
+<li>优化目标：<br>$$<br>\mathcal{L}<em>{\text{bpr}} &#x3D; -\sum</em>{(u,i,k) \in \mathcal{D}} \log \sigma(y_{u,i} - y_{u,k})<br>$$<br>其中 $\sigma$ 是sigmoid函数。</li>
+</ul>
+<h4 id="b-弱模态正则化"><a href="#b-弱模态正则化" class="headerlink" title="(b) 弱模态正则化"></a><strong>(b) 弱模态正则化</strong></h4><ol>
+<li><p><strong>弱模态识别</strong>：</p>
+<ul>
+<li>计算正负样本在每个模态的评分差异：<br>$$<br>d_{u,ik}^m &#x3D; y_{u,i}^m - y_{u,k}^m<br>$$</li>
+<li>选择差异最小的模态为弱模态：<br>$$<br>m^*_{u,ik} &#x3D; \arg\min([d_{u,ik}^1, …, d_{u,ik}^{|\mathcal{M}|}])<br>$$</li>
+</ul>
+</li>
+<li><p><strong>硬负样本生成</strong>：</p>
+<ul>
+<li>构造硬负样本 $k^<em>$，仅替换正样本 $i$ 在弱模态 $m^</em>$ 的嵌入：<br>$$<br>e_{k^<em>} &#x3D; [e_i^1, …, e_k^{m^</em>}, …, e_i^{|\mathcal{M}|}]<br>$$</li>
+</ul>
+</li>
+<li><p><strong>弱模态正则化损失</strong>：<br>$$<br>\mathcal{L}<em>{\text{weak}} &#x3D; -\sum</em>{(u,i,k^<em>) \in \mathcal{D}} \log \sigma(y_{u,i} - y_{u,k^</em>})<br>$$</p>
+</li>
+</ol>
+<h4 id="c-总损失函数"><a href="#c-总损失函数" class="headerlink" title="(c) 总损失函数"></a><strong>(c) 总损失函数</strong></h4><p>$$<br>\mathcal{L} &#x3D; \min_\Theta (\mathcal{L}<em>{\text{bpr}} + \alpha \mathcal{L}</em>{\text{weak}} + \beta |\Theta|^2)<br>$$<br>其中 $\alpha$ 和 $\beta$ 是超参数，$\Theta$ 为模型参数。</p>
+<hr>
+<h3 id="3-关键创新点"><a href="#3-关键创新点" class="headerlink" title="3. 关键创新点"></a><strong>3. 关键创新点</strong></h3><ol>
+<li><strong>模态提示学习</strong>：用共享用户嵌入+模态提示高效建模多模态兴趣，减少内存开销。</li>
+<li><strong>弱模态增强</strong>：通过硬负样本增强弱模态的学习，平衡多模态表现。</li>
+</ol>
+<hr>
+<h3 id="4-实验设置"><a href="#4-实验设置" class="headerlink" title="4. 实验设置"></a><strong>4. 实验设置</strong></h3><ul>
+<li><strong>数据集</strong>：Amazon Baby和Clothing。</li>
+<li><strong>评估指标</strong>：Recall@N和NDCG@N（N&#x3D;10,20）。</li>
+<li><strong>基线模型</strong>：VBPR、MMGCN、GRCN、SLMRec、DualGNN。</li>
+<li><strong>超参数</strong>：<ul>
+<li>提示数量 $Q \in {1,2,3,4,5}$。</li>
+<li>$\alpha&#x3D;0.01$, $\beta&#x3D;1$。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="5-结果"><a href="#5-结果" class="headerlink" title="5. 结果"></a><strong>5. 结果</strong></h3><ul>
+<li>POWERec在多数指标上优于基线，且参数量更少（见表2）。</li>
+<li>消融实验验证了模态提示和弱模态正则化的有效性（见表3）。</li>
+<li>可视化显示弱模态增强后评分差异显著提升（见图3）。</li>
+</ul>
+<hr>
+<p>以上内容可直接粘贴到文档中，公式已用 <code>$$</code> 标注。</p>
+<h3 id="实验结论总结与对应图表分析"><a href="#实验结论总结与对应图表分析" class="headerlink" title="实验结论总结与对应图表分析"></a><strong>实验结论总结与对应图表分析</strong></h3><h4 id="1-主要实验结论"><a href="#1-主要实验结论" class="headerlink" title="1. 主要实验结论"></a><strong>1. 主要实验结论</strong></h4><ol>
+<li><p><strong>POWERec的有效性（RQ1）</strong>  </p>
+<ul>
+<li>POWERec在Baby和Clothing数据集上均取得了最佳性能（Recall@10和NDCG@10），显著优于基线方法（如VBPR、MMGCN、DualGNN等）。  </li>
+<li><strong>原因</strong>：  <ul>
+<li>通过共享的基础用户嵌入（single user embedding）和模态提示（modality prompts）建模多模态用户兴趣，减少了参数数量（Memory Cost更低）。  </li>
+<li>弱模态增强训练（WE）通过惩罚不可靠模态的预测，提升了整体推荐性能。</li>
+</ul>
+</li>
+<li><strong>对应图表</strong>：  <ul>
+<li><strong>表2</strong>：POWERec在Baby和Clothing数据集上的Recall@N和NDCG@N均优于基线方法（如Baby数据集上NDCG@10提升3.1%）。  </li>
+<li><strong>参数效率</strong>：POWERec的参数量（2.0 MB）显著低于DualGNN（3.7 MB）。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>模块消融实验（RQ2）</strong>  </p>
+<ul>
+<li><strong>多模态提示学习（PO）</strong>：  <ul>
+<li>PORec（仅含PO）优于BaseRec（无PO），证明模态提示能有效建模用户的多模态兴趣。  </li>
+<li><strong>表3</strong>：在Baby数据集上，PORec的NDCG@10比BaseRec提升8.3%。</li>
+</ul>
+</li>
+<li><strong>弱模态增强训练（WE）</strong>：  <ul>
+<li>POWERec（PO+WE）进一步优于PORec（仅PO），表明WE能提升弱模态的学习效果。  </li>
+<li><strong>图3(b)</strong>：WE使得所有模态的用户评分差异（positive vs. negative）均大于0，说明弱模态兴趣被有效增强。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>超参数分析（RQ3）</strong>  </p>
+<ul>
+<li><strong>权衡参数α</strong>：  <ul>
+<li><strong>图2(a)(b)</strong>：α&#x3D;0.01时性能最佳，过大（α&#x3D;1）会因过度关注硬负样本（hard negatives）而损害整体性能。</li>
+</ul>
+</li>
+<li><strong>提示嵌入数量Q</strong>：  <ul>
+<li><strong>图2(c)(d)</strong>：Baby数据集上Q&#x3D;3时最佳，而Clothing数据集上Q&#x3D;1足够，说明模态差异大的场景需要更多提示嵌入。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>弱模态增强的可视化验证（RQ4）</strong>  </p>
+<ul>
+<li><strong>图3(a)(b)</strong>：  <ul>
+<li>PORec在模态2（视觉）和模态3（文本）的评分差异接近0，表明存在弱模态。  </li>
+<li>POWERec通过WE显著提升了弱模态的评分差异。</li>
+</ul>
+</li>
+<li><strong>图3(c)(d)</strong>：  <ul>
+<li>POWERec能更好区分正样本和硬负样本（hard negatives），验证了WE的有效性。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="2-关键图表对应关系"><a href="#2-关键图表对应关系" class="headerlink" title="2. 关键图表对应关系"></a><strong>2. 关键图表对应关系</strong></h4><table>
+<thead>
+<tr>
+<th><strong>研究问题</strong></th>
+<th><strong>图表</strong></th>
+<th><strong>结论</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RQ1</td>
+<td>表2</td>
+<td>POWERec在性能和参数效率上均优于基线方法。</td>
+</tr>
+<tr>
+<td>RQ2</td>
+<td>表3、图3(a)(b)</td>
+<td>PO和WE模块均对性能有正向贡献，WE能显著提升弱模态的学习效果。</td>
+</tr>
+<tr>
+<td>RQ3</td>
+<td>图2(a)(b)(c)(d)</td>
+<td>α&#x3D;0.01和Q&#x3D;3（Baby）&#x2F;Q&#x3D;1（Clothing）为最优超参数。</td>
+</tr>
+<tr>
+<td>RQ4</td>
+<td>图3(c)(d)</td>
+<td>WE使模型能更好区分正样本和硬负样本，验证了弱模态增强的机制有效性。</td>
+</tr>
+</tbody></table>
+<h4 id="3-核心贡献总结"><a href="#3-核心贡献总结" class="headerlink" title="3. 核心贡献总结"></a><strong>3. 核心贡献总结</strong></h4><ol>
+<li><strong>多模态提示学习（PO）</strong>：  <ul>
+<li>通过共享用户嵌入+模态提示，高效建模多模态兴趣，减少内存开销。</li>
+</ul>
+</li>
+<li><strong>弱模态增强训练（WE）</strong>：  <ul>
+<li>识别并增强不可靠模态（weak modality）的兴趣学习，提升整体鲁棒性。</li>
+</ul>
+</li>
+<li><strong>通用性</strong>：  <ul>
+<li>PO和WE可部署到现有方法（如DualGNN），进一步提升性能（表3中POWEDualGNN优于DualGNN）。</li>
+</ul>
+</li>
+</ol>
+<h4 id="4-未来方向"><a href="#4-未来方向" class="headerlink" title="4. 未来方向"></a><strong>4. 未来方向</strong></h4><ul>
+<li>当前假设硬负样本均为真实负样本，未来需处理假负样本（false negatives）的噪声问题。</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/07/19/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/POWERec(%E6%A8%A1%E6%80%81%E6%8F%90%E7%A4%BA+%E5%BC%B1%E6%A8%A1%E6%80%81%E5%A2%9E%E5%BC%BA)/">https://yuezi2048.github.io/2025/07/19/2.Areas🌐/science/小论文准备/论文复现总结/论文梳理/POWERec(模态提示+弱模态增强)/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/">论文梳理</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/07/17/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/GUIDER(%E5%9F%BA%E4%BA%8EOT%E7%9F%A5%E8%AF%86%E8%92%B8%E9%A6%8F%E5%8E%BB%E5%99%AA)/" title="GUIDER(基于OT知识蒸馏去噪)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">GUIDER(基于OT知识蒸馏去噪)</div></div><div class="info-2"><div class="info-item-1">论文总结：《Teach Me How to Denoise: A Universal Framework for Denoising Multi-modal Recommender Systems via Guided...</div></div></div></a><a class="pagination-related" href="/2025/07/19/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E5%8F%AF%E8%83%BD%E4%BC%9A%E7%94%A8%E5%88%B0%E7%9A%84%E6%A8%A1%E5%9D%97/%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/" title="问题总结"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">问题总结</div></div><div class="info-2"><div class="info-item-1"> In multimodal domains, semantic differences limit feature expressiveness, impacting model performance (BeFA：Khurana et al. 2023; Rinaldi, Russo, and Tommasino 2023) the goal of multimodal recommendation is to predict user preferences instead of understanding multimodal content（CHOESION） the BPR loss can only supervise the final user rating learning, but cannot optimize each modality-specific rating learning（CHOSION POWERec） The coarse-grained attributes represent commonalities among items,...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/07/17/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/BeFA(%E8%A1%8C%E4%B8%BA%E5%BC%95%E5%AF%BC%E7%9A%84%E7%89%B9%E5%BE%81%E9%87%8D%E6%9E%84)/" title="BeFA(行为引导的特征重构)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-17</div><div class="info-item-2">BeFA(行为引导的特征重构)</div></div><div class="info-2"><div class="info-item-1">科研小白友好版论文总结当前领域存在的问题多媒体推荐系统通常使用预训练的特征编码器提取内容特征，但这些编码器会同时提取内容中的所有信息(包括大量与用户偏好无关的细节)，导致提取的特征可能无法准确反映用户偏好。 现有做法及其局限性现有方法通常：  使用预训练编码器提取内容特征 将这些内容特征与行为特征融合来建模用户偏好  局限性：预提取的内容特征存在”信息漂移”(包含错误&#x2F;无关信息)和”信息遗漏”(缺少关键信息)问题，影响推荐准确性。  futhermore, author introduce a similarity-based visual attribution method, which enables researchers to visually analyze the quality of content features for the first...</div></div></div></a><a class="pagination-related" href="/2025/07/21/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/CHOESION(%E6%97%A9%E6%99%9A%E6%9C%9F%E5%8F%8C%E9%98%B6%E6%AE%B5%E8%9E%8D%E5%90%88+%E5%A4%8D%E5%90%88GCN)/" title="CHOESION(早晚期双阶段融合+复合GCN)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-21</div><div class="info-item-2">CHOESION(早晚期双阶段融合+复合GCN)</div></div><div class="info-2"><div class="info-item-1">多模态推荐系统研究总结当前领域存在的问题 模态融合效果不佳：现有的多模态推荐系统在融合不同模态信息时，通常采用简单的注意力机制或预定义的策略，无法有效处理不同模态之间的无关信息。  表示学习受限：虽然已有研究构建了用户-物品、用户-用户和物品-物品的图结构来学习表示，但模态融合和表示学习通常被视为两个独立的过程，未能充分利用它们之间的互补关系。   现有做法 模态融合方面：  早期融合：在构建异构图之前就将模态特征与ID嵌入融合 晚期融合：先学习每个模态的表示，最后再融合所有预测评分   表示学习方面：  构建用户-物品二分图并使用图卷积网络(GCN)增强表示学习 一些工作尝试构建用户-用户图或物品-物品图来探索隐藏关系    现有做法仍存在的问题 预定义的融合策略对模态间无关信息的负面影响较为脆弱 模态融合和表示学习被视为独立过程，未能充分利用它们的互补关系 简单的图结构设计可能无法充分捕捉用户和物品之间的复杂关系  本文提出的方法(COHESION)​	 1. 双阶段融合策略(Dual-Stage...</div></div></div></a><a class="pagination-related" href="/2025/07/17/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/CMDL(%E6%A8%A1%E6%80%81%E8%A7%A3%E8%80%A6%E5%85%B1%E4%BA%AB%E5%92%8C%E7%89%B9%E6%9C%89+%E5%9F%BA%E4%BA%8EMI%E6%AD%A3%E5%88%99%E5%8C%96)/" title="CMDL(模态解耦共享和特有+基于MI正则化)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-17</div><div class="info-item-2">CMDL(模态解耦共享和特有+基于MI正则化)</div></div><div class="info-2"><div class="info-item-1">论文总结：对比性模态解耦学习用于多模态推荐当前领域存在的问题现有的多模态推荐方法主要关注设计强大的编码器来提取多模态特征，并简单地聚合这些特征进行预测。这些方法在捕捉跨模态知识（包括模态共享知识和模态特有知识）方面能力有限。实际上：  学习模态共享知识可以帮助对齐跨模态数据，融合异构模态特征 学习模态特有知识同样重要，特别是当推荐任务只涉及少量共享特征时，必要信息可能包含在特定模态中  现有方法及其局限性大多数现有方法（如MMGCN、LATTICE等）：  专注于设计强大的特征编码器 简单聚合不同模态学习到的特征 无法有效区分和捕捉模态共享和模态特有知识  现有方法的主要局限性是缺乏有效的统计约束来确保：  解耦后的表示在统计上相互独立 模态不变表示能尽可能多地捕捉跨模态共享信息  本文提出的方法：CMDL	 本文提出了对比性模态解耦学习(CMDL)框架，包含以下关键创新： 1. 多模态特征预处理(AA)基准模型：MGCN’...</div></div></div></a><a class="pagination-related" href="/2025/07/17/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/DGMRec(%E6%A8%A1%E6%80%81%E8%A7%A3%E8%80%A6%E5%85%B1%E4%BA%AB%E5%92%8C%E7%89%B9%E6%9C%89+%E6%A8%A1%E6%80%81%E7%94%9F%E6%88%90)/" title="DGMRec(模态解耦共享和特有+模态生成)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-17</div><div class="info-item-2">DGMRec(模态解耦共享和特有+模态生成)</div></div><div class="info-2"><div class="info-item-1">...</div></div></div></a><a class="pagination-related" href="/2025/07/21/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/DGVAE(FREEDOM+DGVAE+MIM)/" title="DGVAE(FREEDOM+DGVAE+MIM)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-21</div><div class="info-item-2">DGVAE(FREEDOM+DGVAE+MIM)</div></div><div class="info-2"><div class="info-item-1">多模态推荐系统可解释性研究总结当前领域存在的问题当前多模态推荐系统虽然能结合文本、图像等多种信息提高推荐准确性，但存在一个关键问题：这些系统使用复杂的数字向量来表示用户和物品，导致推荐结果难以解释。用户无法理解为什么系统会推荐某个物品，降低了系统的可信度和实用性。 现有做法现有方法主要通过以下几种方式处理多模态信息：  简单拼接或求和：将预处理后的多模态信息与可学习的物品嵌入向量结合 注意力机制：更精确地捕捉用户对物品的偏好 图神经网络：利用图结构捕捉物品多模态特征与用户-物品交互间的高阶关系  但这些方法都依赖数字嵌入表示用户和物品，缺乏可解释性。 现有做法仍存在的问题尽管现有方法在推荐准确性上表现不错，但存在以下问题：  可解释性差：用户无法理解推荐背后的原因 工业应用受限：缺乏解释性阻碍了在实际业务中的应用 信任度低：用户对”黑箱”推荐缺乏信任  本文提出的方法：DGVAE本文提出了一种解耦图变分自编码器(DGVAE)，主要包含以下创新点： 		 1....</div></div></div></a><a class="pagination-related" href="/2025/07/17/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/DSGRec(4%E5%8C%BA%20%E6%A8%A1%E6%80%81%E8%A7%A3%E8%80%A6ID%E5%92%8C%E6%A8%A1%E6%80%81+%E8%B6%85%E5%9B%BE%E5%A2%9E%E5%BC%BA)/" title="DSGRec(4区 模态解耦ID和模态+超图增强)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-17</div><div class="info-item-2">DSGRec(4区 模态解耦ID和模态+超图增强)</div></div><div class="info-2"><div class="info-item-1">DSGRec论文总结当前领域存在的问题 单一路径建模问题：现有方法通常只通过单一途径（用户交互信号或多模态信息）来建模用户兴趣，无法全面捕捉用户行为的复杂性。例如，用户选择商品可能既受相似用户推荐（需求信号）影响，也受商品本身的视觉&#x2F;文本特征（偏好信号）影响。 信号协作不足问题：现有方法缺乏需求信号（CF信号）和偏好信号（MF信号）之间的细粒度协作。要么分开学习导致融合效果差，要么联合学习但可能产生优化方向冲突。  	 现有做法及局限现有方法主要分为两类：  分离学习法：先分别学习CF和MF的嵌入表示，再融合。问题：两个嵌入空间差异大，融合效果不佳。 联合学习法：在统一框架（如图神经网络）中同时学习CF和MF信号。问题：可能产生优化冲突。  这两类方法都无法适应真实场景中用户偏好可能由不同信号主导的情况。 	 本文提出的方法（DSGRec） LATTICE 等模型的多模态融合是 “混合式” 的（如将多模态特征作为节点属性融入交互图） 而 DSGRec 则是 “解耦式” 的：先独立提取 C-signals 和...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#POWERec%E8%AE%BA%E6%96%87%E6%80%BB%E7%BB%93"><span class="toc-text">POWERec论文总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BD%93%E5%89%8D%E9%A2%86%E5%9F%9F%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-text">当前领域存在的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%B0%E6%9C%89%E5%81%9A%E6%B3%95"><span class="toc-text">现有做法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AC%E6%96%87%E6%8F%90%E5%87%BA%E7%9A%84%E6%96%B9%E6%B3%95%EF%BC%88POWERec%EF%BC%89"><span class="toc-text">本文提出的方法（POWERec）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%9F%BA%E4%BA%8E%E6%8F%90%E7%A4%BA%E7%9A%84%E5%A4%9A%E6%A8%A1%E6%80%81%E7%94%A8%E6%88%B7%E5%85%B4%E8%B6%A3%E5%AD%A6%E4%B9%A0%EF%BC%88Multimodal-Prompted-User-Interest-Learning%EF%BC%89"><span class="toc-text">1. 基于提示的多模态用户兴趣学习（Multimodal Prompted User Interest Learning）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%BC%B1%E6%A8%A1%E6%80%81%E5%A2%9E%E5%BC%BA%E8%AE%AD%E7%BB%83%EF%BC%88Weak-Modality-Enhanced-Training%EF%BC%89"><span class="toc-text">2. 弱模态增强训练（Weak-Modality Enhanced Training）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E6%95%88%E6%9E%9C"><span class="toc-text">实验效果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%9C%B0%E5%9D%80"><span class="toc-text">代码地址</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E6%AD%A5%E9%AA%A4%E6%80%BB%E7%BB%93"><span class="toc-text">方法步骤总结</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E9%97%AE%E9%A2%98%E5%AE%9A%E4%B9%89"><span class="toc-text">1. 问题定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%96%B9%E6%B3%95%E6%A1%86%E6%9E%B6%EF%BC%88POWERec%EF%BC%89"><span class="toc-text">2. 方法框架（POWERec）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%A4%9A%E6%A8%A1%E6%80%81%E6%8F%90%E7%A4%BA%E7%94%A8%E6%88%B7%E5%85%B4%E8%B6%A3%E5%AD%A6%E4%B9%A0"><span class="toc-text">2.1 多模态提示用户兴趣学习</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#a-%E7%89%A9%E5%93%81%E5%A4%9A%E6%A8%A1%E6%80%81%E5%B5%8C%E5%85%A5%EF%BC%88Item-Multimodal-Embedding%EF%BC%89"><span class="toc-text">(a) 物品多模态嵌入（Item Multimodal Embedding）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#b-%E7%94%A8%E6%88%B7%E5%A4%9A%E6%A8%A1%E6%80%81%E5%B5%8C%E5%85%A5%EF%BC%88User-Multimodal-Embedding%EF%BC%89"><span class="toc-text">(b) 用户多模态嵌入（User Multimodal Embedding）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#c-%E7%94%A8%E6%88%B7-%E7%89%A9%E5%93%81%E4%BA%A4%E4%BA%92%E5%BB%BA%E6%A8%A1"><span class="toc-text">(c) 用户-物品交互建模</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E5%BC%B1%E6%A8%A1%E6%80%81%E5%A2%9E%E5%BC%BA%E8%AE%AD%E7%BB%83"><span class="toc-text">2.2 弱模态增强训练</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#a-%E5%9F%BA%E7%A1%80BPR%E6%8D%9F%E5%A4%B1"><span class="toc-text">(a) 基础BPR损失</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#b-%E5%BC%B1%E6%A8%A1%E6%80%81%E6%AD%A3%E5%88%99%E5%8C%96"><span class="toc-text">(b) 弱模态正则化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#c-%E6%80%BB%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="toc-text">(c) 总损失函数</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%85%B3%E9%94%AE%E5%88%9B%E6%96%B0%E7%82%B9"><span class="toc-text">3. 关键创新点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%AE%9E%E9%AA%8C%E8%AE%BE%E7%BD%AE"><span class="toc-text">4. 实验设置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E7%BB%93%E6%9E%9C"><span class="toc-text">5. 结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E7%BB%93%E8%AE%BA%E6%80%BB%E7%BB%93%E4%B8%8E%E5%AF%B9%E5%BA%94%E5%9B%BE%E8%A1%A8%E5%88%86%E6%9E%90"><span class="toc-text">实验结论总结与对应图表分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E4%B8%BB%E8%A6%81%E5%AE%9E%E9%AA%8C%E7%BB%93%E8%AE%BA"><span class="toc-text">1. 主要实验结论</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%85%B3%E9%94%AE%E5%9B%BE%E8%A1%A8%E5%AF%B9%E5%BA%94%E5%85%B3%E7%B3%BB"><span class="toc-text">2. 关键图表对应关系</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E6%A0%B8%E5%BF%83%E8%B4%A1%E7%8C%AE%E6%80%BB%E7%BB%93"><span class="toc-text">3. 核心贡献总结</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E6%9C%AA%E6%9D%A5%E6%96%B9%E5%90%91"><span class="toc-text">4. 未来方向</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

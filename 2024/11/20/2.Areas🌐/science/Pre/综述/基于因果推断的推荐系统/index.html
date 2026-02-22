@@ -1,0 +1,265 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>基于因果推断的推荐系统 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="基于因果推断的推荐系统去偏研究综述作者：杨新新、刘真、卢思博、袁亚凡、孙永奇发表刊物：《计算机学报》2024 年第 47 卷第 10 期研究背景：推荐系统在信息过载时代发挥重要作用，但存在多种偏差问题，如选择偏差、曝光偏差等，严重影响推荐性能。因果推断为解决这些问题提供了新途径，基于因果推断的推荐方法能有效缓解偏差，提高准确性、可靠性和可解释性123。  推荐系统的偏差问题及分类 数据阶段偏差 用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于因果推断的推荐系统">
+<meta property="og:url" content="https://yuezi2048.github.io/2024/11/20/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/%E5%9F%BA%E4%BA%8E%E5%9B%A0%E6%9E%9C%E6%8E%A8%E6%96%AD%E7%9A%84%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="基于因果推断的推荐系统去偏研究综述作者：杨新新、刘真、卢思博、袁亚凡、孙永奇发表刊物：《计算机学报》2024 年第 47 卷第 10 期研究背景：推荐系统在信息过载时代发挥重要作用，但存在多种偏差问题，如选择偏差、曝光偏差等，严重影响推荐性能。因果推断为解决这些问题提供了新途径，基于因果推断的推荐方法能有效缓解偏差，提高准确性、可靠性和可解释性123。  推荐系统的偏差问题及分类 数据阶段偏差 用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2024-11-20T06:36:41.000Z">
+<meta property="article:modified_time" content="2024-11-20T06:36:41.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="综述">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "基于因果推断的推荐系统",
+  "url": "https://yuezi2048.github.io/2024/11/20/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/%E5%9F%BA%E4%BA%8E%E5%9B%A0%E6%9E%9C%E6%8E%A8%E6%96%AD%E7%9A%84%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2024-11-20T06:36:41.000Z",
+  "dateModified": "2024-11-20T06:36:41.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2024/11/20/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/%E5%9F%BA%E4%BA%8E%E5%9B%A0%E6%9E%9C%E6%8E%A8%E6%96%AD%E7%9A%84%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '基于因果推断的推荐系统',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">基于因果推断的推荐系统</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">基于因果推断的推荐系统</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-11-20T06:36:41.000Z" title="发表于 2024-11-20 14:36:41">2024-11-20</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-11-20T06:36:41.000Z" title="更新于 2024-11-20 14:36:41">2024-11-20</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/">science</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/">Pre</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/">综述</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>8分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="基于因果推断的推荐系统去偏研究综述"><a href="#基于因果推断的推荐系统去偏研究综述" class="headerlink" title="基于因果推断的推荐系统去偏研究综述"></a>基于因果推断的推荐系统去偏研究综述</h1><p><strong>作者</strong>：杨新新、刘真、卢思博、袁亚凡、孙永奇<br><strong>发表刊物</strong>：《计算机学报》2024 年第 47 卷第 10 期<br><strong>研究背景</strong>：推荐系统在信息过载时代发挥重要作用，但存在多种偏差问题，如选择偏差、曝光偏差等，严重影响推荐性能。因果推断为解决这些问题提供了新途径，基于因果推断的推荐方法能有效缓解偏差，提高准确性、可靠性和可解释性123。</p>
+<ol>
+<li><strong>推荐系统的偏差问题及分类</strong><ul>
+<li><strong>数据阶段偏差</strong><ul>
+<li><strong>用户行为导致</strong><ul>
+<li><strong>选择偏差</strong>：用户自主选择评分，数据不能代表所有物品潜在评价，如电影评分平台用户倾向于给喜欢的电影评分4。</li>
+<li><strong>一致性偏差</strong>：用户评分受他人影响，不能反映真实兴趣，如从众心理导致评分趋同56。</li>
+</ul>
+</li>
+<li><strong>推荐系统导致</strong><ul>
+<li><strong>曝光偏差</strong>：算法使部分物品曝光，未曝光物品缺乏互动记录，推荐系统倾向推荐已曝光物品，如隐式反馈数据中用户行为只能反映曝光物品喜好7。</li>
+<li><strong>位置偏差</strong>：用户倾向与推荐列表顶部项目交互，影响推荐准确性和多样性，常见于基于排序的推荐系统8。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>算法阶段偏差</strong><ul>
+<li><strong>流行度偏差</strong>：推荐算法倾向推荐流行物品，减少低流行度但受喜爱物品的推荐机会，源于用户行为数据长尾分布和模型优化需求，损害推荐系统个性化9。</li>
+<li><strong>不公平性偏差</strong>：算法对特定群体偏袒或歧视，降低推荐准确性和多样性，引发社会问题，原因包括用户数据不平衡和算法本身偏差10。</li>
+<li><strong>反馈循环偏差</strong>：推荐系统循环中偏差放大，源于用户历史交互数据偏差与推荐模型结果偏差相互作用，导致马太效应1112。</li>
+</ul>
+</li>
+<li><strong>评估阶段偏差</strong><ul>
+<li><strong>离线评估偏差</strong>：离线评估数据集和指标与实际用户行为差异导致结果不一致，原因包括数据偏差、用户兴趣动态变化和评估指标单一13。</li>
+<li><strong>在线评估偏差</strong>：在线评估受外部和模型自身因素影响，用户反馈不能完全反映满意度和兴趣14。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>因果推断概述</strong><ul>
+<li><strong>因果推断框架</strong><ul>
+<li><strong>结构因果模型</strong>：基于图论，用有向无环图表示因果关系，通过干预挖掘数据机制，基础结构有链状、叉状和对撞结构，复杂结构可拆分，在推荐系统中用于分析变量因果关系1516。</li>
+<li><strong>潜在结果框架</strong>：基于反事实逻辑，通过比较不同干预下潜在结果估计因果效应，需满足稳定性、可忽略性和正值假设，与结构因果模型等价，应用角度各有特点171819。</li>
+</ul>
+</li>
+<li><strong>因果推断方法</strong><ul>
+<li><strong>逆倾向性得分</strong>：基于倾向分数加权，使处理组和对照组协变量分布相似，减少混淆因素影响，在推荐系统中用于修正损失函数缓解选择偏差，但依赖准确倾向性得分202148。</li>
+<li><strong>双重鲁棒性</strong>：结合倾向性评分和回归模型处理混淆因素，只要一个模型正确就能保证估计一致，比逆倾向性得分更鲁棒，但需建立准确关系模型，在推荐系统中用于提高估计准确性222324。</li>
+<li><strong>因果干预</strong>：通过修改变量值观察其他变量变化确定因果关系，使用 do 表达式计算干预效应，可通过后门准则估计，在推荐系统中用于消除混杂因素影响，如处理流行度偏差和反馈循环偏差，但因果关系假设验证困难252627。</li>
+<li><strong>反事实推理</strong>：回答假设性语句，描述不同因果条件下变量值，通过构建反事实场景探索未观测数据，减轻偏差，提高推荐系统可靠性和科学性，但依赖准确模型和假设282944。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>数据阶段的去偏方法</strong><ul>
+<li><strong>基于反事实空间构造的去偏方法</strong>：通过反事实推理生成反事实增强样本，结合原始样本训练，缓解数据缺失问题，提高推荐性能，但模型复杂、计算成本高。包括学习评分和增强序列两种形式，如利用三个非对称模型互相学习纠正的元学习方法、基于信息瓶颈的反事实学习模型等303132。</li>
+<li><strong>基于无偏数据的去偏方法</strong>：使用无偏数据辅助训练，提高推荐系统多样性和公平性，但无偏数据获取困难、成本高。如 CausE 方法使用无偏和有偏数据联合学习，KDCRec 框架从无偏数据中挖掘信息指导有偏数据模型训练33346。</li>
+<li><strong>其他方法</strong>：针对注意力偏差、时长偏差等新颖数据偏差，采用如引入神经决斗老虎机算法、因果图分析等方法解决，提高推荐准确性和公平性3536。</li>
+</ul>
+</li>
+<li><strong>算法阶段的去偏方法</strong><ul>
+<li><strong>基于因果表示学习的去偏方法</strong>：先用因果图建模，从向量角度干预混杂因素，学习无偏用户或项目向量推荐，包括学习解的因果表示和学习不变因果表示两种思路，能增强模型对用户行为理解，但计算成本高、依赖数据373839。</li>
+<li><strong>基于因果干预的去偏方法</strong>：利用因果图构建变量因果关系，通过后门调整或前门调整消除混淆因素，从宏观角度解决偏差，但因果关系假设验证难，如 PDA 模型平衡流行度偏差，DecRS 解决反馈循环偏差344041。</li>
+<li><strong>基于反事实推理的去偏方法</strong>：通过因果推断模拟用户不同行为，解决数据稀疏性等问题，广泛应用于去偏研究，但依赖准确模型假设，如 MACR 框架消除流行度偏差，构建反事实交互识别减弱虚假相关性424344。</li>
+<li><strong>其他方法</strong>：针对未观测混淆因素，引入代理变量和近因因果推断技术等提高模型准确性和鲁棒性，因果与深度学习结合捕捉复杂用户行为模式，还应用于新奇项推荐等场景454647。</li>
+</ul>
+</li>
+<li><strong>评估阶段的去偏方法</strong><ul>
+<li><strong>基于逆倾向性评分的去偏方法</strong>：如 IPS 方法基于倾向得分匹配加权调整观测结果，缓解选择偏差，但依赖准确倾向性得分，后续改进方法如 SNIPS 引入正则化项平衡权重，Joachims 利用倾向性权重解决位置偏差等484950。</li>
+<li><strong>基于双重鲁棒性的去偏方法</strong>：DR 方法结合倾向性得分和插值模型减轻偏差，具有更高鲁棒性，但模型复杂，受插值模型影响，后续研究不断改进，如开发通用学习框架、提出新方法平衡偏差和方差等515253。</li>
+<li><strong>其他方法</strong>：如 NCIS 通过建模估计量偏差改进离线评估，LTR 考虑在线干预影响纠正偏差，还有解决 MNAR 问题中正负样本偏差的方法等545556。</li>
+</ul>
+</li>
+<li><strong>开放性研究问题与展望</strong><ul>
+<li><strong>基于因果发现的去偏推荐方法</strong>：现有因果图构建存在问题，需从推荐数据中学习发现准确因果关系，可借助因果发现理论工具，增强推荐系统性能5758。</li>
+<li><strong>基于因果的通用性去偏推荐框架</strong>：多数去偏方法缺乏通用性，应设计全面解决多种偏差的框架，统一偏差来源，提高去偏通用性和自适应能力5960。</li>
+<li><strong>基于因果的鲁棒性去偏推荐方法</strong>：面对实际应用中的挑战，需利用因果推断构建更鲁棒稳定的模型，如因果表示学习可解决数据分布不一致问题6162。</li>
+<li><strong>基于因果对抗动态环境中的偏差问题</strong>：动态环境中用户行为变化影响推荐系统性能，因果推断可提供解决框架，模拟用户行为变化适应环境6364。</li>
+<li><strong>用于因果去偏推荐的数据集构建</strong>：现有数据集规模小，限制去偏方法应用，需构建更多现实世界数据集，加强研究单位和企业合作6566。</li>
+</ul>
+</li>
+</ol>
+<p>基于因果推断的推荐系统去偏研究取得了一定成果，但仍处于早期阶段，未来需要在因果发现、通用性框架、鲁棒性方法、动态环境适应和数据集构建等方面深入探索，以推动推荐系统发展。</p>
+<p><code>因果干预</code>：这就好比在一个花园里，原本某些花朵因为位置偏僻而很少被人注意到（类似于小众商品被推荐系统忽略），我们通过人为地将这些花朵移到显眼的位置（干预数据分布），观察人们是否会对它们产生更多兴趣，从而判断这些花朵本身是否具有吸引力（确定因果关系）。</p>
+<p><code>反事实推理</code>：通过比较实际发生的情况（推荐了歌曲并喜欢）和假设的反事实情况（没有推荐这首歌），我们可以评估推荐系统的推荐行为对用户喜好的因果效应，即推荐系统在多大程度上影响了你的选择。</p>
+<ul>
+<li><code>虚假相关性</code>：发现用户购买了某本书后，又购买了一支笔，看似两者有相关性，但实际上可能只是因为用户当时正好需要办公用品，而不是因为购买了书所以才购买笔，这就是一种虚假相关性</li>
+<li><code>因果关系</code>：如果用户因为对某个电影类型感兴趣，所以经常观看该类型的电影，并且因为观看了这些电影，系统又向他推荐了同类型的其他电影，这种因为用户兴趣导致观看行为，进而影响推荐结果的关系就是因果关系</li>
+</ul>
+<p><code>双重鲁棒性</code>：DR 的核心思想在于同时利用倾向性评分和回归模型处理混淆因素的影响。它先建立一个模型来估计处理（如推荐行为）和结果（如用户反馈）之间的关系，得到一个对结果的预测值，同时估计每个个体接受处理的概率（倾向分数）。然后根据倾向分数和模型预测值对每个个体的结果进行加权平均，从而得到处理组和对照组的平均结果，以此推断处理对结果的影响。例如，在推荐系统中，估计向用户推荐某商品（处理）与用户是否购买该商品（结果）之间的关系时，DR 方法会综合考虑用户接受推荐的概率以及基于其他因素建立的回归模型的预测结果。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2024/11/20/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/%E5%9F%BA%E4%BA%8E%E5%9B%A0%E6%9E%9C%E6%8E%A8%E6%96%AD%E7%9A%84%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/">https://yuezi2048.github.io/2024/11/20/2.Areas🌐/science/Pre/综述/基于因果推断的推荐系统/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%BB%BC%E8%BF%B0/">综述</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2024/11/18/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/2.%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/2.%20%E8%81%9A%E7%B1%BB/" title="2. 聚类"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">2. 聚类</div></div><div class="info-2"><div class="info-item-1">二、聚类方法 聚类就是针对给定的样本，根据特征的相似度、距离，归并到若干”类”的数据分析问题，从而挖掘数据的特点或者对数据进行处理  直观上，相似的样本聚集在一个类中，不相似的分散在不同的类，其中，样本之间的相似度起到至关重要的作用 属于无监督学习，类事先并不知道   本章介绍常用聚类算法：层次聚类和k均值（k-means）聚类  层次聚类有聚合和分裂两种方法，对应自下而上和自上而下：  聚合法是将每个样本各自分到一个类，将相距最近的两类合并，建立一个新的类，重复操作直到满足停止条件，得到层次化的类别 分裂法是将所有样本分到一个类，然后将相距最远的两类分到两个新的类，重复操作直到满足停止条件，得到层次化的类别   k均值聚类是基于中心的聚类方法，通过迭代，将样本分到k个类中，使得每个样本距离所属类的中心（均值）最近，得到k个平坦 非层次化的类别     2.1 聚类基本概念2.1.1...</div></div></div></a><a class="pagination-related" href="/2024/11/22/2.Areas%F0%9F%8C%90/back-end-java/6.SSM/Mybatis/2.%20%E5%8D%95%E8%A1%A8%E6%93%8D%E4%BD%9C_%E9%85%8D%E7%BD%AE%E7%BB%86%E8%8A%82/" title="2. 单表操作_配置细节"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">2. 单表操作_配置细节</div></div><div class="info-2"><div class="info-item-1">二、CRUD操作_配置细节2.1 基于代理dao的crud2.1.1 基础环境搭建	 pom文件 &lt;dependencies&gt;    &lt;!-- mybatis --&gt;    &lt;dependency&gt;    &lt;groupId&gt;org.mybatis&lt;/groupId&gt;    &lt;artifactId&gt;mybatis&lt;/artifactId&gt;    &lt;version&gt;3.4.5&lt;/version&gt;    &lt;/dependency&gt;    &lt;!-- junit单元测试 --&gt;    &lt;dependency&gt;    &lt;groupId&gt;junit&lt;/groupId&gt;    &lt;artifactId&gt;junit&lt;/artifactId&gt;    &lt;version&gt;4.10&lt;/version&gt;    &lt;scope&gt;test&lt;/scope&gt;   ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2024/12/31/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/A%20survey%20on%20causal%20infer.../" title="A survey on causal infer..."><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-31</div><div class="info-item-2">A survey on causal infer...</div></div><div class="info-2"><div class="info-item-1">Treatment effect estimation 用于 policy evaluation 用药领域，如果我们想要评估一个药对寿命的影响那么要回答一个问题：如果强制复用该药物，患者在L年内存活的可能性是多少一个比较好的方式是大规模随机对照实验（large-scale randomized controlled trial）  但是有成本乃至道德上的问题  因此我们只能从非随机观测数据中估计结果：  药物与生存的相关性并不意味着有因果关系，比如年龄、性别、疾病等严重程度等因素可能影响结果  推荐系统中的因果关系，也被用于评估策略估计的一个提升模型最近几年，才倾向于应用因果推断来进行模型的训练 因果推理可以应用到CTR，点击后指标预测、以及RS各个阶段：数据搜集、用户的表示学习、无偏嵌入，以及目标优化和在线&#x2F;离线策略评估 具有的优势：  模型中的因果。推荐系统主要也是依赖于统计方法，着重关注变量之间的相关性，但是在应用中，应当更加关注因果关系而不是相关性 传统推荐系统学习到的虚假关联spurious...</div></div></div></a><a class="pagination-related" href="/2024/10/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/%E7%BB%BC%E8%BF%B0/" title="综述"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-27</div><div class="info-item-2">综述</div></div><div class="info-2"><div class="info-item-1">abstract what: related work summarize the latest advancement in the field of RS   why: The objective of this study provide the current state-of-the-art highlight the latest trends in the development of RS   how: specific context the main taxonomy of RS, including personalized and group RS delves into the category of knowledge-based RS Summarizing evaluation metrics to asses the performance of systems ：the robustness, data bias and fairness issues in RS    Ⅰ. introduction To address the issue...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E5%9B%A0%E6%9E%9C%E6%8E%A8%E6%96%AD%E7%9A%84%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E5%8E%BB%E5%81%8F%E7%A0%94%E7%A9%B6%E7%BB%BC%E8%BF%B0"><span class="toc-text">基于因果推断的推荐系统去偏研究综述</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

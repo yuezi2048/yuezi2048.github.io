@@ -1,0 +1,219 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>5.Pycharm远程调试代码 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="**摘要：**安装好依赖后，项目就可以正常跑起来了，但是我们肯定需要对他们的代码做一些改进，那么就需要的IDE中进行修改运行调试，所以远程调试这一步也是必不可少的环节，这一节我就把搭建Pycharm远程连接云服务器的流程梳理了一下。 配置SSH在该设置下完成SSH的配置 	 	 配置编译器第一步：找到项目的python解释器设置  第二步：通过SSH添加 	 第三步：选择我们预先设定好的SSH连接">
+<meta property="og:type" content="article">
+<meta property="og:title" content="5.Pycharm远程调试代码">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/07/07/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83/5.Pycharm%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E4%BB%A3%E7%A0%81/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="**摘要：**安装好依赖后，项目就可以正常跑起来了，但是我们肯定需要对他们的代码做一些改进，那么就需要的IDE中进行修改运行调试，所以远程调试这一步也是必不可少的环节，这一节我就把搭建Pycharm远程连接云服务器的流程梳理了一下。 配置SSH在该设置下完成SSH的配置 	 	 配置编译器第一步：找到项目的python解释器设置  第二步：通过SSH添加 	 第三步：选择我们预先设定好的SSH连接">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-07-07T08:54:43.000Z">
+<meta property="article:modified_time" content="2025-07-07T08:54:43.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="云服务器运行环境">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "5.Pycharm远程调试代码",
+  "url": "https://yuezi2048.github.io/2025/07/07/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83/5.Pycharm%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E4%BB%A3%E7%A0%81/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-07-07T08:54:43.000Z",
+  "dateModified": "2025-07-07T08:54:43.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/07/07/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83/5.Pycharm%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E4%BB%A3%E7%A0%81/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '5.Pycharm远程调试代码',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">5.Pycharm远程调试代码</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">5.Pycharm远程调试代码</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-07-07T08:54:43.000Z" title="发表于 2025-07-07 16:54:43">2025-07-07</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-07-07T08:54:43.000Z" title="更新于 2025-07-07 16:54:43">2025-07-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/">science</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/">小论文准备</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83/">云服务器运行环境</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">539</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>1分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>**摘要：**安装好依赖后，项目就可以正常跑起来了，但是我们肯定需要对他们的代码做一些改进，那么就需要的IDE中进行修改运行调试，所以远程调试这一步也是必不可少的环节，这一节我就把搭建Pycharm远程连接云服务器的流程梳理了一下。</p>
+<h2 id="配置SSH"><a href="#配置SSH" class="headerlink" title="配置SSH"></a>配置SSH</h2><p>在该设置下完成SSH的配置</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250707163058905.png" alt="image-20250707163058905">	</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250707163039621.png" alt="image-20250707163039621">	</p>
+<h2 id="配置编译器"><a href="#配置编译器" class="headerlink" title="配置编译器"></a>配置编译器</h2><p>第一步：找到项目的python解释器设置</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250707161611719.png" alt="image-20250707161611719"></p>
+<p>第二步：通过SSH添加</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250707161642426.png" alt="image-20250707161642426">	</p>
+<p>第三步：选择我们预先设定好的SSH连接</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250707161702182.png" alt="image-20250707161702182">	</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250707162054346.png" alt="image-20250707162054346">	</p>
+<blockquote>
+<p>注意：如果出现了project level ssh configurations are not supported，点右边的三个点，然后关掉这个visiable only for this project即可</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Wjeana/article/details/141923127">https://blog.csdn.net/Wjeana/article/details/141923127</a></p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250707161944635.png" alt="image-20250707161944635">	</p>
+</blockquote>
+<p>第四步：配置解释器的环境， 这里我用的是Conda的虚拟环境，然后在Synv folders再配置一下映射路径即可。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250707162228753.png" alt="image-20250707162228753">	</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250707162213653.png" alt="image-20250707162213653">	</p>
+<h2 id="SFTP管理"><a href="#SFTP管理" class="headerlink" title="SFTP管理"></a>SFTP管理</h2><h3 id="配置检查"><a href="#配置检查" class="headerlink" title="配置检查"></a>配置检查</h3><p>在这里我们就能看到配置好的SFTP了，可以检查一下SSH和上一步配置的路径映射对不对</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250707163227301.png" alt="image-20250707163227301"></p>
+<p>​	</p>
+<h3 id="配置排除项"><a href="#配置排除项" class="headerlink" title="配置排除项"></a>配置排除项</h3><p>这一点很重要，否则同步的时候会花费大量时间！我们把数据集放在云端就可以了，不需要在本地存储数据集，所以可以把本地的数据集和云端的数据集都可以不同步。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250707163444465.png" alt="image-20250707163444465">	</p>
+<h2 id="解释器更新与文件上传"><a href="#解释器更新与文件上传" class="headerlink" title="解释器更新与文件上传"></a>解释器更新与文件上传</h2><p>我们可以通过快捷键<code> ctrl + alt + shift + X</code>来快速选择服务器对象上传</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250707164240086.png" alt="image-20250707164240086">	</p>
+<p>或者在这里选择上传下载或是同步的操作。</p>
+<p>​	<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250707163558004.png" alt="image-20250707163558004">	</p>
+<p>可以发现，我们在排除了数据集的数据后（可选），同步会快很多，主要慢的是解释器的同步。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250707162405237.png" alt="image-20250707162405237">	</p>
+<h2 id="后续更新"><a href="#后续更新" class="headerlink" title="后续更新"></a>后续更新</h2><p>我们在修改代码后，在文件内通过快捷键<code>ctrl + alt + shift + X</code>即可完成同步</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250707165351694.png" alt="image-20250707165351694">	</p>
+<p>然后后续跑代码，就可以正常地可以像在本地运行代码一样了（测试环境可以这么做，本地调试的差不多之后，建议还是用<code>screen命令</code>远端运行以防万一，见我第一章的内容）。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250707165200960.png" alt="image-20250707165200960"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/07/07/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83/5.Pycharm%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E4%BB%A3%E7%A0%81/">https://yuezi2048.github.io/2025/07/07/2.Areas🌐/science/小论文准备/云服务器运行环境/5.Pycharm远程调试代码/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83/">云服务器运行环境</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/07/06/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83/2.%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83%E5%88%9B%E5%BB%BA/" title="2.虚拟环境创建"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">2.虚拟环境创建</div></div><div class="info-2"><div class="info-item-1">**摘要：**我们复现代码，往往会参考很多人写的代码实现，但是每个项目的依赖各不相同，那么就需要虚拟环境来单独管理，以此来保证代码的依赖和作者保持一致，避免不必要的依赖冲突问题，因为很多新版本会弃用一些功能，例如np.float，那么如果版本不一样了，很有可能报错了，但是改过来就会顾此失彼！！因此管理虚拟环境很重要！ Conda基本操作包管理安装包 conda install package_name(包名)  查看所有包 conda list：查看安装了哪些包。  删除包 conda remove package_name(包名)   Conda虚拟环境conda创建虚拟环境 conda create --name myenv python=3.9    查看所有虚拟环境 conda env listconda info -e    激活虚拟环境 source activateconda activate myenv  安装所需要的包，三种方式 pip install numpy==1.21.5pip install -r requirements.txtconda...</div></div></div></a><a class="pagination-related" href="/2025/07/07/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83/6.%E8%B7%A8%E5%AE%9E%E4%BE%8B%E6%95%B0%E6%8D%AE%E6%8B%B7%E8%B4%9D%E4%B8%8E%E9%95%9C%E5%83%8F%E5%A4%87%E4%BB%BD/" title="6.跨实例数据拷贝与镜像备份"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">6.跨实例数据拷贝与镜像备份</div></div><div class="info-2"><div class="info-item-1">有时候会发现这台机子的GPU资源没了，那么怎么办？这节教你具体做法。 	 方法1：订阅释放 下午晚上是高峰期，尽量避开。   	 	 方法2：克隆实例将该实例一模一样地复制到其他的镜像上即可，同时选上数据盘复制过去就行了，按照之前的配置再配一下SSH即可，但是要注意一天只能克隆三次。 克隆实例	  配置SSH 配置解释器 最好把自动上传关了（个人建议），以免上传我们不需要的文件  	  等待更新 SSH bash连接等待过程中，我们可以连接该实例，方便后续跑代码  ​	 方法3：克隆镜像我们也可以把镜像拉下来作为镜像的备份，后续选择实例的时候创建就直接基于该镜像即可，但是需要在同一个地区中 	  			 方法4：跨实例拷贝数据我们可以选择一个地区内的数据拷贝，适合于数据集的拷贝。  </div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/07/06/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83/1.screen%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" title="1.screen基本使用"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-06</div><div class="info-item-2">1.screen基本使用</div></div><div class="info-2"><div class="info-item-1">screen基础使用**摘要：**我们云端服务器跑代码的时候，跑完一次往往需要若干个小时，如果中途电脑断网了，那么就会终端就直接结束了，这是非常让人崩溃的。所以要养成习惯每次跑代码前，交给Screen来管理每个窗口，这样即使关闭了终端，服务器那边还是在一直跑着的，所以这也是云服务器要说的第一章节的内容。 screen指令安装一般默认都安装好了 1.  #centos 2.  yum install screen 3.   4.  #ubuntu 5.  apt install screen   screen指令运用创建查看会话一般情况下咱们运用如下指令创立会话: 1.  #创立 2.  screen -S newsession 3.   4.  #查看 5.  screen -ls 6.   7.  #进入 8.  screen -r newsession   经过这样方法创立的会话，中文都会乱码,经过查阅资料能够经过以下方法处理： 1.   2.  #创立utf8编码形式的新会话 3.  screen -U -S newsession 4.   5. ...</div></div></div></a><a class="pagination-related" href="/2025/07/06/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83/2.%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83%E5%88%9B%E5%BB%BA/" title="2.虚拟环境创建"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-06</div><div class="info-item-2">2.虚拟环境创建</div></div><div class="info-2"><div class="info-item-1">**摘要：**我们复现代码，往往会参考很多人写的代码实现，但是每个项目的依赖各不相同，那么就需要虚拟环境来单独管理，以此来保证代码的依赖和作者保持一致，避免不必要的依赖冲突问题，因为很多新版本会弃用一些功能，例如np.float，那么如果版本不一样了，很有可能报错了，但是改过来就会顾此失彼！！因此管理虚拟环境很重要！ Conda基本操作包管理安装包 conda install package_name(包名)  查看所有包 conda list：查看安装了哪些包。  删除包 conda remove package_name(包名)   Conda虚拟环境conda创建虚拟环境 conda create --name myenv python=3.9    查看所有虚拟环境 conda env listconda info -e    激活虚拟环境 source activateconda activate myenv  安装所需要的包，三种方式 pip install numpy==1.21.5pip install -r requirements.txtconda...</div></div></div></a><a class="pagination-related" href="/2025/07/06/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83/3.%E5%A4%9A%E5%AE%9E%E4%BE%8B%E7%AE%A1%E7%90%86%E6%95%B0%E6%8D%AE%E9%9B%86%E5%92%8C%E4%BB%A3%E7%A0%81/" title="3.多实例管理数据集和代码"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-06</div><div class="info-item-2">3.多实例管理数据集和代码</div></div><div class="info-2"><div class="info-item-1">**摘要：**我们复现代码，往往是需要数据集的，作者在给代码的时候，往往是一个网盘链接，或者是一个在线地址。然而在云服务器中，会存在数据盘这一个内容，所以我们应当尽可能把云端的数据下载下来后，将数据存放在数据盘中。而代码部分为了方便管理，我们放在一个自己熟悉的目录下即可。 	 数据集管理一般我们将数据集放在/root/autodl-tmp目录下 	 一般来了一个新项目，我的做法是将原始的数据集拷贝这个数据集到某个目录中，因为可能会有对数据后续处理的文件 cp -r /root/auto-tmp/data/Amazon/raw_data /root/auto-tmp/data/Amazon/model/MENTER  然后修改源码中的配置路径即可 	 源码管理我的做法是统一放在/home/work_space中，可以通过git clone直接拉下来，然后Pycharm拉下来就可以了，Pycharm如何管理ssh连接实现代码同步，以及远程编译调试代码，我放在第五节内容了，需要的读者可以在专题内翻阅阅读。  </div></div></div></a><a class="pagination-related" href="/2025/07/06/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83/4.Pytorch%E7%AD%89%E9%87%8D%E8%A6%81%E4%BE%9D%E8%B5%96%E5%AE%89%E8%A3%85/" title="4.Pytorch等重要依赖安装"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-06</div><div class="info-item-2">4.Pytorch等重要依赖安装</div></div><div class="info-2"><div class="info-item-1">**摘要：**AI领域的工作，大多是基于TensorFlow或者Pytorch实现的，那么Pytorch的安装就至关重要了，在前一节虚拟环境的基础上，我们首先要确定自身的显卡驱动版本，然后还要确定作者的依赖版本。这样我们才能顺利地搭好Pytorch环境！ 前置工作确定CUDA版本首先确定CUDA版本 python -c &quot;import torch; print(torch.version.cuda)&quot;  或者 nvidia-sminvcc --version  	 确定项目依赖查看项目需要的pytorch和python版本（README.md或者requirement.txt） 	 	 在该网站中找到对应的安装命令，并选择兼容的CUDA版本 Installing previous versions of...</div></div></div></a><a class="pagination-related" href="/2025/07/07/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83/6.%E8%B7%A8%E5%AE%9E%E4%BE%8B%E6%95%B0%E6%8D%AE%E6%8B%B7%E8%B4%9D%E4%B8%8E%E9%95%9C%E5%83%8F%E5%A4%87%E4%BB%BD/" title="6.跨实例数据拷贝与镜像备份"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-07</div><div class="info-item-2">6.跨实例数据拷贝与镜像备份</div></div><div class="info-2"><div class="info-item-1">有时候会发现这台机子的GPU资源没了，那么怎么办？这节教你具体做法。 	 方法1：订阅释放 下午晚上是高峰期，尽量避开。   	 	 方法2：克隆实例将该实例一模一样地复制到其他的镜像上即可，同时选上数据盘复制过去就行了，按照之前的配置再配一下SSH即可，但是要注意一天只能克隆三次。 克隆实例	  配置SSH 配置解释器 最好把自动上传关了（个人建议），以免上传我们不需要的文件  	  等待更新 SSH bash连接等待过程中，我们可以连接该实例，方便后续跑代码  ​	 方法3：克隆镜像我们也可以把镜像拉下来作为镜像的备份，后续选择实例的时候创建就直接基于该镜像即可，但是需要在同一个地区中 	  			 方法4：跨实例拷贝数据我们可以选择一个地区内的数据拷贝，适合于数据集的拷贝。  </div></div></div></a><a class="pagination-related no-desc" href="/2025/07/06/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83/7.%E5%AE%9E%E4%BE%8B%E7%9B%91%E6%8E%A7%E4%BB%A5%E5%8F%8ATensorBoard%E7%9B%91%E6%8E%A7/" title="7.实例监控以及TensorBoard监控"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-06</div><div class="info-item-2">7.实例监控以及TensorBoard监控</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">785</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">91</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AESSH"><span class="toc-text">配置SSH</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%BC%96%E8%AF%91%E5%99%A8"><span class="toc-text">配置编译器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SFTP%E7%AE%A1%E7%90%86"><span class="toc-text">SFTP管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%A3%80%E6%9F%A5"><span class="toc-text">配置检查</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%8E%92%E9%99%A4%E9%A1%B9"><span class="toc-text">配置排除项</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E9%87%8A%E5%99%A8%E6%9B%B4%E6%96%B0%E4%B8%8E%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0"><span class="toc-text">解释器更新与文件上传</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8E%E7%BB%AD%E6%9B%B4%E6%96%B0"><span class="toc-text">后续更新</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-02-22T05:56:41.839Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/22/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-02-22T05:56:41.257Z" title="发表于 2026-02-22 13:56:41">2026-02-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/31/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用">5.工具调用</a><time datetime="2026-01-31T03:54:22.000Z" title="发表于 2026-01-31 11:54:22">2026-01-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/30/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶">4.RAG进阶</a><time datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/27/2.Areas%F0%9F%8C%90/%E4%B8%B4%E6%97%B6%E8%AE%B0%E5%BD%95/3.RAG/" title="3.RAG">3.RAG</a><time datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>
