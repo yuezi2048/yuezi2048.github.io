@@ -1,0 +1,838 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>4.RAG进阶 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="我们先前已经了解RAG的整体工作流程，为了生成更加定制化的内容，现在要进行一些细节的RAG学习 	  RAG进阶学习文档收集与切割（ETL）ETLSpringAI-ETL ETL中的文档实际上不局限于文本，还有一系列的元信息MetaData、多媒体附件MediaContent 		  而针对于ETL，遵循一定的流程，对应着三大组件：  读取文档：DocumentReader负责从数据源加载文档 转">
+<meta property="og:type" content="article">
+<meta property="og:title" content="4.RAG进阶">
+<meta property="og:url" content="https://yuezi2048.github.io/2026/01/30/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/4.RAG%E8%BF%9B%E9%98%B6/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="我们先前已经了解RAG的整体工作流程，为了生成更加定制化的内容，现在要进行一些细节的RAG学习 	  RAG进阶学习文档收集与切割（ETL）ETLSpringAI-ETL ETL中的文档实际上不局限于文本，还有一系列的元信息MetaData、多媒体附件MediaContent 		  而针对于ETL，遵循一定的流程，对应着三大组件：  读取文档：DocumentReader负责从数据源加载文档 转">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2026-01-30T13:23:42.000Z">
+<meta property="article:modified_time" content="2026-01-30T13:23:42.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="yu-ai-agent">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "4.RAG进阶",
+  "url": "https://yuezi2048.github.io/2026/01/30/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/4.RAG%E8%BF%9B%E9%98%B6/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2026-01-30T13:23:42.000Z",
+  "dateModified": "2026-01-30T13:23:42.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2026/01/30/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/4.RAG%E8%BF%9B%E9%98%B6/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '4.RAG进阶',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">804</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">73</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">101</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">4.RAG进阶</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">4.RAG进阶</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-01-30T13:23:42.000Z" title="发表于 2026-01-30 21:23:42">2026-01-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-01-30T13:23:42.000Z" title="更新于 2026-01-30 21:23:42">2026-01-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/">01.project</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/">condefather</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/yu-ai-agent/">yu-ai-agent</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">10.5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>37分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>我们先前已经了解RAG的整体工作流程，为了生成更加定制化的内容，现在要进行一些细节的RAG学习</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260127162924763.png" alt="image-20260127162924763" style="zoom:50%;" />	
+
+<h2 id="RAG进阶学习"><a href="#RAG进阶学习" class="headerlink" title="RAG进阶学习"></a>RAG进阶学习</h2><h3 id="文档收集与切割（ETL）"><a href="#文档收集与切割（ETL）" class="headerlink" title="文档收集与切割（ETL）"></a>文档收集与切割（ETL）</h3><h4 id="ETL"><a href="#ETL" class="headerlink" title="ETL"></a>ETL</h4><p><a target="_blank" rel="noopener" href="https://docs.spring.io/spring-ai/reference/api/etl-pipeline.html">SpringAI-ETL</a></p>
+<p>ETL中的文档实际上不局限于文本，还有一系列的元信息MetaData、多媒体附件MediaContent</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/spring-ai-document1-api.jpg" alt="Spring AI Message API" style="zoom: 15%;" />		
+
+<p>而针对于ETL，遵循一定的流程，对应着三大组件：</p>
+<ul>
+<li>读取文档：<code>DocumentReader</code>负责从数据源加载文档</li>
+<li>转换文档：根据需求将文档处理为指定的格式（如去除冗余信息、分词、词性标注等），可通过<code>DocumentTransformer</code>实现</li>
+<li>写入文档：<code>DocumentWriter</code>将文档以特定格式保存到存储中，如以嵌入向量的形式写入向量数据库，或者通过k-v键值对保存到Redis等数据库中</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260127164336907.png" alt="image-20260127164336907"></p>
+<blockquote>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/etl-class-diagram.jpg" alt="etl class diagram"></p>
+</blockquote>
+<h4 id="Extract-DocumentReader"><a href="#Extract-DocumentReader" class="headerlink" title="Extract_DocumentReader"></a>Extract_DocumentReader</h4><p>实现了Supplier函数式接口，从数据源中得到Document集合</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">DocumentReader</span> <span class="keyword">extends</span> <span class="title class_">Supplier</span>&lt;List&lt;Document&gt;&gt; &#123;</span><br><span class="line">    <span class="keyword">default</span> List&lt;Document&gt; <span class="title function_">read</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> get();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-ai/reference/api/etl-pipeline.html#_documentreaders">内置实现类</a>：</p>
+<ol>
+<li>JsonReader: 读取 JSON 文档</li>
+<li>TextReader: 读取纯文本文件</li>
+<li>MarkdownReader: 读取 Markdown 文件</li>
+<li>PDFReader: 读取 PDF 文档, 基于 Apache PdfBox 库实现<ul>
+<li>PagePdfDocumentReader: 按照分页读取 PDF</li>
+<li>ParagraphPdfDocumentReader: 按照段落读取 PDF</li>
+</ul>
+</li>
+<li>HtmlReader: 读取 HTML 文档, 基于 jsoup 库实现</li>
+<li>TikaDocumentReader: 基于 <a target="_blank" rel="noopener" href="https://tika.apache.org/3.1.0/formats.html">Apache Tika</a> 库处理多种格式的文档, 更灵活</li>
+</ol>
+<p>阿里关于RAG的说明：<a target="_blank" rel="noopener" href="https://java2ai.com/docs/frameworks/agent-framework/advanced/rag">RAG</a></p>
+<p>关于ETL的文档：<a target="_blank" rel="noopener" href="https://java2ai.com/integration/rag/etl-pipeline">ETL</a></p>
+<p>如果想要自定义文档读取器并不难，核心就是解析文档，转换成document列表</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MsgEmailParser</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">MsgEmailParser</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// Private constructor to prevent instantiation</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Convert MsgEmailElement to Document</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> element MSG email element</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> Document object</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Document <span class="title function_">convertToDocument</span><span class="params">(MsgEmailElement element)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (element == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>(<span class="string">&quot;MsgEmailElement cannot be null&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Build metadata</span></span><br><span class="line">        Map&lt;String, Object&gt; metadata = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Add metadata with null check</span></span><br><span class="line">        <span class="keyword">if</span> (StringUtils.hasText(element.getSubject())) &#123;</span><br><span class="line">            metadata.put(<span class="string">&quot;subject&quot;</span>, element.getSubject());</span><br><span class="line">        &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// ... 省略更多元信息的设置</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// Create Document object with content null check</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">content</span> <span class="operator">=</span> StringUtils.hasText(element.getText()) ? element.getText() : <span class="string">&quot;&quot;</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Document</span>(content, metadata);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="Transform-DocumentTransformer"><a href="#Transform-DocumentTransformer" class="headerlink" title="Transform_DocumentTransformer"></a>Transform_DocumentTransformer</h4><p>源码中，实现了 <code>Function&lt;List&lt;Document&gt;, List&lt;Document&gt;&gt;</code>接口，将一组文档转换成另一组文档，这是保证ETL效果的核心步骤，如何将大文档合理拆分为便于检索的知识碎片</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">DocumentTransformer</span> <span class="keyword">extends</span> <span class="title class_">Function</span>&lt;List&lt;Document&gt;, List&lt;Document&gt;&gt; &#123;</span><br><span class="line">    <span class="keyword">default</span> List&lt;Document&gt; <span class="title function_">transform</span><span class="params">(List&lt;Document&gt; documents)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> apply(documents);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>SpringAI官方提供了三类：</p>
+<ul>
+<li><p>TextSplitter文本分割器</p>
+</li>
+<li><p>MetaDataEnricher元数据增强器</p>
+</li>
+<li><p>ContentFormatter内容格式化工具</p>
+</li>
+</ul>
+<blockquote>
+<p>TextSplitter</p>
+</blockquote>
+<p>其实现类有<code>TokenTextSplitter</code>，基于token划分边界（考虑句子末尾等来创建有意义的文本段落）</p>
+<p>构造函数：</p>
+<ol>
+<li>TokenTextSplitter(): 使用默认设置创建分割器。</li>
+<li>TokenTextSplitter(int defaultChunkSize, int minChunkSizeChars, int minChunkLengthToEmbed, int maxNumChunks, boolean keepSeparator) : 使用自定义参数创建分割器, 通过调整参数, 可以控制分割的粒度和方式, 适应不同的应用场景。</li>
+</ol>
+<p>参数说明 (无需记忆):</p>
+<ul>
+<li>defaultChunkSize: 每个文本块的目标大小 (以 token 为单位, 默认值: 800)。</li>
+<li>minChunkSizeChars: 每个文本块的最小大小 (以字符为单位, 默认值: 350)。</li>
+<li>minChunkLengthToEmbed: 要被包含的块的最小长度 (默认值: 5)。</li>
+<li>maxNumChunks: 从文本中生成的最大块数 (默认值: 10000)。</li>
+<li>keepSeparator: 是否在块中保留分隔符 (如换行符) (默认值: true)。</li>
+</ul>
+<p>官方文档有对 Token 分词器工作原理的详细解释，简单了解下:</p>
+<ol>
+<li>使用 CL100K_BASE 编码将输入文本编码为 token。</li>
+<li>根据 defaultChunkSize 将编码后的文本分割成块。</li>
+<li>对于每个块:<ul>
+<li>将块解码回文本。</li>
+<li>尝试在 minChunkSizeChars 之后找到合适的断点 (句号、问号、感叹号或换行符)。</li>
+<li>如果找到断点, 则在该点截断块。</li>
+<li>修剪块并根据 keepSeparator 设置选择性地删除换行符。</li>
+<li>如果生成的块长度大于 minChunkLengthToEmbed, 则将其添加到输出中。</li>
+</ul>
+</li>
+<li>这个过程会一直持续到所有 token 都被处理完或达到 maxNumChunks 为止。</li>
+<li>如果剩余文本长度大于 minChunkLengthToEmbed, 则会作为最后一个块添加。</li>
+</ol>
+<blockquote>
+<p>MetaDataEnricher</p>
+</blockquote>
+<p>核心就是给文档补充元信息，便于后续检索，不影响文档本身的切分规则，有两种实现类：</p>
+<ul>
+<li><code>KeywordMetadataEnricher</code>：使用AI提取关键词添加元数据</li>
+<li><code>SummaryMetadataEnricher</code>：AI生成文档摘要添加到元数据，不仅可以对当前文档生成，还可以关联前一个和后一个文档，让摘要更完整</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyDocumentEnricher</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ChatModel chatModel;</span><br><span class="line"></span><br><span class="line">    MyDocumentEnricher(ChatModel chatModel) &#123;</span><br><span class="line">        <span class="built_in">this</span>.chatModel = chatModel;</span><br><span class="line">    &#125;</span><br><span class="line">      </span><br><span class="line">      <span class="comment">// 关键词元信息增强器</span></span><br><span class="line">    List&lt;Document&gt; <span class="title function_">enrichDocumentsByKeyword</span><span class="params">(List&lt;Document&gt; documents)</span> &#123;</span><br><span class="line">        <span class="type">KeywordMetadataEnricher</span> <span class="variable">enricher</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">KeywordMetadataEnricher</span>(<span class="built_in">this</span>.chatModel, <span class="number">5</span>);</span><br><span class="line">        <span class="keyword">return</span> enricher.apply(documents);</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    <span class="comment">// 摘要元信息增强器</span></span><br><span class="line">    List&lt;Document&gt; <span class="title function_">enrichDocumentsBySummary</span><span class="params">(List&lt;Document&gt; documents)</span> &#123;</span><br><span class="line">        <span class="type">SummaryMetadataEnricher</span> <span class="variable">enricher</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SummaryMetadataEnricher</span>(chatModel, </span><br><span class="line">            List.of(SummaryType.PREVIOUS, SummaryType.CURRENT, SummaryType.NEXT));</span><br><span class="line">        <span class="keyword">return</span> enricher.apply(documents);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>ContentFormatter</p>
+</blockquote>
+<p>一般是用于统一文档格式，具体功能：</p>
+<ul>
+<li>文档格式化：支持将文档内容和元数据合并为特定格式字符串</li>
+<li>元数据过滤：根据不同的元数据模式（MetadataMode）筛选需要保留的元数据项<ul>
+<li>ALL：保留所有、NONE：移除所有</li>
+<li>INFERENCE：推理场景，排除指定的推理元数据</li>
+<li>EMBED：嵌入场景，排除指定的嵌入元数据</li>
+</ul>
+</li>
+<li>自定义模板<ul>
+<li>元数据模板：控制元数据项展示方式</li>
+<li>元数据分隔符：控制多个元数据的分隔方式</li>
+<li>文本模板：控制元数据与内容如何结合</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">DefaultContentFormatter</span> <span class="variable">formatter</span> <span class="operator">=</span> DefaultContentFormatter.builder()</span><br><span class="line">    .withMetadataTemplate(<span class="string">&quot;&#123;key&#125;: &#123;value&#125;&quot;</span>)</span><br><span class="line">    .withMetadataSeparator(<span class="string">&quot;\n&quot;</span>)</span><br><span class="line">    .withTextTemplate(<span class="string">&quot;&#123;metadata_string&#125;\n\n&#123;content&#125;&quot;</span>)</span><br><span class="line">    .withExcludedInferenceMetadataKeys(<span class="string">&quot;embedding&quot;</span>, <span class="string">&quot;vector_id&quot;</span>)</span><br><span class="line">    .withExcludedEmbedMetadataKeys(<span class="string">&quot;source_url&quot;</span>, <span class="string">&quot;timestamp&quot;</span>)</span><br><span class="line">    .build();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用格式化器处理文档</span></span><br><span class="line"><span class="type">String</span> <span class="variable">formattedText</span> <span class="operator">=</span> formatter.format(document, MetadataMode.INFERENCE);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="Load-DocmentWriter"><a href="#Load-DocmentWriter" class="headerlink" title="Load_DocmentWriter"></a>Load_DocmentWriter</h4><p>实现了<code>Consumer&lt;List&lt;Document&gt;&gt;</code>接口，负责将转换后的文件写入到目标存储。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">DocumentWriter</span> <span class="keyword">extends</span> <span class="title class_">Consumer</span>&lt;List&lt;Document&gt;&gt; &#123;</span><br><span class="line">    <span class="keyword">default</span> <span class="keyword">void</span> <span class="title function_">write</span><span class="params">(List&lt;Document&gt; documents)</span> &#123;</span><br><span class="line">        accept(documents);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>有两种内置的DocumentWriter实现：</p>
+<ul>
+<li>FileDocumentWriter：写入文件</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyDocumentWriter</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">writeDocuments</span><span class="params">(List&lt;Document&gt; documents)</span> &#123;</span><br><span class="line">        <span class="type">FileDocumentWriter</span> <span class="variable">writer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileDocumentWriter</span>(<span class="string">&quot;output.txt&quot;</span>, <span class="literal">true</span>, MetadataMode.ALL, <span class="literal">false</span>);</span><br><span class="line">        writer.accept(documents);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>VectorStoreWriter：写入向量数据库</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyDocumentWriter</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">writeDocuments</span><span class="params">(List&lt;Document&gt; documents)</span> &#123;</span><br><span class="line">        <span class="type">FileDocumentWriter</span> <span class="variable">writer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileDocumentWriter</span>(<span class="string">&quot;output.txt&quot;</span>, <span class="literal">true</span>, MetadataMode.ALL, <span class="literal">false</span>);</span><br><span class="line">        writer.accept(documents);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也支持写入多个存储系统，定义多个Writer即可。</p>
+<h4 id="流程说明"><a href="#流程说明" class="headerlink" title="流程说明"></a>流程说明</h4><p>以上流程串起来就是如下，从最原始的文档到向量数据库，为后续的检索增强生成提供基础</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 抽取：从 PDF 文件读取文档</span></span><br><span class="line"><span class="type">PDFReader</span> <span class="variable">pdfReader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">PagePdfDocumentReader</span>(<span class="string">&quot;knowledge_base.pdf&quot;</span>);</span><br><span class="line">List&lt;Document&gt; documents = pdfReader.read();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 转换：分割文本并添加摘要</span></span><br><span class="line"><span class="type">TokenTextSplitter</span> <span class="variable">splitter</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TokenTextSplitter</span>(<span class="number">500</span>, <span class="number">50</span>);</span><br><span class="line">List&lt;Document&gt; splitDocuments = splitter.apply(documents);</span><br><span class="line"></span><br><span class="line"><span class="type">SummaryMetadataEnricher</span> <span class="variable">enricher</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SummaryMetadataEnricher</span>(chatModel, </span><br><span class="line">    List.of(SummaryType.CURRENT));</span><br><span class="line">List&lt;Document&gt; enrichedDocuments = enricher.apply(splitDocuments);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 加载：写入向量数据库</span></span><br><span class="line">vectorStore.write(enrichedDocuments);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 或者使用链式调用</span></span><br><span class="line">vectorStore.write(enricher.apply(splitter.apply(pdfReader.read())));</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="向量转换与存储"><a href="#向量转换与存储" class="headerlink" title="向量转换与存储"></a>向量转换与存储</h3><h4 id="VectorStore接口"><a href="#VectorStore接口" class="headerlink" title="VectorStore接口"></a>VectorStore接口</h4><p>官方提供向量数据库接口<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-ai/reference/api/vectordbs.html">VectorStore</a>方便接入第三方向量存储，Milvus、Redis、PGVector、Elasticsearch等，提供基本的crud以及计算相似度 获取原生客户端的方法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">VectorStore</span> <span class="keyword">extends</span> <span class="title class_">DocumentWriter</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">default</span> String <span class="title function_">getName</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>.getClass().getSimpleName();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">add</span><span class="params">(List&lt;Document&gt; documents)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">delete</span><span class="params">(List&lt;String&gt; idList)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">delete</span><span class="params">(Filter.Expression filterExpression)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">default</span> <span class="keyword">void</span> <span class="title function_">delete</span><span class="params">(String filterExpression)</span> &#123; ... &#125;;</span><br><span class="line"></span><br><span class="line">    List&lt;Document&gt; <span class="title function_">similaritySearch</span><span class="params">(String query)</span>;</span><br><span class="line"></span><br><span class="line">    List&lt;Document&gt; <span class="title function_">similaritySearch</span><span class="params">(SearchRequest request)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">default</span> &lt;T&gt; Optional&lt;T&gt; <span class="title function_">getNativeClient</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> Optional.empty();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>SpringAI提供了SearchRequest类，构建相似度搜索请求</p>
+<ul>
+<li>query：搜索查询文本</li>
+<li>topK：最大结果数，默认4</li>
+<li>similarityThreshold：过滤掉低于阈值的相似度</li>
+<li>filterExpression：基于文档元数据的过滤，语法类似SQL，在官方文档中<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-ai/reference/api/vectordbs.html#metadata-filters">查阅语法</a>即可</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">SearchRequest</span> <span class="variable">request</span> <span class="operator">=</span> SearchRequest.builder()</span><br><span class="line">    .query(<span class="string">&quot;提问内容？&quot;</span>)</span><br><span class="line">    .topK(<span class="number">5</span>)                  <span class="comment">// 返回最相似的5个结果</span></span><br><span class="line">    .similarityThreshold(<span class="number">0.7</span>) <span class="comment">// 相似度阈值，0.0-1.0之间</span></span><br><span class="line">    .filterExpression(<span class="string">&quot;category == &#x27;web&#x27; AND date &gt; &#x27;2025-05-03&#x27;&quot;</span>)  <span class="comment">// 过滤表达式</span></span><br><span class="line">    .build();</span><br><span class="line"></span><br><span class="line">List&lt;Document&gt; results = vectorStore.similaritySearch(request);</span><br></pre></td></tr></table></figure>
+
+<h4 id="向量存储工作机制"><a href="#向量存储工作机制" class="headerlink" title="向量存储工作机制"></a>向量存储工作机制</h4><ul>
+<li>嵌入转换：通过嵌入模型将文本转换为嵌入向量</li>
+<li>相似度计算：查询文本转化为向量，计算该向量和向量数据库中的相似度</li>
+<li>相似度度量：余弦相似度、欧式距离、点积等</li>
+<li>过滤和排序：通过相似度过滤结果，返回topK最相关的文档</li>
+</ul>
+<h4 id="向量数据库存储数据库实战"><a href="#向量数据库存储数据库实战" class="headerlink" title="向量数据库存储数据库实战"></a>向量数据库存储数据库实战</h4><p>开发思路：准备数据源—&gt;引入整合包–&gt;编写配置—&gt; 使用自动注入的VectorStore</p>
+<p>这里使用阿里DashScope集成的VectorStore API来远程访问阿里云的远程向量存储。</p>
+<p>基于PGVector来实现向量存储，是PostgreSQL的拓展</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://cloud.baidu.com/article/3229759">Linux服务器快速安装PostgreSQL 15与pgvector向量插件</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_29213799/article/details/146277755">宝塔 PostgreSQL 安装 pgvector 插件实现向量存储</a></li>
+<li>或者使用阿里云的<a target="_blank" rel="noopener" href="https://rdsnext.console.aliyun.com/rdsList/cn-hangzhou">serverless服务</a>，随用随停</li>
+</ul>
+<p>参考<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-ai/reference/api/vectordbs/pgvector.html">官方文档</a>引入依赖，<a target="_blank" rel="noopener" href="https://mvnrepository.com/artifact/org.springframework.ai/spring-ai-starter-vector-store-pgvector">仓库地址</a></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.ai<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-ai-starter-vector-store-pgvector<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0.0-M7<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>注：维度尽量不要随意修改，否则要重新建表</p>
+<p>按照官方的说法，使用自动注入的VectorStore，系统即可自动创建库表</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line">VectorStore vectorStore;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">List&lt;Document&gt; documents = List.of(</span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">Document</span>(<span class="string">&quot;Spring AI rocks!! Spring AI rocks!! Spring AI rocks!! Spring AI rocks!! Spring AI rocks!!&quot;</span>, Map.of(<span class="string">&quot;meta1&quot;</span>, <span class="string">&quot;meta1&quot;</span>)),</span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">Document</span>(<span class="string">&quot;The World is Big and Salvation Lurks Around the Corner&quot;</span>),</span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">Document</span>(<span class="string">&quot;You walk forward facing the past and you turn back toward the future.&quot;</span>, Map.of(<span class="string">&quot;meta2&quot;</span>, <span class="string">&quot;meta2&quot;</span>)));</span><br><span class="line"></span><br><span class="line"><span class="comment">// Add the documents to PGVector</span></span><br><span class="line">vectorStore.add(documents);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Retrieve documents similar to a query</span></span><br><span class="line">List&lt;Document&gt; results = <span class="built_in">this</span>.vectorStore.similaritySearch(SearchRequest.builder().query(<span class="string">&quot;Spring&quot;</span>).topK(<span class="number">5</span>).build());</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>但是我们之前同时引入了Ollama和DashScope的依赖，导致有两个EmbeddingModel的Bean，导致自动注入报错，所以不采用原先的自动注入的方式，使用手动注入。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication(exclude = PgVectorStoreAutoConfiguration.class)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">YuAiAgentApplication</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        SpringApplication.run(YuAiAgentApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>导入需要的依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-jdbc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.postgresql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>postgresql<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.ai<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-ai-pgvector-store<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0.0-M6<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>构造PgVectorStore</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PgVectorVectorStoreConfig</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> VectorStore <span class="title function_">pgVectorVectorStore</span><span class="params">(JdbcTemplate jdbcTemplate, EmbeddingModel dashscopeEmbeddingModel)</span> &#123;</span><br><span class="line">        <span class="type">VectorStore</span> <span class="variable">vectorStore</span> <span class="operator">=</span> PgVectorStore.builder(jdbcTemplate, dashscopeEmbeddingModel)</span><br><span class="line">                .dimensions(<span class="number">1536</span>)                    <span class="comment">// Optional: defaults to model dimensions or 1536</span></span><br><span class="line">                .distanceType(COSINE_DISTANCE)       <span class="comment">// Optional: defaults to COSINE_DISTANCE</span></span><br><span class="line">                .indexType(HNSW)                     <span class="comment">// Optional: defaults to HNSW</span></span><br><span class="line">                .initializeSchema(<span class="literal">true</span>)              <span class="comment">// Optional: defaults to false</span></span><br><span class="line">                .schemaName(<span class="string">&quot;public&quot;</span>)                <span class="comment">// Optional: defaults to &quot;public&quot;</span></span><br><span class="line">                .vectorTableName(<span class="string">&quot;vector_store&quot;</span>)     <span class="comment">// Optional: defaults to &quot;vector_store&quot;</span></span><br><span class="line">                .maxDocumentBatchSize(<span class="number">10000</span>)         <span class="comment">// Optional: defaults to 10000</span></span><br><span class="line">                .build();</span><br><span class="line">        <span class="keyword">return</span> vectorStore;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>单元测试效果</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootTest</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PgVectorStoreTest</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    VectorStore pgVectorVectorStore;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    LoveAppDocumentLoader loveAppDocumentLoader;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">        List&lt;Document&gt; documents = loveAppDocumentLoader.loadMarkdowns();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Add the documents to PGVector</span></span><br><span class="line">        <span class="comment">// 分批处理文档，每批不超过10个</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">batchSize</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; documents.size(); i += batchSize) &#123;</span><br><span class="line">            List&lt;Document&gt; batch = documents.subList(i, Math.min(i + batchSize, documents.size()));</span><br><span class="line">            pgVectorVectorStore.add(batch);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Retrieve documents similar to a query</span></span><br><span class="line">        List&lt;Document&gt; results = <span class="built_in">this</span>.pgVectorVectorStore.similaritySearch(SearchRequest.builder().query(<span class="string">&quot;Spring&quot;</span>).topK(<span class="number">5</span>).build());</span><br><span class="line"></span><br><span class="line">        Assertions.assertNotNull(results);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260130172137211.png" alt="image-20260130172137211"></p>
+<p>数据库测试</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260130172228869.png" alt="image-20260130172228869"></p>
+<p>生成的表结构，embeding是vector类型，确实存储的是向量</p>
+<figure class="highlight postgresql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> vector_store</span><br><span class="line">(</span><br><span class="line">    id        <span class="type">uuid</span> <span class="keyword">default</span> uuid_generate_v4() <span class="keyword">not</span> <span class="keyword">null</span></span><br><span class="line">        <span class="keyword">primary key</span>,</span><br><span class="line">    content   <span class="type">text</span>,</span><br><span class="line">    metadata  <span class="type">json</span>,</span><br><span class="line">    embedding vector(<span class="number">1024</span>)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> vector_store</span><br><span class="line">    <span class="keyword">owner</span> <span class="keyword">to</span> ai;</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">index</span> spring_ai_vector_index</span><br><span class="line">    <span class="keyword">on</span> vector_store <span class="keyword">using</span> hnsw (embedding vector_cosine_ops);</span><br></pre></td></tr></table></figure>
+
+<p>测试</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Resource</span></span><br><span class="line">PgVectorStore pgVectorVectorStore;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Resource</span></span><br><span class="line"><span class="keyword">private</span> QueryRewriter queryRewriter;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">doChatWithRag</span><span class="params">(String message, String chatId)</span> &#123;</span><br><span class="line">    <span class="type">String</span> <span class="variable">reWrittenMessage</span> <span class="operator">=</span> queryRewriter.doQueryRewrite(message);</span><br><span class="line">    <span class="type">ChatResponse</span> <span class="variable">chatResponse</span> <span class="operator">=</span> chatClient</span><br><span class="line">            .prompt()</span><br><span class="line">            .user(reWrittenMessage)</span><br><span class="line">            .advisors(spec -&gt; spec.param(ChatMemory.CONVERSATION_ID, chatId))</span><br><span class="line">            <span class="comment">// 开启日志，便于观察效果</span></span><br><span class="line">            .advisors(<span class="keyword">new</span> <span class="title class_">LogAdvisor</span>())</span><br><span class="line">            <span class="comment">// 应用本地知识库问答</span></span><br><span class="line">            <span class="comment">// .advisors(QuestionAnswerAdvisor.builder(loveAppVectorStore).build())</span></span><br><span class="line">            <span class="comment">// 应用增强检索服务（云知识库服务）</span></span><br><span class="line">            <span class="comment">// .advisors(loveAppRagCloudAdvisor)</span></span><br><span class="line">            <span class="comment">// 应用基于pgStore向量存储</span></span><br><span class="line">            .advisors(<span class="keyword">new</span> <span class="title class_">QuestionAnswerAdvisor</span>(pgVectorVectorStore))</span><br><span class="line">            .call()</span><br><span class="line">            .chatResponse();</span><br><span class="line">    <span class="keyword">return</span> chatResponse.getResult().getOutput().getText();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>发现通过<code>QuestionAnswerAdvisor</code>确实加入了PGVector中存储的信息</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260130172953421.png" alt="image-20260130172953421"></p>
+<h4 id="批处理优化"><a href="#批处理优化" class="headerlink" title="批处理优化"></a>批处理优化</h4><p>有时候我们会处理大量文档，而一般嵌入模型会有一个上下文的最大标记限制，即上下文窗口大小（context window size），从而限制了单个嵌入请求可以处理的文本量，如果一次性调用太多可能会出现报错，可能出现数据不完整的问题。</p>
+<p>解决思路是使用批处理的策略，将文档分解成若干小批次，适合嵌入模型的上下文最大窗口大小，可以提高性能，并且更有效利于API速率限制。</p>
+<p>Spring AI定义了<code>BatchingStrategy</code>接口 提供该功能，是基于文档的标记计数，来实现分批处理文档的</p>
+<ul>
+<li>bastch方法，接收一个文档列表，分解成一个文档分批后的列表</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">BatchingStrategy</span> &#123;</span><br><span class="line">    List&lt;List&lt;Document&gt;&gt; <span class="title function_">batch</span><span class="params">(List&lt;Document&gt; documents)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>默认实现：<code>customTokenCountBatchingStrategy</code>是通过估算文档的token数，划分到不超过token数的批次中，如果超出限制就抛出异常，从而保证每个批次不超过最大输入token数</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">EmbeddingConfig</span> &#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> BatchingStrategy <span class="title function_">customTokenCountBatchingStrategy</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">TokenCountBatchingStrategy</span>(</span><br><span class="line">            EncodingType.CL100K_BASE,  <span class="comment">// 指定编码类型</span></span><br><span class="line">            <span class="number">8000</span>,                      <span class="comment">// 设置最大输入标记计数</span></span><br><span class="line">            <span class="number">0.1</span>                        <span class="comment">// 设置保留百分比</span></span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>我们根据业务需求可以自定义实现，如数据库每秒只能插入1w条数据，通过这个可以控制速率，也可以进行额外的日志记录和异常处理</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">EmbeddingConfig</span> &#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> BatchingStrategy <span class="title function_">customBatchingStrategy</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">CustomBatchingStrategy</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="文档过滤与检索"><a href="#文档过滤与检索" class="headerlink" title="文档过滤与检索"></a>文档过滤与检索</h3><p>文档过滤可以拆分为：检索前、检索时、检索后，分别针对每个阶段提供了可自定义的组件。</p>
+<ul>
+<li>在预检索阶段，系统接收用户的原始查询，通过查询转换和查询扩展等方法对其进行优化，输出增强的用户查询。</li>
+<li>在检索阶段，系统使用增强的查询从知识库中搜索相关文档，可能涉及多个检索源的合并，最终输出一组相关文档。</li>
+<li>在检索后阶段，系统对检索到的文档进行进一步处理，包括排序、选择最相关的子集以及压缩文档内容，输 出经过优化的相关文档集。</li>
+</ul>
+<h4 id="预检索：增强用户输入"><a href="#预检索：增强用户输入" class="headerlink" title="预检索：增强用户输入"></a>预检索：增强用户输入</h4><ul>
+<li>查询重写转换器<code>RewriteQueryTransformer</code>，对用户原始输入进行改写，使得更加清晰和详细，在用户输入一些含糊或者模糊信息时非常有用<ul>
+<li>原理就是内部提供了改写提示词，或者通过构造方法的promptTemplate参数自定义组件模板</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Query</span> <span class="variable">query</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Query</span>(<span class="string">&quot;啥是banana啊啊啊啊？!&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="type">QueryTransformer</span> <span class="variable">queryTransformer</span> <span class="operator">=</span> RewriteQueryTransformer.builder()</span><br><span class="line">        .chatClientBuilder(chatClientBuilder)</span><br><span class="line">        .build();</span><br><span class="line"></span><br><span class="line"><span class="type">Query</span> <span class="variable">transformedQuery</span> <span class="operator">=</span> queryTransformer.transform(query);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>翻译转换器<code>TranslationQueryTransformer</code>，翻译为模型支持的目标语言，针对特定语言训练的模型而提示词不是目标语言，非常有用<ul>
+<li>原理也是通过一段prompt实现，但建议实际用第三方翻译脚本，成本相对AI调用会更低一些</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Query</span> <span class="variable">query</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Query</span>(<span class="string">&quot;hi, who is coder aaa? please answer me&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="type">QueryTransformer</span> <span class="variable">queryTransformer</span> <span class="operator">=</span> TranslationQueryTransformer.builder()</span><br><span class="line">        .chatClientBuilder(chatClientBuilder)</span><br><span class="line">        .targetLanguage(<span class="string">&quot;chinese&quot;</span>)</span><br><span class="line">        .build();</span><br><span class="line"></span><br><span class="line"><span class="type">Query</span> <span class="variable">transformedQuery</span> <span class="operator">=</span> queryTransformer.transform(query);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查询压缩器<code>CompressionQueryTransformer</code>，将大语言模型的对话历史和后续查询压缩为一个独立查询，适合较长对话，且后续上下文相关的场景，原理同上</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Query</span> <span class="variable">query</span> <span class="operator">=</span> Query.builder()</span><br><span class="line">        .text(<span class="string">&quot;这个网站是什么？&quot;</span>)</span><br><span class="line">        .history(<span class="keyword">new</span> <span class="title class_">UserMessage</span>(<span class="string">&quot;谁是百度的创始人？？&quot;</span>),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">AssistantMessage</span>(<span class="string">&quot;百度的创始人是abc&quot;</span>))</span><br><span class="line">        .build();</span><br><span class="line"></span><br><span class="line"><span class="type">QueryTransformer</span> <span class="variable">queryTransformer</span> <span class="operator">=</span> CompressionQueryTransformer.builder()</span><br><span class="line">        .chatClientBuilder(chatClientBuilder)</span><br><span class="line">        .build();</span><br><span class="line"></span><br><span class="line"><span class="type">Query</span> <span class="variable">transformedQuery</span> <span class="operator">=</span> queryTransformer.transform(query);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>多查询拓展，将大语言模型扩展为多个语义的不同变体，有助于检索额外上下文信息，并找到相关结果的机会<ul>
+<li>理解：搜索内容搜不到的时候，尝试换一种表达就可以找到想要的内容</li>
+<li>下面的案例：就会拓展为 给出百度这家公司的公司简介，以及核心业务</li>
+<li>默认是包含原始查询的，通过<code>includeOriginal(false)</code>可以不包含</li>
+<li>源码中通过AI获得拓展，根据换行符分割</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">MultiQueryExpander</span> <span class="variable">queryExpander</span> <span class="operator">=</span> MultiQueryExpander.builder()</span><br><span class="line">    .chatClientBuilder(chatClientBuilder)</span><br><span class="line">    .numberOfQueries(<span class="number">3</span>)</span><br><span class="line">    .build();</span><br><span class="line">List&lt;Query&gt; queries = queryExpander.expand(<span class="keyword">new</span> <span class="title class_">Query</span>(<span class="string">&quot;啥是百度？百度是干嘛的？&quot;</span>));</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="检索：提高查询相关性"><a href="#检索：提高查询相关性" class="headerlink" title="检索：提高查询相关性"></a>检索：提高查询相关性</h4><blockquote>
+<p>文档检索器 <code>DocumentRetrever</code></p>
+</blockquote>
+<p>SpringAI官方有一个文档检索器<code>DocumentRetrever</code>，不同的存储方案也有自身的检索器实现类，如VectorStoreDocumentRetriever，可实现基于元数据的过滤、相似度阈值、返回结果数的搜索参数</p>
+<ul>
+<li><p>通过<code>filterExpression</code>可以灵活指定过滤条件，另外也提供了Query对象的<code>FILTER_EXPRESSION</code>过滤表达式参数</p>
+<ul>
+<li><pre><code class="language-java">Query query = Query.builder()
+    .text(&quot;百度创始人是谁？&quot;)
+    .context(Map.of(VectorStoreDocumentRetriever.FILTER_EXPRESSION, &quot;type == &#39;boy&#39;&quot;))
+    .build();
+List&lt;Document&gt; retrievedDocuments = documentRetriever.retrieve(query);
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">```java</span><br><span class="line">DocumentRetriever retriever = VectorStoreDocumentRetriever.builder()</span><br><span class="line">    .vectorStore(vectorStore)</span><br><span class="line">    .similarityThreshold(0.7)</span><br><span class="line">    .topK(5)</span><br><span class="line">    .filterExpression(new FilterExpressionBuilder()</span><br><span class="line">        .eq(&quot;type&quot;, &quot;web&quot;)</span><br><span class="line">        .build())</span><br><span class="line">    .build();</span><br><span class="line">List&lt;Document&gt; documents = retriever.retrieve(new Query(&quot;谁是程序员鱼皮&quot;));</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>文档合并<code> documentJoiner</code></p>
+</blockquote>
+<p>SpringAI内置documentJoiner合并器，通过连接操作，将多个查询和多个数据源合并为单个文档集合（重复文档保留首次出现的）</p>
+<ul>
+<li>在源码中，连接的思路就是将Map展开成二维列表，再将二维列表展开文档列表，最后去重，用了优雅的Stream流方法实现</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Map&lt;Query, List&lt;List&lt;Document&gt;&gt;&gt; documentsForQuery = ...</span><br><span class="line"><span class="type">DocumentJoiner</span> <span class="variable">documentJoiner</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ConcatenationDocumentJoiner</span>();</span><br><span class="line">List&lt;Document&gt; documents = documentJoiner.join(documentsForQuery);</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="检索后：优化文档处理"><a href="#检索后：优化文档处理" class="headerlink" title="检索后：优化文档处理"></a>检索后：优化文档处理</h4><p>处理检索的文档，从而获得最佳的结果，解决的问题：“丢失在中间“的问题（由于模型上下文限制、检索信息中的噪音或冗余等）</p>
+<p>具体的方式：</p>
+<ul>
+<li>根据查询相关性对文档排序</li>
+<li>删除不相关&#x2F;冗余文档</li>
+<li>压缩每个文档内容减少噪音&#x2F;冗余</li>
+</ul>
+<blockquote>
+<p>这一部分不是实际的重点，且迭代速度非常快。如在M8版本引入了DocumentPostProcessor</p>
+</blockquote>
+<h3 id="查询增强与关联"><a href="#查询增强与关联" class="headerlink" title="查询增强与关联"></a>查询增强与关联</h3><p>这是RAG最终缓解，将文档和用户查询结合，为AI提供上下文，从而生成最准确的回答。我们知道SpringAI提供了两种拦截器实现增强</p>
+<h4 id="QuestionAnswerAdvisor"><a href="#QuestionAnswerAdvisor" class="headerlink" title="QuestionAnswerAdvisor"></a>QuestionAnswerAdvisor</h4><p>Advisor查询向量数据来获取与用户问题相关的文档，将这些文档作为上下文添加到用户查询中</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">ChatResponse</span> <span class="variable">response</span> <span class="operator">=</span> ChatClient.builder(chatModel)</span><br><span class="line">        .build().prompt()</span><br><span class="line">        .advisors(<span class="keyword">new</span> <span class="title class_">QuestionAnswerAdvisor</span>(vectorStore))</span><br><span class="line">        .user(userText)</span><br><span class="line">        .call()</span><br><span class="line">        .chatResponse();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>进阶用法，建造者模式来配置更精细的参数</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">var</span> <span class="variable">qaAdvisor</span> <span class="operator">=</span> QuestionAnswerAdvisor.builder(vectorStore)</span><br><span class="line">              <span class="comment">// 相似度阈值为 0.8，并返回最相关的前 6 个结果</span></span><br><span class="line">        .searchRequest(SearchRequest.builder().similarityThreshold(<span class="number">0.8d</span>).topK(<span class="number">6</span>).build())</span><br><span class="line">        .build();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>进阶用法2，动态过滤表达式</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">ChatClient</span> <span class="variable">chatClient</span> <span class="operator">=</span> ChatClient.builder(chatModel)</span><br><span class="line">    .defaultAdvisors(QuestionAnswerAdvisor.builder(vectorStore)</span><br><span class="line">        .searchRequest(SearchRequest.builder().build())</span><br><span class="line">        .build())</span><br><span class="line">    .build();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在运行时更新过滤表达式</span></span><br><span class="line"><span class="type">String</span> <span class="variable">content</span> <span class="operator">=</span> <span class="built_in">this</span>.chatClient.prompt()</span><br><span class="line">    .user(<span class="string">&quot;看着我的眼睛，回答我！&quot;</span>)</span><br><span class="line">    .advisors(a -&gt; a.param(QuestionAnswerAdvisor.FILTER_EXPRESSION, <span class="string">&quot;type == &#x27;web&#x27;&quot;</span>))</span><br><span class="line">    .call()</span><br><span class="line">    .content();</span><br></pre></td></tr></table></figure>
+
+<p>进阶用法3，自定义提示词模板，自主控制将检索的文档与用户查询结合</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">QuestionAnswerAdvisor</span> <span class="variable">qaAdvisor</span> <span class="operator">=</span> QuestionAnswerAdvisor.builder(vectorStore)</span><br><span class="line">    .promptTemplate(customPromptTemplate)</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="RetrievalAugmentationAdvisor"><a href="#RetrievalAugmentationAdvisor" class="headerlink" title="RetrievalAugmentationAdvisor"></a>RetrievalAugmentationAdvisor</h4><p>在原先基础上提供了更灵活和定制选项，在该案例中：</p>
+<ul>
+<li>通过构造者模式在检索增强器中，指定文档检索器<code>VectorStoreDocumentRetriever</code>，来从向量数据库检索文档</li>
+<li>将该Advvisor添加到ChatClient请求中，即可生效RAG</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Advisor</span> <span class="variable">retrievalAugmentationAdvisor</span> <span class="operator">=</span> RetrievalAugmentationAdvisor.builder()</span><br><span class="line">        .documentRetriever(VectorStoreDocumentRetriever.builder()</span><br><span class="line">                .similarityThreshold(<span class="number">0.50</span>)</span><br><span class="line">                .vectorStore(vectorStore)</span><br><span class="line">                .build())</span><br><span class="line">        .build();</span><br><span class="line"></span><br><span class="line"><span class="type">String</span> <span class="variable">answer</span> <span class="operator">=</span> chatClient.prompt()</span><br><span class="line">        .advisors(retrievalAugmentationAdvisor)</span><br><span class="line">        .user(question)</span><br><span class="line">        .call()</span><br><span class="line">        .content();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>进阶用法，可以在RAG中配合查询转换器</p>
+<ul>
+<li>构造者模式的内部通过构造者又构建了一个<code>RewriteQueryTransformer</code>，实现在检索前重写原始查询，提高检索质量（解决用户问题含糊的问题）</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Advisor</span> <span class="variable">retrievalAugmentationAdvisor</span> <span class="operator">=</span> RetrievalAugmentationAdvisor.builder()</span><br><span class="line">        .queryTransformers(RewriteQueryTransformer.builder()</span><br><span class="line">                .chatClientBuilder(chatClientBuilder.build().mutate())</span><br><span class="line">                .build())</span><br><span class="line">        .documentRetriever(VectorStoreDocumentRetriever.builder()</span><br><span class="line">                .similarityThreshold(<span class="number">0.50</span>)</span><br><span class="line">                .vectorStore(vectorStore)</span><br><span class="line">                .build())</span><br><span class="line">        .build();</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="空上下文的处理"><a href="#空上下文的处理" class="headerlink" title="空上下文的处理"></a>空上下文的处理</h5><p>RetrievalAugmentationAdvisor默认不允许上下文为空，如果没有找到相关文档，会采取保守策略， 让模型不要回答用户的问题。</p>
+<p>但是有些场景下，希望及时没有知识库支持，也能回答一些通用问题，所以可以通过同样的构造者方式配置<code>ContextualQueryAugmenter</code>上下文增强器</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Advisor</span> <span class="variable">retrievalAugmentationAdvisor</span> <span class="operator">=</span> RetrievalAugmentationAdvisor.builder()</span><br><span class="line">        .documentRetriever(VectorStoreDocumentRetriever.builder()</span><br><span class="line">                .similarityThreshold(<span class="number">0.50</span>)</span><br><span class="line">                .vectorStore(vectorStore)</span><br><span class="line">                .build())</span><br><span class="line">        .queryAugmenter(ContextualQueryAugmenter.builder()</span><br><span class="line">                .allowEmptyContext(<span class="literal">true</span>)</span><br><span class="line">                .build())</span><br><span class="line">        .build();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>ContextualQueryAugmenter允许配置自定义提示模板，可以指导模型在没有找到模型时如何回应用户，如解释无法回答的原因，引导用户提问其他问题或提供更多信息。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">QueryAugmenter</span> <span class="variable">queryAugmenter</span> <span class="operator">=</span> ContextualQueryAugmenter.builder()</span><br><span class="line">        .promptTemplate(customPromptTemplate)</span><br><span class="line">        .emptyContextPromptTemplate(emptyContextPromptTemplate)</span><br><span class="line">        .build();</span><br></pre></td></tr></table></figure></blockquote>
+<h2 id="RAG进阶实战和最佳实践"><a href="#RAG进阶实战和最佳实践" class="headerlink" title="RAG进阶实战和最佳实践"></a>RAG进阶实战和最佳实践</h2><p>理论完毕，按照步骤实践。</p>
+<h3 id="文档收集与切割-ETL"><a href="#文档收集与切割-ETL" class="headerlink" title="文档收集与切割-ETL"></a>文档收集与切割-ETL</h3><p>首先完成ETL工作，这是RAG的基础也是最重要环节，文档质量直接决定AI能力的上限，其他策略只是为了逼近上限。</p>
+<h4 id="原始文档优化"><a href="#原始文档优化" class="headerlink" title="原始文档优化"></a>原始文档优化</h4><p>文档质量的首要条件是保证<strong>知识完备性</strong>，如果缺失内容，就无法回答问题，需要通过收集用户反馈&#x2F;统计知识库检索命中率，不断优化知识库内容。</p>
+<ul>
+<li>“<code>AI原生文档</code>“：需要专门为AI知识库建立文档，可以按照以下的规则让大模型为我们的文档进行优化。</li>
+</ul>
+<blockquote>
+<p>在知识完整的前提下，我们要注意 3 个方面：</p>
+<ol>
+<li>内容结构化:</li>
+</ol>
+<ul>
+<li>原始文档应保持<strong>排版清晰</strong>、结构合理，如案例编号、项目概述、设计要点等</li>
+<li>文档的各级标题层次分明，各标题下的内容表达清晰</li>
+<li>列表中间的某一条之下尽量不要再分级，<strong>减少层级嵌套</strong></li>
+</ul>
+<ol start="2">
+<li>内容规范化:</li>
+</ol>
+<ul>
+<li>语言统一：确保<strong>文档语言与用户提示词一致</strong>（比如英语场景采用英文文档），专业术语可进行多语言标注</li>
+<li>表述统一：同一概念应使用<strong>统一表达方式</strong>（比如 ML、Machine Learning 规范为“机器学习”），可通过大模型<br>分段处理长文档辅助完成</li>
+<li><strong>减少噪音</strong>：尽量避免水印、表格和图片等可能影响解析的元素</li>
+</ul>
+<ol start="3">
+<li>格式标准化:</li>
+</ol>
+<ul>
+<li>优先使用 <strong>Markdown、DOC&#x2F;DOCX 等文本格式</strong>（PDF 解析效果可能不佳），可以通过百炼 DashScopeParse<br>工具将 PDF 转为Markdown，再借助大模型整理格式</li>
+<li>如果文档包含图片，需链接化处理，确保回答中能正常展示文档中的插图，可以通过在文档中插入可公网访<br>问的 <strong>URL 链接</strong>实现</li>
+</ul>
+</blockquote>
+<h4 id="文档切片"><a href="#文档切片" class="headerlink" title="文档切片"></a>文档切片</h4><p>切片的尺寸根据实际要调整，原则：避免过短导致语义丢失，避免过长导致引入无关信息，尽量减少语义截断的问题。</p>
+<p>具体可以根据以下要素：</p>
+<ul>
+<li>文档类型：专业类文献可以增加长度保留更多上下文信息，而社交类帖子，缩短长度可以更精确捕捉语义</li>
+<li>提示词复杂度：如果复杂且具体，可能需要增加切片长度，否则，较短的长度更合适</li>
+</ul>
+<p>最佳切片策略：智能分块算法 （根据分句标识符划分段落–&gt;根据语义动态选择切片点）+ 人工二次校验</p>
+<p>实现：通过SpringAI的<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-ai/reference/api/etl-pipeline.html#_tokentextsplitter">ETL pipeline</a>的TokenTextSplitter（<code>documentTransformer</code>实现类）</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyTokenTextSplitter</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> List&lt;Document&gt; <span class="title function_">splitDocuments</span><span class="params">(List&lt;Document&gt; documents)</span> &#123;</span><br><span class="line">        <span class="type">TokenTextSplitter</span> <span class="variable">splitter</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TokenTextSplitter</span>();</span><br><span class="line">        <span class="keyword">return</span> splitter.apply(documents);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> List&lt;Document&gt; <span class="title function_">splitCustomized</span><span class="params">(List&lt;Document&gt; documents)</span> &#123;</span><br><span class="line">        <span class="type">TokenTextSplitter</span> <span class="variable">splitter</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TokenTextSplitter</span>(<span class="number">200</span>, <span class="number">100</span>, <span class="number">10</span>, <span class="number">5000</span>, <span class="literal">true</span>);</span><br><span class="line">        <span class="keyword">return</span> splitter.apply(documents);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用切片器</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Resource</span></span><br><span class="line"><span class="keyword">private</span> MyTokenTextSplitter myTokenTextSplitter;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line">VectorStore <span class="title function_">loveAppVectorStore</span><span class="params">(EmbeddingModel dashscopeEmbeddingModel)</span> &#123;</span><br><span class="line">    <span class="type">SimpleVectorStore</span> <span class="variable">simpleVectorStore</span> <span class="operator">=</span> SimpleVectorStore.builder(dashscopeEmbeddingModel)</span><br><span class="line">            .build();</span><br><span class="line">    <span class="comment">// 加载文档</span></span><br><span class="line">    List&lt;Document&gt; documents = loveAppDocumentLoader.loadMarkdowns();</span><br><span class="line">    <span class="comment">// 自主切分</span></span><br><span class="line">    List&lt;Document&gt; splitDocuments = myTokenTextSplitter.splitCustomized(documents);</span><br><span class="line">    simpleVectorStore.add(splitDocuments);</span><br><span class="line">    <span class="keyword">return</span> simpleVectorStore;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>问题：手动使用切分参数很难把握合适值，容易 出现语义截断的问题。</p>
+<p>解决思路：云服务，如阿里云百炼实现好的智能切分 + 人工二次校验</p>
+<h4 id="元数据标注"><a href="#元数据标注" class="headerlink" title="元数据标注"></a>元数据标注</h4><p>为文档添加更丰富的元信息，形成多维索引，便于向量化处理和精确检索</p>
+<p>实现方式：</p>
+<ul>
+<li>手动对单个文档添加，通过Document构造函数的Map传入即可</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">documents.add(<span class="keyword">new</span> <span class="title class_">Document</span>(</span><br><span class="line">    <span class="string">&quot;案例编号：LR-2023-001\n&quot;</span> +</span><br><span class="line">    <span class="string">&quot;项目概述：180平米大平层现代简约风格客厅改造\n&quot;</span> +</span><br><span class="line">    <span class="string">&quot;设计要点：\n&quot;</span> +</span><br><span class="line">    <span class="string">&quot;1. 采用5.2米挑高的落地窗，最大化自然采光\n&quot;</span> +</span><br><span class="line">    <span class="string">&quot;2. 主色调：云雾白(哑光，NCS S0500-N)配合莫兰迪灰\n&quot;</span> +</span><br><span class="line">    <span class="string">&quot;3. 家具选择：意大利B&amp;B品牌真皮沙发，北欧白橡木茶几\n&quot;</span> +</span><br><span class="line">    <span class="string">&quot;空间效果：通透大气，适合商务接待和家庭日常起居&quot;</span>,</span><br><span class="line">    Map.of(</span><br><span class="line">        <span class="string">&quot;type&quot;</span>, <span class="string">&quot;interior&quot;</span>,    <span class="comment">// 文档类型</span></span><br><span class="line">        <span class="string">&quot;year&quot;</span>, <span class="string">&quot;2025&quot;</span>,        <span class="comment">// 年份</span></span><br><span class="line">        <span class="string">&quot;month&quot;</span>, <span class="string">&quot;05&quot;</span>,         <span class="comment">// 月份</span></span><br><span class="line">        <span class="string">&quot;style&quot;</span>, <span class="string">&quot;modern&quot;</span>,      <span class="comment">// 装修风格</span></span><br><span class="line">    )));</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>批量添加，通过DocumentReader，可以对每篇文章添加特定标签，比如恋爱状态等</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 提取文档倒数第 3 和第 2 个字作为标签</span></span><br><span class="line"><span class="type">String</span> <span class="variable">status</span> <span class="operator">=</span> fileName.substring(fileName.length() - <span class="number">6</span>, fileName.length() - <span class="number">4</span>);</span><br><span class="line"><span class="type">MarkdownDocumentReaderConfig</span> <span class="variable">config</span> <span class="operator">=</span> MarkdownDocumentReaderConfig.builder()</span><br><span class="line">        .withHorizontalRuleCreateDocument(<span class="literal">true</span>)</span><br><span class="line">        .withIncludeCodeBlock(<span class="literal">false</span>)</span><br><span class="line">        .withIncludeBlockquote(<span class="literal">false</span>)</span><br><span class="line">        .withAdditionalMetadata(<span class="string">&quot;filename&quot;</span>, fileName)</span><br><span class="line">        .withAdditionalMetadata(<span class="string">&quot;status&quot;</span>, status)</span><br><span class="line">        .build();</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>自动添加，SpringAI的transformer组件提供AI自动解析关键词并添加元信息的功能<ul>
+<li>阿里云百炼可以通过<a target="_blank" rel="noopener" href="https://help.aliyun.com/zh/model-studio/rag-knowledge-base#c0fa1080aerzp">手动设置标签或API</a>也可以实现快速过滤</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyKeywordEnricher</span> &#123;</span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    <span class="keyword">private</span> ChatModel dashscopeChatModel;</span><br><span class="line"></span><br><span class="line">    List&lt;Document&gt; <span class="title function_">enrichDocuments</span><span class="params">(List&lt;Document&gt; documents)</span> &#123;</span><br><span class="line">        <span class="type">KeywordMetadataEnricher</span> <span class="variable">enricher</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">KeywordMetadataEnricher</span>(<span class="built_in">this</span>.dashscopeChatModel, <span class="number">5</span>);</span><br><span class="line">        <span class="keyword">return</span> enricher.apply(documents);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line">VectorStore <span class="title function_">loveAppVectorStore</span><span class="params">(EmbeddingModel dashscopeEmbeddingModel)</span> &#123;</span><br><span class="line">    <span class="type">SimpleVectorStore</span> <span class="variable">simpleVectorStore</span> <span class="operator">=</span> SimpleVectorStore.builder(dashscopeEmbeddingModel)</span><br><span class="line">            .build();</span><br><span class="line">    <span class="comment">// 加载文档</span></span><br><span class="line">    List&lt;Document&gt; documents = loveAppDocumentLoader.loadMarkdowns();</span><br><span class="line">    <span class="comment">// 自动补充关键词元信息</span></span><br><span class="line">    List&lt;Document&gt; enrichedDocuments = myKeywordEnricher.enrichDocuments(documents);</span><br><span class="line">    simpleVectorStore.add(enrichedDocuments);</span><br><span class="line">    <span class="keyword">return</span> simpleVectorStore;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="向量转换与存储-1"><a href="#向量转换与存储-1" class="headerlink" title="向量转换与存储"></a>向量转换与存储</h3><p>这是影响准确性和效率的核心步骤</p>
+<p>首先从成本、性能、数据规模等考虑存储方案，内存&#x2F;MongoDB&#x2F;Redis等，具体实现通过builder即可指定vectorStore</p>
+<p>接下来考虑合适的嵌入模型embeddingModel，好的嵌入模型直接影响相似度计算和检索准确性</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">SimpleVectorStore</span> <span class="variable">vectorStore</span> <span class="operator">=</span> SimpleVectorStore.builder(embeddingModel)</span><br><span class="line">.build();</span><br></pre></td></tr></table></figure>
+
+<h3 id="文档过滤和检索"><a href="#文档过滤和检索" class="headerlink" title="文档过滤和检索"></a>文档过滤和检索</h3><p>这里就有很多优化的地方</p>
+<h4 id="多查询扩展"><a href="#多查询扩展" class="headerlink" title="多查询扩展"></a>多查询扩展</h4><p>提示词不完整&#x2F;歧义的情况下，通过多查询拓展器可以拓展检索范围，提高文档的召回率</p>
+<p>注意：</p>
+<ul>
+<li>合适的查询数量（3-5个），过多成本会过高</li>
+<li>要保留原始查询的核心语义</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">MultiQueryExpander</span> <span class="variable">queryExpander</span> <span class="operator">=</span> MultiQueryExpander.builder()</span><br><span class="line">    .chatClientBuilder(chatClientBuilder)</span><br><span class="line">    .numberOfQueries(<span class="number">3</span>)</span><br><span class="line">    .build();</span><br><span class="line">List&lt;Query&gt; queries = queryExpander.expand(<span class="keyword">new</span> <span class="title class_">Query</span>(<span class="string">&quot;谁是百度创始人啊？&quot;</span>));</span><br></pre></td></tr></table></figure>
+
+<p>扩展后，即可直接用于检索文档、或者提取文本改写提示词</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">DocumentRetriever</span> <span class="variable">retriever</span> <span class="operator">=</span> VectorStoreDocumentRetriever.builder()</span><br><span class="line">    .vectorStore(vectorStore)</span><br><span class="line">    .similarityThreshold(<span class="number">0.73</span>)</span><br><span class="line">    .topK(<span class="number">5</span>)</span><br><span class="line">    .filterExpression(<span class="keyword">new</span> <span class="title class_">FilterExpressionBuilder</span>()</span><br><span class="line">        .eq(<span class="string">&quot;genre&quot;</span>, <span class="string">&quot;fairytale&quot;</span>)</span><br><span class="line">        .build())</span><br><span class="line">    .build();</span><br><span class="line"><span class="comment">// 直接用扩展后的查询来获取文档</span></span><br><span class="line">List&lt;Document&gt; retrievedDocuments = documentRetriever.retrieve(query);</span><br><span class="line"><span class="comment">// 输出扩展后的查询文本</span></span><br><span class="line">System.out.println(query.text());</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>多查询扩展的完整使用流程可以包括三个步骤：</p>
+<ol>
+<li><p>使用扩展后的查询召回文档：遍历扩展后的查询列表，对每个查询使用 DocumentRetriever 来召回相关文档。</p>
+</li>
+<li><p>整合召回的文档：将每个查询召回的文档进行整合，形成一个包含所有相关信息的文档集合。(也可以使用文档合并器去重)</p>
+</li>
+<li><p>使用召回的文档改写 Prompt：将整合后的文档内容添加到原始 Prompt 中，为大语言模型提供更丰富的上下文信息。</p>
+</li>
+</ol>
+<p>💡 需要注意，多查询扩展会增加查询次数和计算成本，效果也不易量化评估，所以个人建议慎用这种优化方式。</p>
+</blockquote>
+<h4 id="查询重写-翻译"><a href="#查询重写-翻译" class="headerlink" title="查询重写&#x2F;翻译"></a>查询重写&#x2F;翻译</h4><p>参照<a target="_blank" rel="noopener" href="https://java2ai.com/docs/1.0.0-M6.1/tutorials/rag/#32-query-rewrite-%E6%9F%A5%E8%AF%A2%E9%87%8D%E5%86%99">文档</a>实现查询重写</p>
+<ul>
+<li><code>RewriteQueryTransformer</code>  重写优化查询结构</li>
+<li><code>transformedQuery</code> 多语言支持</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">QueryRewriter</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> QueryTransformer queryTransformer;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">QueryRewriter</span><span class="params">(ChatModel dashscopeChatModel)</span> &#123;</span><br><span class="line">        ChatClient.<span class="type">Builder</span> <span class="variable">builder</span> <span class="operator">=</span> ChatClient.builder(dashscopeChatModel);</span><br><span class="line">        <span class="comment">// 创建查询重写转换器</span></span><br><span class="line">        queryTransformer = RewriteQueryTransformer.builder()</span><br><span class="line">                .chatClientBuilder(builder)</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">doQueryRewrite</span><span class="params">(String prompt)</span> &#123;</span><br><span class="line">        <span class="type">Query</span> <span class="variable">query</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Query</span>(prompt);</span><br><span class="line">        <span class="comment">// 执行查询重写</span></span><br><span class="line">        <span class="type">Query</span> <span class="variable">transformedQuery</span> <span class="operator">=</span> queryTransformer.transform(query);</span><br><span class="line">        <span class="comment">// 输出重写后的查询</span></span><br><span class="line">        <span class="keyword">return</span> transformedQuery.text();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>应用，通过修改用户提示词为重写&#x2F;翻译后的提示词即可，云服务中，可以通过<a target="_blank" rel="noopener" href="https://help.aliyun.com/zh/model-studio/rag-optimization#b7031e2ad6cji">多轮会话改写</a>获得更专业的提示词</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Resource</span></span><br><span class="line"> <span class="keyword">private</span> QueryRewriter queryRewriter;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">public</span> String <span class="title function_">doChatWithRag</span><span class="params">(String message, String chatId)</span> &#123;</span><br><span class="line">     <span class="comment">// 查询重写</span></span><br><span class="line">     <span class="type">String</span> <span class="variable">rewrittenMessage</span> <span class="operator">=</span> queryRewriter.doQueryRewrite(message);</span><br><span class="line">     <span class="type">ChatResponse</span> <span class="variable">chatResponse</span> <span class="operator">=</span> chatClient</span><br><span class="line">             .prompt()</span><br><span class="line">             .user(rewrittenMessage)</span><br><span class="line">             .call()</span><br><span class="line">             .chatResponse();</span><br><span class="line">     <span class="type">String</span> <span class="variable">content</span> <span class="operator">=</span> chatResponse.getResult().getOutput().getText();</span><br><span class="line">     <span class="keyword">return</span> content;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="检索器配置"><a href="#检索器配置" class="headerlink" title="检索器配置"></a>检索器配置</h4><p>关键配置：相似度阈值（噪音和信息完整性的权衡）、返回文档数量（噪音和信息完整性的权衡）、过滤规则（<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-ai/reference/api/retrieval-augmented-generation.html#_vectorstoredocumentretriever">FilterExpressionBuilder</a>）</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>解决方案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>知识库中包含多个类别的文档，希望限定检索范围</td>
+<td>建议为文档添加标签，知识库检索时会先根据标签筛选相关文档</td>
+</tr>
+<tr>
+<td>知识库中有多篇结构相似的文档，希望精确定位</td>
+<td>首先提取元数据，知识库先使用元数据进行结构化搜索，再进行向量检索</td>
+</tr>
+</tbody></table>
+<p>我们可以写一个RagAdvisor工厂类，根据用户的查询需求制造对应的Advisor</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LoveAppRagCustomAdvisorFactory</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Advisor <span class="title function_">createLoveAppRagCustomAdvisor</span><span class="params">(VectorStore vectorStore, String status)</span> &#123;</span><br><span class="line">        Filter.<span class="type">Expression</span> <span class="variable">expression</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FilterExpressionBuilder</span>()</span><br><span class="line">                .eq(<span class="string">&quot;status&quot;</span>, status)</span><br><span class="line">                .build();</span><br><span class="line">        <span class="type">DocumentRetriever</span> <span class="variable">documentRetriever</span> <span class="operator">=</span> VectorStoreDocumentRetriever.builder()</span><br><span class="line">                .vectorStore(vectorStore)</span><br><span class="line">                .filterExpression(expression) <span class="comment">// 过滤条件</span></span><br><span class="line">                .similarityThreshold(<span class="number">0.5</span>) <span class="comment">// 相似度阈值</span></span><br><span class="line">                .topK(<span class="number">3</span>) <span class="comment">// 返回文档数量</span></span><br><span class="line">                .build();</span><br><span class="line">        <span class="keyword">return</span> RetrievalAugmentationAdvisor.builder()</span><br><span class="line">                .documentRetriever(documentRetriever)</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用方式</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">chatClient.advisors(</span><br><span class="line">    LoveAppRagCustomAdvisorFactory.createLoveAppRagCustomAdvisor(</span><br><span class="line">        loveAppVectorStore, <span class="string">&quot;已婚&quot;</span></span><br><span class="line">    )</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>云平台中，可以通过tags指定标签来实现过滤，以及支持<a target="_blank" rel="noopener" href="https://help.aliyun.com/zh/model-studio/call-single-agent-application/#6bd8094de7e1e">元数据过滤</a>，开启后会在检索前加上结构化搜索</p>
+<blockquote>
+<p>注：无论使用什么方式，都要进行多轮命中测试，验证检索效果</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260130204841481.png" alt="image-20260130204841481" style="zoom:33%;" />	</blockquote>
+<h3 id="查询增强与关联-1"><a href="#查询增强与关联-1" class="headerlink" title="查询增强与关联"></a>查询增强与关联</h3><p>此时获取到了与用户相关的文档，接下来就是将用户提示词和检索内容生成最终回答。</p>
+<h4 id="错误处理机制"><a href="#错误处理机制" class="headerlink" title="错误处理机制"></a>错误处理机制</h4><p>实际会出现多种情况，如找不到文档、相似度低、查询超时等，良好的错误处理可以提升用户体验，具体有：</p>
+<ul>
+<li>空上下文处理（边界情况）</li>
+<li>友好的错误提示</li>
+<li>引导用户提供必要信息</li>
+</ul>
+<p>这就可以通过之前提到的<code>RetrievalAugmentationAdvisor</code>上下文增强器</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">RetrievalAugmentationAdvisor.builder()</span><br><span class="line">    .queryAugmenter(</span><br><span class="line">        ContextualQueryAugmenter.builder()</span><br><span class="line">            .allowEmptyContext(<span class="literal">false</span>)</span><br><span class="line">            .build()</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+
+<p>如果没有配置，则会默认改写user提示词</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">The user query is outside your knowledge base.</span><br><span class="line">Politely inform the user that you can&#x27;t answer it.</span><br></pre></td></tr></table></figure>
+
+<p>友好的错误提示&amp;引导提供必要信息：我们考虑进一步使用工厂模式创建自定义的<code>ContextualQueryAugmenter</code>，定义返回的模板</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LoveAppContextualQueryAugmenterFactory</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> ContextualQueryAugmenter <span class="title function_">createInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">PromptTemplate</span> <span class="variable">emptyContextPromptTemplate</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">PromptTemplate</span>(<span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">                你应该输出下面的内容：</span></span><br><span class="line"><span class="string">                抱歉，我只能回答恋爱相关的问题，别的没办法帮到您哦，</span></span><br><span class="line"><span class="string">                有问题可以联系编程导航客服 https://codefather.cn</span></span><br><span class="line"><span class="string">                &quot;&quot;&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> ContextualQueryAugmenter.builder()</span><br><span class="line">                .allowEmptyContext(<span class="literal">false</span>)</span><br><span class="line">                .emptyContextPromptTemplate(emptyContextPromptTemplate)</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>检索生成器中应用上下文增强器</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">RetrievalAugmentationAdvisor.builder()</span><br><span class="line">              .documentRetriever(documentRetriever)</span><br><span class="line">              .queryAugmenter(LoveAppContextualQueryAugmenterFactory.createInstance())</span><br><span class="line">              .build();</span><br></pre></td></tr></table></figure>
+
+<p>其他最佳实践</p>
+<table>
+<thead>
+<tr>
+<th>问题类型</th>
+<th>改进策略</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>大模型并未理解知识和用户提示词之间的关系，答案生硬拼凑</td>
+<td>建议选择合适的大模型，提升语义理解能力</td>
+</tr>
+<tr>
+<td>返回的结果没有按照要求，或者不够全面</td>
+<td>建议优化提示词模板，引导模型生成更符合要求的回答</td>
+</tr>
+<tr>
+<td>返回结果不够准确，混入了模型自身的通用知识</td>
+<td>建议开启拒识功能，限制模型只基于知识库回答</td>
+</tr>
+<tr>
+<td>相似提示词，希望控制回答的一致性或多样性</td>
+<td>建议调整大模型参数，如温度值等</td>
+</tr>
+</tbody></table>
+<p>如果必要的话，还可以考虑更高级的优化方向，比如：</p>
+<ol>
+<li>分离检索阶段和生成阶段的知识块</li>
+<li>针对不同阶段使用不同粒度的文档，进一步提升系统性能和回答质量</li>
+<li>针对查询重写、关键词元信息增强等用到 AI 大模型的场景，可以选择相对轻量的大模型，不一定整个项目只引入一种大模型</li>
+</ol>
+<h2 id="高级知识补充"><a href="#高级知识补充" class="headerlink" title="高级知识补充"></a>高级知识补充</h2><h3 id="混合检索"><a href="#混合检索" class="headerlink" title="混合检索"></a>混合检索</h3><p>RAG 系统的检索质量很大程度决定最终回答</p>
+<p>但不同检索方法各有优缺点: 向量检索虽然能理解语义, 捕捉文本间的概念关联, 但对关键词敏感度不够。比如, 当你搜索“2025 年怎么学编程”时, 向量检索可能会返回与编程相关的术语解释, 而不是准确锁定 2025 年编程学习路线。</p>
+<p>相反, 基于倒排索引的全文检索在精确匹配关键词方面表现出色, 但它不理解语义, 难以处理同义词或概念性查询。就像你问“百度的创始人是谁”, 全文检索可能不会返回只提到“百度创始人创办了很多网站”而没有明确提到“百度”的文档。</p>
+<p>结构化检索支持精确过滤和复杂条件组合, 但依赖良好的元数据。而知识图谱检索能发现实体间隐含关系, 适合回答复杂问题, 但构建成本高。</p>
+<p>主要检索方法比较表:</p>
+<table>
+<thead>
+<tr>
+<th>检索方法</th>
+<th>原理</th>
+<th>优势</th>
+<th>劣势</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>向量检索</td>
+<td>基于嵌入向量相似度搜索</td>
+<td>理解语义关联, 适合概念性查询</td>
+<td>对关键词不敏感, 召回可能不准确</td>
+</tr>
+<tr>
+<td>全文检索</td>
+<td>基于倒排索引, 匹配关键词</td>
+<td>精确匹配关键词, 高召回率</td>
+<td>不理解语义, 同义词难以匹配</td>
+</tr>
+<tr>
+<td>结构化检索</td>
+<td>基于元数据或结构化字段查询</td>
+<td>精确过滤, 支持复杂条件组合</td>
+<td>依赖良好的元数据, 灵活性有限</td>
+</tr>
+<tr>
+<td>知识图谱检索</td>
+<td>利用实体间关系进行图遍历</td>
+<td>发现隐含关系, 回答复杂问题</td>
+<td>构建成本高, 需要专业知识</td>
+</tr>
+</tbody></table>
+<p>其中, 全文检索是后端开发要掌握的技能, 对应的主流技术实现是 Elasticsearch,</p>
+<p>策略：</p>
+<ul>
+<li>并行检索，派出多个专家，整合他们的结果</li>
+</ul>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260130210812154.png" alt="image-20260130210812154" style="zoom:33%;" />	
+
+<ul>
+<li>级联混合检索：先广泛召回，再精细过滤，如先向量获取相似文档，再关键词过滤，最后元数据进一步筛选，漏斗式逐步过滤</li>
+</ul>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260130210847610.png" alt="image-20260130210847610" style="zoom:33%;" />	
+
+<ul>
+<li>动态混合检索，理解为cursor的auto模式，分析查询的类型动态路由到对应的检索方式，如问怎么写java项目，就会匹配到向量检索配合全文检索，最终合并多个模型的结果<ul>
+<li>dify就提供了基于全文+基于向量的语义检索的混合检索策略，可以设置不同权重</li>
+</ul>
+</li>
+</ul>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260130210938463.png" alt="image-20260130210938463" style="zoom:33%;" />	
+
+
+
+<h3 id="大模型幻觉问题"><a href="#大模型幻觉问题" class="headerlink" title="大模型幻觉问题"></a>大模型幻觉问题</h3><p>大型模型幻觉是指模型生成看似合理但实际上不准确或完全虚构的内容。就像一个信心十足的学生回答了一个自己并不真正了解的问题。这些幻觉主要有三种表现形式:</p>
+<ol>
+<li><p>事实性幻觉:生成与事实不符的内容(如错误的日期、人物关系等)。比如“百度创始人发明了计算器”</p>
+</li>
+<li><p>逻辑性幻觉:推理过程存在逻辑错误，得出不合理的结论。比如“1+1&#x3D;3”</p>
+</li>
+<li><p>自洽性幻觉:生成内容自身存在矛盾。比如“我很年轻，才80岁”</p>
+</li>
+</ol>
+<p>为什么会出现幻觉呢?原因其实很复杂。</p>
+<ul>
+<li>一方面，模型的训练数据中可能包含<code>错误或过时的信息</code>;</li>
+<li>另一方面，大语言模型本质上是<code>预测下一个词的概率模型</code>，它们倾向于生成流畅而未必准确的内容。更重要的是，模型并不真正“知道”什么，它只是学会了文本的统计模式。</li>
+</ul>
+<p>想象一下，当你问一个从来没去过月球的人关于月球表面的情况，他可能会基于看过的电影或书籍给出看似合理但不准确的描述。大型模型的幻觉本质上与此类似。</p>
+<p>那么，如何减少这种幻觉呢?</p>
+<ul>
+<li>首先就是我们重点学习的RAG,通过引入外部知识源，我们可以让模型不再完全依赖其参数中存储的信息，而是基于检索到的最新、准确的信息来回答问题。<ul>
+<li>有效的RAG实现通常会引入“<code>引用标注</code>”机制，让模型明确指出信息来源于哪个文档的哪个部分。当模型不确定时，我们也应该鼓励它诚实地表达不确定性，而不是猜测答案。这就像一个好的学者会明确引用来源，并在不确定时坦诚承认知识的局限性。</li>
+</ul>
+</li>
+<li>此外，还有其他减轻幻觉的方法，比如提示工程优化，可以采用“<code>思维链</code>”提高推理透明度，通过引导模型一步步思考，我们能够更好地观察其推理过程，及时发现可能的错误。很多 Agent 超级智能体都会采用这种模式（如cursor中的推理过程）</li>
+</ul>
+<h3 id="RAG应用评估"><a href="#RAG应用评估" class="headerlink" title="RAG应用评估"></a>RAG应用评估</h3><p>在小应用产品中，可以直接用云平台的命中测试能力评估RAG效果。但是大公司就会有一套专门的评估体系：</p>
+<blockquote>
+<p> RAG 应用评估本质上回答了 3 个关键问题：</p>
+<ul>
+<li>系统检索的信息是否相关？</li>
+<li>生成的回答是否准确？</li>
+<li>整体用户体验如何？评估的目的是确保回答质量、识别性能瓶颈，从而给出持续优化的思路。</li>
+</ul>
+<p>我们可以简单了解下 RAG 应用的评估指标：</p>
+<ol>
+<li>检索质量评估指标</li>
+</ol>
+<ul>
+<li>召回率：能否检索到所有相关文档</li>
+<li>精确率：检索结果中相关文档的比例</li>
+<li>平均精度均值 (MAP)：考虑排序质量的综合指标</li>
+<li>规范化折扣累积增益 (NDCG)：考虑到文档的相关性和它们在排名中的位置，是一个衡量排名质量的指标</li>
+</ul>
+<ol start="2">
+<li>生成回答质量评估指标</li>
+</ol>
+<ul>
+<li>事实准确性：回答中事实性陈述的准确程度</li>
+<li>答案完整性：回答是否涵盖问题的所有方面</li>
+<li>上下文相关性：回答与问题的相关程度</li>
+<li>引用准确性：引用内容是否确实来自检索上下文</li>
+</ul>
+<p>当然，我们还可以根据具体应用场景，定制专门的评估标准。比如系统性能评估、领域适应性评估、多语言评估、时效性评估和用户满意度评估。其中，用户满意度评估在我们开发 AI 产品时尤为常见，经常需要引导用户针对 AI 大型模型的回复进行打分。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260130211435466.png" alt="image-20260130211435466"></p>
+</blockquote>
+<p>RAG 评估流程通常包括 4 个步骤：</p>
+<ol>
+<li><p>生成评估数据集：创建覆盖不同问题类型的测试集，为每个问题准备标准答案和相关文档。这些测试问题应包括事实性问题、观点性问题、多步骤推理问题等各种类型。</p>
+</li>
+<li><p>运行评估检索过程的程序：对每个测试问题执行检索，与人工标注的相关文档比较，计算检索性能指标。</p>
+</li>
+<li><p>评估回答质量：实际操作中，评估通常分为自动评估和人工评估两种方式。自动评估使用像 ROUGE (召回率取向摘要评估) 或 BLEU (双语评估替补) 这样的指标来衡量生成内容与参考答案的相似度，或者使用更强大的模型来判断回答质量。但自动评估有其局限性，某些方面如创造性、实用性等仍然需要人工评估。这就是为什么很多 AI 公司会招人来人工标注。</p>
+</li>
+<li><p>综合分析与优化：识别失败模式和常见错误，比如区分检索失败和生成失败，针对性改进系统组件。</p>
+</li>
+</ol>
+<blockquote>
+<p>如果面试时，面试官问到“你是如何评估和调优 RAG 系统的？”，就可以采用下面这样的回答：</p>
+<p>我曾参与过一个编程咨询 RAG 系统的评估和优化。系统在回答具体编程技术问题时表现出色，但处理“根据个人编程情况给出学习建议”的复杂案例时表现不好。通过错误分析，我们发现问题出在检索阶段——系统无法同时检索到相关技术知识和类似的学习建议。针对这一问题，我们调整了检索策略，专门为学习建议类问题设计了基于案例的检索方法，从而提升了模型回复的准确度。</p>
+</blockquote>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260130211458250.png" alt="image-20260130211458250"></p>
+<h3 id="高级RAG架构"><a href="#高级RAG架构" class="headerlink" title="高级RAG架构"></a>高级RAG架构</h3><blockquote>
+<p>注：实际应用会结合使用多个，如回答公司财务信息会用C-RAG，复杂的投资策略分析使用RAPTOR多维度分析</p>
+<p>最终的挑战：精准检索知识，无缝融入生成过程，给用户生成准确又自然的结果</p>
+<p>未来方向：多模态、适应性（根据用户动态调整）、高效率</p>
+</blockquote>
+<h4 id="C-RAG-自纠错RAG"><a href="#C-RAG-自纠错RAG" class="headerlink" title="C-RAG 自纠错RAG"></a>C-RAG 自纠错RAG</h4><p>在回答过程中，采用“检索-生成-验证-纠正”的闭环流程，发现错误就立即重新生成，保证回答的准确性，适合医疗、法律等事实要求准确性高场景。</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260130211646484.png" alt="image-20260130211646484" style="zoom: 50%;" />	
+
+<h4 id="self-RAG-自省式RAG"><a href="#self-RAG-自省式RAG" class="headerlink" title="self-RAG 自省式RAG"></a>self-RAG 自省式RAG</h4><p>解决的问题是：并非所有问题都要检索，让回答更自然提高检索效率。</p>
+<p>如1+1等于几可以直接回答，不需要额外检索，让他会思考这个问题是否需要引入外部知识</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260130211706839.png" alt="image-20260130211706839" style="zoom:50%;" />	
+
+<h4 id="RAPTOR-检索树RAG"><a href="#RAPTOR-检索树RAG" class="headerlink" title="RAPTOR 检索树RAG"></a>RAPTOR 检索树RAG</h4><p>场景：可拆分的复杂问题，如数学题，大问题拆分多个小问题</p>
+<p>如介绍小红书的点赞模块和评论模块多个问题，RAPTOR会分别检索这几个模块的信息，综合多个信息整合给出最终答案，提高长篇叙述的连贯性和准确性，并可以克服单次检索的上下文长度的限制。</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260130211714911.png" alt="image-20260130211714911" style="zoom:50%;" />	
+
+<h4 id="多智能体RAG系统"><a href="#多智能体RAG系统" class="headerlink" title="多智能体RAG系统"></a>多智能体RAG系统</h4><p>多个大模型各自处理自身擅长的领域，各司其职，实现复杂任务协同处理</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260130211724251.png" alt="image-20260130211724251" style="zoom:50%;" /></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2026/01/30/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/4.RAG%E8%BF%9B%E9%98%B6/">https://yuezi2048.github.io/2026/01/30/2.Areas🌐/01.project/condefather/yu-ai-agent/4.RAG进阶/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/yu-ai-agent/">yu-ai-agent</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/01/27/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/3.RAG/" title="3.RAG"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">3.RAG</div></div><div class="info-2"><div class="info-item-1">使用RAG（Retrieval Augmentation Generation 检索增强生成）的需求分析：  知识扩展，给出更精准的回答  减小幻觉  个性化输出：特色服务和回答风格  推销：推销我们的产品和服务   工作机制概览  文档收集和切割  向量转换和存储  文档过滤和检索  查询增强和关联    文档收集与切割 收集的来源：网页、PDF、数据库等原始文档 预处理：清洗、标准化格式 切割：长文档划分为适当的片段（chunks） 基于固定大小（如512token） 基于语义边界（段落 章节） 基于递归分割策略（递归字符 n-gram）    向量转换和存储向量转换：将文本通过Embedding模型转化为高维向量，可捕获到语义特征 向量存储：存入向量数据库，支持相似度搜索   embedding 经典的有Word2Vec文本、ResNet图像，一般纬度越高语义信息越丰富但占用空间越多 向量数据库：存储向量的数据库，支持索引算法快速相似度搜索，支持k近邻查询（注：传统数据库也可以支持，如PGVector插件，Redis...</div></div></div></a><a class="pagination-related" href="/2026/01/31/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">5.工具调用</div></div><div class="info-2"><div class="info-item-1">具体内容包括: • 工具调用介绍 • Spring AI 工具开发 • 主流工具开发 • 文件操作 • 联网搜索 • 网页抓取 • 终端操作 • 资源下载 • PDF 生成 • 工具进阶知识 (原理和高级特性) 需求分析：现在通过RAG技术让AI可以根据外部知识库获取信息回答的能力，但是可能需要一些外部工具的场景：  联网搜索：如智能推荐约会地点（如cursor的联网搜索，阿里云百炼API也提供该选项支持） 网页抓取：如查看百度贴吧其他吧友是怎么解决情感问题的 资源下载：下载约会时的钢琴曲 终端操作：Python生成恋爱分析报告 文件操作：保存恋爱档案 PDF生成：生成七夕约会计划PDF，餐厅预订-活动流程-礼物清单   以上工具可进行组合搭配使用。让ai不再是简单的问答系统，而是能完成任务的智能体  工具调用 Tool Calling目的：让AI来使用外部工具完成自己做不到的事情，如查询天气，AI本身没有这些知识，但是可以通过联网搜索来完成任务 官方文档 工具调用支持的模型 工具调用的流程：  工具定义: 程序告诉 AI “你可以使用这些工具”,...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/03/03/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/0.python%E8%A1%A5%E5%85%85%E8%AE%B0%E5%BD%95/" title="0.python补充记录"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-03</div><div class="info-item-2">0.python补充记录</div></div><div class="info-2"><div class="info-item-1">OpenManus源码拉取时间：2026.3.2  app\agent\base.py#134  results: List[str] = [] # List&lt;String&gt; results = new ArrayList&lt;&gt;();   这段是初始化Field的语法，这个冒号就可以近似地认为是java里的泛型，可以确定他的类型   补充：Optional类比java里的@Nullable注解，可以为空，这是tool\mcp#217中，McpClientTool中定义session字段的写法 session: Optional[ClientSession] = None  app\agent\base.py#135  async with self.state_context(AgentState.RUNNING):         while (             self.current_step &lt; self.max_steps and self.state != AgentState.FINISHED         ):       ...</div></div></div></a><a class="pagination-related" href="/2026/01/26/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/1.%E5%A4%A7%E6%A8%A1%E5%9E%8B%E6%8E%A5%E5%85%A5%E6%96%B9%E6%A1%88/" title="1.大模型接入方案"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-26</div><div class="info-item-2">1.大模型接入方案</div></div><div class="info-2"><div class="info-item-1">来源：大模型接入 相关文档 ai知识库学习  主流的AI库  lanchain4j文档 支持的模型 整合了国产模型的社区版本   springAI文档 支持的模型   springAI Alibaba文档 使用Spring AI Alibaba集成阿里云百炼大模型应用    AI接入服务：  阿里云百炼：可视化平台（智能体、工作流、智能体编排） 应用调用文档 dashScope(灵积)：API接口   ollama本地部署  AI客户端：  cherry studio cursor  大模型开发工作流	 程序如何交互大模型程序与大模型交互的实现思路（demo.invoke目录）：  SDK 依赖DashScope接入SDK——maven 平台申请API key 访问API：通义千问API参考   HTTP 有SDK优先SDK 设置API密钥、请求头、请求体 发送请求，处理响应   Spring AI  spring:  application:    name: spring-ai-alibaba-qwq-chat-client-example  ai:   ...</div></div></div></a><a class="pagination-related" href="/2026/01/26/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/2.%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/" title="2.大模型应用开发"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-26</div><div class="info-item-2">2.大模型应用开发</div></div><div class="info-2"><div class="info-item-1">• Prompt 工程基本概念 • Prompt 优化技巧 • AI 恋爱大师应用需求分析 • AI 恋爱大师应用方案设计 • Spring AI ChatClient &#x2F; Advisor &#x2F; ChatMemory 特性 • 多轮对话 AI 应用开发 • Spring AI 自定义 Advisor • Spring AI 结构化输出 - 恋爱报告功能 • Spring AI 对话记忆持久化 • Spring AI Prompt 模板特性 • 多模态概念和开发 Prompt工程Prompt工程：通过精心设计和优化提示词，引导AI模型的高质量输出 Prompt分类 基于角色   User Prompt：实际的指令 System Prompt：模型行为规则，角色定位隐藏指令 Assisant Prompt：响应内容（多轮对话中之前回复的内容）    基于功能   Instructional Prompts：指令型 Conversational Prompts：对话型 Creative Prompts：创意型，故事诗歌等 Role-playing...</div></div></div></a><a class="pagination-related" href="/2026/01/27/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/3.RAG/" title="3.RAG"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-27</div><div class="info-item-2">3.RAG</div></div><div class="info-2"><div class="info-item-1">使用RAG（Retrieval Augmentation Generation 检索增强生成）的需求分析：  知识扩展，给出更精准的回答  减小幻觉  个性化输出：特色服务和回答风格  推销：推销我们的产品和服务   工作机制概览  文档收集和切割  向量转换和存储  文档过滤和检索  查询增强和关联    文档收集与切割 收集的来源：网页、PDF、数据库等原始文档 预处理：清洗、标准化格式 切割：长文档划分为适当的片段（chunks） 基于固定大小（如512token） 基于语义边界（段落 章节） 基于递归分割策略（递归字符 n-gram）    向量转换和存储向量转换：将文本通过Embedding模型转化为高维向量，可捕获到语义特征 向量存储：存入向量数据库，支持相似度搜索   embedding 经典的有Word2Vec文本、ResNet图像，一般纬度越高语义信息越丰富但占用空间越多 向量数据库：存储向量的数据库，支持索引算法快速相似度搜索，支持k近邻查询（注：传统数据库也可以支持，如PGVector插件，Redis...</div></div></div></a><a class="pagination-related" href="/2026/01/31/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-31</div><div class="info-item-2">5.工具调用</div></div><div class="info-2"><div class="info-item-1">具体内容包括: • 工具调用介绍 • Spring AI 工具开发 • 主流工具开发 • 文件操作 • 联网搜索 • 网页抓取 • 终端操作 • 资源下载 • PDF 生成 • 工具进阶知识 (原理和高级特性) 需求分析：现在通过RAG技术让AI可以根据外部知识库获取信息回答的能力，但是可能需要一些外部工具的场景：  联网搜索：如智能推荐约会地点（如cursor的联网搜索，阿里云百炼API也提供该选项支持） 网页抓取：如查看百度贴吧其他吧友是怎么解决情感问题的 资源下载：下载约会时的钢琴曲 终端操作：Python生成恋爱分析报告 文件操作：保存恋爱档案 PDF生成：生成七夕约会计划PDF，餐厅预订-活动流程-礼物清单   以上工具可进行组合搭配使用。让ai不再是简单的问答系统，而是能完成任务的智能体  工具调用 Tool Calling目的：让AI来使用外部工具完成自己做不到的事情，如查询天气，AI本身没有这些知识，但是可以通过联网搜索来完成任务 官方文档 工具调用支持的模型 工具调用的流程：  工具定义: 程序告诉 AI “你可以使用这些工具”,...</div></div></div></a><a class="pagination-related" href="/2026/03/02/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/6.MCP/" title="6.MCP"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-02</div><div class="info-item-2">6.MCP</div></div><div class="info-2"><div class="info-item-1">MCP模型上下文协议首先学习MCP的使用方式 基于SpringAI实战MCP客户端和服务端，掌握MCP架构原理和最佳实践  MCP必知必会 MCP的3种使用方式 ·Spring AI MCP开发模式 Spring AI MCP开发实战- 图片搜索MCP MCP开发最佳实践 MCP部署方案 MCP安全问题   注：AI更新迭代速度快，只需重点学习思路和方法，与实际文档不一致时要阅读官方文档查阅资料  需求目前我们具备了基本的问答和调用工具的能力，接下来我们还想根据另一半的位置找合适的地点，截至目前能想到的思路：  直接让大模型识别到知名的地点位置，但不准确 RAG知识库，约会地点整理为知识库，但需要人工提供足够的信息 工具调用，开发一个根据位置查询店铺工具，通过第三方API实现，这样是比较准确的   第三种是最好的，但是让一个工具就调用个API，这样套一层工具显得有点冗余了，能不能直接让第三方的API直接服务于AI，引出MCP协议。  MCP概念说明**MCP（Model Context...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">804</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">73</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">101</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#RAG%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0"><span class="toc-text">RAG进阶学习</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E6%A1%A3%E6%94%B6%E9%9B%86%E4%B8%8E%E5%88%87%E5%89%B2%EF%BC%88ETL%EF%BC%89"><span class="toc-text">文档收集与切割（ETL）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#ETL"><span class="toc-text">ETL</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Extract-DocumentReader"><span class="toc-text">Extract_DocumentReader</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Transform-DocumentTransformer"><span class="toc-text">Transform_DocumentTransformer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Load-DocmentWriter"><span class="toc-text">Load_DocmentWriter</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B%E8%AF%B4%E6%98%8E"><span class="toc-text">流程说明</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%91%E9%87%8F%E8%BD%AC%E6%8D%A2%E4%B8%8E%E5%AD%98%E5%82%A8"><span class="toc-text">向量转换与存储</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#VectorStore%E6%8E%A5%E5%8F%A3"><span class="toc-text">VectorStore接口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%91%E9%87%8F%E5%AD%98%E5%82%A8%E5%B7%A5%E4%BD%9C%E6%9C%BA%E5%88%B6"><span class="toc-text">向量存储工作机制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%91%E9%87%8F%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E6%88%98"><span class="toc-text">向量数据库存储数据库实战</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%89%B9%E5%A4%84%E7%90%86%E4%BC%98%E5%8C%96"><span class="toc-text">批处理优化</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E6%A1%A3%E8%BF%87%E6%BB%A4%E4%B8%8E%E6%A3%80%E7%B4%A2"><span class="toc-text">文档过滤与检索</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%84%E6%A3%80%E7%B4%A2%EF%BC%9A%E5%A2%9E%E5%BC%BA%E7%94%A8%E6%88%B7%E8%BE%93%E5%85%A5"><span class="toc-text">预检索：增强用户输入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A3%80%E7%B4%A2%EF%BC%9A%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E7%9B%B8%E5%85%B3%E6%80%A7"><span class="toc-text">检索：提高查询相关性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A3%80%E7%B4%A2%E5%90%8E%EF%BC%9A%E4%BC%98%E5%8C%96%E6%96%87%E6%A1%A3%E5%A4%84%E7%90%86"><span class="toc-text">检索后：优化文档处理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E5%A2%9E%E5%BC%BA%E4%B8%8E%E5%85%B3%E8%81%94"><span class="toc-text">查询增强与关联</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#QuestionAnswerAdvisor"><span class="toc-text">QuestionAnswerAdvisor</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#RetrievalAugmentationAdvisor"><span class="toc-text">RetrievalAugmentationAdvisor</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A9%BA%E4%B8%8A%E4%B8%8B%E6%96%87%E7%9A%84%E5%A4%84%E7%90%86"><span class="toc-text">空上下文的处理</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RAG%E8%BF%9B%E9%98%B6%E5%AE%9E%E6%88%98%E5%92%8C%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5"><span class="toc-text">RAG进阶实战和最佳实践</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E6%A1%A3%E6%94%B6%E9%9B%86%E4%B8%8E%E5%88%87%E5%89%B2-ETL"><span class="toc-text">文档收集与切割-ETL</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%9F%E5%A7%8B%E6%96%87%E6%A1%A3%E4%BC%98%E5%8C%96"><span class="toc-text">原始文档优化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%87%E6%A1%A3%E5%88%87%E7%89%87"><span class="toc-text">文档切片</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%83%E6%95%B0%E6%8D%AE%E6%A0%87%E6%B3%A8"><span class="toc-text">元数据标注</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%91%E9%87%8F%E8%BD%AC%E6%8D%A2%E4%B8%8E%E5%AD%98%E5%82%A8-1"><span class="toc-text">向量转换与存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E6%A1%A3%E8%BF%87%E6%BB%A4%E5%92%8C%E6%A3%80%E7%B4%A2"><span class="toc-text">文档过滤和检索</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%9A%E6%9F%A5%E8%AF%A2%E6%89%A9%E5%B1%95"><span class="toc-text">多查询扩展</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E9%87%8D%E5%86%99-%E7%BF%BB%E8%AF%91"><span class="toc-text">查询重写&#x2F;翻译</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A3%80%E7%B4%A2%E5%99%A8%E9%85%8D%E7%BD%AE"><span class="toc-text">检索器配置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E5%A2%9E%E5%BC%BA%E4%B8%8E%E5%85%B3%E8%81%94-1"><span class="toc-text">查询增强与关联</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E6%9C%BA%E5%88%B6"><span class="toc-text">错误处理机制</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AB%98%E7%BA%A7%E7%9F%A5%E8%AF%86%E8%A1%A5%E5%85%85"><span class="toc-text">高级知识补充</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B7%E5%90%88%E6%A3%80%E7%B4%A2"><span class="toc-text">混合检索</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%B9%BB%E8%A7%89%E9%97%AE%E9%A2%98"><span class="toc-text">大模型幻觉问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RAG%E5%BA%94%E7%94%A8%E8%AF%84%E4%BC%B0"><span class="toc-text">RAG应用评估</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E7%BA%A7RAG%E6%9E%B6%E6%9E%84"><span class="toc-text">高级RAG架构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#C-RAG-%E8%87%AA%E7%BA%A0%E9%94%99RAG"><span class="toc-text">C-RAG 自纠错RAG</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#self-RAG-%E8%87%AA%E7%9C%81%E5%BC%8FRAG"><span class="toc-text">self-RAG 自省式RAG</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#RAPTOR-%E6%A3%80%E7%B4%A2%E6%A0%91RAG"><span class="toc-text">RAPTOR 检索树RAG</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93RAG%E7%B3%BB%E7%BB%9F"><span class="toc-text">多智能体RAG系统</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/03/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-04-03T16:00:24.995Z" title="发表于 2026-04-04 00:00:24">2026-04-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/03/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-04-03T16:00:24.491Z" title="发表于 2026-04-04 00:00:24">2026-04-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/03/2.Areas%F0%9F%8C%90/AI/%E6%8A%80%E8%83%BD%E5%BA%93/" title="技能库">技能库</a><time datetime="2026-04-03T04:27:18.000Z" title="发表于 2026-04-03 12:27:18">2026-04-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/02/2.Areas%F0%9F%8C%90/AI/openclaw/" title="openclaw">openclaw</a><time datetime="2026-04-02T15:14:46.000Z" title="发表于 2026-04-02 23:14:46">2026-04-02</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/01/2.Areas%F0%9F%8C%90/00.%E7%A7%8B%E6%8B%9B%E5%87%86%E5%A4%87%E6%96%B9%E5%90%91/%E5%AE%9E%E4%B9%A0%E7%B4%A7%E6%80%A5%E5%A4%87%E6%88%98/" title="实习紧急备战">实习紧急备战</a><time datetime="2026-04-01T00:39:04.000Z" title="发表于 2026-04-01 08:39:04">2026-04-01</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

@@ -1,0 +1,720 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>面试1 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="第一阶段：一面（基础 + 核心原理，偏知识完整性）模块 1：Java 集合 说下 ArrayList 和 LinkedList 的核心区别，以及各自使用场景？   ArrayList是基于数组结构的，LinkedList是基于链表结构的，他们的核心差异在于存储的方式，数组是基于连续的内存块，而链表是基于结点的，通过next指针相连，内存块之间是不连续的。 这样会导致数组在随机访问时会更有效率，是O">
+<meta property="og:type" content="article">
+<meta property="og:title" content="面试1">
+<meta property="og:url" content="https://yuezi2048.github.io/2026/03/09/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/ai%E6%A8%A1%E6%8B%9F/%E9%9D%A2%E8%AF%951/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="第一阶段：一面（基础 + 核心原理，偏知识完整性）模块 1：Java 集合 说下 ArrayList 和 LinkedList 的核心区别，以及各自使用场景？   ArrayList是基于数组结构的，LinkedList是基于链表结构的，他们的核心差异在于存储的方式，数组是基于连续的内存块，而链表是基于结点的，通过next指针相连，内存块之间是不连续的。 这样会导致数组在随机访问时会更有效率，是O">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2026-03-09T09:54:44.000Z">
+<meta property="article:modified_time" content="2026-03-09T09:54:44.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="ai模拟">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "面试1",
+  "url": "https://yuezi2048.github.io/2026/03/09/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/ai%E6%A8%A1%E6%8B%9F/%E9%9D%A2%E8%AF%951/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2026-03-09T09:54:44.000Z",
+  "dateModified": "2026-03-09T09:54:44.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2026/03/09/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/ai%E6%A8%A1%E6%8B%9F/%E9%9D%A2%E8%AF%951/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '面试1',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">804</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">73</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">101</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">面试1</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">面试1</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-03-09T09:54:44.000Z" title="发表于 2026-03-09 17:54:44">2026-03-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-03-09T09:54:44.000Z" title="更新于 2026-03-09 17:54:44">2026-03-09</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/">02.面经记录</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/ai%E6%A8%A1%E6%8B%9F/">ai模拟</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">8.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>26分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="第一阶段：一面（基础-核心原理，偏知识完整性）"><a href="#第一阶段：一面（基础-核心原理，偏知识完整性）" class="headerlink" title="第一阶段：一面（基础 + 核心原理，偏知识完整性）"></a>第一阶段：一面（基础 + 核心原理，偏知识完整性）</h1><h2 id="模块-1：Java-集合"><a href="#模块-1：Java-集合" class="headerlink" title="模块 1：Java 集合"></a>模块 1：Java 集合</h2><blockquote>
+<p>说下 ArrayList 和 LinkedList 的核心区别，以及各自使用场景？</p>
+</blockquote>
+<ul>
+<li>ArrayList是基于数组结构的，LinkedList是基于链表结构的，他们的核心差异在于存储的方式，数组是基于连续的内存块，而链表是基于结点的，通过next指针相连，内存块之间是不连续的。</li>
+<li>这样会导致数组在随机访问时会更有效率，是O1，而链表则需要遍历On访问，但是链表的优势的插入删除，<font style='color:Gold;font-family:bold'>给定指定节点增删情况下只需要时间复杂度O1修改指针</font></li>
+<li><strong><font style='color:red'>扩容差异：ArrayList在无参构造下初始化为0，第一次扩容到10，每次扩容1.5倍，通过Arrays.copy复制，但是LinkedList没有扩容机制</font></strong><ul>
+<li>初始容量的设定</li>
+</ul>
+</li>
+<li>场景<ul>
+<li>数组适合频繁读取的场景，链表适合频繁增删的场景    </li>
+<li>另外由于CPU的缓存亲和性，在连续内存块读取时会预读后面的内容，所以在一些遍历访问下最好还是使用数组的方式更加有效。</li>
+</ul>
+</li>
+</ul>
+<p><strong>追问</strong>：</p>
+<p>JDK1.7 和 1.8 中 ArrayList 扩容逻辑有什么细微差别？为什么 LinkedList 不适合做队列首选，反而 ArrayDeque 更优？</p>
+<ul>
+<li><font style='color:red;font-family:bold'>1.8中在无参构造下初始化为0，第一次扩容到10，而在1.7中是直接初始化容量为10的</font><ul>
+<li>并且在源码中1.8是添加元素后检查容量<code>ensureCapacityInternal</code>，1.7是先检查再添加，主要是优化了空数组的内存占用</li>
+</ul>
+</li>
+<li><font style='color:red;font-family:bold'>LinkedList是双向链表，要额外维护双向指针，更适合需要增删的特殊场景，而ArrayDeque是基于循环数组，内存紧凑，利于CPU亲和性，适合纯队列场景</font></li>
+</ul>
+<blockquote>
+<p>HashMap JDK1.7 和 1.8 底层结构有什么变化？为什么要引入红黑树？</p>
+</blockquote>
+<ul>
+<li><p>核心变化（<strong>红黑树触发条件、哈希定位方式，<font style='color:red'>扩容优化</font>、尾插法</strong>）</p>
+<ul>
+<li><p>在1.8时，如果“<strong>链表长度&gt; 8 &amp;&amp; 数组长度≥64”</strong> 满足时，会升级成红黑树来增加查询和修改效率</p>
+</li>
+<li><p>并且在计算哈希函数和计算哈希桶的时候也有一些差别（<strong><font style='color:DeepPink'>4次异或–&gt;简化成高16位异或+低16位异或的两个扰动函数</font></strong>），哈希函数更加均匀，减少了哈希冲突</p>
+</li>
+<li><p>并且哈希桶也由原先的indexFor变成了(n-1)&amp;hash【n&#x3D;table.length()】</p>
+<ul>
+<li>扩容时，每次扩容两倍，这样的好处是扩容后的hash定位一次就能定位，具体是判断key在hash的最高位是否为1判断是否在旧数组基础上偏移即可<ul>
+<li>说明：如16（12）扩容到32，n-1的二进制变化是01111-&gt;11111，迁移后的结果只需要判断（32-1）最高为是否为1，来决定是否在原来基础上偏移（32&gt;&gt;1）即可</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>另外在链表结构中由头插改成了尾插避免了在多线程扩容等条件下出现链表成环的问题。</p>
+</li>
+<li><p>之所以引入红黑树就是为了解决链表长度过大时，查找&#x2F;修改效率的问题，是一种内存换时间的策略。</p>
+<ul>
+<li><font style='color:Gold;font-family:bold'>红黑树作为一个平衡二叉树，查询 插入删除性能是Ologn，比普通的二叉树更稳定</font></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>追问</strong>：</p>
+<p>HashMap 红黑树转链表的阈值是 6 而非 8，为什么？JDK1.8 扩容时，红黑树节点是怎么处理的？</p>
+<ul>
+<li>这是考虑到缓存区间，避免红黑树和链表来回的转换</li>
+<li><font style='color:red;font-family:bold'>处理思路：迁移时无非迁移到两个新桶的index（在原先位置的和需要迁移的），那么只需判断是否要保持红黑树结构，如果其中一组&lt;6了就退化，挂到新桶，否则重构为红黑树挂到新桶</font></li>
+</ul>
+<blockquote>
+<p>HashMap 为什么线程不安全？讲一个具体的线程安全问题场景。</p>
+</blockquote>
+<ul>
+<li><font style='color:Gold;font-family:bold'>因为没有volatile、锁等方式保证变量的可见性，比如：一个线程A在修改变量的时候，另外一个线程B已经写入该变量，但是修改的变量没有同步到A，导致线程A仍然用旧值进行修改，导致线程A用脏读的数据进行操作，出现了线程安全的问题</font></li>
+<li>线程不安全核心原因：是没有并发的控制（volatile&#x2F;锁）</li>
+<li><strong>具体场景</strong>：<font style='color:red;font-family:bold'>JDK1.7中扩容头插法链表成环；多线程put时数据被覆盖（两个线程同时在同一个bucket中判空写入，后者覆盖掉了前者）</font><ul>
+<li>原因：计算hash定位桶——插入节点不是原子操作，且没有锁保护</li>
+</ul>
+</li>
+</ul>
+<p><strong>追问</strong>：</p>
+<p>线程安全的 Map 有哪些？ConcurrentHashMap JDK1.7 和 1.8 的实现原理核心区别是什么？为什么 1.8 放弃分段锁，改用 CAS+synchronized？</p>
+<ul>
+<li>线程安全的 Map：Hashtable、Collections.synchronizedMap、ConcurrentHashMap；</li>
+<li>CHM 1.7 vs 1.8：1.7 用分段锁（Segment），锁粒度是 “段”；1.8 改成 CAS+synchronized，锁粒度细化到 “桶节点”；</li>
+<li>弃分段锁原因：分段锁内存开销大，CAS 无锁能提升并发，而且 synchronized 已经做了优化（偏向锁 &#x2F; 轻量级锁），性能足够。</li>
+</ul>
+<h2 id="模块-2：MySQL"><a href="#模块-2：MySQL" class="headerlink" title="模块 2：MySQL"></a>模块 2：MySQL</h2><blockquote>
+<p>InnoDB 为什么用 B+ 树做索引，而不用二叉树、红黑树？</p>
+</blockquote>
+<ul>
+<li>是这样的，B+树适合磁盘存储，因为他的节点都存放在叶子节点，而非叶子节点只需要存储主键&#x2F;索引以及指针的值，这样非叶子节点在一个数据页内就能存放更多的索引数据了，高度也就相对于红黑树等二叉树更稳定，这会减少I&#x2F;O开销</li>
+<li>范围查询的优势，红黑树适合频繁插入&#x2F;删除，而B+树叶子节点之间有链表相连，在innoDB中非常适合范围查询的需求。</li>
+</ul>
+<p><strong>追问</strong>：</p>
+<p>InnoDB 聚簇索引和非聚簇索引的区别是什么？非聚簇索引查询的回表问题怎么解决？</p>
+<ul>
+<li>聚簇索引（主键索引）：叶子节点存整行数据；非聚簇索引（二级索引）：叶子节点只存主键值；</li>
+<li>回表解决：用覆盖索引（查询字段都在索引里，不用回表）</li>
+</ul>
+<blockquote>
+<p>事务 ACID 分别是什么，InnoDB 是怎么实现持久性和原子性的？</p>
+</blockquote>
+<ul>
+<li>A是原子性，操作不可分割；C是一致性，每个事务操作前后要保证状态一致；I是隔离性，每个事务之间操作不相互影响；D是持久性，事务操作的结果要持久保存。</li>
+<li><font style='color:Gold;font-family:bold'>【事务保证原子性和持久性核心是有一个MVCC机制，核心就是通过undo log的回滚日志来记录每个事务操作后的版本号，当有新事务进行操作的时候，就会判断当前事务id是否和当前正在执行事务的id冲突，从而决定使用哪个版本号的内容，从而保证多个事务完成后能有一个完整的版本链，从而保证了每个事务的原子性和持久性。</font>——<strong>MVCC机制主要关注的是隔离性</strong></li>
+<li><font style='color:red;font-family:bold'>原子性：主要依赖undo log（记录修改前的状态，失败后事务整体可以回滚）</font></li>
+<li><font style='color:red;font-family:bold'>持久性：是依赖redo log + <strong>WAL机制</strong>（日志先行，提交时保证redo log先罗盘，再刷新数据页，保证宕机后可以恢复）</font></li>
+</ul>
+<p><strong>追问</strong>：</p>
+<p>redo log 的刷盘策略有哪些？InnoDB 两阶段提交是为了解决什么问题？MVCC 结合隐藏字段、undo log 版本链、Read View 的具体实现逻辑是什么？</p>
+<ul>
+<li>两阶段提交：解决 binlog 与 redo log 一致性问题，避免宕机数据不一致</li>
+<li>MVCC 实现：隐藏字段（事务 ID、回滚指针）+ undo log 版本链 + Read View；RC 每次查询生成 Read View，RR 事务首次查询生成；</li>
+</ul>
+<blockquote>
+<p>说下脏读、不可重复读、幻读的区别，MySQL 默认隔离级别是什么？</p>
+</blockquote>
+<ul>
+<li>说明<ul>
+<li>脏读就是一个事务读取到了另外一个未提交事务写操作后的结果</li>
+<li>不可重复读是一个事务两次读，由于在事务过程中其他写事务的提交（<font style='color:Gold;font-family:bold'>更新操作</font>），导致读到的结果不一致</li>
+<li>幻读是一个事务两次进行查询，由于在事务过程中其他写事务的提交（<font style='color:Gold;font-family:bold'>插入&#x2F;删除操作</font>），得到的数据行行数不一致，莫名其妙几行数据发生了变化，好像是出现了幻觉，所以我们叫幻读</li>
+</ul>
+</li>
+<li><font style='color:Gold;font-family:bold'>MySQL默认隔离级别是<strong>可重复读RR</strong></font>，mysql设置这个隔离级别的原因出发点是为了解决binlog早期的statement的兼容性，避免主从同步的不一致</li>
+</ul>
+<p>例子复现：必须要用间隙&#x2F;临键锁保证事务B的插入操作在事务A提交后执行（注 insert等修改操作用当前读，而select要用快照读，这导致幻读问题无法完美解决！）</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260309150841813.png" alt="image-20260309150841813" style="zoom:33%;" />	
+
+<p><strong>追问</strong>：</p>
+<p>InnoDB 的 RR 隔离级别怎么 “部分解决” 幻读？RC 和 RR 下 MVCC 的 Read View 生成时机有什么不同？</p>
+<ul>
+<li>RR 解决幻读：快照读靠 MVCC 避免，当前读（insert&#x2F;update）靠间隙锁 &#x2F; 临键锁避免。</li>
+</ul>
+<h2 id="模块-3：Redis"><a href="#模块-3：Redis" class="headerlink" title="模块 3：Redis"></a>模块 3：Redis</h2><blockquote>
+<p>Redis 是单线程，为什么性能还这么高？</p>
+</blockquote>
+<ul>
+<li><font style='color:red;font-family:bold'>首先Redis的单线程仅针对命令执行，实际上6.0之后有多线程的优化，主要是针对网络I&#x2F;O的多线程来解决性能瓶颈</font></li>
+<li><font style='color:red;font-family:bold'>【Redis性能高的关键原因：内存操作，没有磁盘IO的瓶颈，并且单线程避免了线程的上下文切换&#x2F;锁的竞争开销</font></li>
+<li>Redis使用了多路IO复用的技术，相比于其他阻塞IO和非阻塞IO模型，Redis只需要一个线程监听多个连接的epoll指令，然后调用内核完成后，向客户端返回结果，避免了非阻塞IO中Redis频繁发送read指令导致CPU空转的问题，多路复用的意思就是一个线程可以复用多个连接的指令，提高了处理效率。<ul>
+<li><font style='color:red;font-family:bold'>Redis使用epoll 的 ET（边缘触发）模式（而非 LT 水平触发）</font></li>
+</ul>
+</li>
+<li><font style='color:DeepPink;font-family:bold'>Redis还提供了高效的数据结构，如Hash、跳表等，在删除插入时提供了高效的时间复杂度，还有一些高效的编码思想，如String的SDS中针对int的编码，还有对列表的ziplist压缩存储的思想</font></li>
+</ul>
+<p>参考图</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260309151940981.png" alt="image-20260309151940981"></p>
+<p><strong>追问</strong>：</p>
+<p>Redis 6.0 引入的多线程是做什么的？为什么不把命令执行也改成多线程？epoll 的 LT 和 ET 模式区别是什么，Redis 为什么选 ET？</p>
+<ul>
+<li>Redis6.0 多线程：只处理网络 IO 读写 &#x2F; 解析，不执行命令，不做多线程命令：避免锁竞争、上下文切换，保持单线程简单高效</li>
+<li>epoll LT&#x2F;ET 补全：LT 水平触发（没处理完一直通知），ET 边缘触发（只通知一次）；Redis 用 ET 减少事件触发次数，更高性能</li>
+</ul>
+<blockquote>
+<p>RDB 和 AOF 两种持久化的区别，你们项目里一般怎么配？</p>
+</blockquote>
+<ul>
+<li><p>RDB保存的是Redis的数据快照，而AOF是一个记录数据库每一个操作增量记录。</p>
+<ul>
+<li><font style='color:Gold;font-family:bold'>RDB有一个写时复制COW策略（fork子进程做快照，共享同一份页表，加快fork效率，COW策略也保证父进程可以正常处理请求），缺陷是快照间隔内的数据丢失</font></li>
+<li>AOF的话内存占用少，但是恢复需要时间，并且根据不同的AOF写回策略可能存在数据丢失的风险（<font style='color:Gold;font-family:bold'>always&#x2F;everysec&#x2F;no，默认 everysec</font>）。</li>
+</ul>
+</li>
+<li><p>我们项目里一般会用Redis6.0更新后的一个方式，RDB+AOF都使用的策略，首先用RDB保存当前的数据快照，AOF保存在数据快照保存过程中的指令，并且用立即写入系统缓存，调用fsync的<code>always</code>写回策略尽可能保障数据不丢失，<font style='color:Gold;font-family:bold'>最终在AOF文件中前半部分为RDB快照，后半部分是AOF日志</font>，同时兼顾了恢复性能和数据完整性</p>
+</li>
+</ul>
+<p><strong>追问</strong>：</p>
+<p>Redis fork 子进程做 RDB 时，COW 的具体过程是什么？为什么 fork 会有短暂阻塞？AOF 重写的触发条件和原理是什么，和 RDB 的 fork 有什么区别？</p>
+<ul>
+<li>RDB fork COW 补全：父进程写时复制页，fork 阻塞是因为拷贝页表</li>
+<li>AOF 重写：触发（体积 &#x2F; 比例阈值），原理：fork 子进程读取当前内存数据重写新 AOF，避免历史冗余</li>
+</ul>
+<blockquote>
+<p>Redis 有哪些数据淘汰策略？实际业务用哪个最多？</p>
+</blockquote>
+<p>分成两种，一种是带过期时间的缓存，还有一种是不带的。</p>
+<ul>
+<li>带过期时间的，一般是有LRU淘汰最近未使用的，LFU淘汰最不经常访问的，还有ttl固定的跳数，random随机时间<ul>
+<li><font style='color:Gold;font-family:bold'>volatile-lru&#x2F;volatile-lfu&#x2F;volatile-ttl&#x2F;volatile-random</font></li>
+</ul>
+</li>
+<li>不带过期时间的，一般是有LRU淘汰最近未使用的，LFU淘汰最不经常访问的，<ul>
+<li><font style='color:Gold;font-family:bold'>allkeys-lru&#x2F;allkeys-lfu&#x2F;allkeys-random&#x2F;</font></li>
+</ul>
+</li>
+<li>另外还有一种还有noeviction<font style='color:Gold;font-family:bold'>内存满拒绝写入的策略</font></li>
+<li><font style='color:red;font-family:bold'>实际业务中我们根据业务数据访问是否均匀采用（allkeys-lru&#x2F;volatile-lru），LFU可以 解决 LRU 的缓存抖动问题</font></li>
+</ul>
+<p><strong>追问</strong>：</p>
+<p>Redis 的 LRU 是 “近似 LRU” 而非严格 LRU，为什么这么设计？近似 LRU 的实现原理是什么？</p>
+<ul>
+<li>近似 LRU 补全：省内存、效率高，采样实现足够接近严格 LRU</li>
+</ul>
+<h1 id="第二阶段：二面（源码-场景-实战，偏深度-工程能力）"><a href="#第二阶段：二面（源码-场景-实战，偏深度-工程能力）" class="headerlink" title="第二阶段：二面（源码 + 场景 + 实战，偏深度 + 工程能力）"></a>第二阶段：二面（源码 + 场景 + 实战，偏深度 + 工程能力）</h1><p>二面对标大厂 “核心岗” 要求，侧重<strong>源码理解、业务场景落地、问题排查</strong>，每题需结合原理 + 实战回答：</p>
+<h2 id="模块-1：Java-进阶-源码"><a href="#模块-1：Java-进阶-源码" class="headerlink" title="模块 1：Java 进阶 + 源码"></a>模块 1：Java 进阶 + 源码</h2><blockquote>
+<p>结合源码说下 ConcurrentHashMap JDK1.8 的 put 流程，重点说明 CAS+synchronized 的使用时机和目的；</p>
+</blockquote>
+<ul>
+<li>因为并发集合类为了避免null在并发时的潜在问题，put时首先会判断key和value是否为空，为空直接NPE（get方法同理）<ul>
+<li>避免null是为了消除歧义（get返回null只能说明key不存在），并简化实现（不需要二次判断key是否存在等）</li>
+</ul>
+</li>
+<li>接下来就是定位到桶的下标找key了，有一个spread 方法，避免高位未参与哈希<ul>
+<li><font style='color:red;font-family:bold'>桶为空：<strong>CAS 无锁插入</strong>，失败则自旋重试。</font></li>
+<li>否则，对桶的首节点加synchronized进行阻塞（锁的细粒度），再判断根据链表 &#x2F; 红黑树，判断key是否替换还是新增node即可</li>
+</ul>
+</li>
+<li>CAS更新size，到达阈值则红黑树转换&#x2F;扩容（LongAdder思想，每个线程在put等操作的时候会记录自己对应下标的CounterCell对象，最终统一）</li>
+</ul>
+<p><strong>追问</strong>：</p>
+<p>ConcurrentHashMap的渐进式扩容？</p>
+<p>① 渐进式扩容：</p>
+<ul>
+<li>会维护一个<code>transferIndex</code>的volatile 变量，来的线程会死循环CAS争夺下标（线程A争夺设置为16，处理32<del>16，线程B争夺设置为0，处理15</del>0），如果下标分配完了，就不搬迁，否则就搬运对应的node<ul>
+<li>【如数组初始长度16，扩容后长度32，32<del>16的node由线程A搬迁，15</del>0的node由线程B搬迁。】；</li>
+</ul>
+</li>
+<li>迁移时用 ForwardingNode 标记桶，新写入走扩容逻辑、读请求转发到新表；</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">维度</th>
+<th align="left">ConcurrentHashMap (JDK1.8)</th>
+<th align="left">Redis HashMap（单机 &#x2F; Cluster）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">扩容触发</td>
+<td align="left">put 时检测容量阈值，主动触发</td>
+<td align="left">内存满 &#x2F; 负载因子达标，或手动 resize；Cluster 需槽位均衡</td>
+</tr>
+<tr>
+<td align="left">迁移单位</td>
+<td align="left">数组的单个 “桶（bucket）”</td>
+<td align="left">单机：哈希表槽位（dictEntry）；Cluster：16384 个哈希槽</td>
+</tr>
+<tr>
+<td align="left">扩容标识</td>
+<td align="left">迁移中桶标记为 ForwardingNode，请求转发</td>
+<td align="left">单机：rehashidx 标记进度；Cluster：槽位状态（迁移中 &#x2F; 完成）</td>
+</tr>
+<tr>
+<td align="left">并发控制</td>
+<td align="left">桶级别 synchronized + CAS 保证线程安全</td>
+<td align="left">单线程执行迁移，无锁；Cluster 靠 Gossip 协议同步槽位</td>
+</tr>
+<tr>
+<td align="left">扩容范围</td>
+<td align="left">单实例内的数组扩容</td>
+<td align="left">单机：单哈希表 rehash；Cluster：跨节点迁移槽位（分布式）</td>
+</tr>
+</tbody></table>
+<p>ConcurrentHashMap 的 <code>size()</code> 方法在 JDK1.8 如何保证准确性？为什么 1.8 用 synchronized 而非 ReentrantLock？</p>
+<p> size () 准确性：先累加 baseCount + CounterCell 数组，并发修改时加锁重算；</p>
+<p>1.8 用 synchronized 而非 ReentrantLock：synchronized 已优化（偏向 &#x2F; 轻量级锁），减少 Lock 对象内存开销，且锁粒度到桶节点，效率足够；</p>
+<blockquote>
+<p><font style='color:red;font-family:bold'>说下 ThreadLocal 的实现原理，为什么会出现内存泄漏？怎么避免？</font></p>
+</blockquote>
+<ul>
+<li>每个Thread线程会维护一个ThreadLocalMap，key是当前线程的<code>ThreadLocal</code>对象，value则是业务数据</li>
+<li>内存泄露原因：key是弱引用，但value仍被Thread强引用，而Thread在线程池中长期存活，无法回收value</li>
+<li>为了避免内存泄露，需要手动执行<code>threadLocal.remove()</code>，以及考虑线程池场景下的特殊处理（线程复用需手动清理）。</li>
+</ul>
+<p><strong>追问</strong>：</p>
+<p>ThreadLocal 内存泄漏在线程池场景下会更严重，为什么？<code>InheritableThreadLocal </code>解决了什么问题，有什么坑？</p>
+<p>① 线程池场景更严重：线程池线程复用，Thread 对象长期存活，ThreadLocalMap 的 value 强引用无法回收，累计泄漏；</p>
+<p>② InheritableThreadLocal：解决子线程无法继承父线程 ThreadLocal 值的问题；</p>
+<p>坑：线程池复用线程时，子线程继承的是首次创建时的父线程值，非当前父线程值，需手动清理；</p>
+<blockquote>
+<p><font style='color:red;font-family:bold'>谈谈你对 Java 内存模型（JMM）的理解，volatile 是怎么保证可见性和禁止指令重排序的？</font></p>
+</blockquote>
+<ul>
+<li>JMM：Java 内存模型，定义<strong>主内存 &amp; 线程工作内存</strong>，解决可见性、原子性、有序性。</li>
+<li>volatile 作用：<ol>
+<li><strong>可见性</strong>：写立即刷回主内存，读强制从主内存拉。</li>
+<li><strong>禁止指令重排</strong>：靠<strong>内存屏障</strong>。</li>
+</ol>
+</li>
+<li>注意：<strong>volatile 不保证原子性（i++ 不安全）</strong>。</li>
+</ul>
+<p><strong>追问</strong>：</p>
+<p>volatile 能保证 <code>i++</code> 的原子性吗？为什么？synchronized 和 volatile 的核心区别，分别适用于什么场景？</p>
+<p>① volatile 不能保证 i++ 原子性：i++ 分读 - 改 - 写三步，volatile 仅保证可见性 &#x2F; 有序性，无法保证三步原子执行；</p>
+<p>② 核心区别：synchronized 保证原子性 + 可见性 + 有序性（重量级、阻塞），适用于多线程修改共享变量（如 i++、复杂业务逻辑）；volatile 仅保证可见性 + 有序性（轻量级、非阻塞），适用于单线程写、多线程读（如状态标记位）。</p>
+<h2 id="模块-2：MySQL-实战-优化"><a href="#模块-2：MySQL-实战-优化" class="headerlink" title="模块 2：MySQL 实战 + 优化"></a>模块 2：MySQL 实战 + 优化</h2><blockquote>
+<p>实战场景：一个电商订单表（order_id 主键，user_id 普通索引，create_time 无索引），执行 <code>select * from order where user_id = 10086 and create_time &gt; &#39;2026-01-01&#39;</code> 时慢查询，怎么优化？请从索引、SQL、执行计划三个维度分析；</p>
+</blockquote>
+<ul>
+<li>create_time没有命中索引，保证最左匹配原则下，可以考虑使用联合索引(user_id,create_time<ul>
+<li>这里可以有一层索引下推机制，在存储引擎层提前先过滤掉数据</li>
+</ul>
+</li>
+<li>SQL优化：SELECT *是不建议的，只需要返回需要的字段，如果刚好只有索引中的字段，满足覆盖索引条件，不需要回表了，减少IO</li>
+<li>分区表优化（按 create_time 分区，减少扫描数据量）</li>
+<li>执行计划 <font style='color:red;font-family:bold'> EXPLAIN 看 type 从 ALL → range&#x2F;ref，Extra 出现 Using index、Using where。</font></li>
+</ul>
+<p><strong>追问</strong>：</p>
+<p>若 user_id 基数极低（如 90% 订单的 user_id 都是 10086），联合索引还生效吗？怎么进一步优化？</p>
+<p>user_id 基数极低（90% 都是 10086）时联合索引失效（MySQL 优化器认为全表扫描更高效，<strong>此时加了索引反而变慢了</strong>）；进一步优化（核心就是减少扫描&#x2F;索引成本）：</p>
+<p><strong>强制走索引（临时兜底）</strong></p>
+<p>SQL 加 <code>force index(联合索引名)</code>，强制优化器走索引；若只查少量数据（如近 7 天订单），搭配 <code>limit</code> 限制行数，降低索引遍历成本。</p>
+<p><strong>分区表（核心优化）</strong></p>
+<p>按 <code>create_time</code> 分区（如按天 &#x2F; 月），即使全表扫也只扫目标分区，扫描数据量骤减，比全表快 10 倍以上。</p>
+<p><strong>覆盖索引（消除回表）</strong></p>
+<p>若查询字段（如 order_id、create_time）都在 <code>(user_id, create_time)</code> 联合索引中，优化器会优先走索引（无需回表，成本低于全表）。</p>
+<p><strong>数据拆分（长期方案）</strong></p>
+<p>把高频 user_id&#x3D;10086 的订单单独拆表，其余数据放主表，查询时直接定位到拆分表，彻底避免扫大量无效数据。</p>
+<blockquote>
+<p>说下 MySQL 索引失效的常见场景（至少 5 个），并说明如何避免；</p>
+</blockquote>
+<ul>
+<li>不满足最左匹配原则<ul>
+<li>但在特定的场景下（覆盖索引）还是会用到索引的（type&#x3D;index）</li>
+</ul>
+</li>
+<li>索引中使用函数&#x2F;运算表达式<ul>
+<li><font style='color:red;font-family:bold'><strong>隐式类型转换</strong>（如int 传字符串函数，非常隐蔽！）</font></li>
+</ul>
+</li>
+<li>使用like %?这样的表达式</li>
+<li><strong>不同的参数导致索引的失效</strong>：因为需要命中索引，这就导致在一些复杂查询（联表 子查询 回表场景）可能选择全表查询更好<ul>
+<li>如商品从订单表查询，传入的商品id是热门商品且占据了80%的销量，那么这个查询很有可能是全表查询，相反，如果是冷门商品，可能就是走索引查询，同上一节定时任务的场景。</li>
+</ul>
+</li>
+<li>or 连接非索引列</li>
+<li>不同字段比较</li>
+<li>order by后面不是主键，或者不是覆盖索引</li>
+</ul>
+<p><strong>追问</strong>：</p>
+<p>为什么 “隐式类型转换” 会导致索引失效？举个具体例子说明（如字段 <code>id int</code>，查询 <code>where id = &#39;123&#39;</code>）。</p>
+<p>隐式类型转换失效原因：MySQL 会对索引字段做函数转换（id int 查 id&#x3D;’123’ → cast (id as char)&#x3D;’123’），索引字段参与函数运算导致失效；例子：id int 类型，查询 where id&#x3D;’123’ 索引失效</p>
+<blockquote>
+<p>分库分表的核心痛点是什么？你会怎么选择分片键？分表后如何解决跨分片查询问题？</p>
+</blockquote>
+<ol>
+<li>首先要分析业务要求：分析数据量和增长的趋势，评估分库分表的必要性（可以有适度预判，但不要过度设计）</li>
+<li>技术选型：设计分库分表方案<ol>
+<li>分片键：确定业务意义明确，查询高频，数据分布均匀的字段（user_id、order_id）</li>
+<li>分库分表方式：range、hash、一致性hash、或结合上述方案，确定分片数量（要考虑未来拓展性）</li>
+<li>确定路由逻辑：设置在Client端、Proxy层（ShardingSphere）还是自研中间件</li>
+</ol>
+</li>
+<li>数据迁移考虑：分批导入到新的分库分表结构中，可通过ETL工具或脚本完成</li>
+<li>部分SQL语句和业务逻辑是否需要调整：如业务的链表查询，或者本地事务修改为分布式事务，要列举出来一一修改</li>
+</ol>
+<p>痛点：</p>
+<ul>
+<li><p><strong>事务问题</strong>：分库后单机事务必须转变为<code>分布式事务</code>，大部分分布式事务只能保证最终一致性，业务上会引发数据不一致的场景</p>
+</li>
+<li><p><strong>连表join问题</strong>：跨库后就无法使用join了</p>
+<ul>
+<li>解决方案1：在业务代码中关联，先差一个表的结果，再通过该结果差另外一个表，通过代码关联</li>
+<li>解决方案2：适当引入冗余字段，如以前的表只有一个关联ID，但业务经常需要返回Name或其他字段，这时就可以把对应字段冗余到当前表，去除关联操作</li>
+<li>解决方案3：<strong>基于宽表的形式查询</strong>，如数据全量存储在ES中，ES来查询问题</li>
+</ul>
+</li>
+<li><p><strong>全局ID的唯一性</strong>：原先的自增ID通过分库分表后，自增ID可能会出现重复主键，此时需要通过雪花算法或其他唯一ID发号器生成唯一ID</p>
+</li>
+<li><p><strong>排序问题</strong>：原先的order by即可，分库分表后无法排序，需要在中间件进行汇总排序，或者在业务代码中排序，或者通过ES存储全量数据排序访问</p>
+</li>
+<li><p><strong>count的问题</strong>：和排序问题类似，单表可以count，分库分表后无法支持，只能多标count在业务中累加，或者在中间层维护，要么就是上ES维护</p>
+</li>
+<li><p>深分页问题</p>
+<ul>
+<li><p>记录id：每次分页查询返回最大id，后续查询带上该id，通过id&gt;maxid过滤即可</p>
+<ul>
+<li>场景：仅适合连续查询情况，如滚动翻页</li>
+</ul>
+</li>
+<li><p><strong>子查询&#x2F;JOIN过滤</strong></p>
+<ul>
+<li><p><code>SELECT * FROM mianshiya  WHERE name = &#39;yupi&#39; ORDER BY id  LIMIT 99999990, 10; ；</code>可以优化如下，避免直接扫描主键索引，而是先通过二级索引过滤掉数据，通过子查询&#x2F;JOIN再通过少量的id去查询，数据量更小，速度更快：</p>
+</li>
+<li><pre><code class="language-sql">  SELECT * FROM mianshiya 
+  WHERE name = &#39;yupi&#39; 
+    AND id &gt;= (
+      SELECT id FROM mianshiya 
+      WHERE name = &#39;yupi&#39; 
+      ORDER BY id 
+      LIMIT 99999990, 1
+    )
+  ORDER BY id 
+  LIMIT 10;
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">- ```sql</span><br><span class="line">   select * from mianshiya </span><br><span class="line">       inner join</span><br><span class="line">       (select id from mianshiya where name = &#x27;yupi&#x27; order by id limit 99999990，10)</span><br><span class="line">       as mianshiya1 on mianshiya.id = mianshiya1.id</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+</ul>
+</li>
+<li><p><strong>elasticsearch</strong>：搜索引擎解决，但es本身也有深度分页问题</p>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>合并后的结果不是95和90，没进行优化的话只能limit 0,3 然后取最后两个</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260309174914477.png" alt="image-20260309174914477">	</p>
+</blockquote>
+<p><strong>追问</strong>：</p>
+<p>分库分表后，订单表（按 user_id 分片）和订单详情表（按 order_id 分片）需要 join，怎么解决？分布式事务怎么保证？</p>
+<p>① 双分片键冗余；</p>
+<p>② 先查订单表拿 order_id 再查详情表；</p>
+<p>③ 引入 ES 关联；</p>
+<p>分布式事务：① 最终一致性（消息队列 + 补偿）；② TCC&#x2F;Seata AT</p>
+<h2 id="模块-3：Redis-实战-问题排查"><a href="#模块-3：Redis-实战-问题排查" class="headerlink" title="模块 3：Redis 实战 + 问题排查"></a>模块 3：Redis 实战 + 问题排查</h2><blockquote>
+<p>实战场景：Redis 作为缓存，出现 “缓存穿透、缓存击穿、缓存雪崩”，分别是什么问题？各自的解决方案是什么？请结合代码 &#x2F; 配置举例；</p>
+</blockquote>
+<ul>
+<li>缓存穿透：访问不存在key，导致直接请求数据库，增加数据库压力<ul>
+<li>缓存null值</li>
+<li>布隆过滤器等过滤恶意请求（误判率）</li>
+</ul>
+</li>
+<li>缓存击穿：key到期了，然后有多个请求打进来，打到数据库<ul>
+<li>使用分布式锁机制保证只有一个线程访问并设置缓存（缓存击穿的分布式锁代码、布隆过滤器配置）</li>
+<li>加入多级缓存，如caffine本地缓存</li>
+</ul>
+</li>
+<li>缓存雪崩：多个key到期，连带着大量请求打进数据库，数据库压力陡增<ul>
+<li>随机过期时间</li>
+<li>分布式锁机制保证只有一个线程访问并设置缓存</li>
+<li>加入多级缓存，如caffine本地缓存</li>
+<li>集群、限流降级。（限制数据库流量）</li>
+</ul>
+</li>
+</ul>
+<p><strong>追问</strong>：</p>
+<p>布隆过滤器的误判率怎么降低？缓存击穿的分布式锁若超时释放，会导致多个线程更新缓存，怎么解决？</p>
+<p>布隆过滤器降低误判率：增大位图大小、增加哈希函数数量；</p>
+<p>缓存击穿锁超时：① 锁续约（看门狗）；② 缓存过期时间＞锁超时；③ 双删策略</p>
+<blockquote>
+<p>Redis 集群（主从 + 哨兵 &#x2F; Cluster）的核心架构是什么？哨兵的故障转移流程是怎样的？</p>
+</blockquote>
+<ul>
+<li><p>架构：一主多从，一般主节点负责写入，从节点负责读取，哨兵负责监控主节点的状态，如果无法处理就即使选举主节点，cluster则是按照16384方槽进行分布，每个节点对应一段槽的处理，缓解多个key 的压力</p>
+</li>
+<li><p>哨兵转移流程：</p>
+<p>① 哨兵检测主节点不可达→主观下线；</p>
+<p>② 多数哨兵确认→客观下线；</p>
+<p>③ 选举 leader 哨兵；</p>
+<p>④ leader 哨兵选举新主（RAFT “候选人请求投票→多数节点同意则成为 leader”；）；</p>
+<p>⑤ 通知从节点复制新主、通知客户端；</p>
+</li>
+</ul>
+<p><strong>追问</strong>：</p>
+<p>Redis Cluster 的 “脑裂” 问题是什么？怎么解决？哨兵的 <code>quorum</code> 参数作用是什么？</p>
+<ul>
+<li>Redis Cluster 脑裂：主节点隔离后从节点成新主，原主恢复出现双主；解决：<ul>
+<li>设置 <code>min-replicas-to-write</code>（主库至少有 N 个从库同步成功才接受写）+ <code>min-replicas-max-lag</code>（同步延迟阈值）；</li>
+</ul>
+</li>
+<li>哨兵 quorum：确认主节点客观下线的最少哨兵数量</li>
+</ul>
+<blockquote>
+<p>线上 Redis 出现慢查询，你会怎么排查？从 “命令层面、配置层面、架构层面” 分别说明。</p>
+</blockquote>
+<ul>
+<li>① 命令层面：用 <code>slowlog get</code> 查看慢查询、<code>redis-cli --bigkeys</code> 检测 big key、分析耗时命令（如 hgetall、keys *）；</li>
+<li>② 配置层面：调整 <code>slowlog-log-slower-than</code>（默认 10ms）、检查 <code>maxmemory-policy</code>（避免频繁淘汰）、优化持久化（AOF 重写 &#x2F; RDB 避免高峰执行）；</li>
+<li>③ 架构层面：热点 key 拆分、集群扩容、主从分离；</li>
+</ul>
+<p>注意考虑CPU 使用率、网络延迟、持久化阻塞导致的慢查询。</p>
+<p><strong>追问</strong>：</p>
+<p>Redis 删除 big key 为什么会阻塞？怎么异步删除 big key（unlink 命令）？</p>
+<p>big key 删除阻塞：单线程遍历删除耗时久；异步删除：用 unlink 命令（后台线程删除）</p>
+<h2 id="模块-4：项目-工程能力（校招核心）"><a href="#模块-4：项目-工程能力（校招核心）" class="headerlink" title="模块 4：项目 + 工程能力（校招核心）"></a>模块 4：项目 + 工程能力（校招核心）</h2><blockquote>
+<p>你在项目中用 Redis 做过什么？如果遇到 Redis 主从同步延迟，导致从库读不到最新数据，怎么解决？</p>
+</blockquote>
+<ul>
+<li><p>主从同步延迟无具体解决方案：</p>
+<p>① 热点 key 读主库；</p>
+<p>③ 增大 <code>repl-backlog-size</code>（同步积压缓冲区）；</p>
+<p>④ 避免主库大事务；</p>
+</li>
+</ul>
+<p>分布式锁未提实现细节（如 Redlock、过期时间 + 续约）。</p>
+<p><strong>追问</strong>：</p>
+<p>Redis 分布式锁怎么避免死锁？读主库解决同步延迟会带来什么问题（主库压力）？</p>
+<p>分布式锁避免死锁：① 设过期时间；② 加锁存唯一标识；③ 看门狗续约；读主库问题：主库压力增大，可加本地缓存 + 限流</p>
+<blockquote>
+<p>你项目中有没有遇到过数据库死锁？怎么排查的？死锁的产生条件是什么？</p>
+</blockquote>
+<ul>
+<li><p>有，会遇到多个事务相互等待的情况</p>
+<ul>
+<li><strong>排查</strong>：<code>show engine innodb status\G</code> 看死锁日志。</li>
+<li>场景（事务 1 排着队等事务 2 释放 X 锁，而事务 2 又需要 S 锁，申请 S 锁的时候发现等锁的队伍前还有个 X 锁，这样一来就形成了相互依赖。）<ul>
+<li>事务1请求X锁：<code>delete from test where a = 2</code>，等待释放索引a的X锁（<code>index  a ... trx id 2A8BD lock_mode X waiting</code>）</li>
+<li>事务2持有X锁：<code>insert into test (id,a) values (10,2)</code></li>
+<li>事务2请求S锁：由于 a 建立了唯一索引，因此需要 S 锁来进行重复 key 判断，因此日志显示等待释放X锁：(<code>index a ... trx id 2A8BC lock mode S waiting</code></li>
+</ul>
+</li>
+<li><strong>解决</strong>：统一事务加锁顺序、小事务、避免同时锁多张表。</li>
+</ul>
+</li>
+<li><p><strong>死锁 4 条件（必须背全）</strong>：</p>
+<ol>
+<li><strong>互斥条件</strong>：每个资源只能被一个线程占用。</li>
+<li><strong>占有和等待</strong>：线程在持有至少一个资源的同时，等待获取其他资源。</li>
+<li><strong>不可抢占</strong>：线程所获得的资源在未使用完毕之前不能被其他线程抢占。</li>
+<li><strong>循环等待</strong>：多个线程形成一种头尾相接的循环等待资源关系。</li>
+</ol>
+</li>
+</ul>
+<p><strong>追问</strong>：</p>
+<p>怎么从业务层面避免数据库死锁？举个实际场景的优化例子（如订单表和库存表的事务顺序）。</p>
+<ul>
+<li>避免<strong>互斥</strong><ul>
+<li>如用版本号的乐观锁代替互斥锁</li>
+</ul>
+</li>
+<li>避免<strong>占有和等待</strong><ul>
+<li><strong>尽量减少锁的范围</strong>：将锁的粒度尽可能缩小，减少持有锁的时间。可以通过拆分锁或使用更细粒度的锁来实现。</li>
+<li><strong>使用尝试锁机制</strong>：使用 <code>ReentrantLock</code> 的 <code>tryLock</code> 方法，尝试在一段时间内获取锁，如果无法获取，则可以选择放弃或采取其他措施，避免死锁。</li>
+<li><strong>避免嵌套锁</strong>：尽量避免在一个锁的代码块中再次尝试获取另一个锁。</li>
+</ul>
+</li>
+<li>避免<strong>不可抢占</strong><ul>
+<li><strong>设置超时等待时间</strong>：为锁操作设置超时，防止线程无限期地等待锁。</li>
+</ul>
+</li>
+<li>避免循环等待：<ul>
+<li><font style='color:red;font-family:bold'><strong>按序申请资源</strong>：确保所有线程在获取多个锁时，按照相同的顺序获取锁。</font></li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>谈谈你对 “高可用” 的理解，结合你学的技术，怎么设计一个高可用的电商订单系统（核心模块：下单、支付、库存）？</p>
+</blockquote>
+<p>高可用理解错误：高可用是系统在故障下仍能提供服务（可用性 &#x3D; MTBF&#x2F;(MTBF+MTTR)），而非 “每次请求有回应”；</p>
+<p>CAP 中可用性与一致性是权衡维度，但高可用核心是 “服务不中断”；</p>
+<p>设计思路未体现高可用核心：</p>
+<ul>
+<li>服务层面：集群部署，加熔断、降级、限流（避免服务雪崩）；</li>
+<li>数据层面：库存预扣减、保证分布式事务最终一致性、实现接口幂等性；</li>
+<li>监控层面：链路追踪，针对库存不足、支付超时等场景设置告警；</li>
+<li>容错层面：支付结果通知失败重试，库存服务故障时临时降级关闭下单。</li>
+</ul>
+<p>追问：<br>订单系统的幂等性怎么保证（如用户重复支付）？库存预扣减场景下，怎么避免超卖？</p>
+<ul>
+<li>订单幂等性（避免重复支付）：① 用唯一订单号 &#x2F; 支付流水号校验；② 分布式锁 + 订单状态机（防止重复修改）。</li>
+<li>库存预扣减防超卖：① 分布式锁扣减；② 乐观锁（SQL 加 where stock&gt;0）；③ 预扣减后入消息队列异步确认。</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2026/03/09/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/ai%E6%A8%A1%E6%8B%9F/%E9%9D%A2%E8%AF%951/">https://yuezi2048.github.io/2026/03/09/2.Areas🌐/02.面经记录/ai模拟/面试1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/ai%E6%A8%A1%E6%8B%9F/">ai模拟</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/03/09/0.InBox%F0%9F%90%AD/md/color/" title="color"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">color</div></div><div class="info-2"><div class="info-item-1">Typora 个性化文字颜色模板【没想到的点，重点关注】【想到的点但是完全不记得内容的点】【表达错误的，要重点关注】【OK的表述】【补充说明用】 备选【这是矢车菊蓝的文字】【这是天青蓝的文字】【这是绿松石的文字】【这是黄绿色的文字】【这是橙色的文字】【这是生橙色的文字】【这是橘红色的文字】 </div></div></div></a><a class="pagination-related" href="/2026/03/12/2.Areas%F0%9F%8C%90/science/%E6%AF%95%E4%B8%9A%E8%AE%BA%E6%96%87%E6%95%B4%E7%90%86/%E5%BF%AB%E9%80%9F%E5%9B%9E%E9%A1%BE%E6%A8%A1%E5%9E%8B/" title="快速回顾模型"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">快速回顾模型</div></div><div class="info-2"><div class="info-item-1">这份梳理将按照**“发现问题 -&gt; 提出改进（代码演进） -&gt; 实验验证（日志分析） -&gt; 论文故事线总结”**的逻辑来组织，非常适合你用于开题答辩和论文撰写。 一、 动机与问题定义 (Motivation &amp; Problem Statement)从 MENTOR 到 TT4&#x2F;5&#x2F;6 的演进，主要为了解决现有纯图卷积多模态推荐系统（如 MENTOR）存在的以下几个痛点：  模态特征纠缠 (Modality Entanglement)：MENTOR 等传统模型直接融合视觉和文本特征，没有区分**“通用特征 (General, G)”（多模态共有的语义，如“这是一件毛衣”）和“特定特征 (Specific, S)”**（某单一模态独有的信息，如图片里的“红色图案”或文本里的“保暖材质”）。这种纠缠会导致噪声放大，次优的表示学习。 实例级对比学习的局限性 (Limitations of Instance-level CL)：MENTOR 的对比学习（基于 SimGCL 的随机图噪声...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">804</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">73</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">101</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5%EF%BC%9A%E4%B8%80%E9%9D%A2%EF%BC%88%E5%9F%BA%E7%A1%80-%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86%EF%BC%8C%E5%81%8F%E7%9F%A5%E8%AF%86%E5%AE%8C%E6%95%B4%E6%80%A7%EF%BC%89"><span class="toc-text">第一阶段：一面（基础 + 核心原理，偏知识完整性）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97-1%EF%BC%9AJava-%E9%9B%86%E5%90%88"><span class="toc-text">模块 1：Java 集合</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97-2%EF%BC%9AMySQL"><span class="toc-text">模块 2：MySQL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97-3%EF%BC%9ARedis"><span class="toc-text">模块 3：Redis</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E9%98%B6%E6%AE%B5%EF%BC%9A%E4%BA%8C%E9%9D%A2%EF%BC%88%E6%BA%90%E7%A0%81-%E5%9C%BA%E6%99%AF-%E5%AE%9E%E6%88%98%EF%BC%8C%E5%81%8F%E6%B7%B1%E5%BA%A6-%E5%B7%A5%E7%A8%8B%E8%83%BD%E5%8A%9B%EF%BC%89"><span class="toc-text">第二阶段：二面（源码 + 场景 + 实战，偏深度 + 工程能力）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97-1%EF%BC%9AJava-%E8%BF%9B%E9%98%B6-%E6%BA%90%E7%A0%81"><span class="toc-text">模块 1：Java 进阶 + 源码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97-2%EF%BC%9AMySQL-%E5%AE%9E%E6%88%98-%E4%BC%98%E5%8C%96"><span class="toc-text">模块 2：MySQL 实战 + 优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97-3%EF%BC%9ARedis-%E5%AE%9E%E6%88%98-%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5"><span class="toc-text">模块 3：Redis 实战 + 问题排查</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97-4%EF%BC%9A%E9%A1%B9%E7%9B%AE-%E5%B7%A5%E7%A8%8B%E8%83%BD%E5%8A%9B%EF%BC%88%E6%A0%A1%E6%8B%9B%E6%A0%B8%E5%BF%83%EF%BC%89"><span class="toc-text">模块 4：项目 + 工程能力（校招核心）</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/03/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-04-03T16:00:24.995Z" title="发表于 2026-04-04 00:00:24">2026-04-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/03/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-04-03T16:00:24.491Z" title="发表于 2026-04-04 00:00:24">2026-04-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/03/2.Areas%F0%9F%8C%90/AI/%E6%8A%80%E8%83%BD%E5%BA%93/" title="技能库">技能库</a><time datetime="2026-04-03T04:27:18.000Z" title="发表于 2026-04-03 12:27:18">2026-04-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/02/2.Areas%F0%9F%8C%90/AI/openclaw/" title="openclaw">openclaw</a><time datetime="2026-04-02T15:14:46.000Z" title="发表于 2026-04-02 23:14:46">2026-04-02</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/01/2.Areas%F0%9F%8C%90/00.%E7%A7%8B%E6%8B%9B%E5%87%86%E5%A4%87%E6%96%B9%E5%90%91/%E5%AE%9E%E4%B9%A0%E7%B4%A7%E6%80%A5%E5%A4%87%E6%88%98/" title="实习紧急备战">实习紧急备战</a><time datetime="2026-04-01T00:39:04.000Z" title="发表于 2026-04-01 08:39:04">2026-04-01</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>
