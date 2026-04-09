@@ -1,0 +1,320 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>FREEDOM | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一、论文总结当前领域存在的问题现有的多模态推荐系统通常将多模态特征（如图像和文本描述）与物品ID嵌入融合，以丰富物品表示。然而，这种方法未能显式捕捉物品间的潜在语义结构。虽然LATTICE模型尝试通过学习物品间的潜在结构来提升性能，但其学习过程效率低下且可能不必要。 现有做法及其问题 LATTICE模型：通过动态构建物品-物品图结构并利用图卷积网络（GCN）显式学习物品关系，取得了较好的推荐性能。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FREEDOM">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/06/28/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/FREEDOM(LATTICE%E6%94%B9%E8%BF%9B%20%E5%86%BB%E7%BB%93+%E5%8E%BB%E5%99%AA)/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="一、论文总结当前领域存在的问题现有的多模态推荐系统通常将多模态特征（如图像和文本描述）与物品ID嵌入融合，以丰富物品表示。然而，这种方法未能显式捕捉物品间的潜在语义结构。虽然LATTICE模型尝试通过学习物品间的潜在结构来提升性能，但其学习过程效率低下且可能不必要。 现有做法及其问题 LATTICE模型：通过动态构建物品-物品图结构并利用图卷积网络（GCN）显式学习物品关系，取得了较好的推荐性能。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-06-28T03:22:34.000Z">
+<meta property="article:modified_time" content="2025-06-28T03:22:34.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="论文梳理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "FREEDOM",
+  "url": "https://yuezi2048.github.io/2025/06/28/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/FREEDOM(LATTICE%E6%94%B9%E8%BF%9B%20%E5%86%BB%E7%BB%93+%E5%8E%BB%E5%99%AA)/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-06-28T03:22:34.000Z",
+  "dateModified": "2025-06-28T03:22:34.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/06/28/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/FREEDOM(LATTICE%E6%94%B9%E8%BF%9B%20%E5%86%BB%E7%BB%93+%E5%8E%BB%E5%99%AA)/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'FREEDOM',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">809</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">74</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">101</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">FREEDOM</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">FREEDOM</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-06-28T03:22:34.000Z" title="发表于 2025-06-28 11:22:34">2025-06-28</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-06-28T03:22:34.000Z" title="更新于 2025-06-28 11:22:34">2025-06-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/">science</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/">小论文准备</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/">论文复现总结</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/">论文梳理</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>9分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="一、论文总结"><a href="#一、论文总结" class="headerlink" title="一、论文总结"></a>一、论文总结</h1><h2 id="当前领域存在的问题"><a href="#当前领域存在的问题" class="headerlink" title="当前领域存在的问题"></a>当前领域存在的问题</h2><p>现有的多模态推荐系统通常将多模态特征（如图像和文本描述）与物品ID嵌入融合，以丰富物品表示。然而，这种方法未能显式捕捉物品间的潜在语义结构。虽然LATTICE模型尝试通过学习物品间的潜在结构来提升性能，但其学习过程效率低下且可能不必要。</p>
+<h2 id="现有做法及其问题"><a href="#现有做法及其问题" class="headerlink" title="现有做法及其问题"></a>现有做法及其问题</h2><ol>
+<li><strong>LATTICE模型</strong>：通过动态构建物品-物品图结构并利用图卷积网络（GCN）显式学习物品关系，取得了较好的推荐性能。  <ul>
+<li><strong>问题</strong>：动态学习物品-物品图结构计算和内存开销大（与物品数量平方成正比），且实验表明冻结该结构后性能相近甚至更好，说明动态学习可能非必要。</li>
+</ul>
+</li>
+</ol>
+<h2 id="本文提出的方法（FREEDOM）"><a href="#本文提出的方法（FREEDOM）" class="headerlink" title="本文提出的方法（FREEDOM）"></a>本文提出的方法（FREEDOM）</h2><p>本文提出FREEDOM模型，包含以下核心创新点：</p>
+<h3 id="1-冻结物品-物品图结构（AA）"><a href="#1-冻结物品-物品图结构（AA）" class="headerlink" title="1. 冻结物品-物品图结构（AA）"></a>1. 冻结物品-物品图结构（AA）</h3><ul>
+<li><strong>方法</strong>：  <ul>
+<li>直接基于物品的多模态原始特征（如视觉和文本）构建物品-物品图，并在训练中冻结该结构。  </li>
+<li>通过k近邻（kNN）稀疏化将加权图转为无权图（仅保留相似度最高的k条边）。</li>
+</ul>
+</li>
+<li><strong>作用</strong>：  <ul>
+<li>避免动态更新图结构的计算开销，提升效率。  </li>
+<li>实验表明冻结后的结构仍能保留物品间的语义关联，性能与动态学习相当。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-用户-物品图去噪（BB）"><a href="#2-用户-物品图去噪（BB）" class="headerlink" title="2. 用户-物品图去噪（BB）"></a>2. 用户-物品图去噪（BB）</h3><ul>
+<li><strong>方法</strong>：提出<strong>度敏感边剪枝（Degree-Sensitive Edge Pruning）</strong>：  <ul>
+<li>根据节点度数计算边保留概率（高度数节点相连的边更可能被剪枝）。  </li>
+<li>按概率采样生成稀疏化的子图，减少噪声边（如误点击或虚假交互）。</li>
+</ul>
+</li>
+<li><strong>作用</strong>：  <ul>
+<li>缓解用户-物品图中噪声对信息传播的干扰。  </li>
+<li>相比随机剪枝（如DropEdge），更能保护低度数节点的连接。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-双图集成学习（基准模型LATTICE思想）"><a href="#3-双图集成学习（基准模型LATTICE思想）" class="headerlink" title="3. 双图集成学习（基准模型LATTICE思想）"></a>3. 双图集成学习（基准模型LATTICE思想）</h3><ul>
+<li><strong>方法</strong>：  <ul>
+<li><strong>物品表示</strong>：通过冻结的物品-物品图（GCN传播）和去噪后的用户-物品图（LightGCN传播）分别学习，再求和融合。  </li>
+<li><strong>用户表示</strong>：仅通过用户-物品图学习。  </li>
+<li><strong>损失函数</strong>：结合BPR损失和多模态特征重构损失。</li>
+</ul>
+</li>
+<li><strong>作用</strong>：  <ul>
+<li>同时利用物品语义关系和用户交互行为的高阶信息。  </li>
+<li>多模态特征通过MLP投影到同一空间，增强物品表示。</li>
+</ul>
+</li>
+</ul>
+<h2 id="创新方案为何能解决问题"><a href="#创新方案为何能解决问题" class="headerlink" title="创新方案为何能解决问题"></a>创新方案为何能解决问题</h2><ol>
+<li><strong>效率提升</strong>：冻结物品-物品图省去了动态构建的开销，内存消耗降低最多6倍。  </li>
+<li><strong>性能提升</strong>：去噪用户-物品图减少了噪声传播，而冻结的物品图保留了稳定的语义结构，两者协同提升推荐准确性。  </li>
+<li><strong>理论支持</strong>：频谱分析表明，冻结的图结构具有更紧的上界，能更好地过滤高频噪声。</li>
+</ol>
+<h2 id="实验效果"><a href="#实验效果" class="headerlink" title="实验效果"></a>实验效果</h2><p>在三个真实数据集（Baby、Sports、Clothing）上，FREEDOM平均比LATTICE提升19.07%的推荐准确率（Recall@20和NDCG@20），同时训练速度更快。</p>
+<h2 id="代码地址"><a href="#代码地址" class="headerlink" title="代码地址"></a>代码地址</h2><p><a target="_blank" rel="noopener" href="https://github.com/enoche/FREEDOM">https://github.com/enoche/FREEDOM</a></p>
+<h1 id="二、代码分析"><a href="#二、代码分析" class="headerlink" title="二、代码分析"></a>二、代码分析</h1><p><strong>A Tale of Two Graphs: Freezing and Denoising Graph Structures for Multimodal Recommendation</strong></p>
+<p><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3581783.3611943">https://dl.acm.org/doi/10.1145/3581783.3611943</a></p>
+<p>方法：<code>LATTICE</code>  + <code>freeze item-item grapth</code> + <code>denoise user-itm interataction grapth （degree-sentive edge pruning method）</code></p>
+<ul>
+<li>A + B + C<ul>
+<li>A：Jinghao Zhang, Yanqiao Zhu, Qiang Liu, Shu Wu, Shuhui Wang, and  Liang Wang. 2021. Mining Latent Structures for Multimedia  Recommendation. In Proceedings of the 29th ACM International Conference  on Multimedia. 3872–3880.</li>
+<li>B：冻结item-item子图</li>
+<li>C：degree-sentive edge pruning method<ul>
+<li>去噪：“we further introduce a degree-sensitive edge pruning technique to denoise its structure to remove the noise caused by unintentional interactions or bribes [34]” (Zhou和Shen, 2023, p. 2) </li>
+<li>构建user稀疏子图：[3] Ming Chen, Zhewei Wei, Zengfeng Huang, Bolin Ding, and Yaliang Li.  2020. Simple and deep graph convolutional networks. In International  Conference on Machine Learning. PMLR, 1725–1735.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250620145450862.png" alt="image-20250620145450862"></p>
+<h2 id="上游1：冻结Item-Item图"><a href="#上游1：冻结Item-Item图" class="headerlink" title="上游1：冻结Item-Item图"></a>上游1：冻结Item-Item图</h2><blockquote>
+<p>ID嵌入：定义user嵌入和item嵌入</p>
+</blockquote>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250624111321674.png" alt="image-20250624111321674">	</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 初始化用户和物品嵌入层</span></span><br><span class="line"><span class="variable language_">self</span>.user_embedding = nn.Embedding(<span class="variable language_">self</span>.n_users, <span class="variable language_">self</span>.embedding_dim)</span><br><span class="line"><span class="variable language_">self</span>.item_id_embedding = nn.Embedding(<span class="variable language_">self</span>.n_items, <span class="variable language_">self</span>.embedding_dim)</span><br><span class="line">nn.init.xavier_uniform_(<span class="variable language_">self</span>.user_embedding.weight)</span><br><span class="line">nn.init.xavier_uniform_(<span class="variable language_">self</span>.item_id_embedding.weight)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<ul>
+<li><p>定义多模态邻接矩阵</p>
+<ul>
+<li>原始图像数据和文本数据的嵌入</li>
+<li>通过<code>get_knn_adj_mat</code>（余弦相似度来判断邻居）生成基于 KNN 的稀疏邻接矩阵<ul>
+<li>参数：传入detach嵌入的weight特征，实现权重张量分离，避免训练，实现<code>冻结</code>的效果</li>
+<li>返回：indices索引对{item_i, item_j}，以及归一化处理后的邻接矩阵</li>
+</ul>
+</li>
+<li>通过文本和图像的权重<code>mm_image_weight</code>来合成最终的图</li>
+</ul>
+</li>
+<li><p>定义 图像 +  文本 的线性变换层（64维——feat_embed_dim维）</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250624113435667.png" alt="image-20250624113435667">	</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 构建多模态邻接矩阵的文件路径</span></span><br><span class="line">      dataset_path = os.path.abspath(config[<span class="string">&#x27;data_path&#x27;</span>] + config[<span class="string">&#x27;dataset&#x27;</span>])</span><br><span class="line">      mm_adj_file = os.path.join(dataset_path,</span><br><span class="line">                                 <span class="string">&#x27;mm_adj_freedomdsp_&#123;&#125;_&#123;&#125;.pt&#x27;</span>.<span class="built_in">format</span>(<span class="variable language_">self</span>.knn_k, <span class="built_in">int</span>(<span class="number">10</span> * <span class="variable language_">self</span>.mm_image_weight)))</span><br><span class="line"></span><br><span class="line">      <span class="comment"># 根据配置，选择性地初始化图像和文本嵌入层</span></span><br><span class="line">      <span class="keyword">if</span> <span class="variable language_">self</span>.v_feat <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">          <span class="variable language_">self</span>.image_embedding = nn.Embedding.from_pretrained(<span class="variable language_">self</span>.v_feat, freeze=<span class="literal">False</span>)</span><br><span class="line">          <span class="variable language_">self</span>.image_trs = nn.Linear(<span class="variable language_">self</span>.v_feat.shape[<span class="number">1</span>], <span class="variable language_">self</span>.feat_embed_dim)</span><br><span class="line">      <span class="keyword">if</span> <span class="variable language_">self</span>.t_feat <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">          <span class="variable language_">self</span>.text_embedding = nn.Embedding.from_pretrained(<span class="variable language_">self</span>.t_feat, freeze=<span class="literal">False</span>)</span><br><span class="line">          <span class="variable language_">self</span>.text_trs = nn.Linear(<span class="variable language_">self</span>.t_feat.shape[<span class="number">1</span>], <span class="variable language_">self</span>.feat_embed_dim)</span><br><span class="line"></span><br><span class="line">      <span class="comment"># 加载或构建多模态邻接矩阵</span></span><br><span class="line">      <span class="keyword">if</span> os.path.exists(mm_adj_file):</span><br><span class="line">          <span class="variable language_">self</span>.mm_adj = torch.load(mm_adj_file)</span><br><span class="line">      <span class="keyword">else</span>:</span><br><span class="line">          <span class="keyword">if</span> <span class="variable language_">self</span>.v_feat <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">              indices, image_adj = <span class="variable language_">self</span>.get_knn_adj_mat(<span class="variable language_">self</span>.image_embedding.weight.detach())</span><br><span class="line">              <span class="variable language_">self</span>.mm_adj = image_adj</span><br><span class="line">          <span class="keyword">if</span> <span class="variable language_">self</span>.t_feat <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">              indices, text_adj = <span class="variable language_">self</span>.get_knn_adj_mat(<span class="variable language_">self</span>.text_embedding.weight.detach())</span><br><span class="line">              <span class="variable language_">self</span>.mm_adj = text_adj</span><br><span class="line">          <span class="keyword">if</span> <span class="variable language_">self</span>.v_feat <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span> <span class="keyword">and</span> <span class="variable language_">self</span>.t_feat <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">              <span class="variable language_">self</span>.mm_adj = <span class="variable language_">self</span>.mm_image_weight * image_adj + (<span class="number">1.0</span> - <span class="variable language_">self</span>.mm_image_weight) * text_adj</span><br><span class="line">              <span class="keyword">del</span> text_adj</span><br><span class="line">              <span class="keyword">del</span> image_adj</span><br><span class="line">          torch.save(<span class="variable language_">self</span>.mm_adj, mm_adj_file)</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="上游2：user-item图（pre-training）"><a href="#上游2：user-item图（pre-training）" class="headerlink" title="上游2：user-item图（pre-training）"></a>上游2：user-item图（pre-training）</h2><p>在每轮开始前都会预训练去噪后的user-item图，通过**度敏感边剪枝（Degree-Sensitive Edge Pruning）**模块</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250624114542206.png" alt="image-20250624114542206">	</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">pre_epoch_processing</span>(<span class="params">self</span>):</span><br><span class="line">    <span class="keyword">if</span> <span class="variable language_">self</span>.dropout &lt;= <span class="number">.0</span>:</span><br><span class="line">        <span class="variable language_">self</span>.masked_adj = <span class="variable language_">self</span>.norm_adj</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># degree-sensitive edge pruning</span></span><br><span class="line">    degree_len = <span class="built_in">int</span>(<span class="variable language_">self</span>.edge_values.size(<span class="number">0</span>) * (<span class="number">1.</span> - <span class="variable language_">self</span>.dropout))</span><br><span class="line">    <span class="comment"># 按重要程度概率抽样，返回保留的边的下标</span></span><br><span class="line">    degree_idx = torch.multinomial(<span class="variable language_">self</span>.edge_values, degree_len)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 根据前面计算得到的保留边索引(degree_idx)，从原始图边(edge_indices)中选取对应的边</span></span><br><span class="line">    keep_indices = <span class="variable language_">self</span>.edge_indices[:, degree_idx]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 对选中的边进行归一化处理，用于后续构建邻接矩阵的值</span></span><br><span class="line">    keep_values = <span class="variable language_">self</span>._normalize_adj_m(keep_indices, torch.Size((<span class="variable language_">self</span>.n_users, <span class="variable language_">self</span>.n_items)))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 将归一化后的值拼接两次，因为邻接矩阵是无向的，需要同时表示正向和反向的连接</span></span><br><span class="line">    all_values = torch.cat((keep_values, keep_values))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 为了构建用户-物品二部图的完整邻接矩阵，将物品节点的索引加上用户的总数(self.n_users)</span></span><br><span class="line">    <span class="comment"># 这样用户和物品节点在同一个图中有唯一的索引标识</span></span><br><span class="line">    keep_indices[<span class="number">1</span>] += <span class="variable language_">self</span>.n_users</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 拼接原始边和它们的转置（即交换起点和终点），以形成对称的邻接矩阵</span></span><br><span class="line">    all_indices = torch.cat((keep_indices, torch.flip(keep_indices, [<span class="number">0</span>])), <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 使用稀疏张量构造最终的掩码邻接矩阵，并将其移动到指定设备（如GPU）</span></span><br><span class="line">    <span class="comment"># 这个邻接矩阵会在训练过程中作为图神经网络的消息传递结构</span></span><br><span class="line">    <span class="variable language_">self</span>.masked_adj = torch.sparse.FloatTensor(all_indices, all_values, <span class="variable language_">self</span>.norm_adj.shape).to(<span class="variable language_">self</span>.device)</span><br></pre></td></tr></table></figure>
+
+<h2 id="双图集成学习的传播过程"><a href="#双图集成学习的传播过程" class="headerlink" title="双图集成学习的传播过程"></a>双图集成学习的传播过程</h2><p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20250624115232894.png" alt="image-20250624115232894">	</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, adj</span>):</span><br><span class="line">    <span class="comment"># 初始化物品嵌入 h 作为起点，通过n_layer层多模态卷积传播（mm_adj是初始化时构建的item-item稀疏矩阵图）</span></span><br><span class="line">    h = <span class="variable language_">self</span>.item_id_embedding.weight</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.n_layers):</span><br><span class="line">        h = torch.sparse.mm(<span class="variable language_">self</span>.mm_adj, h)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 将用户和物品嵌入融入user-item图中，通过 n_ui_layers 层用户-物品交互图卷积，保存每一层的嵌入用于后续融合</span></span><br><span class="line">    ego_embeddings = torch.cat((<span class="variable language_">self</span>.user_embedding.weight, <span class="variable language_">self</span>.item_id_embedding.weight), dim=<span class="number">0</span>)</span><br><span class="line">    all_embeddings = [ego_embeddings]</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.n_ui_layers):</span><br><span class="line">        side_embeddings = torch.sparse.mm(adj, ego_embeddings)</span><br><span class="line">        ego_embeddings = side_embeddings</span><br><span class="line">        all_embeddings += [ego_embeddings]</span><br><span class="line">        </span><br><span class="line">    <span class="comment"># 将各层嵌入堆叠后取平均（类似于跳跃连接），分离用户和物品嵌入，最终物品嵌入结合了多模态特征(h)和交互特征</span></span><br><span class="line">    all_embeddings = torch.stack(all_embeddings, dim=<span class="number">1</span>)</span><br><span class="line">    all_embeddings = all_embeddings.mean(dim=<span class="number">1</span>, keepdim=<span class="literal">False</span>)</span><br><span class="line">    u_g_embeddings, i_g_embeddings = torch.split(all_embeddings, [<span class="variable language_">self</span>.n_users, <span class="variable language_">self</span>.n_items], dim=<span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> u_g_embeddings, i_g_embeddings + h</span><br><span class="line">	</span><br><span class="line">ua_embeddings, ia_embeddings = <span class="variable language_">self</span>.forward(<span class="variable language_">self</span>.masked_adj)</span><br></pre></td></tr></table></figure>
+
+<h2 id="损失函数计算"><a href="#损失函数计算" class="headerlink" title="损失函数计算"></a>损失函数计算</h2><blockquote>
+<p>总损失</p>
+<ul>
+<li>mf_t_loss和mf_v_loss对应冻结图传播的损失$h_i^v$和$h_i^t$</li>
+<li>user-item：通过user-item前向传播得到的ua_embeddings和ia_embeddings计算BPR损失<ul>
+<li><code>ua_embeddings</code>是user-item融合分离后的u_g_embeddings</li>
+<li><code>ia_embeddings</code>是user-item融合分离后的i_g_embeddings，加上item得到的ID嵌入（这是MENTER模型改进的点）</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">calculate_loss</span>(<span class="params">self, interaction</span>):</span><br><span class="line">    users = interaction[<span class="number">0</span>]</span><br><span class="line">    pos_items = interaction[<span class="number">1</span>]</span><br><span class="line">    neg_items = interaction[<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line">    ua_embeddings, ia_embeddings = <span class="variable language_">self</span>.forward(<span class="variable language_">self</span>.masked_adj)</span><br><span class="line">    <span class="variable language_">self</span>.build_item_graph = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    u_g_embeddings = ua_embeddings[users]</span><br><span class="line">    pos_i_g_embeddings = ia_embeddings[pos_items]</span><br><span class="line">    neg_i_g_embeddings = ia_embeddings[neg_items]</span><br><span class="line"></span><br><span class="line">    batch_mf_loss = <span class="variable language_">self</span>.bpr_loss(u_g_embeddings, pos_i_g_embeddings,</span><br><span class="line">                                                                  neg_i_g_embeddings)</span><br><span class="line">    mf_v_loss, mf_t_loss = <span class="number">0.0</span>, <span class="number">0.0</span></span><br><span class="line">    <span class="keyword">if</span> <span class="variable language_">self</span>.t_feat <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">        text_feats = <span class="variable language_">self</span>.text_trs(<span class="variable language_">self</span>.text_embedding.weight)</span><br><span class="line">        mf_t_loss = <span class="variable language_">self</span>.bpr_loss(ua_embeddings[users], text_feats[pos_items], text_feats[neg_items])</span><br><span class="line">    <span class="keyword">if</span> <span class="variable language_">self</span>.v_feat <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">        image_feats = <span class="variable language_">self</span>.image_trs(<span class="variable language_">self</span>.image_embedding.weight)</span><br><span class="line">        mf_v_loss = <span class="variable language_">self</span>.bpr_loss(ua_embeddings[users], image_feats[pos_items], image_feats[neg_items])</span><br><span class="line">    <span class="keyword">return</span> batch_mf_loss + <span class="variable language_">self</span>.reg_weight * (mf_t_loss + mf_v_loss)</span><br></pre></td></tr></table></figure>
+
+<h1 id="附：其他方法梳理"><a href="#附：其他方法梳理" class="headerlink" title="附：其他方法梳理"></a>附：其他方法梳理</h1><p>其他方法梳理</p>
+<ul>
+<li>自监督：<ul>
+<li>BM3：Xin Zhou, Hongyu Zhou, Yong Liu, Zhiwei Zeng, Chunyan Miao, Pengwei Wang, Yuan You, and Feijun Jiang. 2023. Bootstrap latent representations for multi-modal  recommendation. In Proceedings of the ACM Web Conference 2023. 845–854.</li>
+</ul>
+</li>
+<li>ID嵌入<ul>
+<li>VBPR：Ruining He and Julian McAuley. 2016. VBPR: visual bayesian personalized  ranking from implicit feedback. In Proceedings of the AAAI conference on artificial intelligence, Vol. 30.</li>
+</ul>
+</li>
+<li>GNN<ul>
+<li>DRAGON： Hongyu Zhou, Xin Zhou, Lingzi Zhang, and Zhiqi Shen. 2023.  Enhancing Dyadic Relations with Homogeneous Graphs for Multimodal  Recommendation. arXiv preprint arXiv:2301.12097 (2023）</li>
+<li>IMRec：Xin Zhou, Donghui Lin, Yong Liu, and Chunyan Miao. 2023.  Layer-refined graph convolutional networks for recommendation. In 2023  IEEE 39th International Conference on Data Engineering (ICDE). IEEE,  1247–1259.</li>
+<li>BUIR：Xin Zhou, Aixin Sun, Yong Liu, Jie Zhang, and Chunyan Miao. 2023.  Selfcf: A simple framework for self-supervised collaborative filtering.  ACM Transactions on Recommender Systems 1, 2 (2023), 1–25.</li>
+</ul>
+</li>
+<li>MMGCN：[25] Yinwei Wei, Xiang Wang, Liqiang Nie, Xiangnan He, Richang Hong, and  Tat-Seng Chua. 2019. MMGCN: Multi-modal graph convolution network for  personalized recommendation of micro-video. In Proceedings of the 27th  ACM International Conference on Multimedia. 1437–1445.</li>
+<li>DuGCN：[22] Qifan Wang, Yinwei Wei, Jianhua Yin, Jianlong Wu, Xuemeng Song, and  Liqiang Nie. 2021. DualGNN: Dual Graph Neural Network for Multimedia  Recommendation. IEEE Transactions on Multimedia (2021).</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/06/28/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/FREEDOM(LATTICE%E6%94%B9%E8%BF%9B%20%E5%86%BB%E7%BB%93+%E5%8E%BB%E5%99%AA)/">https://yuezi2048.github.io/2025/06/28/2.Areas🌐/science/小论文准备/论文复现总结/论文梳理/FREEDOM(LATTICE改进 冻结+去噪)/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/">论文梳理</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/06/27/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/SMORE2(%E5%9F%BA%E4%BA%8E%E9%A2%91%E8%B0%B1%E8%9E%8D%E5%90%88+%E8%A1%8C%E4%B8%BA%E6%84%9F%E7%9F%A5%E8%9E%8D%E5%90%88)/" title="SMORE"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">SMORE</div></div><div class="info-2"><div class="info-item-1">多模态推荐系统研究总结当前领域存在的问题现有的多模态推荐系统在融合不同模态(如图片、文字等)时存在一个主要问题：直接融合会导致各模态特有的噪声被放大。例如，商品图片可能模糊不清，文字描述可能与商品不相关，这些噪声会影响推荐系统的准确性。 现有做法目前主要有以下几种方法：  简单融合方法：如拼接(concatenation)、按元素相加(element-wise sum)或注意力机制(attention mechanisms) 图神经网络方法：构建不同模态的图结构，然后进行融合 行为特征注入：将用户行为特征与模态特征结合来减少噪声  这些方法虽然取得了一定效果，但都存在直接融合模态导致噪声放大的问题。 本文提出的方法(SMORE)作者提出了SMORE模型，包含三个关键部分： 1. 基于频谱的模态表示融合(Spectrum Modality Fusion) 将模态特征通过傅里叶变换转换到频域 在频域设计动态滤波器来自适应地衰减噪声 通过点积操作融合不同模态 最后通过逆傅里叶变换回到原始空间  2. 多模态图学习(Multi-modal Graph...</div></div></div></a><a class="pagination-related" href="/2025/06/30/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/tmp/" title="tmp"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">tmp</div></div><div class="info-2"><div class="info-item-1">整理后的问题分类与关键点 计算效率问题核心方法:    FREEDOM通过冻结图模块避免重复计算潜在问题:   错误说法：“图结构一旦冻结就不会影响模型性能”   修正：静态图无法捕捉动态偏好，需研究增量图更新机制有价值方向:   如何设计增量式图学习（如基于时间滑窗的局部重训练）？   能否结合课程学习动态调整图复杂度（冷启动期简单图→稳定期复杂图）？   噪声问题子问题1：模态融合噪声    MENTER方法: 多级自监督对齐   错误说法: “多模态对齐越严格越好”   修正：过度对齐会损失模态特异性（如文本的抽象性vs图像的具象性）有价值方向:   如何量化模态对齐程度（如互信息 vs. 模态间距离）？   能否引入模态冲突检测机制（如跨模态梯度对抗）？  子问题2：模态原生噪声    SMORE方法: 过滤器模块   错误说法: “所有模态噪声分布相同”   修正：视觉模态（商品图）噪声多为随机噪声，文本模态（描述）存在系统性偏见有价值方向:   如何设计模态感知的降噪器（如CNN处理图像噪声 vs. 注意力掩码处理文本噪声）？ ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/07/17/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/BeFA(%E8%A1%8C%E4%B8%BA%E5%BC%95%E5%AF%BC%E7%9A%84%E7%89%B9%E5%BE%81%E9%87%8D%E6%9E%84)/" title="BeFA(行为引导的特征重构)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-17</div><div class="info-item-2">BeFA(行为引导的特征重构)</div></div><div class="info-2"><div class="info-item-1">科研小白友好版论文总结当前领域存在的问题多媒体推荐系统通常使用预训练的特征编码器提取内容特征，但这些编码器会同时提取内容中的所有信息(包括大量与用户偏好无关的细节)，导致提取的特征可能无法准确反映用户偏好。 现有做法及其局限性现有方法通常：  使用预训练编码器提取内容特征 将这些内容特征与行为特征融合来建模用户偏好  局限性：预提取的内容特征存在”信息漂移”(包含错误&#x2F;无关信息)和”信息遗漏”(缺少关键信息)问题，影响推荐准确性。  futhermore, author introduce a similarity-based visual attribution method, which enables researchers to visually analyze the quality of content features for the first...</div></div></div></a><a class="pagination-related" href="/2025/07/21/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/CHOESION(%E6%97%A9%E6%99%9A%E6%9C%9F%E5%8F%8C%E9%98%B6%E6%AE%B5%E8%9E%8D%E5%90%88+%E5%A4%8D%E5%90%88GCN)/" title="CHOESION(早晚期双阶段融合+复合GCN)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-21</div><div class="info-item-2">CHOESION(早晚期双阶段融合+复合GCN)</div></div><div class="info-2"><div class="info-item-1">多模态推荐系统研究总结当前领域存在的问题 模态融合效果不佳：现有的多模态推荐系统在融合不同模态信息时，通常采用简单的注意力机制或预定义的策略，无法有效处理不同模态之间的无关信息。  表示学习受限：虽然已有研究构建了用户-物品、用户-用户和物品-物品的图结构来学习表示，但模态融合和表示学习通常被视为两个独立的过程，未能充分利用它们之间的互补关系。   现有做法 模态融合方面：  早期融合：在构建异构图之前就将模态特征与ID嵌入融合 晚期融合：先学习每个模态的表示，最后再融合所有预测评分   表示学习方面：  构建用户-物品二分图并使用图卷积网络(GCN)增强表示学习 一些工作尝试构建用户-用户图或物品-物品图来探索隐藏关系    现有做法仍存在的问题 预定义的融合策略对模态间无关信息的负面影响较为脆弱 模态融合和表示学习被视为独立过程，未能充分利用它们的互补关系 简单的图结构设计可能无法充分捕捉用户和物品之间的复杂关系  本文提出的方法(COHESION)​	 1. 双阶段融合策略(Dual-Stage...</div></div></div></a><a class="pagination-related" href="/2025/07/17/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/CMDL(%E6%A8%A1%E6%80%81%E8%A7%A3%E8%80%A6%E5%85%B1%E4%BA%AB%E5%92%8C%E7%89%B9%E6%9C%89+%E5%9F%BA%E4%BA%8EMI%E6%AD%A3%E5%88%99%E5%8C%96)/" title="CMDL(模态解耦共享和特有+基于MI正则化)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-17</div><div class="info-item-2">CMDL(模态解耦共享和特有+基于MI正则化)</div></div><div class="info-2"><div class="info-item-1">论文总结：对比性模态解耦学习用于多模态推荐当前领域存在的问题现有的多模态推荐方法主要关注设计强大的编码器来提取多模态特征，并简单地聚合这些特征进行预测。这些方法在捕捉跨模态知识（包括模态共享知识和模态特有知识）方面能力有限。实际上：  学习模态共享知识可以帮助对齐跨模态数据，融合异构模态特征 学习模态特有知识同样重要，特别是当推荐任务只涉及少量共享特征时，必要信息可能包含在特定模态中  现有方法及其局限性大多数现有方法（如MMGCN、LATTICE等）：  专注于设计强大的特征编码器 简单聚合不同模态学习到的特征 无法有效区分和捕捉模态共享和模态特有知识  现有方法的主要局限性是缺乏有效的统计约束来确保：  解耦后的表示在统计上相互独立 模态不变表示能尽可能多地捕捉跨模态共享信息  本文提出的方法：CMDL	 本文提出了对比性模态解耦学习(CMDL)框架，包含以下关键创新： 1. 多模态特征预处理(AA)基准模型：MGCN’...</div></div></div></a><a class="pagination-related" href="/2025/09/09/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/DA_MRS/" title="DA_MRS"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-09</div><div class="info-item-2">DA_MRS</div></div><div class="info-2"><div class="info-item-1">当前领域存在的问题多模态推荐系统（MRS）面临三个主要问题：    多模态内容噪声：物品的图片、文本等描述可能包含无关信息（例如商品图片背景干扰或文本描述冗长），导致物品相似性计算不准确。   用户反馈噪声：用户点击、浏览等行为可能包含误操作或偏见（例如随机点击或受广告影响），误导模型学习。   多模态内容与用户反馈的对齐不足：现有方法仅通过对比学习对齐不同模态的表示，但忽略了用户偏好视角的细粒度对齐（例如相似物品的层级关系）。   现有方法现有方法主要分为两类：    基于特征的方法（如VBPR、MMGCN）：直接融合多模态特征增强物品表示，但未显式处理噪声。   基于结构的方法（如LATTICE、MICRO）：通过多模态内容构建物品相似图，但存在以下问题：   未过滤跨模态不一致的相似性（例如图片相似但文本无关的物品被错误连接）。   未利用用户行为数据补充物品关系。   对齐方法仅停留在物品级别，未考虑用户偏好和细粒度相似性。     本文提出的方法：DA-MRSDA-MRS包含三个核心模块，分别解决上述问题：   1. 去噪物品-物品图（Denoising...</div></div></div></a><a class="pagination-related" href="/2025/07/17/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/DGMRec(%E6%A8%A1%E6%80%81%E8%A7%A3%E8%80%A6%E5%85%B1%E4%BA%AB%E5%92%8C%E7%89%B9%E6%9C%89+%E6%A8%A1%E6%80%81%E7%94%9F%E6%88%90)/" title="DGMRec(模态解耦共享和特有+模态生成)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-17</div><div class="info-item-2">DGMRec(模态解耦共享和特有+模态生成)</div></div><div class="info-2"><div class="info-item-1">...</div></div></div></a><a class="pagination-related" href="/2025/07/21/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/DGVAE(FREEDOM+DGVAE+MIM)/" title="DGVAE(FREEDOM+DGVAE+MIM)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-21</div><div class="info-item-2">DGVAE(FREEDOM+DGVAE+MIM)</div></div><div class="info-2"><div class="info-item-1">多模态推荐系统可解释性研究总结当前领域存在的问题当前多模态推荐系统虽然能结合文本、图像等多种信息提高推荐准确性，但存在一个关键问题：这些系统使用复杂的数字向量来表示用户和物品，导致推荐结果难以解释。用户无法理解为什么系统会推荐某个物品，降低了系统的可信度和实用性。 现有做法现有方法主要通过以下几种方式处理多模态信息：  简单拼接或求和：将预处理后的多模态信息与可学习的物品嵌入向量结合 注意力机制：更精确地捕捉用户对物品的偏好 图神经网络：利用图结构捕捉物品多模态特征与用户-物品交互间的高阶关系  但这些方法都依赖数字嵌入表示用户和物品，缺乏可解释性。 现有做法仍存在的问题尽管现有方法在推荐准确性上表现不错，但存在以下问题：  可解释性差：用户无法理解推荐背后的原因 工业应用受限：缺乏解释性阻碍了在实际业务中的应用 信任度低：用户对”黑箱”推荐缺乏信任  本文提出的方法：DGVAE本文提出了一种解耦图变分自编码器(DGVAE)，主要包含以下创新点： 		 1....</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">809</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">74</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">101</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E8%AE%BA%E6%96%87%E6%80%BB%E7%BB%93"><span class="toc-text">一、论文总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BD%93%E5%89%8D%E9%A2%86%E5%9F%9F%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-text">当前领域存在的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%B0%E6%9C%89%E5%81%9A%E6%B3%95%E5%8F%8A%E5%85%B6%E9%97%AE%E9%A2%98"><span class="toc-text">现有做法及其问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AC%E6%96%87%E6%8F%90%E5%87%BA%E7%9A%84%E6%96%B9%E6%B3%95%EF%BC%88FREEDOM%EF%BC%89"><span class="toc-text">本文提出的方法（FREEDOM）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%86%BB%E7%BB%93%E7%89%A9%E5%93%81-%E7%89%A9%E5%93%81%E5%9B%BE%E7%BB%93%E6%9E%84%EF%BC%88AA%EF%BC%89"><span class="toc-text">1. 冻结物品-物品图结构（AA）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%94%A8%E6%88%B7-%E7%89%A9%E5%93%81%E5%9B%BE%E5%8E%BB%E5%99%AA%EF%BC%88BB%EF%BC%89"><span class="toc-text">2. 用户-物品图去噪（BB）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%8F%8C%E5%9B%BE%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0%EF%BC%88%E5%9F%BA%E5%87%86%E6%A8%A1%E5%9E%8BLATTICE%E6%80%9D%E6%83%B3%EF%BC%89"><span class="toc-text">3. 双图集成学习（基准模型LATTICE思想）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E6%96%B0%E6%96%B9%E6%A1%88%E4%B8%BA%E4%BD%95%E8%83%BD%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98"><span class="toc-text">创新方案为何能解决问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E6%95%88%E6%9E%9C"><span class="toc-text">实验效果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%9C%B0%E5%9D%80"><span class="toc-text">代码地址</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90"><span class="toc-text">二、代码分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8A%E6%B8%B81%EF%BC%9A%E5%86%BB%E7%BB%93Item-Item%E5%9B%BE"><span class="toc-text">上游1：冻结Item-Item图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8A%E6%B8%B82%EF%BC%9Auser-item%E5%9B%BE%EF%BC%88pre-training%EF%BC%89"><span class="toc-text">上游2：user-item图（pre-training）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8C%E5%9B%BE%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0%E7%9A%84%E4%BC%A0%E6%92%AD%E8%BF%87%E7%A8%8B"><span class="toc-text">双图集成学习的传播过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E8%AE%A1%E7%AE%97"><span class="toc-text">损失函数计算</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%99%84%EF%BC%9A%E5%85%B6%E4%BB%96%E6%96%B9%E6%B3%95%E6%A2%B3%E7%90%86"><span class="toc-text">附：其他方法梳理</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/09/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-04-09T16:00:25.020Z" title="发表于 2026-04-10 00:00:25">2026-04-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/09/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-04-09T16:00:24.481Z" title="发表于 2026-04-10 00:00:24">2026-04-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/07/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D%E8%A1%A5%E5%85%85/" title="项目介绍补充">项目介绍补充</a><time datetime="2026-04-07T14:01:15.000Z" title="发表于 2026-04-07 22:01:15">2026-04-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/07/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%BF%AB%E9%80%9F%E5%9B%9E%E9%A1%BE/%E5%B0%8F%E8%AE%B0/" title="小记">小记</a><time datetime="2026-04-07T13:49:03.000Z" title="发表于 2026-04-07 21:49:03">2026-04-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/07/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%BF%AB%E9%80%9F%E5%9B%9E%E9%A1%BE/111/" title="111">111</a><time datetime="2026-04-07T03:47:38.000Z" title="发表于 2026-04-07 11:47:38">2026-04-07</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

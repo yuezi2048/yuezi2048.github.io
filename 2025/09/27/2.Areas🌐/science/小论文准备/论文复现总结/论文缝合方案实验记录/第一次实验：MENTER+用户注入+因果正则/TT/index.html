@@ -1,0 +1,257 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>TT | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="TT0: base + DGM解耦 - align模块： █████████████ BEST ████████████████19 Sep 12:12    INFO    Parameters: [&#x27;seed&#x27;, &#x27;reg_weight&#x27;, &#x27;learning_rate&#x27;, &#x27;dropout&#x27;, &#x27;mas">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TT">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/09/27/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/TT/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="TT0: base + DGM解耦 - align模块： █████████████ BEST ████████████████19 Sep 12:12    INFO    Parameters: [&#x27;seed&#x27;, &#x27;reg_weight&#x27;, &#x27;learning_rate&#x27;, &#x27;dropout&#x27;, &#x27;mas">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-09-27T03:01:33.000Z">
+<meta property="article:modified_time" content="2025-09-27T03:01:33.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="第一次实验：MENTER+用户注入+因果正则">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "TT",
+  "url": "https://yuezi2048.github.io/2025/09/27/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/TT/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-09-27T03:01:33.000Z",
+  "dateModified": "2025-09-27T03:01:33.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/09/27/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/TT/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'TT',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">809</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">74</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">101</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">TT</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">TT</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-09-27T03:01:33.000Z" title="发表于 2025-09-27 11:01:33">2025-09-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-09-27T03:01:33.000Z" title="更新于 2025-09-27 11:01:33">2025-09-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/">science</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/">小论文准备</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/">论文复现总结</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/">论文缝合方案实验记录</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER-%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5-%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/">第一次实验：MENTER+用户注入+因果正则</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>TT0: base + DGM解耦 - align模块：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">█████████████ BEST ████████████████</span><br><span class="line">19 Sep 12:12    INFO    Parameters: [<span class="string">&#x27;seed&#x27;</span>, <span class="string">&#x27;reg_weight&#x27;</span>, <span class="string">&#x27;learning_rate&#x27;</span>, <span class="string">&#x27;dropout&#x27;</span>, <span class="string">&#x27;mask_weight_f&#x27;</span>, <span class="string">&#x27;mask_weight_g&#x27;</span>, <span class="string">&#x27;lambda_1&#x27;</span>, <span class="string">&#x27;infoNCETemp&#x27;</span>]=(999, 0.001, 0.0001, 0.5, 1.5, 0.001, 0.5, 0.4),</span><br><span class="line">Valid: recall@5: 0.0407    recall@10: 0.0657    recall@20: 0.1004    recall@50: 0.1692    ndcg@5: 0.0270    ndcg@10: 0.0350    ndcg@20: 0.0438    ndcg@50: 0.0575    precision@5: 0.0085    precision@10: 0.0069    precision@20: 0.0053    precision@50: 0.0036    map@5: 0.0221    map@10: 0.0254    map@20: 0.0277    map@50: 0.0298    ,</span><br><span class="line">Test: recall@5: 0.0409    recall@10: 0.0669    recall@20: 0.1036    recall@50: 0.1710    ndcg@5: 0.0270    ndcg@10: 0.0355    ndcg@20: 0.0450    ndcg@50: 0.0586    precision@5: 0.0090    precision@10: 0.0074    precision@20: 0.0057    precision@50: 0.0038    map@5: 0.0217    map@10: 0.0252    map@20: 0.0277    map@50: 0.0299    </span><br></pre></td></tr></table></figure>
+
+<p>TT2:  base - align模块  + DGM解耦 + </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">█████████████ BEST ████████████████</span><br><span class="line">Fri 19 Sep 2025 22:25:56 INFO   Parameters: [<span class="string">&#x27;seed&#x27;</span>, <span class="string">&#x27;reg_weight&#x27;</span>, <span class="string">&#x27;learning_rate&#x27;</span>, <span class="string">&#x27;dropout&#x27;</span>, <span class="string">&#x27;mask_weight_f&#x27;</span>, <span class="string">&#x27;mask_weight_g&#x27;</span>, <span class="string">&#x27;lambda_1&#x27;</span>, <span class="string">&#x27;infoNCETemp&#x27;</span>, <span class="string">&#x27;lambda_graded_align&#x27;</span>]=(999, 0.0001, 0.0001, 0.5, 1.5, 0.001, 1.0, 0.4, 0.1),</span><br><span class="line">Valid: recall@5: 0.0412    recall@10: 0.0643    recall@20: 0.1004    recall@50: 0.1666    ndcg@5: 0.0275    ndcg@10: 0.0350    ndcg@20: 0.0441    ndcg@50: 0.0574    precision@5: 0.0087    precision@10: 0.0068    precision@20: 0.0053    precision@50: 0.0035    map@5: 0.0226    map@10: 0.0257    map@20: 0.0281    map@50: 0.0302    ,</span><br><span class="line">Test: recall@5: 0.0404    recall@10: 0.0668    recall@20: 0.1040    recall@50: 0.1702    ndcg@5: 0.0270    ndcg@10: 0.0357    ndcg@20: 0.0453    ndcg@50: 0.0587    precision@5: 0.0090    precision@10: 0.0074    precision@20: 0.0058    precision@50: 0.0038    map@5: 0.0219    map@10: 0.0254    map@20: 0.0279    map@50: 0.0300    </span><br></pre></td></tr></table></figure>
+
+<p>TT2 加了分级对比模块后的效果</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">█████████████ BEST ████████████████</span><br><span class="line">Sat 20 Sep 2025 12:10:02 INFO   Parameters: [<span class="string">&#x27;seed&#x27;</span>, <span class="string">&#x27;reg_weight&#x27;</span>, <span class="string">&#x27;learning_rate&#x27;</span>, <span class="string">&#x27;dropout&#x27;</span>, <span class="string">&#x27;mask_weight_f&#x27;</span>, <span class="string">&#x27;mask_weight_g&#x27;</span>, <span class="string">&#x27;lambda_1&#x27;</span>, <span class="string">&#x27;infoNCETemp&#x27;</span>, <span class="string">&#x27;lambda_graded_align&#x27;</span>]=(999, 0.0001, 0.0001, 0.5, 1.5, 0.001, 1.0, 0.4, 0.1),</span><br><span class="line">Valid: recall@5: 0.0411    recall@10: 0.0635    recall@20: 0.1004    recall@50: 0.1671    ndcg@5: 0.0271    ndcg@10: 0.0344    ndcg@20: 0.0438    ndcg@50: 0.0571    precision@5: 0.0086    precision@10: 0.0067    precision@20: 0.0053    precision@50: 0.0035    map@5: 0.0222    map@10: 0.0252    map@20: 0.0277    map@50: 0.0298    ,</span><br><span class="line">Test: recall@5: 0.0417    recall@10: 0.0664    recall@20: 0.1045    recall@50: 0.1692    ndcg@5: 0.0271    ndcg@10: 0.0353    ndcg@20: 0.0451    ndcg@50: 0.0581    precision@5: 0.0092    precision@10: 0.0073    precision@20: 0.0058    precision@50: 0.0038    map@5: 0.0217    map@10: 0.0250    map@20: 0.0276    map@50: 0.0296   </span><br></pre></td></tr></table></figure>
+
+
+<p>TT3 初步对比增强</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">█████████████ BEST ████████████████</span><br><span class="line">20 Sep 15:15    INFO    Parameters: [<span class="string">&#x27;seed&#x27;</span>, <span class="string">&#x27;reg_weight&#x27;</span>, <span class="string">&#x27;learning_rate&#x27;</span>, <span class="string">&#x27;dropout&#x27;</span>, <span class="string">&#x27;mask_weight_f&#x27;</span>, <span class="string">&#x27;mask_weight_g&#x27;</span>, <span class="string">&#x27;infoNCETemp&#x27;</span>, <span class="string">&#x27;lambda_graded_align&#x27;</span>, <span class="string">&#x27;alpha_g_s&#x27;</span>]=(999, 0.0001, 0.0001, 0.5, 1.5, 0.001, 0.4, 0.1, 0.5),</span><br><span class="line">Valid: recall@5: 0.0409    recall@10: 0.0632    recall@20: 0.0999    recall@50: 0.1668    ndcg@5: 0.0271    ndcg@10: 0.0343    ndcg@20: 0.0437    ndcg@50: 0.0570    precision@5: 0.0085    precision@10: 0.0066    precision@20: 0.0053    precision@50: 0.0035    map@5: 0.0222    map@10: 0.0252    map@20: 0.0277    map@50: 0.0298    ,</span><br><span class="line">Test: recall@5: 0.0418    recall@10: 0.0664    recall@20: 0.1037    recall@50: 0.1690    ndcg@5: 0.0271    ndcg@10: 0.0353    ndcg@20: 0.0449    ndcg@50: 0.0581    precision@5: 0.0092    precision@10: 0.0073    precision@20: 0.0057    precision@50: 0.0038    map@5: 0.0217    map@10: 0.0249    map@20: 0.0275    map@50: 0.0295    </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>TT3 对比增强：调参优化,自适应改进</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">█████████████ BEST ████████████████</span><br><span class="line">21 Sep 13:45    INFO    Parameters: [<span class="string">&#x27;seed&#x27;</span>, <span class="string">&#x27;reg_weight&#x27;</span>, <span class="string">&#x27;learning_rate&#x27;</span>, <span class="string">&#x27;dropout&#x27;</span>, <span class="string">&#x27;mask_weight_f&#x27;</span>, <span class="string">&#x27;mask_weight_g&#x27;</span>, <span class="string">&#x27;infoNCETemp&#x27;</span>, <span class="string">&#x27;lambda_graded_align&#x27;</span>, <span class="string">&#x27;alpha_g_s&#x27;</span>]=(999, 0.0001, 0.0001, 0.5, 1.5, 0.001, 0.4, 0, 0.2),</span><br><span class="line">Valid: recall@5: 0.0407    recall@10: 0.0630    recall@20: 0.1003    recall@50: 0.1669    ndcg@5: 0.0270    ndcg@10: 0.0343    ndcg@20: 0.0438    ndcg@50: 0.0570    precision@5: 0.0085    precision@10: 0.0066    precision@20: 0.0053    precision@50: 0.0035    map@5: 0.0222    map@10: 0.0252    map@20: 0.0277    map@50: 0.0298    ,</span><br><span class="line">Test: recall@5: 0.0414    recall@10: 0.0662    recall@20: 0.1041    recall@50: 0.1691    ndcg@5: 0.0269    ndcg@10: 0.0351    ndcg@20: 0.0449    ndcg@50: 0.0580    precision@5: 0.0091    precision@10: 0.0073    precision@20: 0.0058    precision@50: 0.0038    map@5: 0.0215    map@10: 0.0248    map@20: 0.0274    map@50: 0.0294</span><br></pre></td></tr></table></figure>
+
+<p>TT3&#x3D;MENTER改进（去除 align模块 待添加改进模块） + 解耦模块改进（分级对比） +  网络发现改进（结合用户交互）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">█████████████ BEST ████████████████</span><br><span class="line">26 Sep 12:56    INFO    Parameters: [<span class="string">&#x27;seed&#x27;</span>, <span class="string">&#x27;reg_weight&#x27;</span>, <span class="string">&#x27;learning_rate&#x27;</span>, <span class="string">&#x27;dropout&#x27;</span>, <span class="string">&#x27;mask_weight_f&#x27;</span>, <span class="string">&#x27;mask_weight_g&#x27;</span>, <span class="string">&#x27;infoNCETemp&#x27;</span>, <span class="string">&#x27;lambda_graded_align&#x27;</span>, <span class="string">&#x27;alpha_g_s&#x27;</span>]=(999, 0.0001, 0.0001, 0.5, 1.5, 0.001, 0.4, 0.5, 0.2),</span><br><span class="line">Valid: recall@5: 0.0408    recall@10: 0.0640    recall@20: 0.1000    recall@50: 0.1663    ndcg@5: 0.0271    ndcg@10: 0.0347    ndcg@20: 0.0438    ndcg@50: 0.0570    precision@5: 0.0085    precision@10: 0.0067    precision@20: 0.0053    precision@50: 0.0035    map@5: 0.0223    map@10: 0.0253    map@20: 0.0278    map@50: 0.0298    ,</span><br><span class="line">Test: recall@5: 0.0416    recall@10: 0.0664    recall@20: 0.1037    recall@50: 0.1682    ndcg@5: 0.0269    ndcg@10: 0.0351    ndcg@20: 0.0447    ndcg@50: 0.0578    precision@5: 0.0091    precision@10: 0.0073    precision@20: 0.0058    precision@50: 0.0038    map@5: 0.0214    map@10: 0.0248    map@20: 0.0273    map@50: 0.0294    </span><br></pre></td></tr></table></figure>
+
+
+<p>base &#x3D; MENTOR——   recall@10: 0.0654    recall@20: 0.1028    recall@50: 0.1690    ndcg@5: 0.0272    ndcg@10: 0.0352    ndcg@20: 0.0448  </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">█████████████ BEST ████████████████</span><br><span class="line">26 Sep 14:32    INFO    Parameters: [<span class="string">&#x27;seed&#x27;</span>, <span class="string">&#x27;reg_weight&#x27;</span>, <span class="string">&#x27;learning_rate&#x27;</span>, <span class="string">&#x27;dropout&#x27;</span>, <span class="string">&#x27;mask_weight_f&#x27;</span>, <span class="string">&#x27;mask_weight_g&#x27;</span>, <span class="string">&#x27;infoNCETemp&#x27;</span>, <span class="string">&#x27;lambda_graded_align&#x27;</span>, <span class="string">&#x27;alpha_g_s&#x27;</span>]=(999, 0.0001, 0.0001, 0.5, 1.5, 0.001, 0.4, 0.5, 0.2),</span><br><span class="line">Valid: recall@5: 0.0403    recall@10: 0.0634    recall@20: 0.0999    recall@50: 0.1671    ndcg@5: 0.0269    ndcg@10: 0.0344    ndcg@20: 0.0437    ndcg@50: 0.0571    precision@5: 0.0084    precision@10: 0.0066    precision@20: 0.0053    precision@50: 0.0035    map@5: 0.0222    map@10: 0.0252    map@20: 0.0277    map@50: 0.0298    ,</span><br><span class="line">Test: recall@5: 0.0414    recall@10: 0.0663    recall@20: 0.1044    recall@50: 0.1689    ndcg@5: 0.0270    ndcg@10: 0.0352    ndcg@20: 0.0450    ndcg@50: 0.0580    precision@5: 0.0091    precision@10: 0.0073    precision@20: 0.0058    precision@50: 0.0038    map@5: 0.0216    map@10: 0.0249    map@20: 0.0276    map@50: 0.0296    </span><br></pre></td></tr></table></figure>
+
+<p><strong>来自 <code>DA-MRS</code> - 分级关系对齐</strong>：</p>
+<p><strong>核心思想</strong>：项目间的关系并非简单的“相似&#x2F;不相似”，而是存在梯度的 。我们采纳了其“强正样本”（多模态相似）和“弱正样本”（单模态相似）的概念 ，并将其作为我们<code>loss_graded_align</code>模块的基础，用于动态识别不同层次的邻居关系。</p>
+<p><strong>来自 <code>GUIDER</code> - 基于多模态一致性的交互去噪</strong>：</p>
+<ul>
+<li><p><strong>核心思想</strong>：并非所有用户交互都是可靠的。一个交互的“可信度”可以由其多模态内容的一致性来衡量 。我们借鉴了其通过跨模态哈希计算置信度<code>S_conf</code>的思想 ，并将其简化为一种</p>
+<p><strong>BPR损失加权</strong>机制，用于降低潜在噪声交互在训练中的影响。</p>
+</li>
+</ul>
+<p><strong>来自 <code>CoUDA</code> 和 <code>PCKD</code> - 原型对比与自适应学习</strong>：</p>
+<ul>
+<li><strong>核心思想1 (原型)</strong>：与单个样本进行对比，不如与代表了一组样本共性的<strong>类别原型 (Prototype)</strong> 进行对比，这样能学习到更具泛化性的特征。</li>
+<li><strong>核心思想2 (自适应)</strong>：模型应该专注于学习“困难样本”。我们采纳了其“预览 (Preview)”策略，通过评估样本的解耦难度，来<strong>自适应地调整其在损失函数中的权重</strong>。</li>
+</ul>
+<p><strong>来自 <code>CKD</code> 和 <code>MoMA</code> - 对比学习框架</strong>：</p>
+<ul>
+<li><strong>核心思想</strong>：这两篇论文为我们提供了先进的对比学习范式。<code>CKD</code> 强调了通过对比学习来传递样本间的<strong>关系知识</strong>。<code>MoMA</code> 则展示了通过<strong>上下文感知</strong>（如注意力机制）和<strong>动量更新</strong>来增强对比学习信号的有效性。这些思想指导了我们整个增强框架的设计。</li>
+</ul>
+<h3 id="最终实现思路细节-Rationale"><a href="#最终实现思路细节-Rationale" class="headerlink" title="最终实现思路细节 (Rationale)"></a><strong>最终实现思路细节 (Rationale)</strong></h3><ol>
+<li><p><strong>起点 - <code>TT2</code> 基线</strong>: 我们从一个已经很强大的<code>TT2</code>模型开始，它包含<strong>特征解耦 (G&#x2F;S)</strong> 和基于<code>DA-MRS</code>的<strong>分级对齐损失 (<code>loss_graded_align</code>)</strong>。</p>
+</li>
+<li><p><strong>核心难题</strong>: <code>loss_graded_align</code> 的增强需要定义“类别原型”，但我们没有现成的类别标签。</p>
+</li>
+<li><p><strong>您的关键反馈</strong>: 您指出，依赖<strong>K-Means聚类</strong>来生成伪类别是“不可靠的”。</p>
+</li>
+<li><p><strong>最终解决方案 - Graph-based Dynamic Prototypes</strong>:</p>
+<ul>
+<li><p><strong>用图社区替代聚类</strong>：我们决定利用模型中已存在的<strong>项目-项目图谱 (<code>mm_adj</code>)</strong>。这是一个更可靠的信息来源，因为它直接反映了物品间的多模态相似性。我们采用 <strong>Louvain 社区发现算法</strong> 对该图进行划分，自动发现的“社区”就作为我们的“伪类别”。这完美解决了您对聚类的担忧，并使整个模型逻辑更加自洽。</p>
+</li>
+<li><p><strong>保留并增强原型对比</strong>: 在获取了更可靠的“社区”标签后，我们继续沿用<strong>方案一</strong>的核心思想。在计算对比损失时，不仅包含实例级的对比（强&#x2F;弱正样本），还引入了<strong>社区原型</strong>作为额外的正样本和负样本，极大地丰富了对比学习的监督信号。</p>
+</li>
+<li><p><strong>保留自适应加权</strong>: 我们保留了 <code>PCKD</code> 的精髓——<strong>自适应加权</strong>。通过计算每个样本的图文特有特征 (<code>s_v</code> vs <code>s_t</code>) 的差异度来评估其“解耦难度”，并为困难样本赋予更高的训练权重。这使得模型能智能地“攻克难关”。</p>
+<p><strong>融入交互去噪</strong>: 最后，我们将 <code>GUIDER</code> 的<strong>交互去噪</strong>思想作为一个轻量级的增强模块加入。在计算BPR损失时，我们根据正样本的图文一致性对其进行加权，进一步提升了模型对噪声数据的鲁棒性 。</p>
+</li>
+</ul>
+</li>
+</ol>
+<p>我们将从两个层面进行增强：</p>
+<ol>
+<li><strong>损失函数层面</strong>：引入<strong>原型对比</strong>和<strong>自适应加权</strong>机制 (灵感源于 <code>CoUDA</code> 和 <code>PCKD</code>)。</li>
+<li><strong>负采样层面</strong>：引入<strong>动量负采样</strong>机制以提供更强、更稳定的对比信号 (灵感源于 <code>MoMA</code>)。</li>
+</ol>
+<hr>
+<h3 id="方案一：原型对比与自适应加权的损失增强-Priciple-enhanced-Graded-Alignment"><a href="#方案一：原型对比与自适应加权的损失增强-Priciple-enhanced-Graded-Alignment" class="headerlink" title="方案一：原型对比与自适应加权的损失增强 (Priciple-enhanced Graded Alignment)"></a><strong>方案一：原型对比与自适应加权的损失增强 (Priciple-enhanced Graded Alignment)</strong></h3><p>这个方案改动相对较小，主要在 <code>calculate_loss</code> 内部进行，但能显著提升对比学习的质量。</p>
+<h4 id="动机"><a href="#动机" class="headerlink" title="动机"></a><strong>动机</strong></h4><ol>
+<li><strong>超越实例级对比</strong>：您当前的对比学习是实例到实例的。<code>CoUDA</code> 和 <code>PCKD</code> 的思想告诉我们，引入<strong>类别原型 (Prototype)</strong> 作为对比的目标，能让模型学习到更具泛化性的、与类别概念对齐的特征。</li>
+<li><strong>关注困难样本</strong>：<code>PCKD</code> 的“预览”策略提醒我们，并非所有样本都同等重要。模型应该更关注那些<strong>解耦困难</strong>的样本（例如，图文特征冲突，难以判断其核心语义的物品）。</li>
+</ol>
+<h3 id="方案二：引入动量负采样队列-重磅增强，灵感源于-MoMA"><a href="#方案二：引入动量负采样队列-重磅增强，灵感源于-MoMA" class="headerlink" title="方案二：引入动量负采样队列 (重磅增强，灵感源于 MoMA)"></a><strong>方案二：引入动量负采样队列 (重磅增强，灵感源于 MoMA)</strong></h3><p>这个方案改动更大，但能从根本上解决对比学习中“负样本数量和质量不足”的问题。</p>
+<h4 id="动机-1"><a href="#动机-1" class="headerlink" title="动机"></a><strong>动机</strong></h4><p><code>loss_graded_align</code> 的对比效果受限于批次大小（batch size）。如果批次较小，负样本的数量和多样性都不足，模型很难学会真正鲁棒的表示。<code>MoMA</code> 借鉴了 <code>MoCo</code> 的思想，使用动量更新的编码器和队列来提供大量、一致的负样本。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/09/27/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/TT/">https://yuezi2048.github.io/2025/09/27/2.Areas🌐/science/小论文准备/论文复现总结/论文缝合方案实验记录/第一次实验：MENTER+用户注入+因果正则/TT/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER-%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5-%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/">第一次实验：MENTER+用户注入+因果正则</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/09/26/2.Areas%F0%9F%8C%90/00.%E7%A7%8B%E6%8B%9B%E5%87%86%E5%A4%87%E6%96%B9%E5%90%91/%E7%AE%97%E6%B3%95%E5%A4%87%E6%88%98/" title="算法备战"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">算法备战</div></div><div class="info-2"><div class="info-item-1">10月~次年2月算法题复习&amp;刷题规划（大厂适配版）一、基础信息梳理 时间周期：2025.10.1-2026.2.28，共151天（10月31天+11月30天+12月31天+1月31天+2月28天） 核心现状：150道旧题（2个月未复习，覆盖数组&#x2F;链表&#x2F;DP&#x2F;递归等，缺图论） 大厂目标：兼顾“基础题熟练度+高频题深度+面试场景适配”，每日总题量控制在 5-8道（新题2-3道+复习3-5道），避免贪多导致知识点不扎实  二、分月详细规划（按“唤醒→强化→冲刺”递进）10月：旧题唤醒期+图论基础补全（31天）核心目标：召回150道旧题的解题思路，攻克图论基础（大厂必考题），建立“模块-思路”对应记忆    维度 具体内容    每日任务 复习题3-4道 + 新题2道（共5-6道）   模块分配 1. 复习：按“高频模块优先级”推进，每天1个模块，循环覆盖   - 第1-7天：数组&#x2F;链表&#x2F;哈希表（旧题42道，每天6道）   - 第8-15天：树&#x2F;二叉树（旧题38道，每天5道）   -...</div></div></div></a><a class="pagination-related" href="/2025/09/27/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/408-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/34.%E8%BE%93%E5%85%A5%E7%BD%91%E9%A1%B5%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/" title="34.输入网页发生了什么"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">34.输入网页发生了什么</div></div><div class="info-2"><div class="info-item-1">封装过程  解析URL：浏览器根据请求信息解析HTTP请求报文 应用层DNS解析：首先明确对方的ip地址，检查本地缓存（操作系统缓存 甚至路由器缓存），如果没有则向对应的递归DNS服务器发送查询，服务器递归查询最终返回IP地址 传输层TCP&#x2F;UDP：浏览器调用Socket库委托协议栈工作，选用TCP&#x2F;UDP协议，如果是TCP则进行三次握手建立连接后，进行数据通信。对应的报文是在HTTP报文基础上封装了一层TCP数据包 网络层IP：TCP包基础上封装源IP...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/09/30/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/TT4/" title="TT4"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-30</div><div class="info-item-2">TT4</div></div><div class="info-2"><div class="info-item-1">baby █████████████ BEST ████████████████Mon 29 Sep 2025 20:58:47 INFO 	Parameters: [&#x27;seed&#x27;, &#x27;reg_weight&#x27;, &#x27;learning_rate&#x27;, &#x27;dropout&#x27;, &#x27;mask_weight_f&#x27;, &#x27;mask_weight_g&#x27;, &#x27;infoNCETemp&#x27;, &#x27;lambda_graded_align&#x27;, &#x27;alpha_g_s&#x27;]=(999, 0.0001, 0.0001, 0.5, 1.5, 0.001, 0.4, 0.5, 0.5),Valid: recall@5: 0.0407    recall@10: 0.0632    recall@20: 0.0998    recall@50: 0.1666    ndcg@5: 0.0270    ndcg@10: 0.0343   ...</div></div></div></a><a class="pagination-related" href="/2025/09/30/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/TT4%E6%B6%88%E8%9E%8D/" title="TT4消融"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-30</div><div class="info-item-2">TT4消融</div></div><div class="info-2"><div class="info-item-1">好的，既然您的模型 TT4 和预处理流程 process_hierarchical_community.py 已经最终确定，我们来为您设计一套全新的、与您最终工作完全匹配的消融实验方案。 这套方案将帮助您在论文中，逻辑清晰、论证有力地证明您每一个核心创新点的价值。  消融实验设计 (Ablation Study Design)我们的核心故事是：我们提出了一种新颖的层级化社区发现方法来生成高质量的伪类别标签，并将其应用于一个先进的原型对比解耦框架中，从而提升了推荐性能。 消融实验的目的就是系统性地验证这个故事中的每一个环节。 实验模型与变体定义您需要在实验中对比以下模型，它们构成了一个清晰的逻辑链条：    模型名称 核心策略描述 目的与要论证的观点    MENTOR 强大的多模态GCN基线模型（不含任何解耦模块）。 作为所有工作的性能起点。   TT4 w&#x2F;o GradedAlign MENTOR + 基础解耦 (只有loss_club和loss_InfoNCE_G)。 证明引入基础解耦框架本身是有效的。   TT4...</div></div></div></a><a class="pagination-related" href="/2025/07/23/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90/" title="代码实现分析"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-23</div><div class="info-item-2">代码实现分析</div></div><div class="info-2"><div class="info-item-1">代码编写INFO AAA(  (mlp): Linear(in_features=128, out_features=128, bias=True)  (image_embedding): Embedding(7050, 4096)  (image_trs): Linear(in_features=4096, out_features=64, bias=True)  (text_embedding): Embedding(7050, 384)  (text_trs): Linear(in_features=384, out_features=64, bias=True)  (MLP_user): Linear(in_features=128, out_features=64, bias=True)  (v_gcn): GCN(    (MLP): Sequential(      (0): Linear(in_features=4096, out_features=256, bias=True)      (1): LeakyReLU(negative_slope=0.01) ...</div></div></div></a><a class="pagination-related" href="/2025/07/21/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/%E5%86%99%E4%BD%9C%E7%B4%A0%E6%9D%90/" title="写作素材"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-21</div><div class="info-item-2">写作素材</div></div><div class="info-2"><div class="info-item-1">多模态推荐的创新框架：基于行为引导扩散与解耦偏好学习1. 引言：深度学习与生成模型时代下的多模态推荐进展1.1 多模态推荐的必要性多模态推荐系统（MMRecs）已成为在线媒体平台的关键基础设施，它们通过整合文本、图像、音频和用户交互等多种数据类型，为用户提供个性化建议 。与依赖单一数据模态的传统推荐方法不同，多模态推荐系统能够构建更丰富、更细致的用户和物品表示，从而显著提升推荐的准确性和相关性 。这种集成对于缓解传统推荐系统中普遍存在的数据稀疏性问题尤为重要 。 ...</div></div></div></a><a class="pagination-related" href="/2025/09/15/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/" title="实验记录"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-15</div><div class="info-item-2">实验记录</div></div><div class="info-2"><div class="info-item-1">base &#x3D; MENTOR——   recall@10: 0.0654    recall@20: 0.1028    recall@50: 0.1690    ndcg@5: 0.0272    ndcg@10: 0.0352    ndcg@20: 0.0448   █████████████ BEST ████████████████15 Sep 12:23    INFO    Parameters: [&#x27;seed&#x27;, &#x27;reg_weight&#x27;, &#x27;learning_rate&#x27;, &#x27;dropout&#x27;, &#x27;mask_weight_f&#x27;, &#x27;mask_weight_g&#x27;, &#x27;align_weight&#x27;, &#x27;temp&#x27;]=(999, 0.001, 0.0001, 0.5, 1.5, 0.001, 0.1, 0.2),Valid: recall@5: 0.0388    recall@10: 0.0647   ...</div></div></div></a><a class="pagination-related" href="/2025/09/15/2.Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER+%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5+%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%952/" title="实验记录2"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-15</div><div class="info-item-2">实验记录2</div></div><div class="info-2"><div class="info-item-1">base &#x3D; MENTOR——   recall@10: 0.0650    recall@20: 0.1030    recall@50: 0.1689    ndcg@5: 0.0271    ndcg@10: 0.0350    ndcg@20: 0.0448    ndcg@50: 0.0581 █████████████ BEST ████████████████  Wed 18 Jun 2025 14:54:00 INFO   Parameters: [&#x27;reg_weight&#x27;, &#x27;learning_rate&#x27;, &#x27;dropout&#x27;, &#x27;mask_weight_f&#x27;, &#x27;mask_weight_g&#x27;, &#x27;align_weight&#x27;, &#x27;temp&#x27;, &#x27;seed&#x27;]=(0.001, 0.0001, 0.5, 1.5, 0.001, 0.1, 0.2, 999),  Valid: recall@5:...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">809</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">74</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">101</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E7%BB%88%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF%E7%BB%86%E8%8A%82-Rationale"><span class="toc-text">最终实现思路细节 (Rationale)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E4%B8%80%EF%BC%9A%E5%8E%9F%E5%9E%8B%E5%AF%B9%E6%AF%94%E4%B8%8E%E8%87%AA%E9%80%82%E5%BA%94%E5%8A%A0%E6%9D%83%E7%9A%84%E6%8D%9F%E5%A4%B1%E5%A2%9E%E5%BC%BA-Priciple-enhanced-Graded-Alignment"><span class="toc-text">方案一：原型对比与自适应加权的损失增强 (Priciple-enhanced Graded Alignment)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8A%A8%E6%9C%BA"><span class="toc-text">动机</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E4%BA%8C%EF%BC%9A%E5%BC%95%E5%85%A5%E5%8A%A8%E9%87%8F%E8%B4%9F%E9%87%87%E6%A0%B7%E9%98%9F%E5%88%97-%E9%87%8D%E7%A3%85%E5%A2%9E%E5%BC%BA%EF%BC%8C%E7%81%B5%E6%84%9F%E6%BA%90%E4%BA%8E-MoMA"><span class="toc-text">方案二：引入动量负采样队列 (重磅增强，灵感源于 MoMA)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8A%A8%E6%9C%BA-1"><span class="toc-text">动机</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/09/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-04-09T16:00:25.020Z" title="发表于 2026-04-10 00:00:25">2026-04-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/09/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-04-09T16:00:24.481Z" title="发表于 2026-04-10 00:00:24">2026-04-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/07/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D%E8%A1%A5%E5%85%85/" title="项目介绍补充">项目介绍补充</a><time datetime="2026-04-07T14:01:15.000Z" title="发表于 2026-04-07 22:01:15">2026-04-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/07/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%BF%AB%E9%80%9F%E5%9B%9E%E9%A1%BE/%E5%B0%8F%E8%AE%B0/" title="小记">小记</a><time datetime="2026-04-07T13:49:03.000Z" title="发表于 2026-04-07 21:49:03">2026-04-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/07/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%BF%AB%E9%80%9F%E5%9B%9E%E9%A1%BE/111/" title="111">111</a><time datetime="2026-04-07T03:47:38.000Z" title="发表于 2026-04-07 11:47:38">2026-04-07</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

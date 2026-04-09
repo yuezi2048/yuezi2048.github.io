@@ -1,0 +1,315 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>1.SpringBoot启动流程 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="main方法为入口：SpringApplication.run() 引导应用启动  new SpringApplication()：创建SpringApplication对象，推断应用类型(根据类路径依赖判断servlet&#x2F;reative)——设置初始化器——设置启动监听器——确定主应用类 run方法： 准备环境ConfigurableEnvironment：，读取application">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1.SpringBoot启动流程">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/11/22/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/SpringBoot/1.SpringBoot%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="main方法为入口：SpringApplication.run() 引导应用启动  new SpringApplication()：创建SpringApplication对象，推断应用类型(根据类路径依赖判断servlet&#x2F;reative)——设置初始化器——设置启动监听器——确定主应用类 run方法： 准备环境ConfigurableEnvironment：，读取application">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-11-22T13:07:49.000Z">
+<meta property="article:modified_time" content="2025-11-22T13:07:49.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="SpringBoot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "1.SpringBoot启动流程",
+  "url": "https://yuezi2048.github.io/2025/11/22/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/SpringBoot/1.SpringBoot%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-11-22T13:07:49.000Z",
+  "dateModified": "2025-11-22T13:07:49.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/11/22/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/SpringBoot/1.SpringBoot%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '1.SpringBoot启动流程',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">809</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">74</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">101</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">1.SpringBoot启动流程</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">1.SpringBoot启动流程</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-11-22T13:07:49.000Z" title="发表于 2025-11-22 21:07:49">2025-11-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-11-22T13:07:49.000Z" title="更新于 2025-11-22 21:07:49">2025-11-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/">02.面经记录</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/">面试鸭</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/SpringBoot/">SpringBoot</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>10分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>main方法为入口：<code>SpringApplication.run()</code> 引导应用启动</p>
+<ul>
+<li><code>new SpringApplication()</code>：创建SpringApplication对象，推断应用类型(根据类路径依赖判断servlet&#x2F;reative)——设置初始化器——设置启动监听器——确定主应用类</li>
+<li>run方法：<ul>
+<li>准备环境<code>ConfigurableEnvironment</code>：，读取application.properties、系统变量 命令行参数等配置文件</li>
+<li>创建并刷新应用上下文<code>ApplicationContext</code>：加载配置类、自动配置类，刷新则进行 注册bean，依赖注入等初始化操作<ul>
+<li>对于web应用，刷新应用上下文后，自动启动嵌入式web服务器</li>
+</ul>
+</li>
+<li>发布started事件：启动完成后发送应用启动事件</li>
+<li>回调函数：调用实现了<code>CommandLineRunner</code>或者<code>ApplicationRunner</code>接口的bean，执行一些初始化逻辑</li>
+<li>发布rready事件 <code>ApplicationReadyEvent</code>：应用进入运行状态，处理业务请求或任务。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>追问1：main方法的<code>@SpringBootApplication</code> 作为启动类核心注解，其包含的三个核心注解各自的作用是什么？</p>
+<ul>
+<li><strong><code>@SpringBootConfiguration</code></strong>：表示配置类</li>
+<li><strong><code>@EnableAutoConfiguration</code></strong>：启用自动配置。</li>
+<li><strong><code>@ComponentScan</code></strong>：启用组件扫描</li>
+</ul>
+<p>追问2：<strong>启动监听器</strong><code>ApplicationListener</code>有哪些？</p>
+<ul>
+<li><strong><code>ApplicationStartingEvent</code></strong>：在应用启动时触发。</li>
+<li><strong><code>ApplicationEnvironmentPreparedEvent</code></strong>：在环境变量和配置文件准备完成时触发。</li>
+<li><strong><code>ApplicationPreparedEvent</code></strong>：在 Spring 容器（<code>ApplicationContext</code>）准备完成时触发。</li>
+</ul>
+<p>追问3： <strong><code>ApplicationContext</code></strong> 创建时完成了哪些东西？（加载。注册）</p>
+<p> 使用 <strong><code>@EnableAutoConfiguration</code></strong> 自动加载符合条件的配置类。自动配置机制基于条件注解（如 <code>@ConditionalOnClass</code>、<code>@ConditionalOnMissingBean</code> 等），在满足条件时自动注入相应的 Bean（<strong>自动装配</strong>）。</p>
+<ul>
+<li><strong>加载配置类</strong>：包括开发者定义的 <code>@Configuration</code> 类以及 Spring Boot 提供的自动配置类（<code>WebMvcAutoConfiguration</code> 等）。</li>
+<li><strong>注册 BeanPostProcessor</strong>：Spring 的 Bean 生命周期会经过 <code>BeanPostProcessor</code> 的处理，这包括依赖注入、AOP 代理等操作。</li>
+</ul>
+<p>追问4：刷新 <code>ApplicationContext</code>又是在干什么？（初始化、处理事件）</p>
+<ul>
+<li><strong>创建并初始化所有单例 Bean</strong>：Spring 容器会创建并初始化所有定义的单例 Bean。这里包括开发者定义的 Bean 以及自动配置注入的 Bean。</li>
+<li><strong>处理 BeanPostProcessor</strong>：在 Bean 初始化之前和之后，Spring 通过 <code>BeanPostProcessor</code> 对 Bean 进行加工，例如为某些 Bean 创建 AOP 代理对象。</li>
+<li><strong>事件发布与监听</strong>：在容器刷新过程中，Spring 会发布 <code>ContextRefreshedEvent</code>，通知监听器应用上下文刷新完成。</li>
+</ul>
+<p>追问5：web应用启动web服务器时，进行了哪些操作知道吗？</p>
+<p>对于 Web 应用，Spring Boot 会自动启动嵌入式 Web 服务器（默认是 Tomcat）。这一步是在刷新 <code>refresh()</code> 方法的最后阶段进行的，主要包括以下操作：</p>
+<ul>
+<li><strong>注册内置的 Servlet 和 Filter</strong>：Spring Boot 会自动注册 <code>DispatcherServlet</code>、<code>ErrorPageFilter</code> 等 Servlet 和 Filter。</li>
+<li><strong>启动嵌入式 Web 容器</strong>：Spring Boot 根据应用的类型自动选择 Web 容器，并绑定到指定的端口上监听 HTTP 请求。</li>
+</ul>
+<p>追问6：有用过 <code>CommandLineRunner</code> 和 <code>ApplicationRunner</code>？</p>
+<p>Spring Boot 在应用启动完成后，会调用实现了 <strong><code>CommandLineRunner</code></strong> 或 <strong><code>ApplicationRunner</code></strong> 接口的 Bean。这两个接口适合在应用启动后执行一些初始化逻辑。</p>
+<p>涉及其他内容：配置优先级、自动装配原理、自定义初始化操作等</p>
+</blockquote>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/LEgyglaS_image_mianshiya.png" alt="image.png" style="zoom: 50%;" />
+
+<h2 id="扩展知识"><a href="#扩展知识" class="headerlink" title="扩展知识"></a>扩展知识</h2><p>详细分析 Spring Boot 启动流程（2.7.6版本）</p>
+<h3 id="启动入口：main-方法"><a href="#启动入口：main-方法" class="headerlink" title="启动入口：main() 方法"></a>启动入口：<code>main()</code> 方法</h3><p>Spring Boot 应用的启动从包含 <strong><code>@SpringBootApplication</code></strong> 注解的 <code>main()</code> 方法开始。<code>@SpringBootApplication</code> 是一个组合注解，包含了以下三个核心注解：</p>
+<ul>
+<li><strong><code>@SpringBootConfiguration</code></strong>：相当于 <code>@Configuration</code>，表示该类是 Spring 配置类。</li>
+<li><strong><code>@EnableAutoConfiguration</code></strong>：启用自动配置功能。</li>
+<li><strong><code>@ComponentScan</code></strong>：启用组件扫描，默认扫描当前包及其子包下的 Spring 组件（如 <code>@Service</code>、<code>@Controller</code>、<code>@Repository</code> 等）。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyApplication</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        SpringApplication.run(MyApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最终这个方法会触发:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> ConfigurableApplicationContext <span class="title function_">run</span><span class="params">(Class&lt;?&gt;[] primarySources, String[] args)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">SpringApplication</span>(primarySources).run(args);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因此上述图中分了两块，分别是<code> new SpringApplication()</code> 和 <code>run</code>。</p>
+<h3 id="创建-SpringApplication-实例"><a href="#创建-SpringApplication-实例" class="headerlink" title="创建 SpringApplication 实例"></a>创建 <code>SpringApplication</code> 实例</h3><p><strong><code>SpringApplication</code></strong> 是 Spring Boot 启动的核心类，它负责引导整个 Spring 应用的启动流程。在 <code>run()</code> 方法中，会创建 <code>SpringApplication</code> 对象，并根据类路径中的依赖和配置进行初始化。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="title function_">SpringApplication</span><span class="params">(ResourceLoader resourceLoader, Class&lt;?&gt;... primarySources)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.resourceLoader = resourceLoader;</span><br><span class="line">    Assert.notNull(primarySources, <span class="string">&quot;PrimarySources must not be null&quot;</span>);</span><br><span class="line">    <span class="built_in">this</span>.primarySources = <span class="keyword">new</span> <span class="title class_">LinkedHashSet</span>&lt;&gt;(Arrays.asList(primarySources));</span><br><span class="line">    <span class="comment">//推断应用类型</span></span><br><span class="line">    <span class="built_in">this</span>.webApplicationType = WebApplicationType.deduceFromClasspath();</span><br><span class="line">    <span class="built_in">this</span>.bootstrapRegistryInitializers = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(</span><br><span class="line">                    getSpringFactoriesInstances(BootstrapRegistryInitializer.class));</span><br><span class="line">    <span class="comment">//设置初始化器</span></span><br><span class="line">    setInitializers((Collection) getSpringFactoriesInstances(ApplicationContextInitializer.class));</span><br><span class="line">    <span class="comment">// 设置启动监听器</span></span><br><span class="line">    setListeners((Collection) getSpringFactoriesInstances(ApplicationListener.class));</span><br><span class="line">    <span class="comment">// 确定主应用类</span></span><br><span class="line">    <span class="built_in">this</span>.mainApplicationClass = deduceMainApplicationClass();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>推断应用类型</strong>：Spring Boot 会根据类路径中的依赖自动判断应用是 Web 应用、Reactive 应用还是普通的非 Web 应用。常见的应用类型包括：</p>
+<ul>
+<li><strong>Servlet 应用</strong>：如果类路径中存在 <code>javax.servlet.Servlet</code>。</li>
+<li><strong>Reactive 应用</strong>：如果类路径中存在 <code>org.springframework.web.reactive.DispatcherHandler</code>。</li>
+<li><strong>None 类型</strong>：不包含 Web 服务器，仅适用于普通的非 Web 应用。</li>
+</ul>
+<h3 id="run-方法详解"><a href="#run-方法详解" class="headerlink" title="run 方法详解"></a><code>run</code> 方法详解</h3><p>创建完 <code>SpringApplication</code> 对应后，SpringBoot 启动后续所有逻辑都在这个 <code>run</code> 方法里面。这个方法也是 Spring Boot 应用的核心启动流程，它负责启动应用、初始化上下文、执行各种初始化逻辑，并通知相关的监听器和组件。</p>
+<p>我把源码关键信息都打上了注释：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> ConfigurableApplicationContext <span class="title function_">run</span><span class="params">(String... args)</span> &#123;</span><br><span class="line">    <span class="comment">// 记录启动的开始时间，用于统计启动耗时</span></span><br><span class="line">    <span class="type">long</span> <span class="variable">startTime</span> <span class="operator">=</span> System.nanoTime();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建 DefaultBootstrapContext，用于在启动过程中保存共享的对象</span></span><br><span class="line">    <span class="type">DefaultBootstrapContext</span> <span class="variable">bootstrapContext</span> <span class="operator">=</span> createBootstrapContext();</span><br><span class="line">    <span class="type">ConfigurableApplicationContext</span> <span class="variable">context</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 配置系统属性 &quot;java.awt.headless&quot;，适用于没有显示器的服务器环境</span></span><br><span class="line">    configureHeadlessProperty();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取 SpringApplicationRunListeners，这些监听器可以监听应用的启动过程</span></span><br><span class="line">    <span class="type">SpringApplicationRunListeners</span> <span class="variable">listeners</span> <span class="operator">=</span> getRunListeners(args);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 通知所有监听器，Spring Boot 应用程序即将启动</span></span><br><span class="line">    listeners.starting(bootstrapContext, <span class="built_in">this</span>.mainApplicationClass);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 解析传入的命令行参数</span></span><br><span class="line">        <span class="type">ApplicationArguments</span> <span class="variable">applicationArguments</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DefaultApplicationArguments</span>(args);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 准备环境，加载配置文件、环境变量、命令行参数等</span></span><br><span class="line">        <span class="type">ConfigurableEnvironment</span> <span class="variable">environment</span> <span class="operator">=</span> prepareEnvironment(listeners, bootstrapContext, applicationArguments);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 配置环境，决定是否忽略 Java 的 `BeanInfo` 类，以加快启动速度</span></span><br><span class="line">        configureIgnoreBeanInfo(environment);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 打印 Banner（欢迎信息），通常会在控制台或日志中展示</span></span><br><span class="line">        <span class="type">Banner</span> <span class="variable">printedBanner</span> <span class="operator">=</span> printBanner(environment);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 创建应用上下文（ApplicationContext），可以是不同类型的 Web 或非 Web 上下文</span></span><br><span class="line">        context = createApplicationContext();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 设置应用启动监控器，用于收集应用启动过程中的统计数据</span></span><br><span class="line">        context.setApplicationStartup(<span class="built_in">this</span>.applicationStartup);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 准备应用上下文，注入环境、事件监听器、命令行参数等</span></span><br><span class="line">        prepareContext(bootstrapContext, context, environment, listeners, applicationArguments, printedBanner);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 刷新上下文，启动 Spring 的核心容器，完成 Bean 的初始化等过程，其间会触发内嵌的 web 容器</span></span><br><span class="line">        refreshContext(context);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 上下文刷新后的回调操作，可以用于自定义初始化逻辑</span></span><br><span class="line">        afterRefresh(context, applicationArguments);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 计算应用启动耗时</span></span><br><span class="line">        <span class="type">Duration</span> <span class="variable">timeTakenToStartup</span> <span class="operator">=</span> Duration.ofNanos(System.nanoTime() - startTime);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 如果配置了日志，输出启动耗时等信息</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">this</span>.logStartupInfo) &#123;</span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">StartupInfoLogger</span>(<span class="built_in">this</span>.mainApplicationClass).logStarted(getApplicationLog(), timeTakenToStartup);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 通知监听器，应用上下文已启动完成</span></span><br><span class="line">        listeners.started(context, timeTakenToStartup);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 执行 CommandLineRunner 或 ApplicationRunner 接口中的代码</span></span><br><span class="line">        callRunners(context, applicationArguments);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">        <span class="comment">// 处理启动过程中发生的异常</span></span><br><span class="line">        handleRunFailure(context, ex, listeners);</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalStateException</span>(ex);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 计算到应用完全准备好所需的时间</span></span><br><span class="line">        <span class="type">Duration</span> <span class="variable">timeTakenToReady</span> <span class="operator">=</span> Duration.ofNanos(System.nanoTime() - startTime);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 通知监听器，应用已经完全准备好</span></span><br><span class="line">        listeners.ready(context, timeTakenToReady);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">        <span class="comment">// 处理应用准备过程中的异常</span></span><br><span class="line">        handleRunFailure(context, ex, <span class="literal">null</span>);</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalStateException</span>(ex);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 返回创建好的应用上下文</span></span><br><span class="line">    <span class="keyword">return</span> context;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="run源码总结："><a href="#run源码总结：" class="headerlink" title="run源码总结："></a>run源码总结：</h4><ol>
+<li><strong>启动时间记录</strong>: 通过 <code>System.nanoTime()</code> 记录应用启动的时间，用于统计整个启动过程的耗时。</li>
+<li><strong><code>DefaultBootstrapContext</code></strong>: 创建一个用于启动过程中共享对象的上下文，提供基础的启动支持。</li>
+<li><strong><code>configureHeadlessProperty()</code></strong>: 配置 <code>java.awt.headless</code> 属性，以适应在无图形界面的环境（如服务器）中运行。</li>
+<li><strong><code>getRunListeners()</code></strong>: 获取启动监听器，监听应用的各个生命周期事件。</li>
+<li><strong><code>listeners.starting()</code></strong>: 通知所有监听器，应用程序开始启动。</li>
+<li><strong>命令行参数解析</strong>: 通过 <code>DefaultApplicationArguments</code> 对命令行参数进行解析。</li>
+<li><strong>环境准备</strong>: 调用 <code>prepareEnvironment()</code> 来加载配置文件、环境变量、命令行参数等，生成 <code>ConfigurableEnvironment</code>。</li>
+<li><strong><code>configureIgnoreBeanInfo()</code></strong>: 配置环境参数，决定是否忽略 Java 的 <code>BeanInfo</code> 类，优化性能。</li>
+<li><strong>打印 Banner</strong>: 调用 <code>printBanner()</code> 打印应用启动时的 Banner。</li>
+<li><strong>创建 <code>ApplicationContext</code></strong>: 根据应用类型创建相应的 <code>ApplicationContext</code>，用于管理应用 Bean。</li>
+<li><strong><code>prepareContext()</code></strong>: 将环境、监听器、启动参数等注入到上下文中，并进行应用上下文的准备工作。</li>
+<li><strong><code>refreshContext()</code></strong>: 刷新 Spring 容器，完成 Bean 的创建与初始化，其间会触发内嵌的 web 容器。</li>
+<li><strong><code>afterRefresh()</code></strong>: 刷新上下文后的回调，执行自定义逻辑。</li>
+<li><strong>日志记录启动耗时</strong>: 通过 <code>StartupInfoLogger</code> 记录应用的启动耗时。</li>
+<li><strong>通知应用启动完成</strong>: <code>listeners.started()</code> 通知监听器，应用启动已完成。</li>
+<li><strong>执行 CommandLineRunner 和 ApplicationRunner</strong>: 调用实现 <code>CommandLineRunner</code> 或 <code>ApplicationRunner</code> 接口的 Bean，执行启动后的初始化逻辑。</li>
+<li>发送<strong>ApplicationReadyEvent</strong>，应用启动完成</li>
+<li><strong>异常处理</strong>: 在启动和运行过程中捕获异常并进行处理。</li>
+</ol>
+<hr>
+<blockquote>
+<p>接下来再对一些细节进行补充</p>
+</blockquote>
+<h3 id="启动监听器"><a href="#启动监听器" class="headerlink" title="启动监听器"></a>启动监听器</h3><p><strong>启动监听器</strong>（<code>ApplicationListener</code>）在 Spring Boot 启动过程中起到监听特定事件的作用。Spring Boot 中的事件机制会触发不同的生命周期事件，比如：</p>
+<ul>
+<li><strong><code>ApplicationStartingEvent</code></strong>：在应用启动时触发。</li>
+<li><strong><code>ApplicationEnvironmentPreparedEvent</code></strong>：在环境变量和配置文件准备完成时触发。</li>
+<li><strong><code>ApplicationPreparedEvent</code></strong>：在 Spring 容器（<code>ApplicationContext</code>）准备完成时触发。</li>
+</ul>
+<p>这些事件都可以通过 <code>ApplicationListener</code> 进行监听，<strong>使得可以在应用启动过程中进行自定义处理</strong>。</p>
+<h3 id="准备环境-ConfigurableEnvironment"><a href="#准备环境-ConfigurableEnvironment" class="headerlink" title="准备环境 ConfigurableEnvironment"></a>准备环境 <code>ConfigurableEnvironment</code></h3><p>在启动过程中，Spring Boot 通过 <strong><code>ConfigurableEnvironment</code></strong> 准备应用的环境变量。它会读取配置文件（如 <code>application.properties</code> 或 <code>application.yml</code>），并加载系统环境变量、命令行参数等。Spring Boot 使用 <code>PropertySource</code> 来管理这些配置属性。</p>
+<p><strong>激活配置文件</strong>：Spring Boot 支持通过 <code>spring.profiles.active</code> 激活不同的配置文件，以实现开发、测试、生产环境的灵活切换。</p>
+<h3 id="创建-ApplicationContext"><a href="#创建-ApplicationContext" class="headerlink" title="创建 ApplicationContext"></a>创建 <code>ApplicationContext</code></h3><p>创建 <strong><code>ApplicationContext</code></strong> ，会注册所有配置类和自动配置类</p>
+<p>Spring Boot 使用 <strong><code>@EnableAutoConfiguration</code></strong> 自动加载符合条件的配置类。自动配置机制基于条件注解（如 <code>@ConditionalOnClass</code>、<code>@ConditionalOnMissingBean</code> 等），在满足条件时自动注入相应的 Bean（<strong>自动装配</strong>）。</p>
+<ul>
+<li><strong>加载配置类</strong>：包括开发者定义的 <code>@Configuration</code> 类以及 Spring Boot 提供的自动配置类（如 <code>DataSourceAutoConfiguration</code>、<code>WebMvcAutoConfiguration</code> 等）。</li>
+<li><strong>注册 BeanPostProcessor</strong>：Spring 的 Bean 生命周期会经过 <code>BeanPostProcessor</code> 的处理，这包括依赖注入、AOP 代理等操作。</li>
+</ul>
+<h3 id="刷新-ApplicationContext"><a href="#刷新-ApplicationContext" class="headerlink" title="刷新 ApplicationContext"></a>刷新 <code>ApplicationContext</code></h3><p>它负责完成以下工作：</p>
+<ul>
+<li><strong>创建并初始化所有单例 Bean</strong>：Spring 容器会创建并初始化所有定义的单例 Bean。这里包括开发者定义的 Bean 以及自动配置注入的 Bean。</li>
+<li><strong>处理 BeanPostProcessor</strong>：在 Bean 初始化之前和之后，Spring 通过 <code>BeanPostProcessor</code> 对 Bean 进行加工，例如为某些 Bean 创建 AOP 代理对象。</li>
+<li><strong>事件发布与监听</strong>：在容器刷新过程中，Spring 会发布 <code>ContextRefreshedEvent</code>，通知监听器应用上下文刷新完成。</li>
+</ul>
+<h3 id="启动嵌入式-Web-服务器（如-Tomcat）"><a href="#启动嵌入式-Web-服务器（如-Tomcat）" class="headerlink" title="启动嵌入式 Web 服务器（如 Tomcat）"></a>启动嵌入式 Web 服务器（如 Tomcat）</h3><p>对于 Web 应用，Spring Boot 会自动启动嵌入式 Web 服务器（默认是 Tomcat）。这一步是在刷新 <code>refresh()</code> 方法的最后阶段进行的，主要包括以下操作：</p>
+<ul>
+<li><strong>注册内置的 Servlet 和 Filter</strong>：Spring Boot 会自动注册 <code>DispatcherServlet</code>、<code>ErrorPageFilter</code> 等 Servlet 和 Filter。</li>
+<li><strong>启动嵌入式 Web 容器</strong>：Spring Boot 根据应用的类型自动选择 Web 容器，并绑定到指定的端口上监听 HTTP 请求。</li>
+</ul>
+<h3 id="执行-CommandLineRunner-和-ApplicationRunner"><a href="#执行-CommandLineRunner-和-ApplicationRunner" class="headerlink" title="执行 CommandLineRunner 和 ApplicationRunner"></a>执行 <code>CommandLineRunner</code> 和 <code>ApplicationRunner</code></h3><p>Spring Boot 在应用启动完成后，会调用实现了 <strong><code>CommandLineRunner</code></strong> 或 <strong><code>ApplicationRunner</code></strong> 接口的 Bean。这两个接口适合在应用启动后执行一些初始化逻辑。</p>
+<p><strong>示例：CommandLineRunner</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyStartupRunner</span> <span class="keyword">implements</span> <span class="title class_">CommandLineRunner</span> &#123;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">(String... args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">      System.out.println(<span class="string">&quot;Mianshiya Application started, 刷题刷刷刷！&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/11/22/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/SpringBoot/1.SpringBoot%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">https://yuezi2048.github.io/2025/11/22/2.Areas🌐/02.面经记录/面试鸭/SpringBoot/1.SpringBoot启动流程/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/SpringBoot/">SpringBoot</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/11/22/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/SpringBoot/13.%E5%A6%82%E4%BD%95%E7%90%86%E8%A7%A3SpringBoot%E7%9A%84Starter/" title="12.如何理解SpringBoot的Starter"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">12.如何理解SpringBoot的Starter</div></div><div class="info-2"><div class="info-item-1">在 Spring Boot 中，Starter定义的是一组依赖集合，简化配置的构建，通过Starter POMs提供多个功能模块的集成，开发者只需引入starter就能自动获得模块所有的依赖和配置，无需手动引入多个依赖库配置文件  类比：买电脑直接买整机，别人把所有零件打包好了，不需要一个个配件装。 注：SpringBoot3.x spring.factories废弃，使用的是imports后缀的文件，只需要放入实现类的全类名即可：com.example.starter.MyAutoConfiguration 追问：让你写一个starter，实现思路步骤？  一般先创建maven项目，添加SpringBoot和其他相关依赖  首先可以配置属性类，通过@ConfigurationProperties等注解，进行配置文件的前缀修改配置  编写业务逻辑  创建自动配置类，分析业务，通过@Configuration 和 @ConditionalOnxxx 注解来条件化的配置 Bean  src&#x2F;main&#x2F;resources&#x2F;META-INF 目录下创建...</div></div></div></a><a class="pagination-related" href="/2025/11/25/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/SpringBoot/14.%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E8%B7%A8%E5%9F%9F%E8%AF%B7%E6%B1%82CORS/" title="14.如何处理跨域请求CORS"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">14.如何处理跨域请求CORS</div></div><div class="info-2"><div class="info-item-1">Spring Boot 处理跨域请求主要有以下几种方式：  局部配置 CORS，在 Controller 上使用 @CrossOrigin 注解。这种方式简单直接，适合对类进行跨域设置。  	  全局配置 CORS，可以通过实现 WebMvcConfigurer 接口并重写 addCorsMappings 方法，可以对整个应用程序进行统一的跨域配置。  	  还可以**添加 CorsFilter **来处理跨域请求。（或者可以自定义 Filter，但是没必要，因为本身已经提供了 CorsFilter）  	  addCorsMappings与CorsFilter 处理的区别  注：如果配置了addCorsMappings，项目里还用了Interceptor（部分接口需要iwt 权限验证），会出现问题 没有token...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/11/22/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/SpringBoot/10.SpringBoot%E6%89%93%E5%8C%85%E7%9A%84jar%E5%92%8C%E6%99%AE%E9%80%9Ajar%E5%8C%BA%E5%88%AB/" title="9.SpringBoot打包的jar和普通jar区别"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-22</div><div class="info-item-2">9.SpringBoot打包的jar和普通jar区别</div></div><div class="info-2"><div class="info-item-1">Spring Boot 打成的 JAR 包：应用程序源代码class + 依赖库lib + 程序需要的配置&#x2F;脚本 + 服务依赖（内嵌服务器Tomcat、类加载器等） 普通JAR包：只有源代码 + 依赖，需要外部服务器 &#x2F; 容器运行 扩展知识Spring Boot jar 结构myapp.jar|-- META-INF/|   |-- MANIFEST.MF  # JAR 的清单文件，指向主类|-- BOOT-INF/|   |-- classes/     # 应用的 .class 文件和资源文件|   |-- lib/         # 应用的依赖库|-- org/springframework/boot/loader/  # Spring Boot 的自定义类加载器|   |-- JarLauncher.class|   |-- WarLauncher.class  BOOT-INF 目录，用于存放应用的类和资源。 lib 目录，用于存放所有依赖。 META-INF&#x2F;MANIFEST.MF 文件，指定了主类和启动类。 普通 jar...</div></div></div></a><a class="pagination-related" href="/2025/11/22/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/SpringBoot/11.SpringBoot%E8%83%BD%E5%90%A6%E7%94%A8XML%E9%85%8D%E7%BD%AE/" title="10.SpringBoot能否用XML配置"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-22</div><div class="info-item-2">10.SpringBoot能否用XML配置</div></div><div class="info-2"><div class="info-item-1">虽然 Spring Boot 强调基于 Java 注解和属性文件的配置，但仍然支持传统的 XML 配置。 实现方式： @ImportResource 注解导入 XML 配置文件，让 Spring Boot 应用程序能够识别和使用这些 Bean。 场景：一般是公司在将 Spring 项目迁移到 Spring Boot 时，因为时间或工作量问题，才会在过渡期间混合使用两者。SpringBoot 项目不太会使用 XML 配置。 </div></div></div></a><a class="pagination-related" href="/2025/11/22/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/SpringBoot/12.SpringBoot%E9%BB%98%E8%AE%A4%E5%A4%84%E7%90%86%E6%9C%80%E5%A4%A7%E8%BF%9E%E6%8E%A5%E6%95%B0%E5%A4%9A%E5%B0%91/" title="11.SpringBoot默认处理最大连接数多少"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-22</div><div class="info-item-2">11.SpringBoot默认处理最大连接数多少</div></div><div class="info-2"><div class="info-item-1"> tomcat能处理的最大连接数 &#x3D; 最大连接数 8192 +  等待数 100 tomcat能处理的最大请求线程数 &#x3D; 200，核心线程数10，队列长度无限（因为是IO密集型，线程池策略区别于默认JDK线程池的机制）  拿 Spring Boot 默认的容器 Tomcat 为例，从引入的 spring-boot-autoconfigure 依赖可以看出，Tomcat 默认的最大连接数是 8192 。  但这里要注意！Tomcat 还有一个默认等待数，加上这个才是 SpringBoot 默认的最大连接数。  所以 SpringBoot 默认同时可以处理的最大连接数 &#x3D; Tomcat 默认的最大连接数 + Tomcat 默认等待数 &#x3D; 8192 + 100 &#x3D; 8292。 这个 Tomcat 配置可以用过配置文件修改，以下是一个 yml 配置的例子： server:  tomcat:    max-connections: 6000 # 最大连接数    accept-count: 100 #...</div></div></div></a><a class="pagination-related" href="/2025/11/22/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/SpringBoot/13.%E5%A6%82%E4%BD%95%E7%90%86%E8%A7%A3SpringBoot%E7%9A%84Starter/" title="12.如何理解SpringBoot的Starter"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-22</div><div class="info-item-2">12.如何理解SpringBoot的Starter</div></div><div class="info-2"><div class="info-item-1">在 Spring Boot 中，Starter定义的是一组依赖集合，简化配置的构建，通过Starter POMs提供多个功能模块的集成，开发者只需引入starter就能自动获得模块所有的依赖和配置，无需手动引入多个依赖库配置文件  类比：买电脑直接买整机，别人把所有零件打包好了，不需要一个个配件装。 注：SpringBoot3.x spring.factories废弃，使用的是imports后缀的文件，只需要放入实现类的全类名即可：com.example.starter.MyAutoConfiguration 追问：让你写一个starter，实现思路步骤？  一般先创建maven项目，添加SpringBoot和其他相关依赖  首先可以配置属性类，通过@ConfigurationProperties等注解，进行配置文件的前缀修改配置  编写业务逻辑  创建自动配置类，分析业务，通过@Configuration 和 @ConditionalOnxxx 注解来条件化的配置 Bean  src&#x2F;main&#x2F;resources&#x2F;META-INF 目录下创建...</div></div></div></a><a class="pagination-related" href="/2025/11/25/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/SpringBoot/14.%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E8%B7%A8%E5%9F%9F%E8%AF%B7%E6%B1%82CORS/" title="14.如何处理跨域请求CORS"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-25</div><div class="info-item-2">14.如何处理跨域请求CORS</div></div><div class="info-2"><div class="info-item-1">Spring Boot 处理跨域请求主要有以下几种方式：  局部配置 CORS，在 Controller 上使用 @CrossOrigin 注解。这种方式简单直接，适合对类进行跨域设置。  	  全局配置 CORS，可以通过实现 WebMvcConfigurer 接口并重写 addCorsMappings 方法，可以对整个应用程序进行统一的跨域配置。  	  还可以**添加 CorsFilter **来处理跨域请求。（或者可以自定义 Filter，但是没必要，因为本身已经提供了 CorsFilter）  	  addCorsMappings与CorsFilter 处理的区别  注：如果配置了addCorsMappings，项目里还用了Interceptor（部分接口需要iwt 权限验证），会出现问题 没有token...</div></div></div></a><a class="pagination-related" href="/2025/11/25/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/SpringBoot/15.SpringBoot%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E6%8B%A6%E6%88%AA%E5%99%A8/" title="15.SpringBoot如何使用拦截器"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-25</div><div class="info-item-2">15.SpringBoot如何使用拦截器</div></div><div class="info-2"><div class="info-item-1">拦截器一般是对于Controller层面的前后拦截，我一般会用来进行权限校验、日志记录、异常处理等，具体的实现方式： 1）实现HandlerInterceptor接口，并实现接口中的方法：请求前，请求后，整个请求结束后（一般是资源清理） 2）实现WebMvcConfigurer的addInterceptors方法来添加自定义的拦截器。  拦截器与过滤器的区别总结：  拦截时机：拦截器是在MVC处理请求前后，过滤器是Servlet层面，拦截所有HTTP请求 应用：拦截器一般是Controller相关逻辑，如权限、日志等，过滤器更适合全局的HTTP请求操作，如字符编码，CORS处理等 优先级：过滤器优先级高，先于拦截器处理请求   具体代码如下：1）创建拦截器类： 需要实现 HandlerInterceptor 接口或继承 HandlerInterceptorAdapter（Spring 5.3...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">809</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">74</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">101</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A9%E5%B1%95%E7%9F%A5%E8%AF%86"><span class="toc-text">扩展知识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E5%85%A5%E5%8F%A3%EF%BC%9Amain-%E6%96%B9%E6%B3%95"><span class="toc-text">启动入口：main() 方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA-SpringApplication-%E5%AE%9E%E4%BE%8B"><span class="toc-text">创建 SpringApplication 实例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#run-%E6%96%B9%E6%B3%95%E8%AF%A6%E8%A7%A3"><span class="toc-text">run 方法详解</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#run%E6%BA%90%E7%A0%81%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="toc-text">run源码总结：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E7%9B%91%E5%90%AC%E5%99%A8"><span class="toc-text">启动监听器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E7%8E%AF%E5%A2%83-ConfigurableEnvironment"><span class="toc-text">准备环境 ConfigurableEnvironment</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA-ApplicationContext"><span class="toc-text">创建 ApplicationContext</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%B7%E6%96%B0-ApplicationContext"><span class="toc-text">刷新 ApplicationContext</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E5%B5%8C%E5%85%A5%E5%BC%8F-Web-%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%88%E5%A6%82-Tomcat%EF%BC%89"><span class="toc-text">启动嵌入式 Web 服务器（如 Tomcat）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C-CommandLineRunner-%E5%92%8C-ApplicationRunner"><span class="toc-text">执行 CommandLineRunner 和 ApplicationRunner</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/09/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-04-09T16:00:25.020Z" title="发表于 2026-04-10 00:00:25">2026-04-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/09/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-04-09T16:00:24.481Z" title="发表于 2026-04-10 00:00:24">2026-04-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/07/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D%E8%A1%A5%E5%85%85/" title="项目介绍补充">项目介绍补充</a><time datetime="2026-04-07T14:01:15.000Z" title="发表于 2026-04-07 22:01:15">2026-04-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/07/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%BF%AB%E9%80%9F%E5%9B%9E%E9%A1%BE/%E5%B0%8F%E8%AE%B0/" title="小记">小记</a><time datetime="2026-04-07T13:49:03.000Z" title="发表于 2026-04-07 21:49:03">2026-04-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/07/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%BF%AB%E9%80%9F%E5%9B%9E%E9%A1%BE/111/" title="111">111</a><time datetime="2026-04-07T03:47:38.000Z" title="发表于 2026-04-07 11:47:38">2026-04-07</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>
