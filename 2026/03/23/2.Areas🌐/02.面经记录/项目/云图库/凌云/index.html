@@ -1,0 +1,737 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>temp | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="如果面试官追问 “本地计数怎么聚合？”，你可以这样回答：  “我用了 Redis 的 Hash 结构来存储聚合后的计数，Key 是 hot:pictures:date:20260416，Field 是 pictureId，Value 是访问次数。 每个应用实例本地用 ConcurrentHashMap&lt;Long, AtomicLong&gt; 存 pictureId 对应的本地计数，定时任">
+<meta property="og:type" content="article">
+<meta property="og:title" content="temp">
+<meta property="og:url" content="https://yuezi2048.github.io/2026/03/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%A1%B9%E7%9B%AE/%E4%BA%91%E5%9B%BE%E5%BA%93/%E5%87%8C%E4%BA%91/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="如果面试官追问 “本地计数怎么聚合？”，你可以这样回答：  “我用了 Redis 的 Hash 结构来存储聚合后的计数，Key 是 hot:pictures:date:20260416，Field 是 pictureId，Value 是访问次数。 每个应用实例本地用 ConcurrentHashMap&lt;Long, AtomicLong&gt; 存 pictureId 对应的本地计数，定时任">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2026-03-23T03:46:07.000Z">
+<meta property="article:modified_time" content="2026-03-23T03:46:07.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="云图库">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "temp",
+  "url": "https://yuezi2048.github.io/2026/03/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%A1%B9%E7%9B%AE/%E4%BA%91%E5%9B%BE%E5%BA%93/%E5%87%8C%E4%BA%91/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2026-03-23T03:46:07.000Z",
+  "dateModified": "2026-03-23T03:46:07.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2026/03/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%A1%B9%E7%9B%AE/%E4%BA%91%E5%9B%BE%E5%BA%93/%E5%87%8C%E4%BA%91/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'temp',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">817</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">78</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">105</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">temp</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">temp</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-03-23T03:46:07.000Z" title="发表于 2026-03-23 11:46:07">2026-03-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-03-23T03:46:07.000Z" title="更新于 2026-03-23 11:46:07">2026-03-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/">02.面经记录</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%A1%B9%E7%9B%AE/">项目</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%A1%B9%E7%9B%AE/%E4%BA%91%E5%9B%BE%E5%BA%93/">云图库</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">15.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>46分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20260323114605238.png" alt="image-20260323114605238"></p>
+<p>如果面试官追问 “本地计数怎么聚合？”，你可以这样回答：</p>
+<blockquote>
+<p>“我用了 Redis 的 <code>Hash</code> 结构来存储聚合后的计数，Key 是 <code>hot:pictures:date:20260416</code>，Field 是 <code>pictureId</code>，Value 是访问次数。</p>
+<p>每个应用实例本地用 <code>ConcurrentHashMap&lt;Long, AtomicLong&gt;</code> 存 pictureId 对应的本地计数，定时任务每 5 分钟遍历这个 Map，用 Redis <code>HINCRBY</code> 把本地计数累加到全局 Hash 中，然后清空本地 Map。</p>
+<p>最后用 <code>HREVRANGE</code> 从 Hash 中取出分数最高的 Top N 图片 ID，再去二级缓存中查图片详情。”</p>
+</blockquote>
+<h3 id="业务流程"><a href="#业务流程" class="headerlink" title="业务流程"></a>业务流程</h3><p>请介绍一下云图库项目的完整业务流程？ 项目分为公共图库、私有图库、团队空间三大模块，整体流程如下：</p>
+<p>1）公共图库：任何用户都能浏览公共图库；未登录用户默认仅可查看已审核通过的图片。管理员可执行图片上传与审核，拒绝违规图片。还可以查看公共图库的图片分布情况（如分类、标签、上传趋势等）。</p>
+<p>2）私有图库：注册用户登录后，可以将图片上传到自己的私有空间，包含多维检索、批量管理、基础编辑、AI 扩图等功能。用户还可以进行个人图库分析（图片分类、标签、大小等），从而优化存储结构或查找常用图片。</p>
+<p>3）团队空间 企业用户或拥有付费权限的用户创建团队空间，系统会自动将创建者设为管理员；管理员可直接输入成员 ID，添加协作者并为其分配编辑者 &#x2F; 浏览者角色。有编辑权限的成员可以通过 WebSocket 对图片进行协同编辑，如旋转、放大等操作会同步给其他在线成员；</p>
+<blockquote>
+<p>追问：为什么要分为 3 个阶段来实现云图库项目？ </p>
+<p>主要是为了 <strong>循序渐进、分模块迭代</strong>，让项目的功能和设计在每个阶段都能相对完整地上线并可扩展。</p>
+<p>1）最基础的公共图库场景相对简单，只需实现图片上传、审核和公开展示，适合初期快速构建 MVP（最小可行产品）。同时也能尽早验证核心功能（如图片管理、检索、审核流程），并为后续私有空间和团队空间打下基础。</p>
+<p>2）当公共图库稳定后，再扩展出私有空间，满足个人对图片进行精细化管理、分析和编辑的需求。在此阶段引入更丰富的功能如多维检索、批量操作和 AI 扩图等，让个人用户体验并逐步沉淀项目的 “编辑能力”。</p>
+<p>3）最后再拓展出团队空间，实现多人协作、成员管理、实时协同编辑等复杂需求。此时，前两阶段的权限设计、图片编辑和统计分析功能都可以 “复用” 到团队空间，只需整合并补充成员角色、协作流程等部分逻辑即可。</p>
+<p>分阶段之后，既能 <strong>快速上线核心功能</strong>，又能 <strong>在每个阶段稳步迭代</strong>、持续完善项目；同时也利于团队和用户在功能逐步复杂化的过程中不断实践、反馈并优化设计。</p>
+</blockquote>
+<h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p>数据库设计：</p>
+<p>根据业务和访问场景，主要考虑了几个关键的表：用户表（user）、图片表（picture）、空间表（space）、空间成员表（space_user） 等。</p>
+<p>设计库表时会综合考虑 <strong>查询性能、存储空间、可读性、开发成本</strong>，下面简单说明：</p>
+<p>1）用户表（user）</p>
+<ul>
+<li>userAccount 建立唯一索引：快速定位用户并避免重复注册</li>
+<li>userPassword 采用 MD5 + 盐存储：保障密码安全</li>
+<li>userRole 角色字段：支持 user &#x2F; admin 两种枚举值</li>
+<li>userName 建立普通索引：便于模糊检索昵称</li>
+<li>isDelete：支持逻辑删除</li>
+</ul>
+<p>2）图片表（picture）</p>
+<ul>
+<li>url &#x2F; thumbnailUrl：分别保存原图和缩略图地址，加载大图前先显示缩略图提升体验</li>
+<li>name &#x2F; introduction &#x2F; category：添加索引，提高检索性能</li>
+<li>tags：JSON 字符串格式存储，便于修改维护</li>
+<li>reviewStatus：审核状态，用枚举值减少存储空间并提高查询性能</li>
+<li>picSize &#x2F; picWidth &#x2F; picHeight &#x2F; picFormat：存储图片详细信息，有助于后期统计分析</li>
+<li>userId &#x2F; spaceId：支持按用户或空间查询</li>
+<li>updateTime &#x2F; editTime：分开编辑时间和更新时间，有利于区分用户动作与系统自动更新</li>
+</ul>
+<p>3）空间表（space）</p>
+<ul>
+<li>spaceName &#x2F; spaceLevel：建立索引提升常用查询性能</li>
+<li>maxSize &#x2F; maxCount：空间允许存储的最大容量与图片数，结合 totalSize &#x2F; totalCount 方便监控剩余空间</li>
+<li>spaceType：区分个人空间 &#x2F; 企业空间</li>
+<li>userId：标记该空间的创建人</li>
+</ul>
+<p>4）空间成员表（space_user）</p>
+<ul>
+<li>spaceId + userId：采用唯一索引 <code>uk_spaceId_userId</code>，保证同一用户在同一空间下只有一条成员记录</li>
+<li>spaceRole：空间成员角色枚举 viewer &#x2F; editor &#x2F; admin</li>
+<li>idx_spaceId &#x2F; idx_userId：添加索引，提升按空间或按成员查询的性能</li>
+</ul>
+<p>云图库后端模块拆分：</p>
+<ul>
+<li><p>用户模块：注册、登录，基于Redis实现分布式的Session登录</p>
+</li>
+<li><p>图片管理模块：图片的crud、上传、多维搜索、批量编辑、批量抓图等操作</p>
+<ul>
+<li>引入COS对象存储完成图片管理</li>
+<li>通过数据万象服务完成图片解析、压缩、缩略图生成</li>
+</ul>
+</li>
+<li><p>空间模块：引入私有空间和团队空间的概念，基于Sa-Token实现RBAC权限模型，灵活控制成员的权限</p>
+<ul>
+<li>在空间中：空间额度限制、支持图片共享、多人协同编辑</li>
+</ul>
+</li>
+<li><p>AI模块：通过封装AI接口，对接AI绘制大模型实现AI扩图的功能，支持异步任务轮询</p>
+</li>
+<li><p>分析模块：对空间使用情况、图片分类、空间排行进行统计，基于MP + 分组查询实现聚合分析</p>
+</li>
+<li><p>分表模块：对旗舰团队空间进行单独的分表管理，提升查询效率，基于ShardingSphere 动态分表实现</p>
+</li>
+<li><p>缓存：Redis + Caffeine 构建多级缓存体系，显著降低主页图片数据的查询耗时，同时通过随机过期时间避免缓存雪崩</p>
+</li>
+</ul>
+<p>各模块之间的关系如下：</p>
+<ul>
+<li>空间模块和用户：<ul>
+<li>基于RBAC权限模型，根据权限判断是否可以访问对应空间和图片数据</li>
+<li>团队空间通过space_user的关联表来管理成员</li>
+</ul>
+</li>
+<li>图片管理和存储服务：<ul>
+<li>图片的上传和管理，是通过外部调用了存储服务</li>
+</ul>
+</li>
+<li>协作模块和前端：<ul>
+<li>基于WebSocket来通知前端实时操作，来实现多人在线编辑的效果</li>
+</ul>
+</li>
+<li>统计分析：结合图片、空间莫格模块的数据接口生成统计报表</li>
+<li>缓存模块：贯穿于各个模块的查询结果中，提升访问效率</li>
+</ul>
+<h3 id="怎么初始化项目"><a href="#怎么初始化项目" class="headerlink" title="怎么初始化项目"></a>怎么初始化项目</h3><ul>
+<li>Spring Initializr创建基础的骨架，然后pom.xml整合常用依赖，如Spring Web、Mybatis Plus、MySQL、Lombok、Knife4j 等</li>
+<li>然后配置数据库连接，然后是全局设置，日志输出、逻辑删除、全局跨域配置等，在此基础上，会配置一些业务的全局设定，全局异常处理器、统一的响应封装类，标准化接口返回格式</li>
+<li>另外也有一些代码生成器的功能，只需要输入表就可以直接生成crud操作的代码，这个主要是通过模板生成的</li>
+<li>后续在编写用户模块、图片模块、空间模块等业务功能时，我只需在这个模板之上扩展即可，避免了大量重复的初始化和基础代码编写工作。</li>
+</ul>
+<blockquote>
+<p>💡 补充：如果你熟悉鱼皮提供的后端万用模板，还可以补充更多业务特性，比如提供 CRUD 操作、代码生成器、Redis 和 Elasticsearch 的整合等。</p>
+</blockquote>
+<blockquote>
+<p>追问：Mybatis Plus怎么查数据的？</p>
+<ul>
+<li>MP是一个增强的ORM框架实现，提供丰富数据库操作接口，以及分页插件、条件构造器等。</li>
+<li>首先是引入MP依赖，配置@MapperScan注解扫描mapper包的代码，后续在代码中就可以直接使用mapper包中内置的baseMapper（selectById insertg等）</li>
+<li>另外配合 QueryWrapper 或 SqlRunner，还可以更灵活地构建动态查询。比如，我会在图片模块使用 <code>lambdaQuery().eq(Picture::getSpaceId, spaceId)</code> 的方式查询特定空间的图片列表。<ul>
+<li>为了进一步提高构建 MyBatis Plus 查询的效率，我封装了一些 getQueryWrapper 的方法，可以根据查询请求对象转化为 QueryWrapper。</li>
+</ul>
+</li>
+</ul>
+<p>追问：异常怎么处理的？</p>
+<p>通过一个全局的异常处理器统一管理的。具体来说，封装了自定义异常类（BusinessException）、全局异常处理器（GlobalExceptionHandler）、并且自定义了一些错误码（ErrorCode），这样错误就可以统一并且赋予了业务意义，也方便前端统一处理</p>
+<p>处理流程如下：</p>
+<ol>
+<li>当遇到业务逻辑问题时，抛出 BusinessException，并传入相应的自定义错误码和错误信息。</li>
+<li>GlobalExceptionHandler 会捕获这个 BusinessException，并返回一个统一的响应结构给前端。</li>
+<li>如果是未预料到的系统异常（RuntimeException），同样会被 GlobalExceptionHandler 拦截，返回固定的系统错误码（50000）和提示信息（系统内部异常）。</li>
+</ol>
+<p>这样做可以让前端快速定位问题原因，也便于后续在不同场景下进行精细化的异常处理。</p>
+<p>追问：统一响应封装类怎么实现的？</p>
+<p>为了便于前后端接口交互，我统一了响应封装类，具体来说，是自定义了一个 <code>BaseResponse&lt;T&gt;</code> 类，包含 code、data、message 字段，并提供 <code>ResultUtils</code> 工具类来快速生成成功或失败的响应。</p>
+<p>举个例子，当接口正常执行时，我会使用 <code>ResultUtils.success(data)</code> 返回结果，如果出现业务异常或系统异常，则通过 <code>ResultUtils.error(...)</code> 构造标准化的错误信息。这样前端开发者只要解析 code、data、message，就能统一处理各种接口的响应，大幅提升了协作效率和可维护性。</p>
+<p>追问：跨域问题了解吗？</p>
+<p>跨域问题是指浏览器为了安全，对不同域（包含不同协议、不同端口或不同主机名）的请求进行限制，从而导致请求无法正常访问后端接口。</p>
+<p>在云图库项目中，为了方便前后端分离部署与调试，我创建了一个全局跨域配置类（CorsConfig），在其中通过 <code>registry.addMapping(&quot;/**&quot;)</code> 等配置项，允许指定源的跨域请求，并支持发送 Cookie、自定义请求头等。这样一来，无论前端运行在哪个端口，都能正常请求后端，便于本地开发和后续部署上线。</p>
+<p>追问：Knife4j了解吗？</p>
+<p>Knife4j 是基于 Swagger 的一款接口文档增强工具，提供了更友好的界面和丰富的文档管理功能，比如动态参数调试、接口分组等。</p>
+<p>在我的云图库项目中，我首先在 pom.xml 中引入了 <code>knife4j-openapi2-spring-boot-starter</code> 依赖，然后在 <code>application.yml</code> 中配置了 Knife4j 扫描的包路径和接口文档信息。</p>
+<p>在编写 Controller 接口时，我会使用 <code>@ApiOperation</code> 等注解描述接口和参数。启动项目后只需要访问 <code>/doc.html</code>，就能看到自动生成的可视化接口文档，前后端都能根据这份文档进行测试与对接，从而大幅提高开发效率。</p>
+</blockquote>
+<h3 id="大的知识点"><a href="#大的知识点" class="headerlink" title="大的知识点"></a>大的知识点</h3><p>什么是 RBAC？你在云图库项目中是如何设计和实现 RBAC 的？ </p>
+<p>对于复杂的权限控制场景，可以采用经典的 RBAC 权限控制模型（基于角色的访问控制，Role-Based Access Control），核心概念包括 <strong>用户、角色、权限</strong>。</p>
+<ul>
+<li>一个用户可以有多个角色</li>
+<li>一个角色可以有多个权限</li>
+</ul>
+<p>这样一来，就可以灵活地配置用户具有的权限了。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/dqwspUpSxwIimzvw.webp" alt="img">	</p>
+<p>一般来说，标准的 RBAC 实现需要 5 张表：用户表、角色表、权限表、用户角色关联表、角色权限关联表，还是有一定开发成本的。由于云图库项目中，团队空间不需要那么多角色，可以简化 RBAC 的实现方式，将角色和权限直接定义到 JSON 配置文件中，在项目启动时读取配置文件到 Java 对象中，然后基于 Sa-Token 权限框架实现具体的校验逻辑。</p>
+<p>什么是分库分表？云图库项目中为什么要用分表？你又是怎么实现动态分表的？ </p>
+<p>分库分表是一种将数据拆分存储在多个库或多张表的策略，可以减小单表体量、提升高并发访问性能，并且减少单点故障。</p>
+<p>云图库项目中，团队空间的图片可能非常多，如果全都往同一张 picture 表里插入，后期查询和维护都会遇到性能瓶颈，所以考虑把特定空间（如旗舰版团队空间）的图片单独存到分表里。</p>
+<p>普通的静态分表要事先建好 N 张表，但项目里团队空间数量不固定，所以我基于 Apache ShardingSphere 实现动态分表。</p>
+<ol>
+<li>给需要分表的空间动态创建 <code>picture_{spaceId}</code> 表，并维护一份可用分表节点列表</li>
+<li>编写自定义分片算法，路由时根据 spaceId 决定具体访问哪一张物理表</li>
+</ol>
+<p>剩下的事情交给框架就好，会自动将 SQL 查询改写为到对应分表进行查询。</p>
+<blockquote>
+<p>追问：什么是 Apache ShardingSphere？你在云图库项目中为什么选用它实现分库分表？ </p>
+<p>Apache ShardingSphere 是一个提供分库分表、读写分离、分布式事务等功能的开源数据库中间件，支持多种模式（ShardingSphere-JDBC、ShardingSphere-Proxy）和灵活的分片配置方式。</p>
+<p>我选择它的 ShardingSphere-JDBC 模式实现分库分表，主要原因是：</p>
+<ol>
+<li>功能全面：开箱即用地实现分库分表、聚合查询、分布式事务等</li>
+<li>配置灵活：能按字段取模、按时间段拆分，也支持自定义分片算法</li>
+<li>社区活跃：遇到 Bug 时能找到很多文档来解决</li>
+<li>Java 生态：我用的是 Spring Boot 框架，ShardingSphere-JDBC 的嵌入式方案对小项目更简洁轻量，更容易和现有环境集成。</li>
+</ol>
+<p>追问：云图库项目在实现动态分表时，为什么要手动维护可用的分表节点？ </p>
+<p>因为 ShardingSphere 默认依赖 <code>actual-data-nodes</code> 配置去识别可用表，但是如果提前不知道 spaceId 列表就无法编写固定的节点配置。</p>
+<p>在动态分表场景下，每新增一个团队空间就会生成一张新的分表 <code>picture_{spaceId}</code>，必须通知 ShardingSphere “又多了一个可用节点”。因此需要在后端写一个分表管理器来手动维护可用的分表节点，它主要做了下面几件事：</p>
+<ol>
+<li>扫描数据库中已有的 <code>picture_{spaceId}</code> 分表</li>
+<li>动态更新 <code>actual-data-nodes</code> 配置</li>
+<li>重载 ShardingSphere 的路由规则</li>
+</ol>
+<p>不这么做的话，ShardingSphere 并不知道新的分表存在，查询时就会报找不到分表的错误。通过手动维护可用节点，就能让 ShardingSphere 在运行中支持随时增加分表。</p>
+</blockquote>
+<p>什么是 Disruptor？在云图库项目中为什么要使用它？又是如何使用它的？ </p>
+<p>Disruptor 是 LMAX 公司开源的一个 <strong>高性能无锁环形队列</strong> 框架，常用于高并发、低延迟的消息处理场景。它通过环形缓冲区 + 无锁（CAS + 内存屏障）减少线程切换，来显著提升吞吐量。</p>
+<p>在协同编辑中，后端 WebSocket 原本同步接收和处理消息，若并发用户多、单条消息处理耗时长，就易造成阻塞，无法处理更多请求。引入 Disruptor 后，将消息生产与消息处理解耦：</p>
+<ol>
+<li>原本的处理消息逻辑修改为 “仅把消息提交到 Disruptor 队列”</li>
+<li>由 Disruptor 的消费者线程异步取出并执行具体业务逻辑</li>
+</ol>
+<p>这能保持 WebSocket 主线程轻量快速，不易被阻塞，也能提高实时响应能力。</p>
+<p>我在项目中使用 Disruptor 的步骤：</p>
+<ol>
+<li>引入 Disruptor 依赖</li>
+<li>定义事件，承载编辑请求、WebSocket Session、用户信息等</li>
+<li>定义事件处理器，用于消费编辑事件并调用相应的业务逻辑</li>
+<li>在启动时初始化 Disruptor，初始化固定大小的环形队列，并把事件处理器加入消费者池</li>
+<li>在 WebSocket 收到消息后，把它发布到 Disruptor 的环形队列</li>
+<li>Disruptor 内部会多线程异步执行这些事件</li>
+</ol>
+<blockquote>
+<p>什么是优雅停机？你在云图库项目中怎么利用 Disruptor 实现优雅停机？ </p>
+<p>优雅停机指在应用关闭前，<strong>不再接收新的请求</strong> 并 <strong>等待系统中正在进行的任务全部完成后</strong>，才真正停止进程。这样可以确保数据或状态不会在停机时刻中断或丢失，避免产生乱序或资源泄露等问题。</p>
+<p>Disruptor 本身提供了优雅停机方法。我利用 Bean 的 PreDestroy 注解，在应用关闭前，先调用 <code>disruptor.shutdown()</code>，然后 Disruptor 本身会等待环形队列内的所有事件处理完才返回，同时拒绝新的编辑操作或网络请求。待队列任务都消费完成，再关闭线程池和资源连接，最后退出应用。</p>
+</blockquote>
+<p>什么是 WebSocket？前端如何和服务器建立 WebSocket 连接？有哪些注意事项？ </p>
+<p>WebSocket 是一种在客户端和服务器之间保持 <strong>双向、实时通信</strong> 的协议。相比传统的 HTTP 单向请求 - 响应模式，WebSocket 能让服务器随时主动推送数据给客户端，或者客户端主动发送消息给服务器，无需反复创建和关闭连接，实时性更强，也减少了网络开销。</p>
+<p>1）前端如何建立连接</p>
+<p>先在 JavaScript 中创建一个 <code>new WebSocket(&quot;ws://serverURL&quot;)</code> 对象，指定后端提供的 WebSocket URL。 然后就可以监听事件并进行相应的处理了：</p>
+<ul>
+<li>监听 <code>onopen</code> 事件，表示连接成功后可以开始发送消息</li>
+<li>监听 <code>onmessage</code> 事件，用于处理服务器推送过来的数据</li>
+<li>监听 <code>onclose</code> 和 <code>onerror</code> 处理连接断开或异常情况</li>
+</ul>
+<p>2）注意事项</p>
+<ol>
+<li>释放资源：前端组件销毁时应该主动断开连接，否则可能会给服务器增加压力。</li>
+<li>断线重连：网络不稳定或服务器异常时连接可能会断开，需要前端实现重连策略，否则用户可能无法持续接收消息。</li>
+</ol>
+<h3 id="功能实现"><a href="#功能实现" class="headerlink" title="功能实现"></a>功能实现</h3><h4 id="用户模块"><a href="#用户模块" class="headerlink" title="用户模块"></a>用户模块</h4><p><strong>用户注册功能</strong></p>
+<p>在云图库项目的用户模块中，我对用户注册做了以下几步处理：</p>
+<ol>
+<li>数据校验：对用户输入的账号、密码进行非空判断、长度判断等，如果不符合要求，则抛出自定义异常。</li>
+<li>账号查重：利用 MyBatis Plus 构造查询条件，在 user 表中检测是否已有相同的 userAccount，如果存在则视为重复注册。</li>
+<li>密码加密：对密码进行 MD5 + 盐值（比如 “yupi”）的加密后再存入数据库，防止明文密码泄露。</li>
+<li>数据插入：以上都通过后才执行插入操作，将用户信息保存到 user 表里。若数据库插入失败，则抛出异常提示。</li>
+</ol>
+<p>前端发起的注册请求，会映射到 UserController 中的 &#x2F;register 接口，控制层做完参数判空后就交给 UserService 的 userRegister 方法来处理。注册成功后，会返回新用户的 id 给前端确认。</p>
+<p><strong>用户登录功能</strong></p>
+<p>在云图库项目中，我采用了基于 Session 的登录态管理实现用户登录，实现步骤如下：</p>
+<ol>
+<li>校验参数：检查账号、密码是否为空，长度是否合理。</li>
+<li>密码对比：将前端传来的密码同样进行加密，并在数据库中查询匹配的记录。如果查无此用户或密码不匹配，就抛出异常。</li>
+<li>Session 存储：若验证通过，就在后端的 Session 中保存用户信息，比如 <code>request.getSession().setAttribute(USER_LOGIN_STATE, user)</code>。</li>
+<li>返回脱敏数据：由于用户表里还包括密码字段，为了安全起见，会对用户的密码进行脱敏处理后再返回登录成功信息给前端。</li>
+</ol>
+<p>这样，当后续请求携带同一个 Session ID 时，后端即可根据 Session 判断当前用户的登录状态，从而进行权限判定。若 Session 中无登录态，则视为未登录。</p>
+<p><strong>统一权限管理功能</strong></p>
+<p>云图库项目有普通用户、管理员 2 种角色，为了简化权限控制，我做了以下工作：</p>
+<ol>
+<li>角色区分：在 user 表中通过 userRole 字段来区分 user 和 admin。</li>
+<li>注解 + AOP：定义一个 <code>@AuthCheck</code> 注解，用于标注某个接口需要的角色；然后利用 Spring AOP 写了一个拦截器（环绕通知），在接口调用前自动校验当前登录用户是否拥有足够的权限。</li>
+<li>使用注解：在需要管理员权限的接口上加一句 <code>@AuthCheck(mustRole = &quot;admin&quot;)</code>，就能统一检查用户是否是管理员。若校验失败，就抛出无权限异常。</li>
+</ol>
+<p>这样一来，权限管理逻辑不会分散在各种接口里，而是集中在一个切面类中维护，可读性高、扩展性也更好。若后期要增加新的权限等级或更细粒度的控制，也能在切面逻辑里统一加以实现。</p>
+<h4 id="图片模块"><a href="#图片模块" class="headerlink" title="图片模块"></a>图片模块</h4><p><strong>如何存储图片数据？怎么获取到图片信息？</strong> </p>
+<p>在云图库项目中，我选择使用对象存储来存储图片文件。一方面，借助云厂商（如腾讯云 COS）提供的对象存储可以快速解决海量图片的存储、传输、扩容和备份问题；另一方面，腾讯云对象存储还提供 “数据万象” 图像处理服务，可以在图片上传时自动解析并返回图片的尺寸、大小、格式等元数据信息。</p>
+<p>具体实现流程：</p>
+<p>1）项目中整合对象存储：</p>
+<ul>
+<li>在后端配置文件中写好存储桶（bucket）名称、访问域名、密钥等信息，编写一个配置类来读取参数并初始化客户端。</li>
+<li>初始化客户端后，我编写了一个通用的对象存储调用类（CosManager），通过 <code>cosClient.putObject</code> 方法实现上传文件到存储桶。</li>
+<li>基于对象存储调用类进一步封装了适用于本项目的文件上传管理类（FileManager），简化文件上传的调用。</li>
+</ul>
+<p>2）自动获取图片信息：</p>
+<ul>
+<li>在上传图片时，启用 “数据万象” 功能，对图片进行基础信息解析。</li>
+<li>解析结果中包含宽度、高度、格式等字段，我再将这些信息写到数据库表的相应字段，便于后续查询与筛选。</li>
+</ul>
+<p>这样一来，图片实际的二进制数据并不放在后端服务器或数据库中，而是托管给对象存储服务进行管理，既省去了服务器磁盘维护的繁琐，又能利用云存储高可用的特性，提升系统的稳定性和可扩展性。</p>
+<p><strong>如何实现图片审核功能？</strong> </p>
+<p>为了避免用户上传的图片内容违规或存在版权风险，给图片模块增加了 “审核功能”。</p>
+<p>整体策略包括：</p>
+<ol>
+<li>在数据库中为图片表（picture）添加审核状态字段（reviewStatus）和审核信息（reviewMessage、reviewerId、reviewTime）。</li>
+<li>用户上传或编辑图片时，图片默认状态为 “待审核” 或自动过审（如果是管理员上传）；管理员审核后可将状态修改为 “通过” 或 “拒绝”。</li>
+<li>对于审核状态为 “通过” 的图片，普通用户在查询时才能看到；未通过或拒绝的图片仅管理员可见。</li>
+<li>管理员可随时修改图片的审核状态，同时记录审核人、审核时间及原因，方便后期追溯。</li>
+</ol>
+<p>这样一来，既能保证图片内容的安全与合规，也能将违规图片拒之门外，提高系统整体质量。</p>
+<p>此外，其实我还了解更多企业中的审核策略，比如：</p>
+<ol>
+<li>内容安全审核服务：借助专业的第三方平台的内容审核服务来实现自动审核，像腾讯云、阿里云等基本都支持图片、文本、音视频等内容的审核。</li>
+<li>AI 审核：可以将文本内容和审核规则输入给 AI，让 AI 返回是否合规。</li>
+<li>分级审核策略：区分普通用户与高信誉用户，高信誉用户可减少或免除审核流程，比如 VIP 用户自动过审，也可以提高部分效率。</li>
+<li>实名信息和内容溯源：通过用户实名或者手机号注册，提高用户行为的责任感，减少垃圾内容的产生。</li>
+<li>举报机制：通过给平台增加举报机制，还可以给举报行为一些奖励，让用户帮忙维护平台。</li>
+</ol>
+<p><strong>如何实现通过 URL 上传图片功能？</strong> </p>
+<p>在云图库项目中，我不仅支持用户上传本地图片文件，也支持直接填写网络图片的 URL 链接，后端自动下载并导入到对象存储中。大致流程如下：</p>
+<ol>
+<li>前端将用户输入的图片 URL 发送给后端。</li>
+<li>后端对该链接进行校验：先用 HEAD 请求检查链接是否存在，并获取其文件大小、类型等元信息，而不是下载文件后再校验，可以节约流量。若检测到格式错误（非 JPEG、PNG 等）或文件过大（超过 2MB），则拒绝上传。</li>
+<li>若链接校验通过，后端使用 Hutool 的 <code>HttpUtil.downloadFile</code> 将图片下载到本地临时文件。</li>
+<li>将临时文件上传到对象存储服务，并利用数据万象接口解析图片宽高、大小、格式等元信息。</li>
+<li>将解析到的信息与文件 URL 一起写入数据库，完成导入操作。</li>
+</ol>
+<p>其实步骤 4 和 5 都可以复用我已经实现的本地图片上传功能，因此我也将两种文件上传方式使用模板方法设计模式重构，减少了重复代码，并提高了代码的可扩展性和可维护性。</p>
+<p><strong>怎么实现网络图片的批量抓取和导入功能？</strong> </p>
+<p>核心思路是：利用 Jsoup 实现 Bing 网页图片抓取，并将图片进行批量上传和入库。</p>
+<p>具体步骤：</p>
+<ol>
+<li>指定搜索关键词与抓取数量：管理员在前端界面输入想抓取的关键词（比如 “壁纸”），以及一次要抓取的图片数量。</li>
+<li>爬取图片链接：后端根据关键词拼接目标 URL（Bing 图片搜索的地址），请求返回的 HTML 网页后使用 Jsoup 解析 DOM，获取所有图片的地址。</li>
+<li>逐条下载并上传：对每个图片链接，先做必要的校验（如过滤多余参数），然后将其下载到本地临时文件，最终上传到对象存储服务中。</li>
+<li>插入数据库记录：把每张成功上传的图片信息保存到 picture 表。如果需要分批次命名，可以加个“名称前缀” 参数，让所有图片名称带上统一前缀。</li>
+<li>容错：为防止爬取过快导致被封，通过 Thread.sleep 增加间隔；如果某张图片下载失败或不通过校验，系统会跳过继续下一张图片，最后统计成功条数。</li>
+</ol>
+<p>通过这套批量抓取方案，管理员可一键快速引入大批外部图片，大大减少了前期项目冷启动时手动上传图片的工作量。</p>
+<p><strong>如何实现图片转码压缩和缩略图生成？</strong> </p>
+<p>主要是利用腾讯云的数据万象服务实现。</p>
+<p>1）转码压缩：我在后端集成了云存储服务的数据万象功能。图片上传时，借助对象存储 SDK 给出图片处理规则，如格式转换为 WebP、调整质量等，从而大幅节省带宽、加速用户加载。</p>
+<p>2）缩略图生成：同样在上传时，利用数据万象配置额外的“ 缩放规则”，再输出一份小尺寸缩略图，并将缩略图地址和原图地址一同写入数据库。 用户在图片列表页只需加载体积很小的缩略图，点击进入详情页时再加载清晰度更高的主图，从而获得更快的页面首屏速度和更好的用户体验。</p>
+<p>通过这两步，保证了图片在存储和网络层面都尽可能地 “瘦身”，又能满足用户的浏览需求。</p>
+<p><strong>你如何实现多维度的图片搜索功能？</strong> </p>
+<p>在云图库项目里，我通过封装图片查询请求类，并在查询接口增加多种筛选条件，来实现多维度的图片搜索。主要思路：</p>
+<ol>
+<li>定义一个 PictureQueryRequest 对象，除了基本的分页参数，还支持按名称、简介、分类、标签、编辑时间范围、格式、宽高等维度传参。</li>
+<li>在服务层写一个 getQueryWrapper 方法，根据请求参数动态构造数据库查询条件，比如 <code>queryWrapper.like(StrUtil.isNotBlank(name), &quot;name&quot;, name)</code> 等。</li>
+<li>在控制层接收搜索请求并调用 service 进行分页查询，结果返回 Page 列表</li>
+</ol>
+<p>前端在搜索表单里，可将这些搜索条件分为常用筛选（关键词、标签、分类）和更多筛选（日期、宽高、格式）等，实现灵活的多维度检索。</p>
+<p>这样就能满足用户 “按关键字 + 标签 + 日期 + …” 多种组合搜索需求，大幅提升查询效率和使用体验。</p>
+<p>你如何实现以图搜图功能？ </p>
+<p>我在云图库项目中采用了 <strong>实时爬虫</strong> 的方式实现以图搜图。流程如下：</p>
+<ol>
+<li>通过 F12 网络控制台分析百度以图搜图的相关接口</li>
+<li>调用百度以图搜图接口，将图片 URL 传给百度，以获得一个 “搜图页面地址”</li>
+<li>利用 Jsoup 解析返回的 HTML，提取到搜索结果列表的接口地址</li>
+<li>通过 Hutool 的 HttpRequest 调用该接口获取到相似图片、来源链接等信息，封装为一个后端接口返回给前端。</li>
+</ol>
+<p>在实现层面，我为这些步骤（获取页面地址、解析 HTML、拉取图片列表）各自写了一个独立的 API 类，然后用 <strong>门面模式</strong> 将它们统一封装在 ImageSearchApiFacade 类中，对外只暴露一个 searchImage 方法，简化了调用流程，用户只要传入图片 URL 就能得到以图搜图的结果。</p>
+<p>你如何实现颜色搜图功能？ </p>
+<p>整体思路是：先提取和存储每张图片的主色调，再用欧氏距离算法来判断颜色相似度。</p>
+<p>详细流程：</p>
+<ol>
+<li>提取主色调：上传图片后，我利用数据万象服务自动分析图片的主色调，然后将提取到的十六进制色值（如 0xAFB123）保存在数据库的 picColor 字段中。</li>
+<li>用户发起颜色检索：输入一个十六进制色值（如 #FF0000），后端用 Color 类将其转换为 RGB。</li>
+<li>计算相似度：从数据库中查询出每张图的主色调，同样转换为 RGB 后计算二者的欧氏距离 <code>distance = sqrt((R1-R2)^2 + (G1-G2)^2 + (B1-B2)^2)</code>，距离越小表示越相似。</li>
+<li>对结果进行排序，取相似度最高的前 N 张图并返回给前端</li>
+</ol>
+<p>这样，前端用户只要操作一个颜色选择器，就能在空间内找出和指定颜色最接近的图片，大大提高搜图效率。</p>
+<p>如何实现批量编辑功能？怎么优化批量编辑的性能？ </p>
+<p>为了提高空间图片的管理效率，我提供了批量编辑功能，包括批量修改图片的分类、标签、名称等，能安全快速地完成大量图片的更新操作。</p>
+<p>实现过程主要分两步：</p>
+<ol>
+<li>在 Service 中，先一次性查询出要修改的图片并检查权限，然后按需更新分类、标签、名称等字段。</li>
+<li>使用 MyBatis Plus 的 updateBatchById 批量更新记录，结合事务保证原子性。</li>
+</ol>
+<p>通过下面几个方法，可以优化批量编辑的性能：</p>
+<ul>
+<li>减少循环 SQL：统一分批、批量更新数据库，而不是给每张图都执行一条 Update。</li>
+<li>并发执行：如果数据量特别大，可以用 CompletableFuture + 线程池将不同分段的图片并发处理，并在全部处理完后再统一提交或回滚。</li>
+</ul>
+<h4 id="空间模块（个人-团队）"><a href="#空间模块（个人-团队）" class="headerlink" title="空间模块（个人+团队）"></a>空间模块（个人+团队）</h4><p><strong>什么是空间？为什么需要 “空间” 的概念？</strong> </p>
+<p>在云图库项目里，“空间” 相当于给用户或团队划分出的一块独立存储区域，用来存储私有或需要共享的图片。与公共图库相比，用户在自己创建的空间内对图片有更高的自主管理权限，比如无需管理员审核。同时，为了防止用户无限制占用存储资源，我给每个空间设置容量与图片数量上的额度限制。</p>
+<p>如果没有 “空间” 的概念，可能只是在图片表里简单地通过 userId 区分用户的图片。但这样做难以实现以下场景：</p>
+<ol>
+<li>与公共图库分离：公共图库无需限额也没有私密性，而私有图片往往不希望被他人或管理员随意操作，需要独立管控。</li>
+<li>权限与限额管理：给用户分配多少存储量、能否升级到专业版、如何在用户超限时阻止上传等，这些都需要更灵活的处理，而 “空间” 充当了中间层。</li>
+</ol>
+<p>因此，抽象出 “空间” 概念后，公共图库和私有空间互不干扰，也便于后续扩展团队空间和空间成员功能。</p>
+<p><strong>你怎么保证用户最多只能创建一个空间？</strong> </p>
+<p>我在云图库项目采用了 <strong>加锁 + 事务</strong> 的方式来限制用户仅能创建一个私有空间：</p>
+<ol>
+<li>数据库设计：在 space 表中根据 userId 查询是否已创建空间，若已创建则阻止再次创建。</li>
+<li>本地分段锁：以 userId 作为锁的 key，进入创建空间的代码前，对该 key 进行 synchronized（或在一个 并发 Map 里）加锁，避免并发下同一个用户多次创建。</li>
+<li>编程式事务：在加锁后，用 transactionTemplate 开启数据库事务，先查询 userId 是否已有空间，再写入新空间记录，若过程中出错则回滚。事务执行完成后释放锁。</li>
+</ol>
+<p><strong>你怎么保证用户上传图片不会超过空间额度？</strong> </p>
+<p>为了防止用户无限制占用存储资源，我在云图库项目里为每个空间都配置了最大图片数量（maxCount）和最大总大小（maxSize）两种限制，并且在图片上传和图片删除环节都做了相应的更新与校验：</p>
+<ol>
+<li>上传前校验：根据 spaceId 查到该空间的当前已用大小 totalSize 和数量 totalCount，分别与 maxSize、maxCount 对比。若空间或用户已超出限额，则拒绝这次上传请求。</li>
+<li>上传成功后更新： 进入数据库事务，先写入图片表，再将 totalSize 累加上这张图片的大小、totalCount +1。 若任意一步失败，就回滚事务，保证数据的一致性。</li>
+<li>删除图片后释放： 删除图片时，也在同一事务内把对应的大小和数量从 space 的 totalSize、totalCount 字段中减去，确保计量准确。</li>
+</ol>
+<p>通过 <strong>上传前校验 + 事务内原子更新</strong> 的方式，即使在并发场景下，也能让空间用量处于可控状态，一旦某个空间达到了最大额度就禁止再传图，大幅降低系统被滥用的风险。</p>
+<p>此外，参考大厂云服务的设计，我允许用户小幅超出额度（比如上传最后一张图时，即使会超额也允许上传），一定程度上减少了开发难度，并提升了用户体验。</p>
+<p><strong>你如何实现团队空间的成员管理功能？</strong> </p>
+<p>我在项目里新建了一张 space_user 表，记录 spaceId 和 userId 的多对多关联关系，并附带 spaceRole 字段标识了用户在该空间的角色（viewer &#x2F; editor &#x2F; admin）。</p>
+<p>成员管理操作比较简单，就是编写增删改查接口 + 必要的权限校验。需要注意的是，创建团队空间时，要先在 space 表插入团队空间记录，再自动往 space_user 表插一条数据，赋予创建者管理员角色。</p>
+<p><strong>你如何实现空间的权限管理？</strong> </p>
+<p>在云图库项目里，空间有 “私有空间” 和 “团队空间” 两种类型，后者需要不同成员进行协同管理和操作，所以必须提供更细粒度的权限控制，比如谁能上传图片、谁能删除图片、谁能管理成员等。为此我使用基于角色的权限管理（RBAC）来实现团队空间的权限管理，并配合 Sa-Token 框架实现统一的注解式权限校验。</p>
+<p>实现步骤：</p>
+<p>1）空间角色与权限的定义：根据团队空间中的操作场景，设计了权限和角色。并且以 JSON 配置文件的方式存储角色和权限的关系，避免了新建数据表和关联查询。</p>
+<p>2）空间成员管理：对于团队空间，通过空间成员关系表实现多对多关联，并标注用户在该空间的角色。</p>
+<p>3）Sa-Token 鉴权框架：基于 Sa-Token 的 Kit 模式实现了多账号体系的 RBAC 权限控制，通过从请求上下文中获取参数实现了统一的权限校验逻辑，并运用注解合并简化了鉴权注解的使用，轻松实现方法级别的权限校验。</p>
+<p>举个例子：</p>
+<ol>
+<li>在代码中，可使用自定义的 Sa-Token 注解 <code>@SaSpaceCheckPermission(&quot;picture:delete&quot;)</code> 标记敏感操作接口，让框架在调用方法前自动做校验。</li>
+<li>Sa-Token 会调用自定义的 <code>StpInterfaceImpl#getPermissionList(...)</code> 方法，这里读取空间上下文信息 + space_user 表的角色，再用通过角色权限关系获取到最终的权限列表，如果不包含 <code>&quot;picture:delete&quot;</code> 就直接抛异常。</li>
+</ol>
+<p>这样就避免了每个接口都手写 “if-else” 或编码来判断权限。</p>
+<p>4）前后端交互：为了前端能根据权限隐藏或显示某些按钮，我在 “获取空间详情” 和 “获取图片详情” 时，额外返回 <code>permissionList</code> 字段，让前端知道当前用户对该空间 &#x2F; 图片拥有哪些权限，从而进行动态 UI 控制。</p>
+<p>你如何实现图片的协同编辑功能？ </p>
+<p>我在已有的图片编辑功能上，结合 <strong>WebSocket</strong> 和 <strong>事件驱动</strong> 思想，让多位团队成员能够实时查看对同一张图片的编辑变化。关键的实现点是：</p>
+<ol>
+<li>WebSocket 通信：前端与后端在建立 WebSocket 连接后，后端保存每个图片对应的会话集合，以及当前正在编辑的用户信息。</li>
+<li>编辑锁机制：只有一个用户可以进入编辑状态，其他用户只能实时 “围观” 该用户操作，这样从源头上解决了并发冲突。</li>
+<li>事件驱动：每当用户执行放大 &#x2F; 旋转等编辑动作，相当于生产了一个 “事件”，通过 WebSocket 服务器把该事件分发给其他连接用户，实时广播更新。</li>
+<li>断开连接：若正在编辑用户断线或退出，会自动释放编辑锁，其他用户可申请进入编辑状态。</li>
+</ol>
+<blockquote>
+<p>追问：什么是 WebSocket？为什么在云图库项目中选用它而不是 HTTP 实现协同编辑？ </p>
+<p>WebSocket 是一种 <strong>全双工</strong>（双向）通信协议。和传统 “请求-响应” 的 HTTP 不同，WebSocket 在初次握手后会保留一个持久连接，客户端和服务器可彼此 <strong>随时主动</strong> 发送消息，而无需频繁重建连接。</p>
+<p>在协同编辑场景中，需要 <strong>高频双向</strong> 的消息传输 —— 编辑者的操作需要立刻同步给其他用户。如果用 HTTP 就得不断轮询或发起请求，浪费带宽、且延迟高；而使用 WebSocket 保持长连接，可以低延迟地推送彼此的编辑信息，满足实时协同需求。</p>
+<p>追问：什么是事件驱动设计？你在云图库项目中是如何运用它实现协同编辑功能的？ </p>
+<p>事件驱动设计通过将系统内的操作抽象成 “事件”，当事件发生时，把事件交给异步处理器或消息总线，然后通知其他需要接收的组件或用户，从而 <strong>解耦</strong> 生产者与消费者，并提高并发性能。</p>
+<p>在我的协同编辑实现中，每次用户的编辑动作都被视作一个事件：</p>
+<ol>
+<li>WebSocket 接收前端事件后，触发相应的处理器</li>
+<li>处理器中将消息再广播给所有正在编辑此图片的客户端</li>
+<li>其他用户收到此事件后即可同步更新编辑状态和操作</li>
+</ol>
+<p>追问：WebSocket 的握手拦截器和编辑锁机制分别起到什么作用？</p>
+<p>1）WebSocket 握手拦截器：在真正建立 WebSocket 长连接前，会进行一次 HTTP Upgrade 请求。我在握手拦截器中校验用户是否已登录、有无团队空间的编辑权限，然后把用户、图片 ID 等信息放到 Session 属性里，这样就能在后续通信中直接复用这些会话属性；如果不符合条件则拒绝握手。</p>
+<p>2）编辑锁机制：同一时刻只有一个用户能 “进入编辑” 该图片，其余用户只能接收消息并实时浏览效果，但不能操作。这样可以从源头避免并发冲突，不需要维护复杂的实时合并算法。当持锁用户退出或断连时自动释放锁，其他人才能进入编辑状态。 </p>
+</blockquote>
+<h4 id="AI模块"><a href="#AI模块" class="headerlink" title="AI模块"></a>AI模块</h4><p>你如何实现 AI 扩图功能？使用 AI 服务时有哪些注意事项？ </p>
+<p>我在云图库项目中采用了阿里云百炼的大模型服务来实现 AI 扩图功能，流程如下：</p>
+<p>1）选择 AI 大模型：我调研了很多国内外的 AI 绘画大模型，发现阿里云百炼提供图像扩展 API，可以通过 HTTP 接入并且响应较快，还提供了一定免费额度，所以选择它。</p>
+<p>2）异步调用：该 AI 接口需要先创建任务，然后轮询查看任务状态，又分为 2 个步骤：</p>
+<ol>
+<li>后端调用 AI 的 “创建扩图任务” API，传入原图 URL 及一些扩展参数（如左右、上下加多少像素），得到一个 taskId 。</li>
+<li>前端轮询后端接口，后端再调用 AI “查询任务” 的 API 来判断任务是否完成；如果成功，则返回生成好的图片链接，如果失败则提示用户。</li>
+</ol>
+<p>使用 AI 服务的注意事项：</p>
+<ol>
+<li>成本控制：绘图大模型通常按调用量或 GPU 耗时计费，要在使用前就预估好成本，并且通过记录次数或费用，整体观测成本消耗情况。</li>
+<li>异步调用：大模型绘画任务往往耗时数秒到数十秒，同步等待会堵塞线程、影响并发性能，因此必须采用异步任务 + 前端轮询或后台轮询的方式。</li>
+<li>超时控制：一旦任务执行很久还没完成，需要及时停止轮询，避免资源浪费。</li>
+<li>参数校验：调用 AI 接口前先检查图片大小、格式、空间容量等，减少无意义的请求。</li>
+<li>安全性：AI 接口成本高，必须加限流（如每分钟 N 次）和权限校验，防止恶意刷任务；对异常或失败任务也要做好记录与告警，保证系统稳定。</li>
+</ol>
+<h4 id="分析模块"><a href="#分析模块" class="headerlink" title="分析模块"></a>分析模块</h4><p>你开发了哪些分析能力？后端如何实现空间分析功能？ </p>
+<p>在云图库项目中，我针对空间和公共图库的图片数据，开发了多种分析能力，包括空间资源使用分析、图片分类与标签分布、图片大小分布统计、用户上传行为分析，以及管理员可用的全局空间排行分析等。</p>
+<p>对于分析类需求，开发流程都是类似的：</p>
+<ol>
+<li>数据采集：从数据源（比如 MySQL 数据库或者大数据仓库）获取原始数据。要提前明确涉及的表和字段，必要时采用分页查询处理大数据量。</li>
+<li>数据预处理：对数据进行清洗、加工和格式化，包括过滤无效数据（比如逻辑删除或审核未通过）、解析复杂字段（比如 JSON 格式的 tags），以及通过字段关联补充上下文信息。</li>
+<li>数据计算：根据需求进行分组、聚合、排序等，从而计算关键指标，比如计算空间各分类图片的占用比例、用户上传图片的时间趋势。可以根据场景调整计算方案，比如对于大数据量的计算，可以采用 Spark 之类的大数据计算组件做离线计算；对于数据实时性要求较高的实时分析场景，可以用 Flink 做流式处理。</li>
+<li>数据存储（可选）：针对频繁查询的分析结果，可将结果数据存储为单独的表或缓存，减少重复计算，提高查询效率。</li>
+<li>数据接口设计：为前端提供统一接口，从而支持查询和展示。需要考虑到数据量较大导致前端渲染卡顿的情况，可以按需精简返回的字符串、分页查询等。</li>
+<li>数据可视化：通过图表直观展示分析结果，前端可以使用 <a target="_blank" rel="noopener" href="https://echarts.apache.org/">Apache ECharts</a> 等可视化库渲染。当然也可以让后端生成图表图片并返回，但这种实现方法的灵活度有限。</li>
+</ol>
+<p>通过这些分析能力，用户可以清晰掌握自己空间的使用状况和图片分布，管理员也能整体观察系统资源利用率，并做好限额管控和数据运营。如果数据量大，还可进一步用 Redis &#x2F; 定时任务等手段做缓存或离线计算，提升统计性能与响应速度。</p>
+<h4 id="设计模式体现"><a href="#设计模式体现" class="headerlink" title="设计模式体现"></a>设计模式体现</h4><p><strong>云图库项目中如何使用模板方法模式？</strong> </p>
+<p>模板方法设计模式是一种行为型设计模式，它将某一通用流程的各个步骤抽象出来，并定义在父类的 “模板方法” 里，而将具体差异的实现细节留给子类来完成。简单来说，就是 “固定整体流程，允许子类覆盖部分步骤”。</p>
+<p>在云图库项目中，我使用了模板方法模式来统一处理图片上传流程：</p>
+<ol>
+<li>把图片上传的通用步骤（校验 -&gt; 生成临时文件 -&gt; 上传到对象存储 -&gt; 解析图片信息 -&gt; 删除临时文件）定义在抽象类 PictureUploadTemplate 中。</li>
+<li>针对 “本地文件上传” 和 “URL 上传” 两种场景，我分别实现了不同的子类 <code>FilePictureUpload</code> 和 <code>UrlPictureUpload</code>，只需要在 “校验图片”、“获取文件名”、“下载&#x2F;处理文件” 这几个与输入源相关的步骤上实现不同的逻辑即可，其他步骤则在模板父类里复用。</li>
+</ol>
+<p>这样，不仅减少了大量重复代码，也让后续扩展新的文件来源时更加容易 —— 只需继承抽象类，覆盖相关方法即可，实现了对扩展开放、对修改封闭的设计思路。</p>
+<p>什么是门面模式？在云图库项目中如何使用门面模式？ </p>
+<p>门面模式（Facade Pattern）是一种结构型设计模式，通过提供一个统一的门面接口，把内部复杂的子系统接口隐藏起来，从而简化客户端与子系统的交互，降低耦合度。</p>
+<p>我在云图库项目的 “以图搜图” 功能中就用到了门面模式：</p>
+<ol>
+<li>我有多个独立的爬虫或 API 调用类，分别负责获取搜图页面、解析 HTML 脚本、获取搜图结果等</li>
+<li>为了简化调用流程，我创建了一个 ImageSearchApiFacade 门面类，把这几个复杂步骤都封装成一个 searchImage 方法</li>
+<li>外部只需一行代码 <code>ImageSearchApiFacade.searchImage(imageUrl)</code> 就能得到最终的相似图片列表，而不必关心内部分多个 API 去爬取、解析、获取搜索结果的细节。</li>
+</ol>
+<p>这样做既减少了重复代码，也让功能调用更直观，符合 “高层接口简化、子系统细节隐藏” 的门面模式思想。</p>
+<h3 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h3><p>哪些策略对图片功能进行优化？比如性能和成本优化 </p>
+<p>为提升云图库的性能并降低成本，我对图片查询、上传、加载、存储等环节进行了多方位的优化。</p>
+<p>1）图片查询优化：</p>
+<ul>
+<li>结合 Redis 和 Caffeine，构建了多级缓存体系，先从本地缓存查询，若未命中再查分布式缓存。这样既能充分利用内存的高速访问，又确保了分布式环境下的数据一致性。</li>
+<li>将高频访问的热点图片以及复杂查询结果直接缓存，减少对数据库的压力，成倍缩短了首页响应时间。</li>
+</ul>
+<p>2）图片上传优化：</p>
+<ul>
+<li>在上传时利用数据万象服务自动将图片格式转换为 WebP 进行压缩，有效降低图片文件大小，节省带宽，提升加载速度。</li>
+<li>支持分片上传和断点续传，用于大文件场景，减少网络波动对上传体验的影响。我也尝试过实现文件秒传，通过对文件哈希（MD5）进行校验，避免重复上传。</li>
+</ul>
+<p>3）图片加载优化：</p>
+<ul>
+<li>生成缩略图，在首页或列表页仅加载缩略图，用户查看图片详情时再加载清晰原图，大幅减少流量。</li>
+<li>利用 CDN 加速，将图片资源分配到各地 CDN 节点，用户就近访问，从而降低延迟；并开启浏览器缓存头，进一步提升重复访问的加载速度。</li>
+<li>懒加载技术，让页面只在图片真正出现在可视区域时再请求资源，降低一次性加载的压力。</li>
+</ul>
+<p>4）图片存储优化：</p>
+<ul>
+<li>使用对象存储配合数据沉降（生命周期管理）策略，对 30 天未访问的图片自动切换至低频存储，降低存储费用。</li>
+<li>定期清理不再使用或重复的图片文件，减少冗余占用空间。</li>
+</ul>
+<p>经过上述优化，系统整体的性能显著提升，同时有效地控制了存储与带宽成本。</p>
+<blockquote>
+<p>追问：什么是 Redis 和 Caffeine？你在云图库项目中如何利用它们构建多级缓存？ </p>
+<p>Redis 是一种高性能的分布式 KV 存储，支持丰富的数据结构和高并发访问。它能把缓存数据存储在内存中，单节点读写 QPS 可达 10 万，常用于做分布式缓存或分布式锁。</p>
+<p>Caffeine 是 Java 主流的本地缓存库，运行在 JVM 内部，访问速度比 Redis 更快，但仅能在单个服务实例内使用，无法在多台服务器之间共享数据。</p>
+<p>我在云图库项目中将二者结合，形成多级缓存：</p>
+<ol>
+<li>用户请求先查询 Caffeine 本地缓存</li>
+<li>若本地缓存未命中，则查询 Redis 缓存</li>
+<li>若 Redis 也未命中，则回源到数据库，并将查询结果写回 Redis 与 Caffeine</li>
+</ol>
+<p>流程如图：</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20260323105117452.png" alt="image-20260323105117452"></p>
+<p>这样既保证了本地缓存的高速访问，又利用 Redis 做到跨节点数据一致和高可用，提升性能的同时减少对数据库的重复查询。</p>
+<p>追问：本地缓存如何保证不同实例的一致性？</p>
+<p>1.基于消息队列的主动通知（推荐） 流程：</p>
+<ul>
+<li>数据变更时（如DB写操作），发布缓存失效事件到MQ（如Kafka&#x2F;RabbitMQ）</li>
+<li>所有服务实例订阅该队列，收到事件后立即删除本地缓存对应Key</li>
+<li>删除本地缓存后，下次请求自动从Redis加载最新数据</li>
+</ul>
+<p><strong>优势：</strong> 实时性强，毫秒级响应；可扩展性强 <strong>注意点：</strong> 消息需保证至少一次投递（避免网络抖动丢失） 消费逻辑需幂等处理（防止重复删除） 建议搭配重试队列增强可靠性</p>
+<p>或者使用配置中心（如ZooKeeper、Nacos等）通过配置中心去监听各个实例上本地缓存的变更，然后推送到配置中心，配置中心在将监听到的变更发送到其他实例去做更新</p>
+<p>2.兜底方案：TTL自动过期 强制设置本地缓存过期时间（如30秒），确保极端情况下，旧数据不会长期残留。 建议值：根据业务容忍度，平衡一致性与性能</p>
+</blockquote>
+<p>什么是 CDN？云图库项目中如何利用 CDN 提升图片加载性能？ </p>
+<p>CDN 内容分发网络是通过将文件分发到全球或全国各地的加速节点，让用户就近从最近的节点访问资源，减少跨网络、跨地域带来的延迟，提高加载资源的速度。</p>
+<p>在云图库项目里，我将 COS 对象存储作为 “源站”，再给图片地址配置一层 CDN，起到了这些作用：</p>
+<ol>
+<li>请求拦截：用户访问图片时，先由 CDN 节点判断是否有缓存；若已缓存，则直接返回，加快响应；若无缓存，则回源到 COS 存储获取。</li>
+<li>全局分发：CDN 在各地设有大量加速节点，用户与节点间的距离近、线路好，显著缩短 RTT 和传输时延。</li>
+<li>保护源站：高并发时，绝大多数请求被 CDN 节点拦住，源站压力大幅下降。此外我还通过配置防盗链、带宽监控等策略防止资源滥用和 CDN 被刷量。</li>
+</ol>
+<p>使用 CDN 后，我也用 F12 网络控制台看了下请求资源的加载时间，确实加载更快了，也更安全稳定。</p>
+<p>什么是降频存储？在云图库项目中，它起到了什么作用？ </p>
+<p>降频存储指的是将长时间不访问或访问极少的文件从 “标准存储” 自动迁移到 “低频存储” 或 “归档存储” 的过程，降低资源占用成本。</p>
+<p>COS 对象存储提供了 “生命周期管理” 功能，可以根据设定的规则自动识别并迁移不活跃的数据。</p>
+<p>在云图库项目中，图片在上传初期可能访问量较高，但随着时间推移，不少图片会排到后面的分页中，几乎不会有用户访问。对这类 “冷数据” 图片设置降频存储后，日常占用的存储费用会更低，帮助我们显著节省成本。只有当用户重新访问这些冷数据时才会触发取回费用，但这种情况通常很少，所以我还是开启了降频存储策略。</p>
+<p>什么是文件秒传？在云图库项目中，你怎么实现文件秒传？ </p>
+<p>文件秒传主要运用于大文件上传场景，是通过 “文件指纹” 来识别文件是否已上传过的一种技术。若已存在相同文件，就无需再次传输，直接复用之前的文件存储记录，大幅减少上传时间和流量消耗。</p>
+<p>我的实现思路：</p>
+<ol>
+<li>指纹计算：用户在上传前计算文件 MD5（或 SHA-256）哈希</li>
+<li>指纹查重：后端检索数据库，看是否已有相同指纹的文件</li>
+<li>复用记录：若找到相同文件，则跳过上传过程，直接返回之前的存储地址；若没找到，则正常上传并存储文件指纹。</li>
+</ol>
+<p>在云图库项目中，图片文件不大，因此秒传的收益有限。但如果有用户可能频繁上传同一大文件，通过这种方式可减少重复上传，节省存储与带宽成本。</p>
+<p>什么是文件分片上传和断点续传？在云图库项目中，你怎么实现它们？ </p>
+<p>1）文件分片上传：将一个大文件拆分成多个小块（分片），逐一上传到服务器。这样可以并发上传各分片，提高带宽利用率，同时若部分分片上传失败，仅需重传失败的分片，避免整体重传。</p>
+<p>2）断点续传：在网络中断或上传过程中出现异常时，客户端可从已上传成功的分片或位置继续上传，而不必从头再来，实现更加稳定、高效的大文件上传。</p>
+<p>在云图库项目中，我基于 COS 对象存储服务的 SDK 来实现分片上传与断点续传。只需在调用接口时指定分片参数，后端会自动管理各分片的合并与校验。若中途中断，下次上传请求带上已上传好的分片信息，继续传剩余分片即可，从而显著提升网络不稳定场景下的用户体验和上传效率。</p>
+<h3 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h3><p>云图库项目是否有上线？你是如何实现前端页面部署的？ </p>
+<p>项目有实际上线。我是通过 <strong>本地打包 + Nginx</strong> 实现了前端页面部署。</p>
+<p>具体过程如下：</p>
+<ol>
+<li>购买云服务器</li>
+<li>安装和初始化宝塔 Linux 面板，会自动安装 Nginx 服务器</li>
+<li>在宝塔上创建一个网站</li>
+<li>本地使用 npm run build 命令打包项目，得到 dist 网站静态文件目录</li>
+<li>上传本地打包好的 dist 目录到服务器，然后配置 Nginx 指向文件目录路径，即可访问前端静态文件</li>
+</ol>
+<p>还有其他的部署方式，比如使用 Vercel 等 Serverless 服务一键部署到第三方托管服务器，但由于本人有服务器、并且想实践下 Nginx 配置，所以没有选择这种方式。</p>
+<h3 id="问题说明"><a href="#问题说明" class="headerlink" title="问题说明"></a>问题说明</h3><p>可以从以上任意一道主观的面试题出发去讲，比如你是怎么实现协同编辑功能并使用 Disruptor 进行优化的？你是怎么利用 ShardingSphere 实现动态分表的？如何一步步封装了通用的文件上传模块？为什么要使用模板方法模式和门面模式优化代码等等。</p>
+<h4 id="id长整型等精度丢失问题"><a href="#id长整型等精度丢失问题" class="headerlink" title="id长整型等精度丢失问题"></a>id长整型等精度丢失问题</h4><p>在云图库项目中，如果后端返回的主键 id（如 Long 类型）超过了 JavaScript 能正常表示的安全整数范围（2^53 - 1），前端在处理响应时就会出现数字精度丢失的问题。常见现象就是数字的末位被置为 0，从而导致前端拿到的数据与实际值不一致。</p>
+<p>为了避免这种情况，我在后端的配置层中，对整个项目的 JSON 序列化做了一层自定义处理。通过编写一个全局的 Jackson 配置类，将所有返回给前端的 Long 类型转换为字符串进行输出。这样一来，前端接收到的长整型 id 就是一个字符串，就不会再出现因超出 JS 范围而丢失精度的情况</p>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>你有使用过 AI 工具来辅助编程么？都是如何帮你提高开发效率的？ </p>
+<p>必须的，我使用的是国内的免费 AI 编程助手 CodeGeex（或者其他家的产品），主要使用了下列功能：</p>
+<ul>
+<li>自动生成单元测试</li>
+<li>自动给代码补充注释</li>
+<li>解释分析代码，帮助我理解一些类库的源码</li>
+<li>示例数据生成，帮助我快速构造了一些模拟数据</li>
+<li>代码补全，帮我提高了编码效率</li>
+<li>代码生成，帮我生成一些简单的算法</li>
+</ul>
+<p>通过云图库项目，你收获了哪些知识或经验？ </p>
+<ul>
+<li>如何拆解复杂业务，从 0 开始设计实现企业级系统？ </li>
+<li>如何巧用 RBAC 权限模型和框架实现复杂权限控制？ </li>
+<li>如何结合 Redis + caffeine 构建高性能多级缓存？</li>
+<li>如何实现文件的高效存储，并诵寸十几种策略进行优化？</li>
+<li>如何使用高级数据结构 Disruptor 无锁队歹刂提升并发性能？ ·</li>
+<li>如何使用 ShardingSphere 实现动态扩容的分库分表？</li>
+<li>如何使用 WebSocket 多端通信，实现企业级实时协作功能？</li>
+<li>如何接入 A | 绘图大模型，实现更多高级图片处理能力？</li>
+<li>如何使用 DDD 架构实现大型企业级项目？ · 如何快速部署上线项目？</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2026/03/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%A1%B9%E7%9B%AE/%E4%BA%91%E5%9B%BE%E5%BA%93/%E5%87%8C%E4%BA%91/">https://yuezi2048.github.io/2026/03/23/2.Areas🌐/02.面经记录/项目/云图库/凌云/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E4%BA%91%E5%9B%BE%E5%BA%93/">云图库</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/03/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%A1%B9%E7%9B%AE/%E4%BA%91%E5%9B%BE%E5%BA%93/%E6%8F%90%E7%A4%BA%E8%AF%8D/" title="提示词"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">提示词</div></div><div class="info-2"><div class="info-item-1">请你根据我提供的面经内容，生成符合规范的Mermaid代码，要求：  图表类型：【流程图&#x2F;时序图&#x2F;思维导图&#x2F;甘特图等】 核心内容：【粘贴你的面经内容，比如”Java商城项目SpringCloud微服务架构，包含用户、订单、支付、商品模块，网关用SpringCloud Gateway，注册中心Nacos，调用流程：用户下单→订单校验库存→商品扣减库存→支付模块发起支付→订单更新状态”】 硬性要求：语法严格符合Mermaid最新规范，能在语雀&#x2F;飞书&#x2F;Notion中直接渲染，节点逻辑清晰，无冗余内容，中文无乱码，只输出Mermaid代码块，不要额外解释。  </div></div></div></a><a class="pagination-related" href="/2026/03/23/2.Areas%F0%9F%8C%90/03.algorithm/%E5%AE%9E%E4%B9%A0%E5%87%86%E5%A4%87%E6%80%9D%E8%B7%AF/%E5%A4%8D%E4%B9%A0%E6%80%9D%E8%B7%AF/" title="复习思路"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">复习思路</div></div><div class="info-2"><div class="info-item-1">...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/03/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%A1%B9%E7%9B%AE/%E4%BA%91%E5%9B%BE%E5%BA%93/%E6%8F%90%E7%A4%BA%E8%AF%8D/" title="提示词"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-23</div><div class="info-item-2">提示词</div></div><div class="info-2"><div class="info-item-1">请你根据我提供的面经内容，生成符合规范的Mermaid代码，要求：  图表类型：【流程图&#x2F;时序图&#x2F;思维导图&#x2F;甘特图等】 核心内容：【粘贴你的面经内容，比如”Java商城项目SpringCloud微服务架构，包含用户、订单、支付、商品模块，网关用SpringCloud Gateway，注册中心Nacos，调用流程：用户下单→订单校验库存→商品扣减库存→支付模块发起支付→订单更新状态”】 硬性要求：语法严格符合Mermaid最新规范，能在语雀&#x2F;飞书&#x2F;Notion中直接渲染，节点逻辑清晰，无冗余内容，中文无乱码，只输出Mermaid代码块，不要额外解释。  </div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">817</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">78</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">105</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%9A%E5%8A%A1%E6%B5%81%E7%A8%8B"><span class="toc-text">业务流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84"><span class="toc-text">架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%B9%E7%9B%AE"><span class="toc-text">怎么初始化项目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%A7%E7%9A%84%E7%9F%A5%E8%AF%86%E7%82%B9"><span class="toc-text">大的知识点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0"><span class="toc-text">功能实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E6%A8%A1%E5%9D%97"><span class="toc-text">用户模块</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9B%BE%E7%89%87%E6%A8%A1%E5%9D%97"><span class="toc-text">图片模块</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A9%BA%E9%97%B4%E6%A8%A1%E5%9D%97%EF%BC%88%E4%B8%AA%E4%BA%BA-%E5%9B%A2%E9%98%9F%EF%BC%89"><span class="toc-text">空间模块（个人+团队）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AI%E6%A8%A1%E5%9D%97"><span class="toc-text">AI模块</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E6%9E%90%E6%A8%A1%E5%9D%97"><span class="toc-text">分析模块</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%BD%93%E7%8E%B0"><span class="toc-text">设计模式体现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96"><span class="toc-text">性能优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2"><span class="toc-text">部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E8%AF%B4%E6%98%8E"><span class="toc-text">问题说明</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#id%E9%95%BF%E6%95%B4%E5%9E%8B%E7%AD%89%E7%B2%BE%E5%BA%A6%E4%B8%A2%E5%A4%B1%E9%97%AE%E9%A2%98"><span class="toc-text">id长整型等精度丢失问题</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96"><span class="toc-text">其他</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/19/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-04-19T14:03:30.443Z" title="发表于 2026-04-19 22:03:30">2026-04-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/19/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-04-19T14:03:29.913Z" title="发表于 2026-04-19 22:03:29">2026-04-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/17/2.Areas%F0%9F%8C%90/AI/Hello-Agents/1.%E6%99%BA%E8%83%BD%E4%BD%93%E5%88%9D%E8%AF%86/" title="1.智能体初识">1.智能体初识</a><time datetime="2026-04-17T04:22:50.000Z" title="发表于 2026-04-17 12:22:50">2026-04-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/16/2.Areas%F0%9F%8C%90/temp/%E9%9A%8F%E6%89%8B%E8%AE%B0%E5%BD%95%E5%8F%AF%E8%83%BD%E6%9C%89%E7%94%A8%E7%9A%84/" title="随手记录可能有用的">随手记录可能有用的</a><time datetime="2026-04-16T14:14:40.000Z" title="发表于 2026-04-16 22:14:40">2026-04-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/16/2.Areas%F0%9F%8C%90/temp/ubuntu24.04%E8%A3%85%E6%9C%BA%E6%B8%85%E5%8D%95/" title="ubuntu24.04装机清单">ubuntu24.04装机清单</a><time datetime="2026-04-16T13:12:39.000Z" title="发表于 2026-04-16 21:12:39">2026-04-16</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

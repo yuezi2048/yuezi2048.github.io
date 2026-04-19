@@ -1,0 +1,337 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>3.RAG | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="使用RAG（Retrieval Augmentation Generation 检索增强生成）的需求分析：  知识扩展，给出更精准的回答  减小幻觉  个性化输出：特色服务和回答风格  推销：推销我们的产品和服务   工作机制概览  文档收集和切割  向量转换和存储  文档过滤和检索  查询增强和关联    文档收集与切割 收集的来源：网页、PDF、数据库等原始文档 预处理：清洗、标准化格式 切割">
+<meta property="og:type" content="article">
+<meta property="og:title" content="3.RAG">
+<meta property="og:url" content="https://yuezi2048.github.io/2026/01/27/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/3.RAG/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="使用RAG（Retrieval Augmentation Generation 检索增强生成）的需求分析：  知识扩展，给出更精准的回答  减小幻觉  个性化输出：特色服务和回答风格  推销：推销我们的产品和服务   工作机制概览  文档收集和切割  向量转换和存储  文档过滤和检索  查询增强和关联    文档收集与切割 收集的来源：网页、PDF、数据库等原始文档 预处理：清洗、标准化格式 切割">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2026-01-27T09:06:56.000Z">
+<meta property="article:modified_time" content="2026-01-27T09:06:56.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="yu-ai-agent">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "3.RAG",
+  "url": "https://yuezi2048.github.io/2026/01/27/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/3.RAG/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2026-01-27T09:06:56.000Z",
+  "dateModified": "2026-01-27T09:06:56.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2026/01/27/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/3.RAG/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '3.RAG',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">817</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">78</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">105</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">3.RAG</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">3.RAG</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-01-27T09:06:56.000Z" title="发表于 2026-01-27 17:06:56">2026-01-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-01-27T09:06:56.000Z" title="更新于 2026-01-27 17:06:56">2026-01-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/">01.project</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/">condefather</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/yu-ai-agent/">yu-ai-agent</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>7分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>使用RAG（<strong>Retrieval Augmentation Generation</strong> 检索增强生成）的需求分析：</p>
+<ol>
+<li><p>知识扩展，给出更精准的回答</p>
+</li>
+<li><p>减小幻觉</p>
+</li>
+<li><p>个性化输出：特色服务和回答风格</p>
+</li>
+<li><p>推销：推销我们的产品和服务</p>
+</li>
+</ol>
+<h2 id="工作机制概览"><a href="#工作机制概览" class="headerlink" title="工作机制概览"></a>工作机制概览</h2><blockquote>
+<ul>
+<li><p>文档收集和切割</p>
+</li>
+<li><p>向量转换和存储</p>
+</li>
+<li><p>文档过滤和检索</p>
+</li>
+<li><p>查询增强和关联</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260127162924763.png" alt="image-20260127162924763" style="zoom:50%;" /></li>
+</ul>
+</blockquote>
+<h3 id="文档收集与切割"><a href="#文档收集与切割" class="headerlink" title="文档收集与切割"></a>文档收集与切割</h3><ul>
+<li>收集的来源：网页、PDF、数据库等原始文档</li>
+<li>预处理：清洗、标准化格式</li>
+<li>切割：长文档划分为适当的片段（chunks）<ul>
+<li>基于固定大小（如512token）</li>
+<li>基于语义边界（段落 章节）</li>
+<li>基于递归分割策略（递归字符 n-gram）</li>
+</ul>
+</li>
+</ul>
+<h3 id="向量转换和存储"><a href="#向量转换和存储" class="headerlink" title="向量转换和存储"></a>向量转换和存储</h3><p>向量转换：将文本通过Embedding模型转化为高维向量，可捕获到语义特征</p>
+<p>向量存储：存入向量数据库，支持相似度搜索</p>
+<blockquote>
+<ul>
+<li>embedding 经典的有Word2Vec文本、ResNet图像，一般纬度越高语义信息越丰富但占用空间越多</li>
+<li>向量数据库：存储向量的数据库，支持索引算法快速相似度搜索，支持k近邻查询（注：传统数据库也可以支持，如PGVector插件，Redis Stack的RedisSearch）</li>
+</ul>
+</blockquote>
+<h3 id="文档过滤与检索"><a href="#文档过滤与检索" class="headerlink" title="文档过滤与检索"></a>文档过滤与检索</h3><p>查询处理：用户问题转化为向量</p>
+<p>过滤：基于元数据、关键词或者自定义规则过滤</p>
+<p>相似度搜索：在向量数据库中通过余弦相似度等找到向量相似的文本块</p>
+<p>上下文组装：将检索到的文档连贯为上下文</p>
+<blockquote>
+<p>召回：大规模数据集中筛选出相关的候选子集，关注的是广度和速度（不是精确度），为后续的粗排，精排提供候选集</p>
+<p>精排：一般是搜索&#x2F;推荐的最后阶段，考虑到具体的业务或特征，对少量选项进行更复杂、精细的排序，如短视频根据用户最近的互动从1w个视频中确定最终的10个视频内容和顺序</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260127163523488.png" alt="image-20260127163523488"></p>
+<p>Rank模型：是召回阶段候选集的精确排序，考虑到特征的相关性，如BERT，LambdaMART等，如电商根据用户偏好，点击率等对商品打分排序</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260127163653447.png" alt="image-20260127163653447"></p>
+<p>混合检索：关键词&#x2F;语义&#x2F;知识图谱等，结合多个检索方法，如dify提供了【基于全文关键词检索+基于向量语义检索】混合检索策略，可设置权重</p>
+</blockquote>
+<h2 id="RAG实战（SpringAI-本地知识库）"><a href="#RAG实战（SpringAI-本地知识库）" class="headerlink" title="RAG实战（SpringAI+本地知识库）"></a>RAG实战（SpringAI+本地知识库）</h2><blockquote>
+<p>标准的RAG步骤：</p>
+<ul>
+<li>文档收集和切割</li>
+<li>向量转换和存储</li>
+<li>文档过滤和检索</li>
+<li>查询增强和关联</li>
+</ul>
+<p>简化后采用步骤：</p>
+<ul>
+<li>文档收集</li>
+<li>ETL<ul>
+<li>文档读取</li>
+<li>向量转换和存储</li>
+</ul>
+</li>
+<li>查询增强</li>
+</ul>
+</blockquote>
+<h3 id="ETL-抽取、转换、加载"><a href="#ETL-抽取、转换、加载" class="headerlink" title="ETL(抽取、转换、加载)"></a>ETL(抽取、转换、加载)</h3><p>我们将本地知识库处理，保存到向量数据库的过程称为<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-ai/reference/api/etl-pipeline.html#_markdown">ETL</a>（抽取、转换、加载）</p>
+<p>核心组件（读取、转换、写入）：</p>
+<ul>
+<li>DocumentReader: 读取文档, 得到文档列表</li>
+<li>DocumentTransformer: 转换文档, 得到处理后的文档列表</li>
+<li>DocumentWriter: 将文档列表保存到存储中 (可以是向量数据库, 也可以是其他存储)</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260127164336907.png" alt="image-20260127164336907"></p>
+<h4 id="抽取文档"><a href="#抽取文档" class="headerlink" title="抽取文档"></a>抽取文档</h4><ul>
+<li><p>通过<code>MarkdownDocumentReader</code>加载所有文档并转化为<code>List&lt;Document&gt;</code></p>
+</li>
+<li><p>通过<code>MarkdownDocumentReaderConfig</code>加载配置读取markdown文档的细节（如代码块、引用块），以及文件的<code>元信息</code>（文件名称等）</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">LoveAppDocumentLoader</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ResourcePatternResolver resourcePatternResolver;</span><br><span class="line"></span><br><span class="line">    LoveAppDocumentLoader(ResourcePatternResolver resourcePatternResolver) &#123;</span><br><span class="line">        <span class="built_in">this</span>.resourcePatternResolver = resourcePatternResolver;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> List&lt;Document&gt; <span class="title function_">loadMarkdowns</span><span class="params">()</span> &#123;</span><br><span class="line">        List&lt;Document&gt; allDocuments = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 这里可以修改为你要加载的多个 Markdown 文件的路径模式</span></span><br><span class="line">            Resource[] resources = resourcePatternResolver.getResources(<span class="string">&quot;classpath:document/*.md&quot;</span>);</span><br><span class="line">            <span class="keyword">for</span> (Resource resource : resources) &#123;</span><br><span class="line">                <span class="type">String</span> <span class="variable">fileName</span> <span class="operator">=</span> resource.getFilename();</span><br><span class="line">                <span class="type">MarkdownDocumentReaderConfig</span> <span class="variable">config</span> <span class="operator">=</span> MarkdownDocumentReaderConfig.builder()</span><br><span class="line">                        .withHorizontalRuleCreateDocument(<span class="literal">true</span>)</span><br><span class="line">                        .withIncludeCodeBlock(<span class="literal">false</span>)</span><br><span class="line">                        .withIncludeBlockquote(<span class="literal">false</span>)</span><br><span class="line">                        .withAdditionalMetadata(<span class="string">&quot;filename&quot;</span>, fileName)</span><br><span class="line">                        .build();</span><br><span class="line">                <span class="type">MarkdownDocumentReader</span> <span class="variable">reader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MarkdownDocumentReader</span>(resource, config);</span><br><span class="line">                allDocuments.addAll(reader.get());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            log.error(<span class="string">&quot;Markdown 文档加载失败&quot;</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> allDocuments;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="向量转换和存储-1"><a href="#向量转换和存储-1" class="headerlink" title="向量转换和存储"></a>向量转换和存储</h4><p>通过内置的内存读写向量数据库<code>SimpleVectorStore</code>保存文档，可以看到关系图为-&gt;VectorStor-&gt;DocumentWriter</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260127165912204.png" alt="image-20260127165912204" style="zoom:50%;" />	
+
+<p>加载文档</p>
+<ul>
+<li>提供dashscopeEmbeddingModel的灵积的嵌入模型进行转换向量，之后通过SimpleVectorStore帮助我们转换成向量存入内存向量数据库中</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LoveAppVectorStoreConfig</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    <span class="keyword">private</span> LoveAppDocumentLoader loveAppDocumentLoader;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    VectorStore <span class="title function_">loveAppVectorStore</span><span class="params">(EmbeddingModel dashscopeEmbeddingModel)</span> &#123;</span><br><span class="line">        <span class="type">SimpleVectorStore</span> <span class="variable">simpleVectorStore</span> <span class="operator">=</span> SimpleVectorStore.builder(dashscopeEmbeddingModel)</span><br><span class="line">                .build();</span><br><span class="line">        <span class="comment">// 加载文档</span></span><br><span class="line">        List&lt;Document&gt; documents = loveAppDocumentLoader.loadMarkdowns();</span><br><span class="line">        simpleVectorStore.add(documents);</span><br><span class="line">        <span class="keyword">return</span> simpleVectorStore;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="查询增强"><a href="#查询增强" class="headerlink" title="查询增强"></a>查询增强</h3><p>实现方式：通过SpringAI提供的<code>QuestionAnswerAdvisor</code>问答拦截器 &#x2F; <code>RetrievalAugmentationAdvisor</code>检索增强拦截器实现，后者是更灵活强大的版本</p>
+<p>原理说明：问题发送给模型后，QuestionAnswerAdvisor查询向量数据库，将其返回的文档响应信息附加到用户文本中，为模型提供上下文帮助回答。（源码中是有一个Prompt的提示词）</p>
+<p>实现：参照<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-ai/reference/api/retrieval-augmented-generation.html">官方文档</a>，选用QuestionAnswerAdvisor简单的拦截器，在APP中新增和RAG知识库问答的方法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Resource</span></span><br><span class="line"><span class="keyword">private</span> VectorStore loveAppVectorStore;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">doChatWithRag</span><span class="params">(String message, String chatId)</span> &#123;</span><br><span class="line">    <span class="type">ChatResponse</span> <span class="variable">chatResponse</span> <span class="operator">=</span> chatClient</span><br><span class="line">            .prompt()</span><br><span class="line">            .user(message)</span><br><span class="line">            .advisors(spec -&gt; spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)</span><br><span class="line">                    .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, <span class="number">10</span>))</span><br><span class="line">            <span class="comment">// 开启日志，便于观察效果</span></span><br><span class="line">            .advisors(<span class="keyword">new</span> <span class="title class_">MyLoggerAdvisor</span>())</span><br><span class="line">            <span class="comment">// 应用知识库问答</span></span><br><span class="line">            .advisors(<span class="keyword">new</span> <span class="title class_">QuestionAnswerAdvisor</span>(loveAppVectorStore))</span><br><span class="line">            .call()</span><br><span class="line">            .chatResponse();</span><br><span class="line">    <span class="type">String</span> <span class="variable">content</span> <span class="operator">=</span> chatResponse.getResult().getOutput().getText();</span><br><span class="line">    log.info(<span class="string">&quot;content: &#123;&#125;&quot;</span>, content);</span><br><span class="line">    <span class="keyword">return</span> content;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"> <span class="keyword">void</span> <span class="title function_">doChatWithRag</span><span class="params">()</span> &#123;</span><br><span class="line">     <span class="type">String</span> <span class="variable">chatId</span> <span class="operator">=</span> UUID.randomUUID().toString();</span><br><span class="line">     <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> <span class="string">&quot;我已经结婚了，但是婚后关系不太亲密，怎么办？&quot;</span>;</span><br><span class="line">     <span class="type">String</span> <span class="variable">answer</span> <span class="operator">=</span>  loveApp.doChatWithRag(message, chatId);</span><br><span class="line">     Assertions.assertNotNull(answer);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="debug调试"><a href="#debug调试" class="headerlink" title="debug调试"></a>debug调试</h3><h4 id="ETL-抽取、转换、加载-1"><a href="#ETL-抽取、转换、加载-1" class="headerlink" title="ETL(抽取、转换、加载)"></a>ETL(抽取、转换、加载)</h4><blockquote>
+<p>目标是得到存储后的向量</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line">  VectorStore <span class="title function_">loveAppVectorStore</span><span class="params">(EmbeddingModel dashscopeEmbeddingModel)</span> &#123;</span><br><span class="line">      <span class="type">SimpleVectorStore</span> <span class="variable">simpleVectorStore</span> <span class="operator">=</span> SimpleVectorStore.builder(dashscopeEmbeddingModel)</span><br><span class="line">              .build();</span><br><span class="line">      <span class="comment">// 加载文档</span></span><br><span class="line">      List&lt;Document&gt; documents = loveAppDocumentLoader.loadMarkdowns();</span><br><span class="line">      <span class="comment">// 切分文档，用阿里云百炼的切分</span></span><br><span class="line">      <span class="comment">// List&lt;Document&gt; splitDocuments = myTokenTextSplitter.splitCustomized(documents);</span></span><br><span class="line">      <span class="comment">// ai补充元信息，这里为了节省token，就使用阿里的多轮对话改写，后续可以考虑使用更轻量的模型</span></span><br><span class="line">      <span class="comment">// List&lt;Document&gt; enrichDocuments = myKeywordEnricher.enrichDocuments(documents);</span></span><br><span class="line">      simpleVectorStore.add(documents);</span><br><span class="line">      <span class="keyword">return</span> simpleVectorStore;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></blockquote>
+<p>首先是抽取，通过MarkdownDocumentReader读取本地文件，并传入了元信息等配置信息。</p>
+<p>可以看到按照标题进行了切分，并且加入了元信息，比如status表示当前的婚姻状态</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260130121041187.png" alt="image-20260130121041187"></p>
+<p>其次是转换，可以看到通过嵌入模型，确实得到了向量结果</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260130122911641.png" alt="image-20260130122911641"></p>
+<p>最后通过Spring Bean的方式本地加载我们做好的嵌入向量，后续通过bean的加载即可获取。</p>
+<h4 id="查询增强-1"><a href="#查询增强-1" class="headerlink" title="查询增强"></a>查询增强</h4><p>在ChatClientRequest中看到，用户的问题上下文包含了我们在云文档上配置的文档信息，每个切片包含了元信息、分数</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260130131736237.png" alt="image-20260130131736237"></p>
+<p>再往下追，请求发现提示词被修改了，这是<code>QuestionAnswerAdvisor</code>为我们添加的，经过这一层拦截器后就会加上</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260130131914976.png" alt="image-20260130131914976"></p>
+<p>最终回复内容可以体现知识库的内容</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260130132227797.png" alt="image-20260130132227797"></p>
+<h2 id="RAG云知识库实战"><a href="#RAG云知识库实战" class="headerlink" title="RAG云知识库实战"></a>RAG云知识库实战</h2><p>实际上，可以使用别人提供的云知识库，来方便我们开发，缺点：数据隐私、额外的费用</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260130124409264.png" alt="image-20260130124409264"></p>
+<p>我们仍然使用阿里云百炼的服务</p>
+<h3 id="云端知识库导入"><a href="#云端知识库导入" class="headerlink" title="云端知识库导入"></a>云端知识库导入</h3><p><a target="_blank" rel="noopener" href="https://bailian.console.aliyun.com/cn-beijing/?tab=app#/data-center">应用数据导入</a></p>
+<p><a target="_blank" rel="noopener" href="https://bailian.console.aliyun.com/cn-beijing/?tab=app#/knowledge-base">知识库配置</a></p>
+<p>按照默认配置从应用数据中导入数据。注意的点：</p>
+<ul>
+<li>文档切片可以使用智能切分</li>
+<li>创建好后可以看到切分后的文档，可以手动编辑内容</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260130124846579.png" alt="image-20260130124846579"></p>
+<h3 id="RAG开发"><a href="#RAG开发" class="headerlink" title="RAG开发"></a>RAG开发</h3><p>我们可以对照最新的<a target="_blank" rel="noopener" href="https://java2ai.com/docs/overview/">Spring AI Alibaba</a>进行开发</p>
+<p>核心点：可以使用<code>retrievalAugmentationAdvisor</code>实现检索增强顾问，可以绑定文档检索器、查询转换器、查询增强器，更灵活地构造查询</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Advisor</span> <span class="variable">retrievalAugmentationAdvisor</span> <span class="operator">=</span> RetrievalAugmentationAdvisor.builder()</span><br><span class="line">        .queryTransformers(RewriteQueryTransformer.builder()</span><br><span class="line">                .chatClientBuilder(chatClientBuilder.build().mutate())</span><br><span class="line">                .build())</span><br><span class="line">        .documentRetriever(VectorStoreDocumentRetriever.builder()</span><br><span class="line">                .similarityThreshold(<span class="number">0.50</span>)</span><br><span class="line">                .vectorStore(vectorStore)</span><br><span class="line">                .build())</span><br><span class="line">        .build();</span><br><span class="line"></span><br><span class="line"><span class="type">String</span> <span class="variable">answer</span> <span class="operator">=</span> chatClient.prompt()</span><br><span class="line">        .advisors(retrievalAugmentationAdvisor)</span><br><span class="line">        .user(question)</span><br><span class="line">        .call()</span><br><span class="line">        .content();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>开发思路，首先编写基于云知识库检索增强顾问RetrievalAugmentationAdvisor的配置Bean</p>
+<ul>
+<li>通过DashScopeDocumentRetriever来读取我们创建的云知识库</li>
+<li>指定知识库要通过名称指定</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LoveAppRagCloudAdvisorConfig</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;spring.ai.dashscope.api-key&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String dashScopeApiKey;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> Advisor <span class="title function_">loveAppRagCloudAdvisor</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">DashScopeApi</span> <span class="variable">dashScopeApi</span> <span class="operator">=</span> DashScopeApi.builder()</span><br><span class="line">                .apiKey(dashScopeApiKey)</span><br><span class="line">                .build();</span><br><span class="line">        <span class="keyword">final</span> <span class="type">String</span> <span class="variable">KNOWLEDGE_INDEX</span> <span class="operator">=</span> <span class="string">&quot;恋爱大师&quot;</span>;</span><br><span class="line">        <span class="type">DocumentRetriever</span> <span class="variable">documentRetriever</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DashScopeDocumentRetriever</span>(dashScopeApi,</span><br><span class="line">                DashScopeDocumentRetrieverOptions.builder()</span><br><span class="line">                        .withIndexName(KNOWLEDGE_INDEX)</span><br><span class="line">                        .build());</span><br><span class="line">        <span class="keyword">return</span> RetrievalAugmentationAdvisor.builder()</span><br><span class="line">                .documentRetriever(documentRetriever)</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在app中直接使用RetrievalAugmentationAdvisor即可</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Resource</span></span><br><span class="line"><span class="keyword">private</span> Advisor loveAppRagCloudAdvisor;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">doChatWithRag</span><span class="params">(String message, String chatId)</span> &#123;</span><br><span class="line">    <span class="type">ChatResponse</span> <span class="variable">chatResponse</span> <span class="operator">=</span> chatClient</span><br><span class="line">            .prompt()</span><br><span class="line">            .user(message)</span><br><span class="line">            .advisors(spec -&gt; spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)</span><br><span class="line">                    .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, <span class="number">10</span>))</span><br><span class="line">            <span class="comment">// 开启日志，便于观察效果</span></span><br><span class="line">            .advisors(<span class="keyword">new</span> <span class="title class_">MyLoggerAdvisor</span>())</span><br><span class="line">            <span class="comment">// 应用增强检索服务（云知识库服务）</span></span><br><span class="line">            .advisors(loveAppRagCloudAdvisor)</span><br><span class="line">            .call()</span><br><span class="line">            .chatResponse();</span><br><span class="line">    <span class="type">String</span> <span class="variable">content</span> <span class="operator">=</span> chatResponse.getResult().getOutput().getText();</span><br><span class="line">    log.info(<span class="string">&quot;content: &#123;&#125;&quot;</span>, content);</span><br><span class="line">    <span class="keyword">return</span> content;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="debug调试-1"><a href="#debug调试-1" class="headerlink" title="debug调试"></a>debug调试</h3><p>ETL的工作在云端中，别人帮我们弄好了，我们只需关注查询增强的部分</p>
+<p>在ChatClientRequest中看到，用户的问题上下文包含了我们在云文档上配置的文档信息，每个切片包含了元信息、分数</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260130121753734.png" alt="image-20260130121753734"></p>
+<p>再往下追，请求发现提示词被修改了，这是<code>loveAppRagCloudAdvisor</code>为我们添加的，经过这一层拦截器后就会加上</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260130121942760.png" alt="image-20260130121942760"><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260130121956162.png" alt="image-20260130121956162" style="zoom:50%;" /></p>
+<p>最终得到的结果，是能体现知识库的内容的</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260130122117986.png" alt="image-20260130122117986"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2026/01/27/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/3.RAG/">https://yuezi2048.github.io/2026/01/27/2.Areas🌐/01.project/condefather/yu-ai-agent/3.RAG/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/yu-ai-agent/">yu-ai-agent</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/01/26/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/1.%E5%A4%A7%E6%A8%A1%E5%9E%8B%E6%8E%A5%E5%85%A5%E6%96%B9%E6%A1%88/" title="1.大模型接入方案"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">1.大模型接入方案</div></div><div class="info-2"><div class="info-item-1">来源：大模型接入 相关文档 ai知识库学习  主流的AI库  lanchain4j文档 支持的模型 整合了国产模型的社区版本   springAI文档 支持的模型   springAI Alibaba文档 使用Spring AI Alibaba集成阿里云百炼大模型应用    AI接入服务：  阿里云百炼：可视化平台（智能体、工作流、智能体编排） 应用调用文档 dashScope(灵积)：API接口   ollama本地部署  AI客户端：  cherry studio cursor  大模型开发工作流	 程序如何交互大模型程序与大模型交互的实现思路（demo.invoke目录）：  SDK 依赖DashScope接入SDK——maven 平台申请API key 访问API：通义千问API参考   HTTP 有SDK优先SDK 设置API密钥、请求头、请求体 发送请求，处理响应   Spring AI  spring:  application:    name: spring-ai-alibaba-qwq-chat-client-example  ai:   ...</div></div></div></a><a class="pagination-related" href="/2026/01/30/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">4.RAG进阶</div></div><div class="info-2"><div class="info-item-1">我们先前已经了解RAG的整体工作流程，为了生成更加定制化的内容，现在要进行一些细节的RAG学习 	  RAG进阶学习文档收集与切割（ETL）ETLSpringAI-ETL ETL中的文档实际上不局限于文本，还有一系列的元信息MetaData、多媒体附件MediaContent 		  而针对于ETL，遵循一定的流程，对应着三大组件：  读取文档：DocumentReader负责从数据源加载文档 转换文档：根据需求将文档处理为指定的格式（如去除冗余信息、分词、词性标注等），可通过DocumentTransformer实现 写入文档：DocumentWriter将文档以特定格式保存到存储中，如以嵌入向量的形式写入向量数据库，或者通过k-v键值对保存到Redis等数据库中      Extract_DocumentReader实现了Supplier函数式接口，从数据源中得到Document集合 public interface DocumentReader extends Supplier&lt;List&lt;Document&gt;&gt; &#123;    default...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/03/03/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/0.python%E8%A1%A5%E5%85%85%E8%AE%B0%E5%BD%95/" title="0.python补充记录"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-03</div><div class="info-item-2">0.python补充记录</div></div><div class="info-2"><div class="info-item-1">OpenManus源码拉取时间：2026.3.2  app\agent\base.py#134  results: List[str] = [] # List&lt;String&gt; results = new ArrayList&lt;&gt;();   这段是初始化Field的语法，这个冒号就可以近似地认为是java里的泛型，可以确定他的类型   补充：Optional类比java里的@Nullable注解，可以为空，这是tool\mcp#217中，McpClientTool中定义session字段的写法 session: Optional[ClientSession] = None  app\agent\base.py#135  async with self.state_context(AgentState.RUNNING):         while (             self.current_step &lt; self.max_steps and self.state != AgentState.FINISHED         ):       ...</div></div></div></a><a class="pagination-related" href="/2026/01/26/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/1.%E5%A4%A7%E6%A8%A1%E5%9E%8B%E6%8E%A5%E5%85%A5%E6%96%B9%E6%A1%88/" title="1.大模型接入方案"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-26</div><div class="info-item-2">1.大模型接入方案</div></div><div class="info-2"><div class="info-item-1">来源：大模型接入 相关文档 ai知识库学习  主流的AI库  lanchain4j文档 支持的模型 整合了国产模型的社区版本   springAI文档 支持的模型   springAI Alibaba文档 使用Spring AI Alibaba集成阿里云百炼大模型应用    AI接入服务：  阿里云百炼：可视化平台（智能体、工作流、智能体编排） 应用调用文档 dashScope(灵积)：API接口   ollama本地部署  AI客户端：  cherry studio cursor  大模型开发工作流	 程序如何交互大模型程序与大模型交互的实现思路（demo.invoke目录）：  SDK 依赖DashScope接入SDK——maven 平台申请API key 访问API：通义千问API参考   HTTP 有SDK优先SDK 设置API密钥、请求头、请求体 发送请求，处理响应   Spring AI  spring:  application:    name: spring-ai-alibaba-qwq-chat-client-example  ai:   ...</div></div></div></a><a class="pagination-related" href="/2026/01/26/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/2.%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/" title="2.大模型应用开发"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-26</div><div class="info-item-2">2.大模型应用开发</div></div><div class="info-2"><div class="info-item-1">• Prompt 工程基本概念 • Prompt 优化技巧 • AI 恋爱大师应用需求分析 • AI 恋爱大师应用方案设计 • Spring AI ChatClient &#x2F; Advisor &#x2F; ChatMemory 特性 • 多轮对话 AI 应用开发 • Spring AI 自定义 Advisor • Spring AI 结构化输出 - 恋爱报告功能 • Spring AI 对话记忆持久化 • Spring AI Prompt 模板特性 • 多模态概念和开发 Prompt工程Prompt工程：通过精心设计和优化提示词，引导AI模型的高质量输出 Prompt分类 基于角色   User Prompt：实际的指令 System Prompt：模型行为规则，角色定位隐藏指令 Assisant Prompt：响应内容（多轮对话中之前回复的内容）    基于功能   Instructional Prompts：指令型 Conversational Prompts：对话型 Creative Prompts：创意型，故事诗歌等 Role-playing...</div></div></div></a><a class="pagination-related" href="/2026/01/30/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-30</div><div class="info-item-2">4.RAG进阶</div></div><div class="info-2"><div class="info-item-1">我们先前已经了解RAG的整体工作流程，为了生成更加定制化的内容，现在要进行一些细节的RAG学习 	  RAG进阶学习文档收集与切割（ETL）ETLSpringAI-ETL ETL中的文档实际上不局限于文本，还有一系列的元信息MetaData、多媒体附件MediaContent 		  而针对于ETL，遵循一定的流程，对应着三大组件：  读取文档：DocumentReader负责从数据源加载文档 转换文档：根据需求将文档处理为指定的格式（如去除冗余信息、分词、词性标注等），可通过DocumentTransformer实现 写入文档：DocumentWriter将文档以特定格式保存到存储中，如以嵌入向量的形式写入向量数据库，或者通过k-v键值对保存到Redis等数据库中      Extract_DocumentReader实现了Supplier函数式接口，从数据源中得到Document集合 public interface DocumentReader extends Supplier&lt;List&lt;Document&gt;&gt; &#123;    default...</div></div></div></a><a class="pagination-related" href="/2026/01/31/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-31</div><div class="info-item-2">5.工具调用</div></div><div class="info-2"><div class="info-item-1">具体内容包括: • 工具调用介绍 • Spring AI 工具开发 • 主流工具开发 • 文件操作 • 联网搜索 • 网页抓取 • 终端操作 • 资源下载 • PDF 生成 • 工具进阶知识 (原理和高级特性) 需求分析：现在通过RAG技术让AI可以根据外部知识库获取信息回答的能力，但是可能需要一些外部工具的场景：  联网搜索：如智能推荐约会地点（如cursor的联网搜索，阿里云百炼API也提供该选项支持） 网页抓取：如查看百度贴吧其他吧友是怎么解决情感问题的 资源下载：下载约会时的钢琴曲 终端操作：Python生成恋爱分析报告 文件操作：保存恋爱档案 PDF生成：生成七夕约会计划PDF，餐厅预订-活动流程-礼物清单   以上工具可进行组合搭配使用。让ai不再是简单的问答系统，而是能完成任务的智能体  工具调用 Tool Calling目的：让AI来使用外部工具完成自己做不到的事情，如查询天气，AI本身没有这些知识，但是可以通过联网搜索来完成任务 官方文档 工具调用支持的模型 工具调用的流程：  工具定义: 程序告诉 AI “你可以使用这些工具”,...</div></div></div></a><a class="pagination-related" href="/2026/03/02/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/6.MCP/" title="6.MCP"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-02</div><div class="info-item-2">6.MCP</div></div><div class="info-2"><div class="info-item-1">MCP模型上下文协议首先学习MCP的使用方式 基于SpringAI实战MCP客户端和服务端，掌握MCP架构原理和最佳实践  MCP必知必会 MCP的3种使用方式 ·Spring AI MCP开发模式 Spring AI MCP开发实战- 图片搜索MCP MCP开发最佳实践 MCP部署方案 MCP安全问题   注：AI更新迭代速度快，只需重点学习思路和方法，与实际文档不一致时要阅读官方文档查阅资料  需求目前我们具备了基本的问答和调用工具的能力，接下来我们还想根据另一半的位置找合适的地点，截至目前能想到的思路：  直接让大模型识别到知名的地点位置，但不准确 RAG知识库，约会地点整理为知识库，但需要人工提供足够的信息 工具调用，开发一个根据位置查询店铺工具，通过第三方API实现，这样是比较准确的   第三种是最好的，但是让一个工具就调用个API，这样套一层工具显得有点冗余了，能不能直接让第三方的API直接服务于AI，引出MCP协议。  MCP概念说明**MCP（Model Context...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">817</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">78</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">105</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E6%9C%BA%E5%88%B6%E6%A6%82%E8%A7%88"><span class="toc-text">工作机制概览</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E6%A1%A3%E6%94%B6%E9%9B%86%E4%B8%8E%E5%88%87%E5%89%B2"><span class="toc-text">文档收集与切割</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%91%E9%87%8F%E8%BD%AC%E6%8D%A2%E5%92%8C%E5%AD%98%E5%82%A8"><span class="toc-text">向量转换和存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E6%A1%A3%E8%BF%87%E6%BB%A4%E4%B8%8E%E6%A3%80%E7%B4%A2"><span class="toc-text">文档过滤与检索</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RAG%E5%AE%9E%E6%88%98%EF%BC%88SpringAI-%E6%9C%AC%E5%9C%B0%E7%9F%A5%E8%AF%86%E5%BA%93%EF%BC%89"><span class="toc-text">RAG实战（SpringAI+本地知识库）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ETL-%E6%8A%BD%E5%8F%96%E3%80%81%E8%BD%AC%E6%8D%A2%E3%80%81%E5%8A%A0%E8%BD%BD"><span class="toc-text">ETL(抽取、转换、加载)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8A%BD%E5%8F%96%E6%96%87%E6%A1%A3"><span class="toc-text">抽取文档</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%91%E9%87%8F%E8%BD%AC%E6%8D%A2%E5%92%8C%E5%AD%98%E5%82%A8-1"><span class="toc-text">向量转换和存储</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E5%A2%9E%E5%BC%BA"><span class="toc-text">查询增强</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#debug%E8%B0%83%E8%AF%95"><span class="toc-text">debug调试</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#ETL-%E6%8A%BD%E5%8F%96%E3%80%81%E8%BD%AC%E6%8D%A2%E3%80%81%E5%8A%A0%E8%BD%BD-1"><span class="toc-text">ETL(抽取、转换、加载)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E5%A2%9E%E5%BC%BA-1"><span class="toc-text">查询增强</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RAG%E4%BA%91%E7%9F%A5%E8%AF%86%E5%BA%93%E5%AE%9E%E6%88%98"><span class="toc-text">RAG云知识库实战</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%91%E7%AB%AF%E7%9F%A5%E8%AF%86%E5%BA%93%E5%AF%BC%E5%85%A5"><span class="toc-text">云端知识库导入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RAG%E5%BC%80%E5%8F%91"><span class="toc-text">RAG开发</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#debug%E8%B0%83%E8%AF%95-1"><span class="toc-text">debug调试</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/19/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-04-19T14:03:30.443Z" title="发表于 2026-04-19 22:03:30">2026-04-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/19/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-04-19T14:03:29.913Z" title="发表于 2026-04-19 22:03:29">2026-04-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/17/2.Areas%F0%9F%8C%90/AI/Hello-Agents/1.%E6%99%BA%E8%83%BD%E4%BD%93%E5%88%9D%E8%AF%86/" title="1.智能体初识">1.智能体初识</a><time datetime="2026-04-17T04:22:50.000Z" title="发表于 2026-04-17 12:22:50">2026-04-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/16/2.Areas%F0%9F%8C%90/temp/%E9%9A%8F%E6%89%8B%E8%AE%B0%E5%BD%95%E5%8F%AF%E8%83%BD%E6%9C%89%E7%94%A8%E7%9A%84/" title="随手记录可能有用的">随手记录可能有用的</a><time datetime="2026-04-16T14:14:40.000Z" title="发表于 2026-04-16 22:14:40">2026-04-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/16/2.Areas%F0%9F%8C%90/temp/ubuntu24.04%E8%A3%85%E6%9C%BA%E6%B8%85%E5%8D%95/" title="ubuntu24.04装机清单">ubuntu24.04装机清单</a><time datetime="2026-04-16T13:12:39.000Z" title="发表于 2026-04-16 21:12:39">2026-04-16</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

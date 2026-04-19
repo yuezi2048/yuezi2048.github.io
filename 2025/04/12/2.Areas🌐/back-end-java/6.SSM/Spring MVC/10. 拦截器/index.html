@@ -1,0 +1,259 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>10. 拦截器 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="十、拦截器 SpringMVC提供了处理器拦截器，类似于Servlet的过滤器Filter，作用是对处理器进行预前处理和预后处理  拦截器链，即将一组拦截器按照一定顺序连结，访问某个被拦截的方法后返回，会按照之前的顺序被调用   SpringMVC的拦截器和Servlet过滤器的区别：  过滤器属于原生Servlet，任何Web工程都可以使用，而拦截器是SpringMVC特有的 而过滤器的url-">
+<meta property="og:type" content="article">
+<meta property="og:title" content="10. 拦截器">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/04/12/2.Areas%F0%9F%8C%90/back-end-java/6.SSM/Spring%20MVC/10.%20%E6%8B%A6%E6%88%AA%E5%99%A8/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="十、拦截器 SpringMVC提供了处理器拦截器，类似于Servlet的过滤器Filter，作用是对处理器进行预前处理和预后处理  拦截器链，即将一组拦截器按照一定顺序连结，访问某个被拦截的方法后返回，会按照之前的顺序被调用   SpringMVC的拦截器和Servlet过滤器的区别：  过滤器属于原生Servlet，任何Web工程都可以使用，而拦截器是SpringMVC特有的 而过滤器的url-">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-04-12T07:55:55.000Z">
+<meta property="article:modified_time" content="2025-04-12T07:55:55.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="Spring MVC">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "10. 拦截器",
+  "url": "https://yuezi2048.github.io/2025/04/12/2.Areas%F0%9F%8C%90/back-end-java/6.SSM/Spring%20MVC/10.%20%E6%8B%A6%E6%88%AA%E5%99%A8/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-04-12T07:55:55.000Z",
+  "dateModified": "2025-04-12T07:55:55.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2025/04/12/2.Areas%F0%9F%8C%90/back-end-java/6.SSM/Spring%20MVC/10.%20%E6%8B%A6%E6%88%AA%E5%99%A8/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '10. 拦截器',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">817</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">78</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">105</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">10. 拦截器</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">10. 拦截器</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-04-12T07:55:55.000Z" title="发表于 2025-04-12 15:55:55">2025-04-12</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-04-12T07:55:55.000Z" title="更新于 2025-04-12 15:55:55">2025-04-12</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/">back-end-java</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/6-SSM/">6.SSM</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/6-SSM/Spring-MVC/">Spring MVC</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>4分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="十、拦截器"><a href="#十、拦截器" class="headerlink" title="十、拦截器"></a>十、拦截器</h1><ul>
+<li><p>SpringMVC提供了<code>处理器拦截器</code>，类似于Servlet的过滤器Filter，作用是对处理器进行<strong>预前处理和预后处理</strong></p>
+<ul>
+<li><code>拦截器链</code>，即将一组拦截器按照一定顺序连结，访问某个被拦截的方法后返回，会按照之前的顺序被调用</li>
+</ul>
+</li>
+<li><p><strong>SpringMVC的拦截器和Servlet过滤器的区别</strong>：</p>
+<ul>
+<li>过滤器属于原生Servlet，任何Web工程都可以使用，而拦截器是SpringMVC特有的</li>
+<li>而过滤器的url-pattern配置&#x2F;<em>后，所有的资源都会被拦截，而*<em>拦截器只会拦截控制器方法</em></em>（静态资源不会拦截），是AOP思想的具体应用。</li>
+</ul>
+</li>
+</ul>
+<p>如果我们想要自定义拦截器，要求必须实现：<code>HandlerInterceptor接口 </code> 。</p>
+<h2 id="10-1-自定义拦截器"><a href="#10-1-自定义拦截器" class="headerlink" title="10.1 自定义拦截器"></a>10.1 自定义拦截器</h2><p>首先我们来看<strong>HandlerInterceptor接口</strong>，包括：</p>
+<ul>
+<li>前置拦截器，执行控制方法前<ul>
+<li>如果该方法返回true，则放行，否则拦截</li>
+</ul>
+</li>
+<li>后置拦截器，执行控制器方法后</li>
+<li>最终拦截器，视图选然后</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241114152919237.png" alt="image-20241114152919237">	</p>
+<ol>
+<li>编写控制器方法和jsp页面</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;testInterceptor&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">testInterceptor</span><span class="params">()</span> &#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;testInterceptor is running...&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;success&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight jsp"><table><tr><td class="code"><pre><span class="line">&lt;%</span><br><span class="line">    System.out.println(<span class="string">&quot;success.jsp has render...&quot;</span>);</span><br><span class="line">%&gt;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>编写拦截器</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 自定义拦截器</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> yuezi2048</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@version</span> 1.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">InterceptorDemo1</span> <span class="keyword">implements</span> <span class="title class_">HandlerInterceptor</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 前置拦截器，在目标方法前执行，其返回值为布尔值，true表示拦截器放行，如果为false，控制器方法及其资源都不会执行</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> request</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> response</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> handler</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">preHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;preHandle1 method is running...&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 后置拦截器，在控制器方法之后执行</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> request</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> response</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> handler</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> modelAndView</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">postHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;postHandle1 method is running...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 最终拦截器，视图渲染之后执行</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> request</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> response</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> handler</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> ex</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">afterCompletion</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;afterCompletion1 method is running...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>拦截器配置</li>
+</ol>
+<ul>
+<li>因为拦截器可能有多个，所以外层通过<code>interceptors</code>标签<ul>
+<li>对于每一个具体的<code>interceptor</code><ul>
+<li>定义拦截器的<strong>控制路径mapping</strong></li>
+<li>定义自定义拦截器的<strong>bean对象</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 配置拦截器 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:interceptors</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 定义拦截器拦截指定的控制器方法 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mvc:mapping</span> <span class="attr">path</span>=<span class="string">&quot;/interceptor/testInterceptor&quot;</span>/&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 将拦截器交给Spring容器管理 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;com.xq.interceptor.InterceptorDemo1&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mvc:interceptors</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>测试后端控制台输出</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">preHandle1 method is running...</span><br><span class="line">testInterceptor is running...</span><br><span class="line">postHandle1 method is running...</span><br><span class="line">success.jsp has render...</span><br><span class="line">afterCompletion1 method is running...</span><br></pre></td></tr></table></figure>
+
+<h2 id="10-2-拦截器链执行"><a href="#10-2-拦截器链执行" class="headerlink" title="10.2 拦截器链执行"></a>10.2 拦截器链执行</h2><h3 id="10-2-1-拦截器放行"><a href="#10-2-1-拦截器放行" class="headerlink" title="10.2.1 拦截器放行"></a>10.2.1 拦截器放行</h3><ul>
+<li><code>放行</code>：如果有下一个拦截器就执行下一个拦截器，如果是拦截器链最后一个拦截器就执行控制器方法</li>
+</ul>
+<p>例如上个案例的preHandle方法，此时就是放行，执行控制器方法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">preHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;preHandle1 method is running...&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="10-2-2-多个拦截器的执行顺序"><a href="#10-2-2-多个拦截器的执行顺序" class="headerlink" title="10.2.2 多个拦截器的执行顺序"></a>10.2.2 多个拦截器的执行顺序</h3><ul>
+<li>如果有多个拦截器，以两个拦截器为例，执行过程如下：</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241114161517490.png" alt="image-20241114161517490">	</p>
+<p>接下来进行测试：定义三个拦截器链，只有输出内容不同，其他全部一样</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241114161645995.png" alt="image-20241114161645995">	</p>
+<p>配置拦截器链</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 配置拦截器 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:interceptors</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 定义拦截器拦截指定的控制器方法 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mvc:mapping</span> <span class="attr">path</span>=<span class="string">&quot;/interceptor/testInterceptor&quot;</span>/&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 将拦截器交给Spring容器管理 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;com.xq.interceptor.InterceptorDemo1&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 定义拦截器拦截指定的控制器方法 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mvc:mapping</span> <span class="attr">path</span>=<span class="string">&quot;/interceptor/testInterceptor&quot;</span>/&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 将拦截器交给Spring容器管理 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;com.xq.interceptor.InterceptorDemo2&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 定义拦截器拦截指定的控制器方法 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mvc:mapping</span> <span class="attr">path</span>=<span class="string">&quot;/interceptor/testInterceptor&quot;</span>/&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 将拦截器交给Spring容器管理 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;com.xq.interceptor.InterceptorDemo3&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mvc:interceptors</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>输出内容</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241114161744954.png" alt="image-20241114161744954">	</p>
+<h3 id="10-2-3-中断流程测试"><a href="#10-2-3-中断流程测试" class="headerlink" title="10.2.3 中断流程测试"></a>10.2.3 中断流程测试</h3><p>对拦截器3如果进行中断，即对preHandle方法返回false，测试返回结果</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241114161834093.png" alt="image-20241114161834093">	</p>
+<p>结果如下：发现确实是执行了拦截器1, 2 的<strong>preHandle和postHandle</strong>方法，且没有执行到控制层方法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">preHandle1 method is running...</span><br><span class="line">preHandle2 method is running...</span><br><span class="line">preHandle3 method is running...</span><br><span class="line">afterCompletion2 method is running...</span><br><span class="line">afterCompletion1 method is running...</span><br></pre></td></tr></table></figure></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/04/12/2.Areas%F0%9F%8C%90/back-end-java/6.SSM/Spring%20MVC/10.%20%E6%8B%A6%E6%88%AA%E5%99%A8/">https://yuezi2048.github.io/2025/04/12/2.Areas🌐/back-end-java/6.SSM/Spring MVC/10. 拦截器/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Spring-MVC/">Spring MVC</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/04/12/2.Areas%F0%9F%8C%90/back-end-java/6.SSM/Spring%20MVC/8.%20%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%92%8C%E4%B8%8B%E8%BD%BD/" title="8. 文件上传和下载"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">8. 文件上传和下载</div></div><div class="info-2"><div class="info-item-1">八、文件上传和下载8.1 文件下载后端执行下载的过程如下（写法固定）：  通过ServletContext域对象获取文件真实路径 创建文件输入流，读入字符 设置响应头信息，响应状态码 基于ResponseEntity返回响应结果 关闭输入流  /** * 文件的下载功能 * @param httpSession * @return * @throws IOException */@RequestMapping(&quot;download&quot;)public ResponseEntity&lt;byte[]&gt; downloadFile(HttpSession httpSession) throws IOException &#123;    // 获取ServletContext对象    ServletContext servletContext = httpSession.getServletContext();    // 根据ServletContext对象获取文件的真实路径    String realPath =...</div></div></div></a><a class="pagination-related" href="/2025/04/12/2.Areas%F0%9F%8C%90/back-end-java/6.SSM/Spring%20MVC/11.%20%E6%B3%A8%E8%A7%A3+%E9%85%8D%E7%BD%AE%E7%B1%BB%E6%90%AD%E5%BB%BASpringMVC/" title="11. 注解+配置类搭建SpringMVC"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">11. 注解+配置类搭建SpringMVC</div></div><div class="info-2"><div class="info-item-1">十一、注解+配置类搭建SpringMVC有了上述的基础，我们可以进一步地不适用xml配置文件，转而使用配置类来进行搭建SpringMVC进行简化。  无需配置web.xml和SpringMVC的XML配置文件  首先搭建web项目，导入SpringMVC相关依赖。 11.1 配置类代替web.xml 通过继承AbstractAnnotationConfigDispatcherServletInitializer抽象类 来替代 web.xml，通过重写这些方法的方式进行配置，包括 加载Spring核心配置文件 加载SpringMVC核心配置文件（后续通过我们编写的SpringMVC.java配置类进行配置） 设置前端控制器映射器 定义过滤器（这里以编码过滤器+HiddenHttpMethodFilter为例）    /** * 这个类的作用就类似于web.xml作用 * @author yuezi2048 * @version 1.0 */public class WebInitConfig extends...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/04/12/2.Areas%F0%9F%8C%90/back-end-java/6.SSM/Spring%20MVC/11.%20%E6%B3%A8%E8%A7%A3+%E9%85%8D%E7%BD%AE%E7%B1%BB%E6%90%AD%E5%BB%BASpringMVC/" title="11. 注解+配置类搭建SpringMVC"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-12</div><div class="info-item-2">11. 注解+配置类搭建SpringMVC</div></div><div class="info-2"><div class="info-item-1">十一、注解+配置类搭建SpringMVC有了上述的基础，我们可以进一步地不适用xml配置文件，转而使用配置类来进行搭建SpringMVC进行简化。  无需配置web.xml和SpringMVC的XML配置文件  首先搭建web项目，导入SpringMVC相关依赖。 11.1 配置类代替web.xml 通过继承AbstractAnnotationConfigDispatcherServletInitializer抽象类 来替代 web.xml，通过重写这些方法的方式进行配置，包括 加载Spring核心配置文件 加载SpringMVC核心配置文件（后续通过我们编写的SpringMVC.java配置类进行配置） 设置前端控制器映射器 定义过滤器（这里以编码过滤器+HiddenHttpMethodFilter为例）    /** * 这个类的作用就类似于web.xml作用 * @author yuezi2048 * @version 1.0 */public class WebInitConfig extends...</div></div></div></a><a class="pagination-related" href="/2024/12/15/2.Areas%F0%9F%8C%90/back-end-java/6.SSM/Spring%20MVC/2.%20@RequestMapping/" title="2. @RequestMapping"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-15</div><div class="info-item-2">2. @RequestMapping</div></div><div class="info-2"><div class="info-item-1">二、*@RequestMapping2.1 使用说明@RequestMapping主要是帮助我们建立起请求URL和控制器方法的对应关系。  修饰类，表示URL的一级访问目录 （注：一定要加&#x2F;号） &#x2F;account&#x2F;add   修饰方法：表示URL的二级访问目录，包括如下属性 value：请求的URL，和path等价 method：请求方式 params：请求参数，支持简单的表达式 params &#x3D; {“accountName”}，表示请求参数必须有accountName params &#x3D; {“money!100”}，表示请求参数中money不能是 100      @Target(&#123;ElementType.METHOD, ElementType.TYPE&#125;)@Retention(RetentionPolicy.RUNTIME)@Documented@Mappingpublic @interface RequestMapping &#123;    String name() default...</div></div></div></a><a class="pagination-related" href="/2025/04/12/2.Areas%F0%9F%8C%90/back-end-java/6.SSM/Spring%20MVC/3.%20%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0%E7%BB%91%E5%AE%9A/" title="3. 请求参数绑定"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-12</div><div class="info-item-2">3. 请求参数绑定</div></div><div class="info-2"><div class="info-item-1">三、请求参数绑定用户请求参数的时候，是基于k-v参数进行绑定的，而SpringMVC在控制器中可以进行参数绑定，进而在后端进行接收SpringMVC有三种类型支持参数绑定  基本数据类型（基本类型 + String） pojo数据类型（实体类和关联的实体类） 数组和集合类型的参数（List和Map 包含数组）  其中，参数绑定是底层自动帮我们实现的，使用时需遵循的规则如下：  基本数据类型 &#x2F; String类型，参数名称必须和控制器方法的形参名称一致，严格区分大小写 POJO类型，要求表单中的参数名称和Pojo类的属性名称一模一样，控制器的参数类型也是POJO类型   接下来进行演示，该章节案例请求的URL都在一级目录demo1基础之上定义  3.1 基本数据类型参数绑定Controller层 /** * 前端如果提交字面量的数据（基本数据类型 字符串） * 只需让控制器方法的声明与前端提交的参数一致即可 * 本质上是String传参，而SpringMVC帮助我们实现了类型自动转换 * @param username * @param age * @return...</div></div></div></a><a class="pagination-related" href="/2024/11/15/2.Areas%F0%9F%8C%90/back-end-java/6.SSM/Spring%20MVC/1.%20%E6%A6%82%E8%BF%B0_MVC%E5%85%A5%E9%97%A8%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" title="1. 概述_MVC入门环境搭建"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-15</div><div class="info-item-2">1. 概述_MVC入门环境搭建</div></div><div class="info-2"><div class="info-item-1">一、概述_MVC入门环境搭建1. SpringMVC概述1.1 三层架构问：x为什么要三层开发？主要还是为了一个解耦，各司其职 开发架构有两种模式，一种是C&#x2F;S，另一种是B&#x2F;S，在B&#x2F;S架构下有标准的三层架构：表现层、业务层、持久层  表现层（web）：表现层一般使用Spring MVC，负责接收客户端请求，并向客户端响应结果，通常使用http协议进行，里面又可以包括 控制层（controller）：接收客户端请求，依赖于业务层进行业务处理后，将处理结果响应给客户端 展示层（view）：负责结果展示   业务层（service）：一般通过Spring搭建，负责业务逻辑处理，web层依赖于service层，但service层无需依赖web层，但依赖于持久层（比如事务一致性的案例，事务要在service层实现） 持久层：通过mybatis封装，负责数据持久化，其中包括数据层pojo和数据访问层Dao，通过定义访问的接口供给业务层调用。  	 1.2 MVC架构MVC架构是用来创建Web应用程序表现层的模式，包括：Model（数据封装） View...</div></div></div></a><a class="pagination-related" href="/2024/12/20/2.Areas%F0%9F%8C%90/back-end-java/6.SSM/Spring%20MVC/4.%20%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/" title="4. 常用注解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-20</div><div class="info-item-2">4. 常用注解</div></div><div class="info-2"><div class="info-item-1">四、常用注解 注：本章节的一级目录为demo2  4.1 *@RequestParam 作用： 将请求指定名称的参数给控制器 可以控制该参数是否必须提供，默认值等   属性： value: 请求参数中的名称 required: 请求参数中是否必须提供此参数，默认值为true，表示必须提供，否则会报错。   defaultValue：当前端没有携带该参数时，使用默认值     注：开发中建议加上注解@RequestParam，可以避免因为控制层之后的参数报空指针异常  @Target(&#123;ElementType.PARAMETER&#125;)@Retention(RetentionPolicy.RUNTIME)@Documentedpublic @interface RequestParam &#123;    @AliasFor(&quot;name&quot;)    String value() default &quot;&quot;;    @AliasFor(&quot;value&quot;)    String name() default...</div></div></div></a><a class="pagination-related" href="/2025/04/12/2.Areas%F0%9F%8C%90/back-end-java/6.SSM/Spring%20MVC/5.%20RESTful/" title="5. RESTful"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-12</div><div class="info-item-2">5. RESTful</div></div><div class="info-2"><div class="info-item-1">五、RESTfulRESTful表现层资源状态转移：Representational State Transfer 为什么要用RESTful？可以保证后端控制器方法的url保持统一。 5.1 RESTful简介5.1.1 表现层_资源_状态转移 资源：可由一个或多个URI标识，资源可以具体到一个文件。同时也可以设计的非常抽象 资源表现：是对资源某个时刻状态的描述，可在C-S之间转移，有多种形式表现，如HTML&#x2F;XML&#x2F;JSON&#x2F;文本音频等，通过协商机制确定 状态转移：即表示客户端和服务器之间的转移（transfer），我们是通过转移和操作资源的表述来间接地实现操作资源。  5.1.2...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">817</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">78</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">105</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8D%81%E3%80%81%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="toc-text">十、拦截器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#10-1-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="toc-text">10.1 自定义拦截器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-2-%E6%8B%A6%E6%88%AA%E5%99%A8%E9%93%BE%E6%89%A7%E8%A1%8C"><span class="toc-text">10.2 拦截器链执行</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#10-2-1-%E6%8B%A6%E6%88%AA%E5%99%A8%E6%94%BE%E8%A1%8C"><span class="toc-text">10.2.1 拦截器放行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-2-2-%E5%A4%9A%E4%B8%AA%E6%8B%A6%E6%88%AA%E5%99%A8%E7%9A%84%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="toc-text">10.2.2 多个拦截器的执行顺序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-2-3-%E4%B8%AD%E6%96%AD%E6%B5%81%E7%A8%8B%E6%B5%8B%E8%AF%95"><span class="toc-text">10.2.3 中断流程测试</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/19/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-04-19T14:03:30.443Z" title="发表于 2026-04-19 22:03:30">2026-04-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/19/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-04-19T14:03:29.913Z" title="发表于 2026-04-19 22:03:29">2026-04-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/17/2.Areas%F0%9F%8C%90/AI/Hello-Agents/1.%E6%99%BA%E8%83%BD%E4%BD%93%E5%88%9D%E8%AF%86/" title="1.智能体初识">1.智能体初识</a><time datetime="2026-04-17T04:22:50.000Z" title="发表于 2026-04-17 12:22:50">2026-04-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/16/2.Areas%F0%9F%8C%90/temp/%E9%9A%8F%E6%89%8B%E8%AE%B0%E5%BD%95%E5%8F%AF%E8%83%BD%E6%9C%89%E7%94%A8%E7%9A%84/" title="随手记录可能有用的">随手记录可能有用的</a><time datetime="2026-04-16T14:14:40.000Z" title="发表于 2026-04-16 22:14:40">2026-04-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/16/2.Areas%F0%9F%8C%90/temp/ubuntu24.04%E8%A3%85%E6%9C%BA%E6%B8%85%E5%8D%95/" title="ubuntu24.04装机清单">ubuntu24.04装机清单</a><time datetime="2026-04-16T13:12:39.000Z" title="发表于 2026-04-16 21:12:39">2026-04-16</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>
