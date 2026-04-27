@@ -1,0 +1,560 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>凌语 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="为了实现智能问答的功能，整个项目核心包括以下几个部分：  接入大模型，我是使用基于spring-ai-alibaba-starter，帮助我集成ai相关的依赖，后续就用CharModel和ChatClient的API模型就能直接实现后端与大模型的交互，这是对话的核心 Advisors顾问 对话前 对话记忆：我们需要将上下文保存起来 像他是提供了一个MessageChatMemoryAdvisor在">
+<meta property="og:type" content="article">
+<meta property="og:title" content="凌语">
+<meta property="og:url" content="https://yuezi2048.github.io/2026/04/09/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%A1%B9%E7%9B%AE/%E5%87%8C%E8%AF%AD/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="为了实现智能问答的功能，整个项目核心包括以下几个部分：  接入大模型，我是使用基于spring-ai-alibaba-starter，帮助我集成ai相关的依赖，后续就用CharModel和ChatClient的API模型就能直接实现后端与大模型的交互，这是对话的核心 Advisors顾问 对话前 对话记忆：我们需要将上下文保存起来 像他是提供了一个MessageChatMemoryAdvisor在">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2026-04-09T03:19:14.000Z">
+<meta property="article:modified_time" content="2026-04-09T03:19:14.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="项目">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "凌语",
+  "url": "https://yuezi2048.github.io/2026/04/09/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%A1%B9%E7%9B%AE/%E5%87%8C%E8%AF%AD/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2026-04-09T03:19:14.000Z",
+  "dateModified": "2026-04-09T03:19:14.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2026/04/09/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%A1%B9%E7%9B%AE/%E5%87%8C%E8%AF%AD/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '凌语',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">829</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">81</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">109</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">凌语</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">凌语</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-04-09T03:19:14.000Z" title="发表于 2026-04-09 11:19:14">2026-04-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-09T03:19:14.000Z" title="更新于 2026-04-09 11:19:14">2026-04-09</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/">02.面经记录</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%A1%B9%E7%9B%AE/">项目</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">16.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>50分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>为了实现智能问答的功能，整个项目核心包括以下几个部分：</p>
+<ul>
+<li>接入大模型，我是使用基于spring-ai-alibaba-starter，帮助我集成ai相关的依赖，后续就用CharModel和ChatClient的API模型就能直接实现后端与大模型的交互，这是对话的核心</li>
+<li>Advisors顾问<ul>
+<li>对话前<ul>
+<li>对话记忆：我们需要将上下文保存起来<ul>
+<li>像他是提供了一个<code>MessageChatMemoryAdvisor</code>在本地内存进行的保存上下文记忆</li>
+<li>而我为了永久保存，采用了磁盘存储的方式，用到了开源组件序列化库Kryo来讲Message的复杂对象序列化</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>对话后：</li>
+<li>整体观测性：<ul>
+<li>我通过翻阅Spring AI的文档，自定义了一个顾问，可以进行AI请求和响应的日志LoggerAdvisor，并尝试使用提高模型推理能力的ReReadingAdvisor</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>创建自定义 Advisor 类：该类需要同时实现 <code>CallAroundAdvisor</code>（用于同步请求）和 <code>StreamAroundAdvisor</code>（用于流式请求）接口，让该类更通用 (在 Spring AI 1.0 版本中，上述两个接口需要更改为 <code>CallAdvisor</code> 和 <code>StreamAdvisor</code>)</p>
+</blockquote>
+<ul>
+<li>而为了更好的完成目标，我对智能问答的场景设立了若干提示词模板<code>PromptTemplate</code>，主要是有一个占位符可以替换变量，这个提示词可以交给外部来加载，好维护</li>
+<li>RAG 检索增强生成：<ul>
+<li>ETL<ul>
+<li>像我项目中就是用MarkdownDocumentReader来加载知识库</li>
+<li><code>TokenTextSplitter</code> 基于token来文本分割</li>
+<li><code>KeywordMetadataEnricher</code>，自动为文档添加关键词元数据。</li>
+</ul>
+</li>
+<li>向量存储：集成SimpleVectorStore和PgVectorStore来存储文档向量，而在集成PG向量库时，我解决了多个EmbeddingModel Bean冲突的问题</li>
+<li>检索和增强：<ul>
+<li>QuestionAnswerAdvisor</li>
+<li>更灵活的是通过RetrievalAugmentionAdvisor，后者结合了VectorSotreDocumentRetriever和ContextualQueryAugmenter等进行查询优化和空上下文处理，我还用了一个查询重写的优化技术</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>工具调用：是用到了 官方中的Tool、 ToolParam来解释工具，比如常用的文件操作、联网搜索、生成PDF等，然后通过chartClient的tools方法讲工具注册给AI模型<ul>
+<li>我是用到了一个注册器模式，交给一个统一的工具管理者</li>
+<li>在构建  智能体时，我手动控制了工具的执行流程（ReAct模式），通过<code>DashScopeChatOptions</code>禁用 Spring AI 内部的自动工具执行，更方便、更精细地管理思考-行动循环。</li>
+</ul>
+</li>
+<li>MCP：<ul>
+<li>客户端，用了spring-ai-mcp-cient-spring-boot-starter，配置了两种，stdio和SSE的方式来调用外部的MCP服务，并通过ToolCallbackProvider讲MCP的服务集成到chatClient的工具调用中</li>
+<li>服务端：基于<code>spring-ai-mcp-server-webmvc-spring-boot-starter </code>,写了一个图片搜索服务，通过Tool注解暴露同居，并通过ToolCallBackProvider注册到Bean中</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>集成 Spring AI 自动配置的 VectorStore 时，项目中同时引入了多个 EmbeddingModel 的 Bean（包括 Ollama 和阿里云 DashScope 的 EmbeddingModel），Spring AI 因为无法确定注入哪一个 EmbeddingModel 导致了 PgVectorStoreAutoConfiguration 问题。为了解决这个问题，我采取了手动配置 PgVectorStore Bean 的方式，并在启动类中排除了自动配置，明确指定需要使用的 EmbeddingModel。</p>
+</blockquote>
+<h1 id="接入大模型的方式"><a href="#接入大模型的方式" class="headerlink" title="接入大模型的方式"></a>接入大模型的方式</h1><p>SDK（方便但固定死板） HTTP（灵活但处理麻烦） SpringAI （进一步抽象，一个接口对应多个厂商）LangChain4j（更高级的工具编排）<br>问题：</p>
+<ul>
+<li>上下文限制，我平常用的比较多的MiniMax2.5，他上下文只有204.8K，所以要分片，我在openclaw中也要定期压缩或者创建新会话</li>
+<li>还有我像用硅基流动，这些模型，他有一个速率限制，QPS和TPM，OpenAI 他免费会有TPM的速率限制</li>
+<li>还有 超时问题</li>
+<li>token的费用问题</li>
+</ul>
+<blockquote>
+<p>追问：流式响应如果客户端断开了，Flux会有一个断开的cancel信号，那么可以通过处理这个事件来执行清理逻辑，实际上更重要的是释放服务器资源，因为不管客户端有没有挂，钱是一直在扣的<br>追问：多个模型灰度切换。这个要在上层做， 我是定义了多个ChatClient的Bean绑定不同的模型，然后在编写一个路由逻辑，根据用户ID哈希决定走哪个，或者如果上了微服务的话，也可以在网关就处理流量的分发</p>
+</blockquote>
+<h1 id="对话记忆"><a href="#对话记忆" class="headerlink" title="对话记忆"></a>对话记忆</h1><p>这个会话记忆是基于chatmemory和Advisor的特性来实现的。</p>
+<ul>
+<li>实际上，我是通过API的chatClient集成，Advisors，你可以把它理解为是可插拔的一串拦截器，在调用AI前后我们可以进行额外操作</li>
+<li>那么对话记忆就是在调用后的多轮对话上下文，使用MessageChatMemoryAdvisor来实现多轮对话，对话历史能作为消息集合添加到之前的集合中，能记住之前的交流<ul>
+<li><code>MessageChatMemoryAdvisor</code> 依赖于 <code>ChatMemory</code> 接口的实现来存取对话历史。<code>ChatMemory</code> 接口中定义了保存消息、查询消息和清空历史的方法。</li>
+<li>Spring AI 提供了多种持久化方案，例如 <code>JdbcChatMemory</code> 可以将对话保存在关系型数据库中。但是在本项目中，考虑到 <code>spring-ai-starter-model-chat-memory-jdbc</code> 依赖版本较少且缺乏相关介绍，我选择了自定义实现 <code>ChatMemory</code> 接口的方式：<ul>
+<li>. 开发一个 <code>FileBasedChatMemory</code> 类，它实现了 <code>ChatMemory</code> 接口。</li>
+<li>使用高性能的 Kryo 序列化库将对话消息（<code>Message</code> 对象及其子类）序列化后保存到本地文件中，读取时再进行反序列化。选择 Kryo 是因为 <code>Message</code> 接口有多种实现，结构不一，且没有无参构造和 <code>Serializable</code> 接口，普通的 JSON 序列化难以处理。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>具体来说，一个会话ID对应序列化到一个文件中，通过Kyro序列化 Message对象存取。而考虑到本身效率慢，所以我参考了Redis的全量备份+增量备份的思路，每天跑一个定时任务，将Redis中的序列化内容再写入到磁盘，并将Redis作为兜底服务宕机后，数据丢失的问题，启动后则自动进行全量+增量的恢复<br>- 首先构造时，确定基础路径<br>- 但是由于Message有很多子类(ChatMemory 接口就是add Message&#x2F;List&lt;Message&gt; get clear)，像UserMessage SystemMessage，并且是否有序列化，构造函数等，所以就不考虑使用JSON的序列化了<br>	- add时，根据对话id创建新的消息列表，而如果是list add，则是将更新后的信息反序列化到文件<br>	- get则是读取会话文件，反序列化列表，然后读取MAX(Last_N，当前总数)，clear就是删除对应的会话</p>
+</blockquote>
+<h1 id="结构化输出"><a href="#结构化输出" class="headerlink" title="结构化输出"></a>结构化输出</h1><p><code>StructuredOutputConverter</code>机制，调用前将格式请求加入到prompt中，他实现了FormatProvider接口。<br>调用后，则将文本转换成Java对象，他也实现了SPring里的Converter接口，ObjectMapper将JSON反序列化成想要的Bean<br>![[Pasted image 20260409092556.png]]</p>
+<h4 id="提问：结构化输出和-Function-Calling-有什么区别？"><a href="#提问：结构化输出和-Function-Calling-有什么区别？" class="headerlink" title="提问：结构化输出和 Function Calling 有什么区别？"></a>提问：结构化输出和 Function Calling 有什么区别？</h4><p>回答：结构化输出是让模型返回指定格式的数据，本质还是”回答问题”。Function Calling 是让模型决定”要不要调用某个函数、传什么参数”，是一种决策行为。结构化输出的结果是最终答案，Function Calling 的结果是中间步骤，拿到参数后还得真去调用函数、把结果再喂给模型。</p>
+<h4 id="提问：结构化输出的-Token-消耗会不会比普通输出高很多？"><a href="#提问：结构化输出的-Token-消耗会不会比普通输出高很多？" class="headerlink" title="提问：结构化输出的 Token 消耗会不会比普通输出高很多？"></a>提问：结构化输出的 Token 消耗会不会比普通输出高很多？</h4><p>回答：会高一些，因为 Prompt 里多了一段 JSON Schema 描述，输出也是 JSON 格式比自然语言更啰嗦。但通常不会高太多，几十到几百 Token 的增量。如果 Schema 特别复杂、字段特别多，可以考虑只描述关键字段，其他的让模型自由发挥。</p>
+<h1 id="知识库构建"><a href="#知识库构建" class="headerlink" title="知识库构建"></a>知识库构建</h1><p>两个方案，云端保证+本地兜底<br>1）方案 1：Spring AI + 本地知识库</p>
+<p>这种方式更侧重于 <strong>通过编程</strong> 完整地实现 RAG 的核心流程。</p>
+<ul>
+<li>文档准备与读取：准备好知识文档，放到类路径下，我通过MarkdownDocumentReader读取，并通过MarkdownDocumentReaderConfig配置读取方式，然后添加一些元数据，便于检索</li>
+<li>向量转换和存储：读取到的文档列表会通过一个 <code>EmbeddingModel</code>（本项目中使用了 <code>dashscopeEmbeddingModel</code>）转换为向量。为了简化开发和学习，我在初期使用了 Spring AI 内置的、基于内存的 <code>SimpleVectorStore</code> 来存储这些文档向量。<code>SimpleVectorStore</code> 实现了 <code>VectorStore</code> 接口，该接口继承自 <code>DocumentWriter</code>，可以直接接收并处理文档列表的写入请求，内部完成向量化和存储过程。</li>
+<li>查询增强和关联：当用户提问时，我通过 Spring AI 的 <code>QuestionAnswerAdvisor</code> 实现知识库的 “无感知” 调用。这个 Advisor 会查询 <code>SimpleVectorStore</code>，找出与用户问题相关的文档片段，并将这些检索到的内容作为上下文附加到用户的原始提问中，形成一个增强的 Prompt，最后发送给大语言模型生成回答。</li>
+</ul>
+<p>2）方案 2：Spring AI + 云知识库服务 (以阿里云百炼为例)</p>
+<p>这种方式则更多地依赖云平台提供的能力来简化 RAG 的构建。</p>
+<ul>
+<li>云端知识库准备：我首先在阿里云百炼平台上传原始的知识文档。平台负责文档的解析、智能切分（将长文档分割成合适的片段）以及向量化，并将处理后的数据存储在向量数据库中。我们可以在百炼控制台手动管理这些知识库和文档切片。</li>
+<li>程序对接与查询增强：Spring AI Alibaba 生态提供了与百炼平台集成的 <code>DashScopeDocumentRetriever</code>。我通过配置这个<code>DocumentRetriever</code>（主要提供 API Key 和百炼上知识库的名称），实现从云端的知识库中检索信息。为了将云端检索能力集成到 AI 对话流程中，我使用了 <code>RetrievalAugmentationAdvisor</code>，这是一个更灵活的Advisor，我可以通过它指定使用自定义的 <code>DocumentRetriever</code>。当用户提问时，这个 Advisor 会通过 <code>DashScopeDocumentRetriever</code> 从百炼知识库中获取相关内容，增强用户提问，然后交由大模型处理。</li>
+</ul>
+<p>RAG流程：</p>
+<ul>
+<li>ETL（抽取转换 加载）<ul>
+<li>文档收集与切割：文档-预处理（去除干扰）-切片，10页的pdf大概50-100块，大概一块有200-500token<ul>
+<li>使用 <code>DocumentReader</code> 从数据源加载原始文档。我准备了 Markdown 格式的恋爱知识文档，然后引入了 <code>spring-ai-markdown-document-reader</code> 依赖，并创建了 <code>LoveAppDocumentLoader</code> 类加载读取文档</li>
+<li>使用 <code>DocumentTransformer</code> 对加载的文档进行处理，我使用了两种方式进行了文档的拆分，包括 <code>MarkdownDocumentReader</code>自动拆分 + <code>TokenTextSplitter</code> 拆分，还使用了 <code>KeywordMetadataEnricher</code> 自动为文档补充关键词元信息。</li>
+</ul>
+</li>
+<li>向量转换与存储：Embedding模型转换成高维向量，像我用的国产的 BGE-M3 支持最多 8192 维。将向量联通原始文本和元数据塞入到向量数据库中，Milvus Pipecone<ul>
+<li>使用 <code>DocumentWriter</code> 将转换后的文档写入存储库。在项目初期，我使用了 Spring AI 内置的、基于内存的 <code>SimpleVectorStore</code> 作为向量数据库。<code>SimpleVectorStore</code> 自身实现了 <code>VectorStore</code> 接口，而 <code>VectorStore</code> 接口又继承了 <code>DocumentWriter</code>，所以它可以直接接收 Document 列表进行存储。后来我还实践了把文档加载到基于 PostgreSQL 的 PGVector 向量数据库中。<ul>
+<li>在配置类中，通过 <code>PgVectorStore.builder()</code> 方法创建 <code>VectorStore</code> 实例。这个Builder 需要传入一个 <code>JdbcTemplate</code> 和一个明确指定的 <code>EmbeddingModel</code>。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ol start="2">
+<li>配置完成后，这个自定义的 <code>pgVectorVectorStore</code> Bean 就可以像其他 <code>VectorStore</code> 实现一样被注入到服务中，用来添加文档和执行相似性搜索。</li>
+</ol>
+<ul>
+<li>文档过滤与检索：请求来，转成Embeddind后在向量数据库相似度检索Top-k，然后也可以根据元数据、时间段，或指定来源的数据条件限制</li>
+<li>查询增强与关联：将检索的文档和原始问题拼接后，增强的Prompt给大模型，这样就不依赖外部数据，不容易有幻觉，并且最后也能标注来源，知道是从哪里出来的</li>
+</ul>
+<p>![[Pasted image 20260409094745.png]]<br>![[Pasted image 20260409093054.png]]</p>
+<p>怎么切分的？<br>我项目里是本地用了重叠切割+语义的校验，一块就500token，每相邻块有100token的重叠，用冗余信息的开销来保证上下文的连贯，减少边界信息丢失。而更好的是LangChain的递归切割，完整性和粒度的权衡，智能分层 章节-段落-句子</p>
+<p>![[Pasted image 20260409093713.png]]</p>
+<blockquote>
+<p>Embeding模型用什么？<br>看成本和效果的权衡。选型要考虑几个维度：维度数、上下文长度、多语言支持、检索精度。OpenAI 的 text-embedding-3-large 精度高但贵，3-small 性价比不错。开源的 BGE 系列在中文场景表现好，Sentence-Transformers 的 all-MiniLM-L6-v2 轻量级，适合本地部署。<br>还有个关键点，索引阶段和查询阶段必须用同一个模型。用 A 模型生成文档向量，用 B 模型生成查询向量，两边的向量空间对不上，检索效果直接崩盘。</p>
+</blockquote>
+<blockquote>
+<p>向量数据库用什么？<br>1）文档量小于 100 万条，Chroma 够用，内嵌 SQLite，部署简单，适合原型验证<br>2）百万到千万级，Milvus 或 Qdrant，分布式架构，支持水平扩展<br>3）追求托管省心，Pinecone 按量付费，不用自己运维<br>4）已经有 PostgreSQL 基础设施，pgvector 插件能直接用，不用额外引入新组件</p>
+</blockquote>
+<p>为什么要设计批处理优化策略？它解决了什么问题？<br>因为当需要处理和嵌入大量文档时，如果一次性将所有文档或非常大的文档集合提交给嵌入模型进行处理，可能会引发以下几个主要问题：</p>
+<ol>
+<li>嵌入模型的上下文窗口限制：大多数嵌入模型都有一个最大输入Token数量的限制，即 “上下文窗口大小”。如果单次请求中包含的文本量超出了这个限制，嵌入模型的 API 调用通常会直接失败或报错。而批处理策略通过将大量文档分割成较小的、Token 数量在模型限制内的批次，保证每次提交给嵌入模型的文本量都在处理能力范围内。</li>
+<li>性能和效率：处理非常大的单体请求有可能会给嵌入服务或网络传输带来压力，导致处理时间过长或不稳定。将任务分解为多个小批次，至少可以让单个请求的处理时间更可控，提高整体的处理吞吐量和稳定性。</li>
+<li>错误处理和资源管理：如果一个包含数千个文档的大请求在处理过程中失败，可能需要重试整个大请求，浪费时间和资源。将文档分成小批次处理，如果某个批次失败，只需要重试该小批次就好了。而且，小批次也更易于管理内存等客户端资源。<br>我之前实验室的发票管理系统中也开发过数据导入导出的功能，也是将数据分批进行处理来优化在大数据量下的性能和稳定性，所以我觉得 Spring AI 提供自定义批处理优化策略这点还是挺妙的。</li>
+</ol>
+<p>多查询扩展知道吗？<br>是RAG预检索的优化，对用户查询本身会有多个版本变体，在用户输入模糊或者知识库样式多样的情况下，可以捕捉到潜在意图，增加匹配文档的机会，提供更好的上下文信息，Spring AI <code>MultiQueryExpander</code>指定期望生成查询数量  会返回一个包含原始查询及多个扩展查询的列表。之后遍历这个列表去topK就行，将所有结果作为上下文</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">MultiQueryExpander</span> <span class="variable">queryExpander</span> <span class="operator">=</span> MultiQueryExpander.builder()</span><br><span class="line">    .chatClientBuilder(chatClientBuilder)</span><br><span class="line">    .numberOfQueries(<span class="number">3</span>)</span><br><span class="line">    .build();</span><br><span class="line">List&lt;Query&gt; queries = queryExpander.expand(<span class="keyword">new</span> <span class="title class_">Query</span>(<span class="string">&quot;啥是程序员？他会啥？&quot;</span>));</span><br></pre></td></tr></table></figure>
+
+<p>查询重写知道吗？<br>是RAG预检索的优化，<code>QueryTransformer</code> 接口及其实现类来支持查询重写。比如 <code>RewriteQueryTransformer</code> 可以将简单查询改写得更具体、更专业；而 <code>CompressionQueryTransformer</code> 则专注于处理多轮对话场景，将对话历史和当前问题压缩成一个独立的、包含完整上下文的新查询。使用时，需要为这些转换器配置一个 <code>ChatClient</code> 或 <code>ChatModel</code>，然后调用其 <code>transform</code> 方法传入原始查询即可得到重写后的查询。</p>
+<p>上下文查询增强？<br>把用户的原始查询与从知识库中检索到的相关文档进行结合，形成一个信息更丰富的增强提示，然后将这个增强提示提供给 AI，让模型能基于这些特定知识生成回答。主要作用是为大模型提供必要的、实时的外部知识，这样 AI 的回答就不仅仅依赖于其预训练的通用知识，提高答案的准确性、相关性和时效性。<br>Spring AI 的 <code>RetrievalAugmentationAdvisor</code> 内部使用 <code>ContextualQueryAugmenter</code> 来实现上下文查询增强。当处理用户提出的无关问题时，<code>ContextualQueryAugmenter</code> 提供了<strong>空上下文</strong>处理机制。检索不到相关文档时，系统会使用这个自定义模板来指示大模型如何回应</p>
+<p>在本项目中，我使用动态 RAG Advisor 工厂（<code>LoveAppRagCustomAdvisorFactory</code>）主要是为了在运行时根据特定条件（比如用户的恋爱状态）动态地创建和配置 RAG 流程中的 <code>Advisor</code>，将条件作为文档检索器的过滤条件，实现更精确的文档查询。<br>如果针对每一种可能的过滤规则（比如按 “单身”、“恋爱中”、“已婚” 等状态过滤知识库文档）都预先定义一个<code>Advisor Bean</code>，会导致配置繁琐且缺乏灵活性。 通过工厂模式，我们可以将创建和配置<code>Advisor</code>的逻辑集中起来，根据传入的参数（如<code>status=&quot;已婚&quot;</code>）动态构建 <code>Filter.Expression</code>，并用此表达式来初始化 <code>VectorStoreDocumentRetriever</code>。 保证在处理不同用户情境的提问时，RAG 系统能精确地从知识库中筛选出最相关的文档子集，提高 AI 回答的针对性和准确性。</p>
+<h4 id="提问：检索出来的文档块顺序重要吗？放在-prompt-里的位置会影响模型回答吗？"><a href="#提问：检索出来的文档块顺序重要吗？放在-prompt-里的位置会影响模型回答吗？" class="headerlink" title="提问：检索出来的文档块顺序重要吗？放在 prompt 里的位置会影响模型回答吗？"></a>提问：检索出来的文档块顺序重要吗？放在 prompt 里的位置会影响模型回答吗？</h4><p>回答：顺序确实有影响，大模型对 prompt 中间部分的注意力会弱一些，这个现象叫”Lost in the Middle”。相关性最高的文档块最好放在 prompt 开头或结尾，中间塞次要的。有研究测过，把关键信息从开头挪到中间，模型回答准确率能掉 10-20 个百分点。</p>
+<h4 id="提问：向量检索的相似度阈值怎么设？设太高会怎样，设太低又会怎样？"><a href="#提问：向量检索的相似度阈值怎么设？设太高会怎样，设太低又会怎样？" class="headerlink" title="提问：向量检索的相似度阈值怎么设？设太高会怎样，设太低又会怎样？"></a>提问：向量检索的相似度阈值怎么设？设太高会怎样，设太低又会怎样？</h4><p>回答：阈值设太高，检索不到东西，模型只能干瞪眼，回答”我不知道”或者开始瞎编。设太低，捞回来一堆不相关的内容，噪音太多，模型被带偏。一般做法是先不设阈值，观察 Top-K 结果的分数分布，找一个明显的分数断层点作为阈值。还有一种是动态阈值，根据最高分的比例来定，Top-1 分数的 70% 作为过滤线。</p>
+<h4 id="提问：RAG-系统上线后怎么评估效果好不好？"><a href="#提问：RAG-系统上线后怎么评估效果好不好？" class="headerlink" title="提问：RAG 系统上线后怎么评估效果好不好？"></a>提问：RAG 系统上线后怎么评估效果好不好？</h4><p>回答：离线评估看检索准确率，标注一批问题和正确文档的对应关系，算 Recall@K 和 MRR。线上评估看两个指标，一个是用户反馈率，回答下面加个”有用&#x2F;没用”按钮。另一个是追问率，用户连续追问说明第一次没答到点子上。还可以用 LLM 做自动评估，让 GPT 当裁判打分，虽然不完美但比没有强。</p>
+<h4 id="提问：文档更新了怎么办？要全量重建索引吗？"><a href="#提问：文档更新了怎么办？要全量重建索引吗？" class="headerlink" title="提问：文档更新了怎么办？要全量重建索引吗？"></a>提问：文档更新了怎么办？要全量重建索引吗？</h4><p>回答：看更新量级。零星改几个文档，增量更新就行，删掉旧向量，插入新向量。但如果换了 Embedding 模型，或者切割策略大改，那必须全量重建，新旧向量空间不兼容。大规模文档库一般会搞双索引热切换，新索引在后台慢慢建，建完之后一次性切过去，不影响线上服务。</p>
+<h1 id="工具调用"><a href="#工具调用" class="headerlink" title="工具调用"></a>工具调用</h1><p>工具调用 (Tool Calling)，也常被称为 Function Calling，是一种允许 AI 大模型在对话过程中，根据需要请求执行外部工具来完成特定任务的机制。</p>
+<p>AI 模型本身可能不具备实时查询天气、操作数据库或访问特定 API 的能力，通过工具调用，它可以识别出什么时候需要这些外部能力，并生成一个包含工具名称和所需参数的请求。 应用程序接收到这个请求后，实际执行相应的工具，并将执行结果返回给 AI 模型，模型再基于这个结果继续对话或生成最终答案。</p>
+<p><strong>注意，真正执行工具的是我们的应用程序，而非 AI 服务器本身。</strong></p>
+<p>1）定义工具：通常使用注解方式，在一个 Java 类中，将希望作为工具的方法标记上 <code>@Tool</code> 注解。方法的参数可以使用 <code>@ToolParam</code> 注解来提供描述和指定是否必需。Spring AI 支持多种 Java 类型作为参数和返回值，但返回值需要可序列化。</p>
+<p>2）注册与使用工具：</p>
+<ul>
+<li>按需使用：在构建 <code>ChatClient</code> 请求时，通过 <code>.tools()</code> 方法直接传入工具类的实例。</li>
+<li>全局使用：在构建 <code>ChatClient</code> 时，通过 <code>.defaultTools()</code> 注册默认工具，这些工具对该 <code>ChatClient</code> 发起的所有对话都可用。</li>
+<li>集中注册：可以创建一个配置类，使用 <code>@Bean</code> 方法将所有工具实例化并通过 <code>ToolCallbacks.from()</code> 统一注册为一个 <code>ToolCallback[]</code> 数组，方便管理和注入。</li>
+</ul>
+<p>3）调用流程：当使用配置了工具的 <code>ChatClient</code> 进行对话时，如果 AI 模型判断需要使用某个工具，Spring AI 框架会自动执行以下步骤，无需开发者关心：</p>
+<ul>
+<li>解析 AI 模型返回的工具调用请求（包含工具名和参数）。</li>
+<li>根据工具名找到对应的 Java 方法并执行。</li>
+<li>将工具执行的结果转换并返回给 AI 模型。</li>
+<li>AI 模型根据工具结果生成最终回复。<br>![[Pasted image 20260409100409.png]]</li>
+</ul>
+<p>对比skill</p>
+<blockquote>
+<p><strong>Tool 扩展的是 Agent 的”能力”（What it can do）——让 Agent 能做事；</strong> <strong>Skill 扩展的是 Agent 的”专长”（What it knows）——让 Agent 会做事。</strong><br>Tool 是 Agent 的”手”，负责执行具体动作（查数据库、调 API、写文件）；Skill 是 Agent 的”经验”，封装了领域知识、流程编排和行为模式，指导 Agent 如何高效地完成特定场景的任务。</p>
+</blockquote>
+<p>tool中模型理解工具定义（函数签名 + 描述），生成结构化的调用请求，框架负责实际执行并将结果返回模型  <strong>流程可靠性不足</strong><br>skill模型仅需感知”这个技能存在、能做什么、怎么触发”，内部实现对模型完全黑盒。Skill 不直接暴露函数签名给模型，而是通过一个声明文件（如 <code>SKILL.md</code>） <strong>流程稳定可控</strong><br>这种设计契合 Anthropic 提出的**“渐进式披露”（Progressive Disclosure）** 原则：不一次性将所有细节灌给模型，而是按需加载，让模型专注于决策而非理解实现。</p>
+<ul>
+<li><strong>底层用 Tool</strong> 实现原子能力（数据查询、消息发送、文件操作等）</li>
+<li><strong>上层用 Skill</strong> 实现场景化封装（审批流程、报表生成、客户回访等）</li>
+<li>Skill 内部编排 Tool 的调用顺序，兼顾灵活性与稳定性</li>
+</ul>
+<p>我实现的工具</p>
+<ul>
+<li>文件操作工具 (<code>FileOperationTool</code>)：提供读取文件内容和将内容写入文件的能力。 为确保安全，所有文件操作都限定在项目根目录下的 <code>/tmp/file</code> 隔离目录中。</li>
+<li>联网搜索工具 (<code>WebSearchTool</code>)：允许 AI 根据关键词从搜索引擎（如百度，通过 SearchAPI 实现）搜索网页列表。 我们会提取搜索结果中的标题、链接和摘要等关键信息。</li>
+<li>网页抓取工具 (<code>WebScrapingTool</code>)：能够根据提供的 URL 抓取并解析网页的 HTML 内容，使用了 Jsoup 库。</li>
+<li>终端操作工具 (<code>TerminalOperationTool</code>)：赋予 AI 在服务器终端执行命令的能力，通过 Java 的 Process API 实现，还考虑了 Windows和非 Windows 系统的兼容性。</li>
+<li>资源下载工具 (<code>ResourceDownloadTool</code>)：可以根据给定的 URL 将网络资源（如图片、音视频文件）下载到本地的指定目录，使用了Hutool的 <code>HttpUtil.downloadFile</code> 方法。</li>
+<li>PDF 生成工具 (<code>PDFGenerationTool</code>)：能够根据指定的文件名和文本内容生成 PDF 文档，并保存到本地，这个功能中我使用了 iText 库，并考虑了中文字体的支持。<br>我把这些工具都设计为独立 Java 类，并用 Spring AI 的 <code>@Tool</code> 和 <code>@ToolParam</code> 注解进行标记，并且集中注册到工具注册器中，像插件一样，方便后续的维护。<blockquote>
+<p>SearchAPI 需要注册并获取 API Key。 这个 Key 会配置在项目的 <code>application-local.yml</code> 文件中，并通过 <code>@Value</code> 注解注入到工具类中。</p>
+</blockquote>
+</li>
+</ul>
+<p>工具怎么管理的</p>
+<p>主要是参考适配器模式集中注册。在本项目中，我开发了多种工具来扩展 AI 的能力。为了有效管理这些工具并提高系统的可维护性，我采用了集中注册的方式。</p>
+<p>具体做法是创建了一个名为 <code>ToolRegistration</code> 的配置类。在这个类中，我使用 Spring 的 <code>@Configuration</code> 注解将其标记为一个配置类，并使用 <code>@Bean</code> 注解定义了一个名为 <code>allTools()</code> 的方法。这个方法负责实例化项目中的所有工具类，例如 <code>FileOperationTool</code>、<code>WebSearchTool</code>、<code>WebScrapingTool</code>、<code>ResourceDownloadTool</code>、<code>TerminalOperationTool</code> 和 <code>PDFGenerationTool</code>。然后，通过调用 <code>ToolCallbacks.from()</code> 方法，将这些工具实例统一转换并封装成一个 <code>ToolCallback[]</code> 数组返回。<code>ToolCallbacks.from</code> 可以看作是一种适配器，它将不同工具类适配成 Spring AI 框架能够统一处理的 <code>ToolCallback</code> 格式。</p>
+<p>这种集中注册的方式好处很多：</p>
+<ol>
+<li>统一管理：所有工具的创建和配置都集中在一个地方，使得查看、添加、修改或移除工具变得非常方便。</li>
+<li>清晰的依赖注入：如果某些工具需要配置（如API密钥），可以在这个配置类中统一处理依赖注入（比如使用 <code>@Value</code>）。</li>
+<li>简化使用：其他需要使用这些工具的组件（如 <code>LoveApp</code> ）可以直接注入这个 <code>ToolCallback[]</code> 类型的 Bean，而无需关心每个具体工具的实例化细节。</li>
+<li>易于扩展：当需要引入新的工具时，只需要在 <code>ToolRegistration</code> 类中实例化新工具并将其添加到 <code>ToolCallbacks.from()</code> 的参数列表中即可。</li>
+</ol>
+<p>这种设计其实暗含了多种设计模式的应用，比如工厂模式、依赖注入模式、注册模式以及适配器模式（<code>ToolCallbacks.from</code>），有助于提升代码的组织性和可维护性。</p>
+<p>工具的安全考虑过吗？<br><code>ToolContext</code>上下文传递机制，我们有时候不希望暴露给大模型，仅在应用程序内部使用的额外上下文信息。 这些信息可以包括用户认证信息（如登录用户的 ID 或 Token）、会话 ID、请求追踪 ID、特定的环境配置参数等。在实现用户自助退款功能时，如果用户向 AI 表达 “我要退款”，AI 无需反问 “你是谁”，而是系统可以从已登录会话中获取用户 ID，通过 <code>ToolContext</code> 传递给退款工具，工具直接根据该 ID 执行退款操作，既安全又便捷</p>
+<h4 id="提问：如果模型选错了工具，或者生成的参数不对怎么办？"><a href="#提问：如果模型选错了工具，或者生成的参数不对怎么办？" class="headerlink" title="提问：如果模型选错了工具，或者生成的参数不对怎么办？"></a>提问：如果模型选错了工具，或者生成的参数不对怎么办？</h4><p>回答：几个处理思路。1）工具描述写详细点，让模型更容易理解每个工具的适用场景，减少选错概率。2）参数校验要严格，不合法直接返回错误信息，模型看到错误后通常会修正参数重试。3）可以在工具返回结果里加引导，比如”查询失败，请确认城市名称是否正确”，模型会据此调整。4）实在不行设置 fallback 逻辑，捕获异常后返回友好提示而不是让整个对话崩掉。</p>
+<h4 id="提问：工具调用和-RAG-有什么区别？什么时候用工具调用，什么时候用-RAG？"><a href="#提问：工具调用和-RAG-有什么区别？什么时候用工具调用，什么时候用-RAG？" class="headerlink" title="提问：工具调用和 RAG 有什么区别？什么时候用工具调用，什么时候用 RAG？"></a>提问：工具调用和 RAG 有什么区别？什么时候用工具调用，什么时候用 RAG？</h4><p>回答：RAG 是”查知识”，从静态知识库里检索相关文档，适合回答”什么是 XXX”这类知识性问题。工具调用是”做动作”，执行实时查询或操作，适合”帮我查一下今天股价”、”帮我发一封邮件”这类需要外部交互的任务。很多场景两者会组合使用：先用 RAG 找到相关背景知识，再用工具调用获取实时数据，最后综合生成回答。</p>
+<h4 id="提问：Spring-AI-底层是怎么把工具定义传给模型的？"><a href="#提问：Spring-AI-底层是怎么把工具定义传给模型的？" class="headerlink" title="提问：Spring AI 底层是怎么把工具定义传给模型的？"></a>提问：Spring AI 底层是怎么把工具定义传给模型的？</h4><p>回答：Spring AI 会把带 <code>@Tool</code> 注解的方法解析成 JSON Schema 格式的工具描述，包含工具名称、功能描述、参数列表、参数类型、是否必填等信息。调用模型 API 时，这些工具描述会作为 <code>tools</code> 或 <code>functions</code> 参数一起发送。模型推理时会参考这些描述来决定是否调用工具以及怎么构造参数。不同模型厂商的 API 格式略有不同，Spring AI 做了适配层统一处理。</p>
+<h1 id="MCP"><a href="#MCP" class="headerlink" title="MCP"></a>MCP</h1><p>MCP（Model Context Protocol）模型上下文协议是一种开放标准，目的是标准化 AI 大模型与外部工具、资源和服务之间的交互方式。它把 AI 应用想象成一个主机，可以通过 MCP 这个 “USB 接口” 连接到各种外部 “设备”（即 MCP 服务），让 AI 能够访问实时数据、执行代码、调用 API 等，极大地扩展其能力边界。</p>
+<p>是C-S架构，一个客户端可以连接多个 MCP 服务器。</p>
+<p>利用 Spring AI 可以轻松实现 MCP 客户端和服务端：</p>
+<p>1）MCP 客户端实现</p>
+<ol>
+<li>引入依赖：添加 <code>spring-ai-mcp-client-spring-boot-starter</code> 依赖。</li>
+<li>配置连接：在 <code>application.yml</code> 中配置 MCP 客户端属性。</li>
+<li>使用服务：Spring AI 会自动注入一个 <code>ToolCallbackProvider Bean</code>。通过这个 Provider 可以获取到所有已连接 MCP 服务提供的工具（<code>ToolCallback</code>对象），然后将这些工具绑定给 <code>ChatClient</code>，AI 就可以像调用普通工具一样使用 MCP 服务提供的功能了。</li>
+</ol>
+<p>2）MCP 服务端实现</p>
+<ol>
+<li>引入依赖：根据传输方式选择依赖，如 <code>spring-ai-mcp-server-webmvc-spring-boot-starter</code>。</li>
+<li>配置服务：在 <code>application.yml</code> 中配置 MCP 服务端的基本信息（名称、版本）和传输方式（启用 stdio 或配置 SSE 端点路径）。</li>
+<li>开发工具：在 Spring <code>@Service</code> 类中，使用 <code>@Tool</code> 和 <code>@ToolParam</code> 注解标记Java方法，将其定义为 MCP 服务对外提供的工具。</li>
+<li>注册工具：在 Spring Boot 主应用类中，通过定义一个 <code>ToolCallbackProvider</code> 类型的 <code>@Bean</code></li>
+</ol>
+<p>![[Pasted image 20260409102136.png]]</p>
+<p>在 AI 超级智能体项目中，我集成了地图 MCP 服务（以高德地图为例），让 AI 具备了根据位置信息推荐约会地点的能力。</p>
+<ol>
+<li>首先需要确保本地环境可以运行 MCP 服务，通常要安装 Node.js 和 npx ，因为很多 MCP 服务是用 npx 命令启动的。同时，还要在高德开放平台申请 API Key。</li>
+<li>在主后端项目的 <code>resources</code> 目录下，我创建了 <code>mcp-servers.json</code> 文件。在该文件中为高德地图 MCP 服务添加了配置条目，指明了启动命令和运行所需的 API Key。</li>
+<li>在客户端 <code>application.yml</code> 文件中，MCP 客户端的 stdio 配置指向了上一步的 <code>mcp-servers.json</code> 文件。</li>
+<li>在 <code>LoveApp</code> 类中，我定义了 <code>doChatWithMcp</code> 方法。通过 Spring 框架自动注入的 <code>ToolCallbackProvider</code>，可以获得地图 MCP 服务所提供的所有工具。然后将这个 <code>toolCallbackProvider</code> 传递给 <code>ChatClient</code> 的 <code>.tools()</code> 方法。这样，当用户提出与地理位置相关的请求时，AI 就能够分析并选用地图 MCP 服务中的工具来完成任务。</li>
+</ol>
+<p>通过这种方式，AI 应用就能够利用外部地图服务的能力。具体的 API 调用逻辑被封装在 MCP 服务内部，AI 应用本身则通过 MCP 标准接口与之进行交互。</p>
+<p>图片搜索 MCP 服务让 AI 能够根据关键词从网络上搜索图片，具体实现步骤如下：</p>
+<p>1）创建独立的 MCP 服务端模块：这是一个独立的 Spring Boot 项目，专门负责提供图片搜索服务。<br>2）服务端依赖：项目中引入了 <code>spring-ai-mcp-server-webmvc-spring-boot-starter</code>，通过 SSE 方式提供服务，同时也兼容 stdio 模式。<br>3）多模式配置文件：服务端准备了 <code>application-stdio.yml</code> 和 <code>application-sse.yml</code> 两套配置，通过主 <code>application.yml</code> 中的 <code>spring.profiles.active</code> 来切换，以支持不同的启动和传输模式。<br>4）工具逻辑开发 (<code>ImageSearchTool.java</code>)：创建了一个Spring <code>@Service</code> 类 <code>ImageSearchTool</code>，其中包含一个用 <code>@Tool</code> 注解标记的 <code>searchImage</code> 方法。这个方法接收搜索关键词作为参数，内部逻辑通过 HTTP 请求调用 Pexels 图片 API 进行图片搜索，然后解析返回的 JSON 数据，提取图片 URL 列表并将其作为字符串返回。<br>5）工具注册：在图片搜索 MCP 服务的主应用类中，通过 <code>@Bean</code> 定义了一个 <code>ToolCallbackProvider</code>，将 <code>ImageSearchTool</code> 实例注册进去，这样 <code>searchImage</code> 方法就作为MCP服务对外暴露的工具了。<br>6）打包：这个 MCP 服务端模块被打包成一个可执行的 jar 包文件。<br>7）在主项目（作为MCP客户端）中集成并调用该服务：<br>8）配置连接：分别配置 Stdio 模式 和 SSE 模式。<br>Stdio模式：在主项目的 <code>mcp-servers.json</code> 文件中添加配置，使用 <code>java -jar</code> 命令指向并运行上一步打包好的图片搜索 MCP 服务 JAR 包。通过传递系统属性（如 <code>-Dspring.ai.mcp.server.stdio=true</code>）来确保MCP服务端以 stdio 模式启动。<br>SSE 模式：首先需要独立启动图片搜索 MCP 服务 JAR。然后在主项目的 <code>application.yml</code> 的 MCP 客户端部分配置SSE 连接，其 URL 指向正在运行的图片搜索 MCP 服务的地址。<br>把图片搜索功能封装成了一个独立的、可复用的 MCP 服务之后，主 AI 应用可以通过标准化的 MCP 接口来消费这个服务。调用方法如下：<br>与集成地图 MCP 服务的方式相似，主项目中的 <code>ToolCallbackProvider</code> 会自动发现并加载图片搜索 MCP 服务提供的 <code>searchImage</code> 工具。之后，在 <code>LoveApp</code> 等处的 <code>ChatClient</code> 调用中，AI 就可以按需使用这个图片搜索工具了。</p>
+<h1 id="Agent"><a href="#Agent" class="headerlink" title="Agent"></a>Agent</h1><p>Reasoning + Acting（推理与行动）模仿人类解决问题时“思考 - 行动 - 观察”的循环<br>将原始问题拆分为多步骤任务，明确当前要执行的步骤。然后，它会调用外部工具执行行动（Act），比如调用搜索引擎或访问网页。最后，它会观察（Observe）工具返回的结果，并将这些结果反馈给智能体，用于下一步的决策。这个过程会不断循环迭代，直到任务完成或达到预设的终止条件。</p>
+<p>![[Pasted image 20260409102600.png]]<br>基于 ReAct 模式构建具备自主规划能力的 AI 智能体，核心在于实现这个 “思考-行动-观察” 的循环。这意味着智能体要实现：</p>
+<ol>
+<li>接收用户指令后，能分析并拆解成可执行的子任务。</li>
+<li>根据子任务的需要，从可用的工具集中选择合适的工具并执行。</li>
+<li>分析工具执行的结果，判断任务进展，决定下一步是继续调用工具、向用户澄清还是结束任务。<br>在本项目中，我实现的拥有自主规划能力的超级智能体就是基于 ReAct 模式，通过 ReActAgent 定义先 think 思考再 act 行动的流程，然后通过 ToolCallAgent 具体实现这两个方法。在 <code>think()</code> 方法中决定使用哪个工具（推理），在 <code>act()</code> 方法中执行工具（行动），并将执行结果作为下一步思考的输入（观察）。</li>
+</ol>
+<p>OpenManus？<br>OpenManus 是一个开源的自主规划智能体项目。它的核心亮点在于其 “自主执行” 能力，能够自主规划任务，并且在虚拟机中调用各种工具（如编写代码、爬取数据）来完成用户指定的复杂任务。它的实现原理主要基于以下几点：</p>
+<ol>
+<li>分层代理架构：OpenManus 采用了分层的代理架构，不同层次的代理负责不同的功能，方便系统的扩展和维护。主要代理层次包括 <code>BaseAgent</code>（基础代理，管理状态和执行循环）、<code>ReActAgent</code>（实现 ReAct 模式）、<code>ToolCallAgent</code>（扩展了工具调用能力）以及具体的智能体实例（如 <code>Manus</code>）。</li>
+<li>ReAct 模式：OpenManus 的工作流程遵循“思考-行动-观察”的循环，<code>ToolCallAgent</code> 的 <code>think</code> 方法负责与大模型交互、选择工具，<code>act</code> 方法负责执行工具，并将结果反馈给大模型进行下一步决策。</li>
+<li>工具系统：OpenManus 拥有一个灵活的工具系统。所有工具都继承自 <code>BaseTool</code> 抽象基类，提供统一的接口和规范化的参数描述，方便大模型理解和调用。<code>ToolCollection</code> 类可以管理多个工具实例，实现了工具系统的可插拔性。</li>
+<li>核心组件：包括记忆系统（<code>Memory</code> 类存储对话历史和中间状态）、大模型（<code>LLM</code> 类提供思考和决策能力）以及流程控制（<code>AgentState</code> 和执行循环管理状态转换和任务流程）。</li>
+<li>特殊工具设计：比如，<code>Terminate</code> 工具是让智能体自主决定何时结束任务，<code>AskHuman</code> 工具则是让智能体在遇到困难时向人类寻求帮助。</li>
+<li>MCP 协议：最新版本的 OpenManus 已经支持，通过 <code>MCPClients</code> 类将 MCP 服务集成到其工具系统中，让远程工具能够像本地工具一样被调用。</li>
+</ol>
+<p>你是怎么实现分层架构的？<br>在本项目中，我参考了 OpenManus 的思想，实现了一个简化的分层智能体架构，主要包含以下几个层次：</p>
+<ol>
+<li>BaseAgent：这是智能体的基类，定义了智能体的基本属性，比如名称、系统提示词、最大执行步骤、当前步骤、状态、ChatClient以及一个 <code>messageList</code> 用于维护对话上下文。还包含了一个核心的 <code>run</code> 方法，负责整个多步骤执行流程的控制，以及一个抽象的 <code>step</code> 方法，具体的单步执行逻辑交由子类实现。这种设计也是模板方法设计模式的体现。</li>
+<li>ReActAgent：这个类继承自 <code>BaseAgent</code>，进一步将 <code>step</code> 方法的实现分解为两个核心的抽象方法：<code>think()</code>（思考）和 <code>act()</code>（行动）。它实现了 ReAct 模式的核心逻辑：在每一步中先思考（<code>think</code>），然后根据思考结果决定是否行动（<code>act</code>）。</li>
+<li>ToolCallAgent：继承自 <code>ReActAgent</code>，作用是实现工具调用的能力。在 <code>think()</code> 方法中，它会根据当前的对话上下文和可用的工具列表，调用大模型决定需要使用哪些工具以及相应的参数，也就是“推理”阶段。在 <code>act()</code> 方法中，实际执行大模型在 <code>think</code> 阶段选定的工具。这里我利用了 Spring AI 提供的 <code>ToolCallingManager</code> 来执行工具调用、获取工具的执行结果。这个过程是“行动”和部分“观察”阶段。工具的执行结果会更新到 <code>messageList</code> 中，作为下一轮 <code>think</code> 的输入。而且，我在 <code>ToolCallAgent</code> 中通过设置 <code>DashScopeChatOptions</code> 的 <code>withProxyToolCalls(true)</code> 禁止 Spring AI 自动托管完整的工具调用流程，方便自行控制和观察 ReAct 的每一步。</li>
+<li>YuManus：这是我最终实现的、可以直接使用的 AI 超级智能体实例，它继承自 <code>ToolCallAgent</code>。在这个类中，我为智能体设置了具体的名称、系统提示词、下一步提示词、最大执行步数，并注入了所有可用的工具和 <code>ChatModel</code>。<br>基于这个分层架构，我可以很方便地扩展出各种各样不同领域的智能体，除了通用智能体 YuManus 之外，我只需修改 Prompt，就能定义出软件工程师智能体、数据分析师智能体等等。</li>
+</ol>
+<p>CoT 思维链？<br><strong>CoT（Chain of Thought）思维链</strong> 就是让大模型别急着给答案，先把推理过程一步步写出来。这招对数学题、逻辑推理、多步骤问题特别有效，准确率能提升 20% 以上。<br>核心原理很直白：人做复杂题也得打草稿，让 LLM 把”草稿”写出来，中间步骤错了更容易发现，最终答案也更靠谱。<br>![[Pasted image 20260409103043.png]]</p>
+<p>实现方式：<br>Few-shot CoT，给例子:问题：一本书 48 页，小明每天读 8 页，几天能读完？ 思考：要求读完需要的天数，就是用总页数除以每天读的页数。48 ÷ 8 &#x3D; 6 答案：6 天 问题：教室里有 5 排座位，每排 6 个座位，坐满了学生后又来了 3 个学生，现在教室里有多少学生？ 思考：<br>System Prompt 引导：你是一个善于逻辑推理的助手。回答问题时，请遵循以下步骤： 1. 先分析问题的核心是什么 2. 列出解决问题需要的已知条件 3. 逐步推导，每一步写清楚依据 4. 最后给出明确答案</p>
+<p>问题：token、小模型差7b，简单问题不适用、先猜答案再构造COT可解释性差</p>
+<p>死循环解决<br>在本项目中，我主要通过循环检测和处理机制来解决。具体方法是在智能体的执行逻辑中：</p>
+<ol>
+<li>检测重复响应：记录智能体最近的几次交互或产生的消息。</li>
+<li>设置重复阈值：定义一个重复次数的上限，比如连续两次或三次出现相同的响应内容，就可能判断为陷入了循环。</li>
+<li>主动干预：一旦检测到这种卡顿或循环状态，系统会向智能体的下一步提示词中注入特定的指令，比如：“观察到重复响应。考虑新策略，避免重复已尝试过的无效路径”。这样做的目的是引导 AI 打破当前的执行逻辑，尝试新的解决方案，跳出死循环。当然，也可以在遇到死循环时强制中断当前任务的执行。</li>
+</ol>
+<p>怎么让任务退出<br>在本项目中，我参考了OpenManus的做法，通过引入一个特殊的工具 TerminateTool 实现任务合理退出。有了这个工具，AI 智能体能根据自身的判断决定什么时候结束任务，而不是仅仅依赖于达到预设的最大执行步骤数或发生错误。具体实现方式如下：</p>
+<ol>
+<li>定义一个 <code>TerminateTool</code>，写好明确的描述，告诉 AI 在任务完成或无法继续时应调用此工具。</li>
+<li>在智能体的思考（Think）阶段，大模型会评估当前任务的进展。如果判断任务已成功完成，或者认为无法取得进一步的进展，AI 会自主选择调用 <code>TerminateTool</code>。</li>
+<li>当 <code>ToolCallAgent</code> 在行动（Act）阶段检测到 <code>TerminateTool</code> 被调用时，直接将智能体的内部状态更新为 <code>FINISHED</code>。随后，<code>BaseAgent</code> 中的主执行循环 <code>run()</code> 方法会监测到这个状态变化，随后终止循环，使整个任务有序退出。</li>
+</ol>
+<p>这种机制赋予了 AI 一定的自主性，能更智能地结束任务，避免不必要的资源消耗。</p>
+<h4 id="提问：如果模型在-CoT-的中间步骤就推错了，后面的步骤会全跟着错，怎么缓解这个问题？"><a href="#提问：如果模型在-CoT-的中间步骤就推错了，后面的步骤会全跟着错，怎么缓解这个问题？" class="headerlink" title="提问：如果模型在 CoT 的中间步骤就推错了，后面的步骤会全跟着错，怎么缓解这个问题？"></a>提问：如果模型在 CoT 的中间步骤就推错了，后面的步骤会全跟着错，怎么缓解这个问题？</h4><p>回答：几个方向可以尝试。第一是 Self-Consistency，采样多条路径然后投票，单条路径错了只要多数对就行。第二是 Self-Verification，生成答案后让模型用答案反推验证，不对就重来。第三是 Step-by-Step Verification，每一步都让模型打分评估置信度，置信度低的步骤触发重新生成。OpenAI 的 GPT-4 训练里就用了 Process Reward Model，对每一步推理打分而不是只看最终答案。<strong>实际工程里最简单有效的还是 Self-Consistency，多花几倍成本但稳定性好很多。</strong></p>
+<h4 id="提问：Tree-of-Thoughts-和普通-CoT-有什么区别？什么时候该用-ToT？"><a href="#提问：Tree-of-Thoughts-和普通-CoT-有什么区别？什么时候该用-ToT？" class="headerlink" title="提问：Tree of Thoughts 和普通 CoT 有什么区别？什么时候该用 ToT？"></a>提问：Tree of Thoughts 和普通 CoT 有什么区别？什么时候该用 ToT？</h4><blockquote>
+<p>详细解答可以看：<a target="_blank" rel="noopener" href="https://www.mianshiya.com/question/1991796950747357185">什么是思维树 Tree of Thoughts？它相比 CoT 有什么优势？</a></p>
+</blockquote>
+<p>回答：普通 CoT 是一条路走到黑，生成完整推理链后给答案。Tree of Thoughts 是每一步都生成多个候选分支，形成一棵树，然后用搜索算法找最优路径。ToT 适合那种”中间步骤选错了就完蛋”的问题，比如 24 点游戏、创意写作大纲规划。代价是计算量指数级上升，4 个分支点每个 3 个候选就是 81 条路径。实际用的时候通常加剪枝策略，<strong>只扩展评分高的分支。一般推理任务用 Self-Consistency 够了，ToT 属于杀鸡用牛刀。</strong></p>
+<h4 id="提问：在实际项目里，怎么判断一个任务适不适合用-CoT？"><a href="#提问：在实际项目里，怎么判断一个任务适不适合用-CoT？" class="headerlink" title="提问：在实际项目里，怎么判断一个任务适不适合用 CoT？"></a>提问：在实际项目里，怎么判断一个任务适不适合用 CoT？</h4><p>回答：看两个指标。第一个是任务<strong>是否需要多步推理</strong>，如果问题本身一步就能答上来比如”Python 列表怎么排序”，CoT 就是浪费 token。第二个是<strong>直接问答的错误率</strong>，先不用 CoT 测一批样本，如果准确率已经 90% 以上，CoT 提升空间有限；如果只有 50%-60%，大概率能通过 CoT 拉高 20 个点以上。还有个经验法则是看问题里有没有<strong>数字运算或者条件分支，有的话 CoT 收益通常比较明显。</strong></p>
+<h1 id="异步响应"><a href="#异步响应" class="headerlink" title="异步响应"></a>异步响应</h1><p>为什么选择SSE交互？WebSocket呢？<br>SSE 服务器发送事件（Server-Sent Events）是一种用于从服务器到客户端的 <strong>单向</strong> 数据传输技术，基于 HTTP 协议实现。连接一旦建立，服务器就可以持续地将新的信息流式传输给客户端，不需要客户端重复发起请求，非常适合需要服务器主动更新数据的场景，比如我们 AI 应用中逐步显示大模型生成的回复，实现类似打字机的效果。<br>不选择 WebSocket 的原因：</p>
+<ol>
+<li>实现成本：SSE 基于标准的 HTTP 协议，实现相对简单，前端使用 JavaScript 的 <code>EventSource</code> API 即可轻松接收。WebSocket 则是一个独立的、更复杂的双向通信协议，需要专门的连接管理和握手过程。</li>
+<li>通信模式：AI 应用的流式响应通常是服务器向客户端的单向数据推送，跟 SSE 的单向通信模型完美契合。WebSocket 提供的是全双工双向通信，对于 AI 流式输出这类场景，双向能力并不必要，反而增加了复杂性。</li>
+<li>内置机制：SSE 规范包含自动重连和事件 ID（<code>lastEventId</code>）机制。如果网络连接意外中断，浏览器可以自动尝试重连，还可以通过上次接收到的事件 ID 告诉服务器从什么地方继续，对于保证数据流的连续性很有用。这些在 WebSocket 需要开发者自行实现。</li>
+<li>资源消耗：一般来说，SSE 比 WebSocket 更轻量，WebSocket 需要建立和维护一个持久的 TCP 连接。</li>
+</ol>
+<p>WebSocket 在需要真正实时双向交互（比如在线聊天室、协同编辑工具）的场景下是更优的选择，但对于 AI 应用的场景，SSE 更加简单、高效，比 WebSocket 更合适。</p>
+<blockquote>
+<p>之前 <a target="_blank" rel="noopener" href="https://www.codefather.cn/course/1864210260732116994">智能协同云图库项目</a> 中，就带大家实战过使用 WebSocket 实现图片的多人协同编辑功能。</p>
+</blockquote>
+<p>SseEmitter 是 Spring MVC 框架提供的一个类，主要用于在服务器端实现 SSE，让后端应用在一个长时间的 HTTP 连接上，能够异步、持续地向客户端发送事件流数据。<br>特别是在大模型逐步生成响应的 AI 应用中，SseEmitter 可以用来把 AI 服务生成的内容块实时推送给前端，实现打字机效果，优化用户体验，避免用户长时间等待完整结果。<br>使用 SseEmitter 实现 AI 流式响应的步骤大致如下：<br>1）Controller 方法返回 <code>SseEmitter</code>：在 Spring MVC Controller 中，处理 SSE 请求的方法需要返回一个 <code>SseEmitter</code> 对象。<br>2）异步处理 AI 调用：由于 AI 模型的调用可能是耗时的，不能阻塞处理 HTTP 请求的线程。因此，一般需要在一个单独的线程或使用异步机制调用 AI 服务。<br>3）通过 <code>emitter.send()</code> 推送数据：在异步任务中，每当 AI 模型生成一部分响应，就通过 <code>emitter.send()</code> 方法将这部分数据发送给客户端。</p>
+<blockquote>
+<p>之前鱼皮在编程导航的 <a target="_blank" rel="noopener" href="https://www.codefather.cn/course/1790274408835506178">AI 答题应用平台项目</a> 中，就带大家实战过使用 SseEmitter 实现 AI 题目的流式生成。</p>
+</blockquote>
+<p>你怎么保证输出的稳定性和性能<br>为了保证 AI 应用的性能和稳定性，需要综合考虑很多方面，从应用设计、外部依赖管理到部署策略都需要考虑。一般来说有以下措施：</p>
+<p>1）异步处理：对于耗时的 AI 操作，要采用异步处理，避免阻塞服务器主工作线程，提高并发处理能力和系统响应速度。还可以利用 SSE (Server-Sent Events) 和 <code>SseEmitter</code> 实现流式输出，提高用户体验。<br>2）合理的模型选择：选择跟场景、需求相匹配的 AI 模型。不是所有场景都需要最大、最先进的模型；有时候针对特定任务优化的轻量级模型在成本和延迟上更有优势。比如计算向量 Embedding 时，就不必选择深度推理能力强的模型。<br>3）RAG 系统优化：选择高质量的原始文档和合理的切片策略。以及选择合适的向量数据库，比如使用 PGVector 方案，可以对索引和查询参数调优。<br>4）外部依赖管理：对工具调用、MCP 服务及其他外部 API 的调用，实现错误处理和重试机制（比如 Guava Retrying 库）。并且针对所有的外部调用设置合理的超时时间。<br>5）对于流量不确定或需要快速迭代的服务，可以考虑 Serverless 部署，按需分配资源、自动伸缩。<br>6）API 设计：避免在每个数据块中包含过多冗余信息，只传输核心内容，减少网络负载。<br>7）可观测性与监控：集成更全面的监控方案，比如使用 Prometheus + Grafana 追踪关键性能指标、延迟、错误率、资源消耗等。</p>
+<h1 id="大问题"><a href="#大问题" class="headerlink" title="大问题"></a>大问题</h1><p><strong>大模型 Agent</strong> 是以大语言模型为大脑，配合规划、记忆、工具调用等模块，能够自主完成复杂任务的系统。它和传统 AI 最大的区别在于：传统 AI 是你问一句它答一句，Agent 是你给它一个目标，它自己拆任务、调工具、一步步干完。</p>
+<p>具体差异可以从这几个维度来看：<br>1）目标导向 vs 被动响应。传统大模型就是个对话机器，用户输入什么它输出什么，没有主动性。Agent 不一样，你给它一个最终目标，比如”帮我调研竞品并写一份分析报告”，它会自己规划要做哪些步骤、先做什么后做什么，然后一步步执行。<br>2）有记忆 vs 无状态。传统模型只能看到当前对话的上下文窗口，聊完就忘。Agent 有专门的记忆模块，短期记忆存当前任务的中间状态，长期记忆存历史经验，下次碰到类似问题可以复用。<br>3）能调用工具 vs 只能说话。传统模型只能输出文本，想搜索、算数、操作数据库都得人来做。Agent 能调用搜索引擎、执行代码、读写文件、调 API，真正把事情做出来。<br>4）多步推理 vs 单轮问答。Agent 能在执行过程中不断评估结果、发现问题、调整策略，形成一个闭环。传统 AI 系统要么靠写死的规则引擎，要么就是一锤子买卖。<br>![[Pasted image 20260409111158.png]]</p>
+<table>
+<thead>
+<tr>
+<th>框架</th>
+<th>核心特点</th>
+<th>适用场景</th>
+<th>上手难度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>LangChain</td>
+<td>生态最完善，工具和集成最多</td>
+<td>复杂业务流程</td>
+<td>中等</td>
+</tr>
+<tr>
+<td>AutoGPT</td>
+<td>全自动运行，自主性最强</td>
+<td>探索性任务</td>
+<td>低</td>
+</tr>
+<tr>
+<td>BabyAGI</td>
+<td>任务驱动，循环迭代</td>
+<td>研究型任务</td>
+<td>低</td>
+</tr>
+<tr>
+<td>CrewAI</td>
+<td>多 Agent 协作，角色分工</td>
+<td>团队模拟场景</td>
+<td>中等</td>
+</tr>
+<tr>
+<td>MetaGPT</td>
+<td>软件开发专用，流程规范</td>
+<td>代码生成</td>
+<td>较高</td>
+</tr>
+</tbody></table>
+<p>挑战：<br>1）错误累积。每一步都可能出错，10 步下来准确率就成了 0.9 的 10 次方，大约 35%。这是 Agent 目前最大的痛点。<br>2）成本高。一个复杂任务可能要调几十次 LLM，Token 消耗很快就上去了。OpenAI 的 GPT-4 每百万 Token 输入 30 美元、输出 60 美元，跑一个 AutoGPT 任务花几美元很正常。<br>3）安全风险。Agent 能调用工具、执行代码，一旦被提示词注入攻击，后果比普通聊天机器人严重得多。<br>4）可控性差。自主性越强，行为就越难预测。生产环境一般会加各种护栏，限制 Agent 能调用的工具和能执行的操作。</p>
+<h4 id="提问：ReAct-和-Plan-and-Execute-两种-Agent-范式有什么区别？实际项目中怎么选？"><a href="#提问：ReAct-和-Plan-and-Execute-两种-Agent-范式有什么区别？实际项目中怎么选？" class="headerlink" title="提问：ReAct 和 Plan-and-Execute 两种 Agent 范式有什么区别？实际项目中怎么选？"></a>提问：ReAct 和 Plan-and-Execute 两种 Agent 范式有什么区别？实际项目中怎么选？</h4><p>回答：ReAct 是边想边做，每一步先推理要做什么、为什么，然后执行，看到结果再决定下一步。优点是灵活，能根据中间结果随时调整；缺点是容易跑偏，任务一复杂就会丢失方向。Plan-and-Execute 是先整体规划出完整的步骤列表，再逐个执行。优点是稳定，不容易偏离目标；缺点是不够灵活，如果中间某步失败需要重新规划。实际选择看任务特点：探索性强、结果不确定的用 ReAct；目标明确、步骤可预期的用 Plan-and-Execute；复杂任务可以混用，外层 Plan-and-Execute 保证方向，内层 ReAct 处理细节。</p>
+<h4 id="提问：Agent-的记忆模块怎么设计？长期记忆和短期记忆分别用什么技术实现？"><a href="#提问：Agent-的记忆模块怎么设计？长期记忆和短期记忆分别用什么技术实现？" class="headerlink" title="提问：Agent 的记忆模块怎么设计？长期记忆和短期记忆分别用什么技术实现？"></a>提问：Agent 的记忆模块怎么设计？长期记忆和短期记忆分别用什么技术实现？</h4><p>回答：短期记忆最简单的做法就是把对话历史和中间结果拼到 Prompt 里，受限于模型的上下文窗口。更好的做法是用 Scratchpad，把关键信息结构化存储，只在需要时取出来。长期记忆一般用向量数据库，把历史经验、知识片段 Embedding 之后存进去，检索时算相似度取 Top-K。常用的向量库有 Pinecone、Milvus、Chroma、Weaviate。设计上要注意记忆的增删改查策略，不能无限堆积，需要定期压缩或淘汰不重要的内容。</p>
+<h4 id="提问：怎么解决-Agent-多步执行时的错误累积问题？"><a href="#提问：怎么解决-Agent-多步执行时的错误累积问题？" class="headerlink" title="提问：怎么解决 Agent 多步执行时的错误累积问题？"></a>提问：怎么解决 Agent 多步执行时的错误累积问题？</h4><p>回答：几个常见的思路：一是加强单步准确率，用更强的模型、更好的 Prompt、更精准的工具；二是加检查点，每步执行完校验结果是否合理，不合理就重试或回退；三是引入自我反思机制，让 Agent 定期回顾执行历史，发现偏离目标就及时纠正；四是限制自主性，关键操作要人工确认，不让 Agent 完全自动跑。实际生产中这几种方法一般组合使用。</p>
+<p>RAG</p>
+<h4 id="提问：如果检索出来的文档片段太多，超过了大模型的上下文窗口怎么办？"><a href="#提问：如果检索出来的文档片段太多，超过了大模型的上下文窗口怎么办？" class="headerlink" title="提问：如果检索出来的文档片段太多，超过了大模型的上下文窗口怎么办？"></a>提问：如果检索出来的文档片段太多，超过了大模型的上下文窗口怎么办？</h4><p>回答：常见做法有三种。一是做 Rerank，用一个排序模型对检索结果重新打分，只保留最相关的 Top-K 条；二是做摘要压缩，对检索出来的长文档先跑一遍摘要，把信息密度提上去；三是分块处理，把问题拆成多个子问题分别检索回答，最后再做汇总。实际项目里 Rerank + Top-K 截断是最常用的组合。</p>
+<h4 id="提问：RAG-和模型微调有什么区别？什么场景下该选哪个？"><a href="#提问：RAG-和模型微调有什么区别？什么场景下该选哪个？" class="headerlink" title="提问：RAG 和模型微调有什么区别？什么场景下该选哪个？"></a>提问：RAG 和模型微调有什么区别？什么场景下该选哪个？</h4><blockquote>
+<p>详细解答可以看：<a target="_blank" rel="noopener" href="https://www.mianshiya.com/question/1991796739195052033">RAG 和模型微调 Fine-tuning 有什么区别？如何选择？</a></p>
+</blockquote>
+<p>回答：微调是把知识”刻”进模型参数里，适合需要改变模型行为风格或者学习特定任务模式的场景，比如让模型用特定语气说话。RAG 是把知识放在外部，适合知识会频繁更新、需要引用来源、或者私有数据量大的场景。微调一次成本高、知识更新要重新训练；RAG 只需要更新知识库，模型不用动。如果你的场景是”让模型知道更多事实”，选 RAG；如果是”让模型换一种方式说话”，选微调。</p>
+<h4 id="提问：向量检索找到的内容语义相近，但可能不是真正相关的，怎么解决？"><a href="#提问：向量检索找到的内容语义相近，但可能不是真正相关的，怎么解决？" class="headerlink" title="提问：向量检索找到的内容语义相近，但可能不是真正相关的，怎么解决？"></a>提问：向量检索找到的内容语义相近，但可能不是真正相关的，怎么解决？</h4><p>回答：这是语义检索的经典问题，向量相似不等于真正相关。常见解决方案：一是混合检索，把向量检索和关键词检索结合起来，用 BM25 这类传统检索补一刀；二是加 Rerank 层，用交叉编码器对候选文档做精排，过滤掉语义漂移的结果；三是优化分块策略，文档切得太碎容易丢上下文，切得太大又不够精准，需要根据业务调整 chunk size 和 overlap。</p>
+<p>![[Pasted image 20260409111508.png]]</p>
+<p>RAG 检索效果差，问题通常出在<strong>文档切片、查询理解、检索策略</strong>三个环节。优化要从源头抓起。</p>
+<p>1）文档预处理：原始文档质量不行，后面再怎么调参都白搭。首先清洗掉水印、页眉页脚、乱码，保证内容干净。切片策略很关键，固定 512 tokens 切一刀这种做法太粗暴，容易把一句话从中间截断。推荐用语义边界切分，比如按段落、按小节，或者用 LangChain 的 RecursiveCharacterTextSplitter 先按段落切，段落太长再按句子切。另外给每个切片打上元数据标签，来源文档、章节、日期这些，检索时能做精确过滤。</p>
+<p>2）查询增强：用户问的”鱼皮是谁”跟知识库里写的”程序员鱼皮，原名某某，技术博主”对不上，向量相似度不高。解决办法是用大模型做查询重写，把口语化的问题转成规范表达，或者做查询扩展，一个问题拆成 3-5 个不同角度的子查询，合并召回结果。</p>
+<p>3）混合检索：单纯的向量检索有个致命问题，专有名词、代码片段、数字这些精确匹配的东西召回率很低。解决办法是向量检索 + BM25 关键词检索组合，用 RRF 算法融合排序。Elasticsearch 8.x 原生支持这种混合检索。<br>除此之外，还有重排序：召回 top 50 之后，用 Cross-Encoder 重排序模型精排一遍，把真正相关的排到前 5。Cross-Encoder 比 Bi-Encoder 准确率高 10-15%，但速度慢，所以只用来精排。</p>
+<h4 id="提问：如果知识库里有多种格式的文档，比如-PDF、Word、网页，切片策略要怎么处理？"><a href="#提问：如果知识库里有多种格式的文档，比如-PDF、Word、网页，切片策略要怎么处理？" class="headerlink" title="提问：如果知识库里有多种格式的文档，比如 PDF、Word、网页，切片策略要怎么处理？"></a>提问：如果知识库里有多种格式的文档，比如 PDF、Word、网页，切片策略要怎么处理？</h4><p>回答：不同格式的文档结构差异很大，不能一刀切。PDF 要先用 PyMuPDF 或 Unstructured 提取文本，注意保留段落结构，表格单独处理。Word 文档可以按大纲级别切分，一级标题下的内容作为一个 chunk。网页要先清洗 HTML 标签，按 DOM 结构或者 <code>&lt;article&gt;</code> 标签提取正文。最好是建一个预处理 Pipeline，根据文件类型走不同的处理分支，最后统一输出成标准化的切片格式。</p>
+<h4 id="提问：检索结果里有重复内容怎么办？"><a href="#提问：检索结果里有重复内容怎么办？" class="headerlink" title="提问：检索结果里有重复内容怎么办？"></a>提问：检索结果里有重复内容怎么办？</h4><p>回答：这个问题在用滑动窗口切片时很常见，相邻切片内容重叠导致召回的好几条结果其实是同一段话。解决办法是在召回之后做去重，可以用 MinHash 或者 SimHash 算相似度，相似度超过 0.9 的只保留一条。另一种办法是在检索时加上 document_id 去重，同一个文档最多召回 2-3 条。LangChain 的 MultiQueryRetriever 有内置的去重逻辑可以直接用。</p>
+<h4 id="提问：怎么评估-RAG-的检索效果？有什么指标？"><a href="#提问：怎么评估-RAG-的检索效果？有什么指标？" class="headerlink" title="提问：怎么评估 RAG 的检索效果？有什么指标？"></a>提问：怎么评估 RAG 的检索效果？有什么指标？</h4><p>回答：常用指标是 Recall@K 和 MRR。Recall@K 是看前 K 条结果里有没有包含正确答案，K 一般取 5 或 10。MRR 是正确答案排名的倒数的平均值，排名越靠前分数越高。评估需要一个标注好的测试集，包含问题和对应的正确文档 ID。实际操作中可以先人工标注 100-200 条，跑一遍看基线效果，然后每次调参之后对比变化。如果没人力标注，可以用大模型自动判断检索结果是否包含问题的答案，不完全准确但能看趋势。<br>![[Pasted image 20260409111822.png]]</p>
+<p>CoT 思维链 (Chain of Thought) 和 ReAct 模式 (Reasoning + Acting) 都是增强大型语言模型推理和解决复杂问题能力的技术。</p>
+<ul>
+<li>CoT 思维链：生成最终答案之前，先引导 AI 模型输出一系列中间的、连贯的推理步骤。引导模型“思考过程化”，模拟人类解决问题时逐步分析和推导的过程。它通过让模型显式地写出思考步骤，可以帮助模型分解复杂问题，减少在复杂逻辑链条中出错的概率。这些中间步骤也为我们理解模型的“思路”提供了便利，调试和优化都会更简单方便。</li>
+<li>ReAct 模式：一种将LLM的推理 (Reasoning) 能力与行动 (Acting) 能力相结合的框架。它让模型不仅能思考，还能决定采取何种行动（通常是调用外部工具，例如文件操作、联网搜索），然后根据行动的观察结果执行下一轮的思考和行动，形成一个“思考-行动-观察”的循环。</li>
+</ul>
+<p>CoT 主要关注提升模型内部的逻辑推理连贯性和深度，通过显化思考过程实现。ReAct 更侧重于让模型与外部世界互动，通过“推理驱动行动，行动反馈观察，观察指导推理”的闭环来解决那些需要外部信息或操作才能完成的复杂任务，更考验模型动态调整推理路径的能力。</p>
+<table>
+<thead>
+<tr>
+<th>部署方式</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>调用云端大模型</td>
+<td>+ 提供纯净的大模型能力和构建应用的工具。  <br>+ 按需付费，无需前期大量基础设施投入。  <br>+ 随时可用，维护成本低。  <br>+ 自动更新到最新版本的模型  <br>+ 通常具有更完善的安全措施和合规保障。</td>
+<td>+ 数据需要传输到云端，可能存在数据隐私与安全顾虑。  <br>+ 依赖网络连接，可能存在网络延迟。  <br>+ 长期或大规模高频调用成本可能较高。  <br>+ 模型定制化程度通常较低。</td>
+</tr>
+<tr>
+<td>本地部署大模型</td>
+<td>+ 完全控制数据流，更高的数据隐私保障。  <br>+ 可根据特定需求微调和定制模型。  <br>+ 无网络延迟（在本地网络调用时），适合对响应速度有严格要求的场景。  <br>+ 一次性成本投入后，长期使用成本相对可控。</td>
+<td>+ 初始成本较高（需要硬件，尤其是 GPU），需要专业的技术团队维护。  <br>+ 需要自行处理模型更新、环境配置和故障排查等，维护复杂。  <br>+ 可部署的开源模型在能力上可能逊于顶尖的闭源商业模型。</td>
+</tr>
+</tbody></table>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2026/04/09/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%A1%B9%E7%9B%AE/%E5%87%8C%E8%AF%AD/">https://yuezi2048.github.io/2026/04/09/2.Areas🌐/02.面经记录/项目/凌语/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E9%A1%B9%E7%9B%AE/">项目</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/04/07/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D%E8%A1%A5%E5%85%85/" title="项目介绍补充"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">项目介绍补充</div></div><div class="info-2"><div class="info-item-1">所有整改都完全贴合你的真实情况，不要求你编造经历，只要求你把已有的东西，用面试官认可的逻辑和细节讲清楚，直接把你拉到A级候选人区间。 1. 背景短板整改：把「无奖学金&#x2F;论文」的劣势，变成你的核心优势标准答案（面试官追问必答，也可主动在自我介绍里补充）：  我的专业排名是年级前10%，目前研二上学期刚结束，还没到校级奖学金的集中评审周期。关于论文和专利，我读研期间的核心规划，是深耕企业级研发的工程化能力，而非学术科研。我从研一开始，就把所有精力放在了从0到1的项目落地、前沿技术的工程化实践上，先后独立完成了2个完整的项目，覆盖了需求分析、架构设计、开发测试、部署上线的全流程，积累了企业级研发所需的完整能力。虽然没有学术成果，但我的项目都是可落地、可复用的生产级项目，这也是我投递贵公司岗位的核心匹配点。  核心作用：直接打消面试官对排名真实性、能力短板的质疑，把「学术不足」转化为「工程化能力强，完全匹配岗位需求」的亮点，完全符合严格面试官的评判逻辑。 2....</div></div></div></a><a class="pagination-related" href="/2026/04/09/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/newegg%E4%B8%80%E9%9D%A2/" title="newegg一面"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">newegg一面</div></div><div class="info-2"><div class="info-item-1">最终面试得分：72&#x2F;100档位说明：良好档，大概率稳进二面。核心硬实力、岗位匹配度完全达标，无任何致命红线问题，仅在面试表达技巧、基础细节、局部知识盲区有扣分，在同批次候选人里处于中上游水平。  分维度打分明细（已完全剔除「语音转文字记录错误」导致的误扣分项）   评分维度 满分 你的得分 核心扣分&amp;得分说明    硬门槛&amp;岗位匹配度 20 20 满分项！硕士学历、Java&#x2F;Spring AI技术栈、6个月以上稳定实习时长、接受周二-周六出勤，JD所有硬性红线要求100%全满足，是你能进面、稳拿基础分的核心基本盘   项目真实性&amp;核心实战能力 35 22 已完全剔除「项目名&#x2F;开源项目名口误」的信任危机扣分，项目真实性100%无争议。核心扣分点：简历里写的三级召回架构、三重熔断机制、异步化优化、全链路量化数据、工具集中注册等核心实战亮点，面试中完全没输出，所有问题仅回答了最入门的课本级通用概念，没有体现出项目深度和个人开发能力，没能拉开和零基础应届生的差距，扣13分   AI基础技术功底 25 15 核心扣分点：1....</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">829</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">81</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">109</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8E%A5%E5%85%A5%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="toc-text">接入大模型的方式</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AF%B9%E8%AF%9D%E8%AE%B0%E5%BF%86"><span class="toc-text">对话记忆</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E5%8C%96%E8%BE%93%E5%87%BA"><span class="toc-text">结构化输出</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%90%E9%97%AE%EF%BC%9A%E7%BB%93%E6%9E%84%E5%8C%96%E8%BE%93%E5%87%BA%E5%92%8C-Function-Calling-%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="toc-text">提问：结构化输出和 Function Calling 有什么区别？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%90%E9%97%AE%EF%BC%9A%E7%BB%93%E6%9E%84%E5%8C%96%E8%BE%93%E5%87%BA%E7%9A%84-Token-%E6%B6%88%E8%80%97%E4%BC%9A%E4%B8%8D%E4%BC%9A%E6%AF%94%E6%99%AE%E9%80%9A%E8%BE%93%E5%87%BA%E9%AB%98%E5%BE%88%E5%A4%9A%EF%BC%9F"><span class="toc-text">提问：结构化输出的 Token 消耗会不会比普通输出高很多？</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%9F%A5%E8%AF%86%E5%BA%93%E6%9E%84%E5%BB%BA"><span class="toc-text">知识库构建</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%90%E9%97%AE%EF%BC%9A%E6%A3%80%E7%B4%A2%E5%87%BA%E6%9D%A5%E7%9A%84%E6%96%87%E6%A1%A3%E5%9D%97%E9%A1%BA%E5%BA%8F%E9%87%8D%E8%A6%81%E5%90%97%EF%BC%9F%E6%94%BE%E5%9C%A8-prompt-%E9%87%8C%E7%9A%84%E4%BD%8D%E7%BD%AE%E4%BC%9A%E5%BD%B1%E5%93%8D%E6%A8%A1%E5%9E%8B%E5%9B%9E%E7%AD%94%E5%90%97%EF%BC%9F"><span class="toc-text">提问：检索出来的文档块顺序重要吗？放在 prompt 里的位置会影响模型回答吗？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%90%E9%97%AE%EF%BC%9A%E5%90%91%E9%87%8F%E6%A3%80%E7%B4%A2%E7%9A%84%E7%9B%B8%E4%BC%BC%E5%BA%A6%E9%98%88%E5%80%BC%E6%80%8E%E4%B9%88%E8%AE%BE%EF%BC%9F%E8%AE%BE%E5%A4%AA%E9%AB%98%E4%BC%9A%E6%80%8E%E6%A0%B7%EF%BC%8C%E8%AE%BE%E5%A4%AA%E4%BD%8E%E5%8F%88%E4%BC%9A%E6%80%8E%E6%A0%B7%EF%BC%9F"><span class="toc-text">提问：向量检索的相似度阈值怎么设？设太高会怎样，设太低又会怎样？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%90%E9%97%AE%EF%BC%9ARAG-%E7%B3%BB%E7%BB%9F%E4%B8%8A%E7%BA%BF%E5%90%8E%E6%80%8E%E4%B9%88%E8%AF%84%E4%BC%B0%E6%95%88%E6%9E%9C%E5%A5%BD%E4%B8%8D%E5%A5%BD%EF%BC%9F"><span class="toc-text">提问：RAG 系统上线后怎么评估效果好不好？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%90%E9%97%AE%EF%BC%9A%E6%96%87%E6%A1%A3%E6%9B%B4%E6%96%B0%E4%BA%86%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F%E8%A6%81%E5%85%A8%E9%87%8F%E9%87%8D%E5%BB%BA%E7%B4%A2%E5%BC%95%E5%90%97%EF%BC%9F"><span class="toc-text">提问：文档更新了怎么办？要全量重建索引吗？</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8"><span class="toc-text">工具调用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%90%E9%97%AE%EF%BC%9A%E5%A6%82%E6%9E%9C%E6%A8%A1%E5%9E%8B%E9%80%89%E9%94%99%E4%BA%86%E5%B7%A5%E5%85%B7%EF%BC%8C%E6%88%96%E8%80%85%E7%94%9F%E6%88%90%E7%9A%84%E5%8F%82%E6%95%B0%E4%B8%8D%E5%AF%B9%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F"><span class="toc-text">提问：如果模型选错了工具，或者生成的参数不对怎么办？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%90%E9%97%AE%EF%BC%9A%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8%E5%92%8C-RAG-%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E7%94%A8%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8%EF%BC%8C%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E7%94%A8-RAG%EF%BC%9F"><span class="toc-text">提问：工具调用和 RAG 有什么区别？什么时候用工具调用，什么时候用 RAG？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%90%E9%97%AE%EF%BC%9ASpring-AI-%E5%BA%95%E5%B1%82%E6%98%AF%E6%80%8E%E4%B9%88%E6%8A%8A%E5%B7%A5%E5%85%B7%E5%AE%9A%E4%B9%89%E4%BC%A0%E7%BB%99%E6%A8%A1%E5%9E%8B%E7%9A%84%EF%BC%9F"><span class="toc-text">提问：Spring AI 底层是怎么把工具定义传给模型的？</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MCP"><span class="toc-text">MCP</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Agent"><span class="toc-text">Agent</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%90%E9%97%AE%EF%BC%9A%E5%A6%82%E6%9E%9C%E6%A8%A1%E5%9E%8B%E5%9C%A8-CoT-%E7%9A%84%E4%B8%AD%E9%97%B4%E6%AD%A5%E9%AA%A4%E5%B0%B1%E6%8E%A8%E9%94%99%E4%BA%86%EF%BC%8C%E5%90%8E%E9%9D%A2%E7%9A%84%E6%AD%A5%E9%AA%A4%E4%BC%9A%E5%85%A8%E8%B7%9F%E7%9D%80%E9%94%99%EF%BC%8C%E6%80%8E%E4%B9%88%E7%BC%93%E8%A7%A3%E8%BF%99%E4%B8%AA%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="toc-text">提问：如果模型在 CoT 的中间步骤就推错了，后面的步骤会全跟着错，怎么缓解这个问题？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%90%E9%97%AE%EF%BC%9ATree-of-Thoughts-%E5%92%8C%E6%99%AE%E9%80%9A-CoT-%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E8%AF%A5%E7%94%A8-ToT%EF%BC%9F"><span class="toc-text">提问：Tree of Thoughts 和普通 CoT 有什么区别？什么时候该用 ToT？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%90%E9%97%AE%EF%BC%9A%E5%9C%A8%E5%AE%9E%E9%99%85%E9%A1%B9%E7%9B%AE%E9%87%8C%EF%BC%8C%E6%80%8E%E4%B9%88%E5%88%A4%E6%96%AD%E4%B8%80%E4%B8%AA%E4%BB%BB%E5%8A%A1%E9%80%82%E4%B8%8D%E9%80%82%E5%90%88%E7%94%A8-CoT%EF%BC%9F"><span class="toc-text">提问：在实际项目里，怎么判断一个任务适不适合用 CoT？</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BC%82%E6%AD%A5%E5%93%8D%E5%BA%94"><span class="toc-text">异步响应</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%A7%E9%97%AE%E9%A2%98"><span class="toc-text">大问题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%90%E9%97%AE%EF%BC%9AReAct-%E5%92%8C-Plan-and-Execute-%E4%B8%A4%E7%A7%8D-Agent-%E8%8C%83%E5%BC%8F%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F%E5%AE%9E%E9%99%85%E9%A1%B9%E7%9B%AE%E4%B8%AD%E6%80%8E%E4%B9%88%E9%80%89%EF%BC%9F"><span class="toc-text">提问：ReAct 和 Plan-and-Execute 两种 Agent 范式有什么区别？实际项目中怎么选？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%90%E9%97%AE%EF%BC%9AAgent-%E7%9A%84%E8%AE%B0%E5%BF%86%E6%A8%A1%E5%9D%97%E6%80%8E%E4%B9%88%E8%AE%BE%E8%AE%A1%EF%BC%9F%E9%95%BF%E6%9C%9F%E8%AE%B0%E5%BF%86%E5%92%8C%E7%9F%AD%E6%9C%9F%E8%AE%B0%E5%BF%86%E5%88%86%E5%88%AB%E7%94%A8%E4%BB%80%E4%B9%88%E6%8A%80%E6%9C%AF%E5%AE%9E%E7%8E%B0%EF%BC%9F"><span class="toc-text">提问：Agent 的记忆模块怎么设计？长期记忆和短期记忆分别用什么技术实现？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%90%E9%97%AE%EF%BC%9A%E6%80%8E%E4%B9%88%E8%A7%A3%E5%86%B3-Agent-%E5%A4%9A%E6%AD%A5%E6%89%A7%E8%A1%8C%E6%97%B6%E7%9A%84%E9%94%99%E8%AF%AF%E7%B4%AF%E7%A7%AF%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="toc-text">提问：怎么解决 Agent 多步执行时的错误累积问题？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%90%E9%97%AE%EF%BC%9A%E5%A6%82%E6%9E%9C%E6%A3%80%E7%B4%A2%E5%87%BA%E6%9D%A5%E7%9A%84%E6%96%87%E6%A1%A3%E7%89%87%E6%AE%B5%E5%A4%AA%E5%A4%9A%EF%BC%8C%E8%B6%85%E8%BF%87%E4%BA%86%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AA%97%E5%8F%A3%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F"><span class="toc-text">提问：如果检索出来的文档片段太多，超过了大模型的上下文窗口怎么办？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%90%E9%97%AE%EF%BC%9ARAG-%E5%92%8C%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F%E4%BB%80%E4%B9%88%E5%9C%BA%E6%99%AF%E4%B8%8B%E8%AF%A5%E9%80%89%E5%93%AA%E4%B8%AA%EF%BC%9F"><span class="toc-text">提问：RAG 和模型微调有什么区别？什么场景下该选哪个？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%90%E9%97%AE%EF%BC%9A%E5%90%91%E9%87%8F%E6%A3%80%E7%B4%A2%E6%89%BE%E5%88%B0%E7%9A%84%E5%86%85%E5%AE%B9%E8%AF%AD%E4%B9%89%E7%9B%B8%E8%BF%91%EF%BC%8C%E4%BD%86%E5%8F%AF%E8%83%BD%E4%B8%8D%E6%98%AF%E7%9C%9F%E6%AD%A3%E7%9B%B8%E5%85%B3%E7%9A%84%EF%BC%8C%E6%80%8E%E4%B9%88%E8%A7%A3%E5%86%B3%EF%BC%9F"><span class="toc-text">提问：向量检索找到的内容语义相近，但可能不是真正相关的，怎么解决？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%90%E9%97%AE%EF%BC%9A%E5%A6%82%E6%9E%9C%E7%9F%A5%E8%AF%86%E5%BA%93%E9%87%8C%E6%9C%89%E5%A4%9A%E7%A7%8D%E6%A0%BC%E5%BC%8F%E7%9A%84%E6%96%87%E6%A1%A3%EF%BC%8C%E6%AF%94%E5%A6%82-PDF%E3%80%81Word%E3%80%81%E7%BD%91%E9%A1%B5%EF%BC%8C%E5%88%87%E7%89%87%E7%AD%96%E7%95%A5%E8%A6%81%E6%80%8E%E4%B9%88%E5%A4%84%E7%90%86%EF%BC%9F"><span class="toc-text">提问：如果知识库里有多种格式的文档，比如 PDF、Word、网页，切片策略要怎么处理？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%90%E9%97%AE%EF%BC%9A%E6%A3%80%E7%B4%A2%E7%BB%93%E6%9E%9C%E9%87%8C%E6%9C%89%E9%87%8D%E5%A4%8D%E5%86%85%E5%AE%B9%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F"><span class="toc-text">提问：检索结果里有重复内容怎么办？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%90%E9%97%AE%EF%BC%9A%E6%80%8E%E4%B9%88%E8%AF%84%E4%BC%B0-RAG-%E7%9A%84%E6%A3%80%E7%B4%A2%E6%95%88%E6%9E%9C%EF%BC%9F%E6%9C%89%E4%BB%80%E4%B9%88%E6%8C%87%E6%A0%87%EF%BC%9F"><span class="toc-text">提问：怎么评估 RAG 的检索效果？有什么指标？</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/27/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-04-27T12:07:45.679Z" title="发表于 2026-04-27 20:07:45">2026-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/27/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-04-27T12:07:45.162Z" title="发表于 2026-04-27 20:07:45">2026-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/temp2/" title="temp2">temp2</a><time datetime="2026-04-23T11:16:35.000Z" title="发表于 2026-04-23 19:16:35">2026-04-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/temp/" title="temp">temp</a><time datetime="2026-04-23T11:12:41.000Z" title="发表于 2026-04-23 19:12:41">2026-04-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/tuomas%E5%87%86%E5%A4%87/" title="tuomas准备">tuomas准备</a><time datetime="2026-04-23T10:31:55.000Z" title="发表于 2026-04-23 18:31:55">2026-04-23</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>AI native | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="AI 编程 !&#x3D; Vibe Coding Vibe Coding 只是 AI 编程众多模式中的一种，而且是最随性的那种。如今 AI 编程的模式已经非常多了，从跟着感觉走到按流程来，从一个人问 AI 到一整套方法论驱动，不同场景有不同的最佳实践。 今天就给大家一次性讲清楚，目前主流的 6 种 AI 编程模式到底是什么？有什么区别？各自适合什么场景？ 搞懂这些，下次面试再被问到 AI 编程，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI native">
+<meta property="og:url" content="https://yuezi2048.github.io/2026/04/20/2.Areas%F0%9F%8C%90/temp/AI%20native/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="AI 编程 !&#x3D; Vibe Coding Vibe Coding 只是 AI 编程众多模式中的一种，而且是最随性的那种。如今 AI 编程的模式已经非常多了，从跟着感觉走到按流程来，从一个人问 AI 到一整套方法论驱动，不同场景有不同的最佳实践。 今天就给大家一次性讲清楚，目前主流的 6 种 AI 编程模式到底是什么？有什么区别？各自适合什么场景？ 搞懂这些，下次面试再被问到 AI 编程，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2026-04-20T06:24:45.000Z">
+<meta property="article:modified_time" content="2026-04-20T06:24:45.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="temp">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "AI native",
+  "url": "https://yuezi2048.github.io/2026/04/20/2.Areas%F0%9F%8C%90/temp/AI%20native/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2026-04-20T06:24:45.000Z",
+  "dateModified": "2026-04-20T06:24:45.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2026/04/20/2.Areas%F0%9F%8C%90/temp/AI%20native/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'AI native',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">829</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">81</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">109</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">AI native</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">AI native</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-04-20T06:24:45.000Z" title="发表于 2026-04-20 14:24:45">2026-04-20</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-20T06:24:45.000Z" title="更新于 2026-04-20 14:24:45">2026-04-20</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/temp/">temp</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>9分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p><strong>AI 编程 !&#x3D; Vibe Coding</strong></p>
+<p>Vibe Coding 只是 AI 编程众多模式中的一种，而且是最随性的那种。如今 AI 编程的模式已经非常多了，从跟着感觉走到按流程来，从一个人问 AI 到一整套方法论驱动，不同场景有不同的最佳实践。</p>
+<p>今天就给大家一次性讲清楚，目前主流的 6 种 AI 编程模式到底是什么？有什么区别？各自适合什么场景？</p>
+<p>搞懂这些，下次面试再被问到 AI 编程，你就能从容地掏出一整套体系了。</p>
+<blockquote>
+<p>本文内容节选自鱼皮免费开源的 《AI 编程零基础入门教程》 中的「Vibe Coding 概念大全」篇，想系统学习 AI 编程的朋友可以直接去看完整教程。</p>
+</blockquote>
+<h2 id="一、Vibe-Coding-氛围编程"><a href="#一、Vibe-Coding-氛围编程" class="headerlink" title="一、Vibe Coding 氛围编程"></a>一、Vibe Coding 氛围编程</h2><p>Vibe Coding 是由计算机科学家 Andrej Karpathy 在 2025 年 2 月提出的概念。它描述了一种全新的编程方式：通过自然语言和 AI 对话，让 AI 帮你写代码，你只需要描述需求、测试结果、指导方向。</p>
+<p>你不需要精通编程语法，只需要能清楚表达你的想法，AI 负责把你的想法变成可运行的代码。</p>
+<p>所以说，Vibe Coding 的重点不是写代码，而是明确需求并清晰表达。你描述得越清楚，AI 给你的结果就越靠谱。</p>
+<p>这就像点外卖一样，你告诉外卖平台你想吃什么，餐厅帮你做好送到手上。你不需要会做饭，但要知道自己想吃什么。</p>
+<p>适合场景：做小工具、快速验证想法、个人项目原型、非程序员想快速做出产品。</p>
+<p><img src="/img/loading.gif" data-original="https://i1.hdslb.com/bfs/new_dyn/6e3a6dfb7c18f41ade0a1b22591554e612890453.jpg@.webp"></p>
+<h2 id="二、Agentic-Engineering-智能体工程"><a href="#二、Agentic-Engineering-智能体工程" class="headerlink" title="二、Agentic Engineering 智能体工程"></a>二、Agentic Engineering 智能体工程</h2><p>Agentic Engineering 智能体工程是 2026 年 2 月由 Andrej Karpathy（也就是提出 Vibe Coding 的那位大佬）提出的新概念，可以理解为 Vibe Coding 的规范版。</p>
+<p>Vibe Coding 就是跟着感觉写代码：你给 AI 一句话，AI 吐出代码，能跑就行，跑不了就把报错粘回去让 AI 再改。做个小工具贼拉快，但项目一大就容易翻车。</p>
+<p>而 Agentic Engineering 的思路是：你先想清楚要干嘛、写好方案、拆好任务，再把活交给 AI 去执行，它干完了你还得验收，质量不行再打回去重做。</p>
+<p>打个比方，Vibe Coding 的时候你是个 DJ，放什么歌全凭感觉；Agentic Engineering 里你是包工头，流程、质量、验收都得你说了算。<strong>一个跟着感觉走，一个按流程来。</strong></p>
+<p>当然，不是说 Vibe Coding 已经过时了。Vibe Coding 负责让你看到可能性，Agentic Engineering 负责把可能性变成真正能用的东西。二者适用于不同的场景，做小工具时可以用 Vibe Coding，做企业级项目就需要 Agentic Engineering 的思维。</p>
+<p><img src="/img/loading.gif" data-original="https://i1.hdslb.com/bfs/new_dyn/93fe122e42fb91295d187e7bcfc5e5c412890453.jpg@.webp"></p>
+<p>适合场景：中大型项目、团队协作、需要长期维护的正式产品。</p>
+<h2 id="三、Harness-Engineering-驾驭工程"><a href="#三、Harness-Engineering-驾驭工程" class="headerlink" title="三、Harness Engineering 驾驭工程"></a>三、Harness Engineering 驾驭工程</h2><p>Harness Engineering 驾驭工程是 2026 年兴起的 AI 工程新范式，核心理念是 <strong>人类掌舵 + 智能体执行</strong>。</p>
+<p>它不是去优化 AI 模型本身，而是围绕 AI 智能体搭建一整套约束机制、反馈循环和工作流管理系统，让原本不可预测的 AI 在高可靠性环境下跑得稳、跑得快。</p>
+<p>Harness 这个词本意是 “马具”，就像缰绳和马鞍用来引导强大但难以预测的马匹一样，Harness Engineering 就是围绕 AI 编程智能体搭建的整套 “运行环境”，确保 AI 能按照你的预期工作。</p>
+<p>Harness Engineering 包含三大核心支柱：</p>
+<ol>
+<li><p>上下文工程：确保 AI 在正确的时间获得正确的信息，包括代码库文档、架构规范、AGENTS.md 文件、测试结果等</p>
+</li>
+<li><p>架构约束：通过代码规范检查器、自动化测试等机制，强制规定 AI 必须遵守的规则，明确的边界能让 AI 更快地收敛到正确的解决方案</p>
+</li>
+<li><p>熵管理：定期清理 AI 生成代码中积累的问题，比如过时文档、命名偏差、死代码等</p>
+</li>
+</ol>
+<p><img src="/img/loading.gif" data-original="https://i1.hdslb.com/bfs/new_dyn/121590a99ea2bb0e607e3548bba40e0112890453.jpg@.webp"></p>
+<p>为什么这个概念越来越重要呢？</p>
+<p>因为在 AI 编程时代，<strong>模型本身已经是通用商品，真正的竞争力在于你围绕模型搭建的工程体系</strong>。同一个大模型，在不同的 Harness 环境下，代码质量可能天差地别。程序员的角色正在从 “自己写代码” 转变为 “设计让 AI 可靠写代码的系统”。</p>
+<p>适合场景：企业级 AI 开发、对代码质量和稳定性要求高的项目、需要多人协作的长期项目。</p>
+<h2 id="四、Ralph-Wiggum-Loop"><a href="#四、Ralph-Wiggum-Loop" class="headerlink" title="四、Ralph Wiggum Loop"></a>四、Ralph Wiggum Loop</h2><p>Ralph Wiggum Loop 是 2026 年比较流行的一种 AI 编程模式，名字来源于《辛普森一家》中那个执着不放弃的角色 Ralph Wiggum。</p>
+<p><img src="/img/loading.gif" data-original="https://i1.hdslb.com/bfs/new_dyn/979a4dc65b113aba10dce20115533b5b12890453.png@.webp"></p>
+<p>这个模式目前已有多个开源实现，比如 wiggumdev&#x2F;ralph。它的核心思路很简单：<strong>把 AI 放在循环中反复执行，直到需求文档中的所有检查项全部完成。</strong></p>
+<p>工作流程大概是这样的：</p>
+<ol>
+<li><p>先写一份 PRD（产品需求文档），把要做的功能拆解成一个个清晰的检查项</p>
+</li>
+<li><p>让 AI 智能体开始执行，每次从检查清单中取出未完成的任务</p>
+</li>
+<li><p>AI 完成一个任务后，通过 Git 提交代码并记录进度</p>
+</li>
+<li><p>以全新的上下文开始新一轮迭代，继续处理剩余任务</p>
+</li>
+<li><p>不断循环，直到所有检查项完成</p>
+</li>
+</ol>
+<p>这种模式的巧妙之处在于，每轮循环都以干净的上下文开始（通过 Git 和文件来持久化进度），避免了长对话中 AI 容易断片儿的问题。而且可以无人值守地运行，你写好 PRD 就可以去睡觉了，第二天起来检查成果就行。</p>
+<p>不过要注意设置好循环次数限制和 Token 预算，防止 AI 陷入无限循环疯狂烧钱。</p>
+<p>适合场景：功能明确且可拆解的项目、想让 AI 无人值守地干活、任务量大但单个任务相对独立。</p>
+<h2 id="五、BMAD-敏捷-AI-开发方法"><a href="#五、BMAD-敏捷-AI-开发方法" class="headerlink" title="五、BMAD 敏捷 AI 开发方法"></a>五、BMAD 敏捷 AI 开发方法</h2><p>BMAD-METHOD（Breakthrough Method of Agile AI-Driven Development，突破性敏捷 AI 驱动开发方法）是一套系统化的 AI 智能体开发框架，目标是将原本混乱的 AI 编程过程变得结构化、可复用。</p>
+<p>BMAD 使用 <strong>角色化智能体</strong> 的方式组织开发流程，每个智能体扮演特定角色：</p>
+<ul>
+<li><p>Analyst Agent 分析师：创建项目简报，包含市场分析和用户画像</p>
+</li>
+<li><p>PM Agent 产品经理：将简报转化为详细的产品需求文档（PRD）</p>
+</li>
+<li><p>Architect Agent 架构师：设计技术实现方案和系统架构</p>
+</li>
+</ul>
+<p>BMAD 中的智能体分为两种类型：</p>
+<ul>
+<li><p>Simple Agents 简单智能体：单文件、自包含，适合代码审查、文档生成等聚焦任务</p>
+</li>
+<li><p>Expert Agents 专家智能体：具有跨会话持久记忆，配有专属文件夹存放资源，适合复杂的多步骤工作流</p>
+</li>
+</ul>
+<p>每个智能体都有标准化的组成部分，包括人设（角色、身份、沟通风格、原则）、能力列表、交互菜单，以及可选的关键行动。</p>
+<p><img src="/img/loading.gif" data-original="https://i1.hdslb.com/bfs/new_dyn/348fe51e122e05b9b88f8abca95be1de12890453.jpg@.webp"></p>
+<p>BMAD 在 GitHub 上获得了几万+ Star，说明这种结构化的 AI 开发方法正在被越来越多的开发者认可。</p>
+<p><img src="/img/loading.gif" data-original="https://i1.hdslb.com/bfs/new_dyn/c9513c52940f618ec4f2dc40b2f1840012890453.png@.webp"></p>
+<p>适合场景：从零开始的完整项目、需要走完分析-设计-开发全流程的产品、团队想要标准化 AI 开发流程。</p>
+<h2 id="六、SDD-规范驱动开发"><a href="#六、SDD-规范驱动开发" class="headerlink" title="六、SDD 规范驱动开发"></a>六、SDD 规范驱动开发</h2><p>SDD（Spec-Driven Development 规范驱动开发）是 AI 时代的一种新型开发方法论，强调在编码之前先创建明确的、AI 能直接理解和执行的规范文档。</p>
+<p>传统开发流程是：想到什么写什么，边写边改，最后再补文档。这样容易导致需求不清晰、代码和文档对不上。</p>
+<p>而 SDD 的思路正好相反：<strong>先把需求写成规范文档，并且把规范文档当作代码的唯一真相来源</strong>。</p>
+<p>你可以把规范文档理解为 “项目宪法”，它包含了详细的需求描述、系统设计和接口定义。AI 必须严格遵守这些条文来生成代码，确保产出完全符合预期。</p>
+<p><img src="/img/loading.gif" data-original="https://i1.hdslb.com/bfs/new_dyn/5b032eb77c015ac8b2b8e935a5da7bf212890453.jpg@.webp"></p>
+<p>为什么 SDD 越来越受重视？</p>
+<p>因为 AI 生成代码的质量直接取决于上下文的清晰度，而不仅仅是依靠提示词技巧。一个清晰的规范文档能比任何 Prompt 黑魔法更有效地减少错误。</p>
+<p>SDD 的典型工作流程如下：</p>
+<ol>
+<li><p>Constitution 制定准则：定义项目的基本原则、代码规范、性能标准</p>
+</li>
+<li><p>Specify 编写规范：描述要做什么功能、为什么做、用户需求是什么</p>
+</li>
+<li><p>Clarify 澄清疑问：让 AI 提出结构化问题，明确边界情况和错误处理</p>
+</li>
+<li><p>Plan 制定方案：确定技术栈、系统架构、数据模型、API 接口</p>
+</li>
+<li><p>Tasks 拆解任务：把计划拆解成可执行的任务列表，标注依赖关系和优先级</p>
+</li>
+<li><p>Implement 执行实现：AI 按照任务列表生成代码，人类验证</p>
+</li>
+</ol>
+<p>其实这和程序员在企业中开发项目的标准流程非常相似，只不过执行者从人变成了 AI。</p>
+<p><img src="/img/loading.gif" data-original="https://i1.hdslb.com/bfs/new_dyn/202120c59175b762509a25c21381c91512890453.jpg@.webp"></p>
+<p>2025 年 9 月，GitHub 发布了开源的 Spec Kit 工具包，帮助开发者在 AI 编程中实践 SDD 方法论。它支持 Claude Code、GitHub Copilot 等主流编程工具，通过一套斜杠命令引导你完成上述流程。即使你不是软件开发专家，也能在 AI 的引导下轻松地走完规范的项目开发流程。</p>
+<p><img src="/img/loading.gif" data-original="https://i1.hdslb.com/bfs/new_dyn/c93714828a825064557ee61418434ca712890453.png@.webp"></p>
+<p>适合场景：需求复杂且明确的项目、对代码质量要求高的场景、团队多人协作开发。</p>
+<h2 id="对比一下"><a href="#对比一下" class="headerlink" title="对比一下"></a>对比一下</h2><p>学完这些模式后，再来给大家用一张表格来汇总：</p>
+<p>模式 一句话总结 上手门槛 适合项目规模 Vibe Coding 跟着感觉走，能跑就行 最低 小项目&#x2F;原型 Agentic Engineering 包工头模式，先规划再执行 中等 中大型项目 Harness Engineering 给 AI 套上缰绳，搭建可靠的运行环境 较高 企业级项目 Ralph Wiggum Loop 写好清单让 AI 循环干，干完为止 中等 功能明确的中型项目 BMAD 角色扮演式开发，分析师+产品+架构全上 中等 从零开始的完整产品 SDD 先写规范文档，再让 AI 照着做 中等 需求明确、质量要求高的项目</p>
+<p>注意，这些模式之间并不是互相排斥的，实际开发中完全可以混着用。比如用 SDD 先把规范写好，再用 BMAD 的角色化智能体去执行，底层用 Harness Engineering 的思路来约束 AI 的行为。灵活组合，效果更佳。</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>回到开头那个面试场景，如果你只知道 Vibe Coding，说明你还停留在 AI 编程的入门阶段。但如果你能把这 6 种模式的适用场景和优劣讲清楚，面试官大概率会对你刮目相看。</p>
+<p>话说 AI 编程这个领域变化太快了，现在的最佳实践，过几个月可能就会有更好的替代方案。保持学习、多动手尝试，比记住任何一个概念都重要。</p>
+<p>如果你是刚开始学习 AI 编程，肯定是从 Vibe Coding 学起，如果你想系统学习 AI 编程的完整知识体系、快速做出企业级项目和商业产品，可以看我免费开源的 《AI 编程零基础入门教程》，GitHub Star 数破万，涵盖从零基础入门到项目实战再到产品变现的全流程。</p>
+<blockquote>
+<p>开源仓库：<a target="_blank" rel="noopener" href="https://github.com/liyupi/ai-guide">https://github.com/liyupi/ai-guide</a></p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2026/04/20/2.Areas%F0%9F%8C%90/temp/AI%20native/">https://yuezi2048.github.io/2026/04/20/2.Areas🌐/temp/AI native/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/temp/">temp</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/04/19/3.Resources%F0%9F%93%94/%E8%AE%A4%E7%9F%A5%E5%8F%A5%E5%AD%90%E6%95%B4%E7%90%86/%E8%A1%8C%E5%8A%A8/" title="行动"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">行动</div></div><div class="info-2"><div class="info-item-1">所谓“成功学”全是谎言。人生根本不是梯子，而是一座迷宫，大多数人都在梦游，直到撞上南墙，而他人为我们总结的坑是：  身体是唯一的硬件 停止表演，没人看你 拥有资产，建立杠杆 慎重选择伴侣（合伙人） 只有“Hell Yeah”或“No” 立即行动，拒绝完美 相信复利的力量 努力增加好运概率 用死亡作为决策过滤器   戒掉咖啡，不要靠咖啡硬扛，以为是提神，其实是在透支睡眠和代谢，遵循自然规律，睡眠才是最好的 “补药” 可以复利，积累的事情，一定要干，无论开头多困难。（学习英语，健身，投资，分享知识，交良师益友，全力以赴找个好对象） 不可以复利的事情，短期给的利益无论多高，都不要干。（抽烟，嫖娼，赌博，坑害别人，占人小便宜，撒谎成性）    一件件小事，让我比大多数人都活得简单。不碰烟酒茶糖，渴了就喝白开水，偶尔晚上想喝点酒，就一罐 230ml 的啤酒。早餐固定：500ml...</div></div></div></a><a class="pagination-related" href="/2026/04/21/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AF%BC%E5%9B%BE%E8%BE%93%E5%87%BA/mysql/" title="mysql"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">mysql</div></div><div class="info-2"><div class="info-item-1">完全正确！这是最高效的准备策略先把80%的核心必考点讲透、讲顺、讲成自己的话，剩下20%的深挖题和边缘题完全可以等核心模块录完、基础打牢后再补充。这样既能快速产出完整的面试视频，又能保证面试时90%的基础题和中等题都能对答如流。 我帮你把内容再做一次终极优先级划分，明确告诉你：✅ 必须100%讲透，漏了直接扣分⚠️ 可以一句话带过，后面再展开❌ 暂时完全跳过，等所有核心讲完再补  一、各模块必讲&#x2F;选讲&#x2F;跳过清单0. 技术选型（必讲，开场第一题）✅ 必讲：  为什么不用文件？（乱，无约束） 为什么不用Oracle？（贵，重） 为什么不用Redis？（限，不支持复杂查询和事务） 一句话总结：MySQL是中小业务结构化数据存储的最优解  ⚠️ 选讲：逻辑删除vs物理删除❌ 跳过：MySQL vs PostgreSQL、MySQL vs MongoDB  1. MySQL整体架构（必讲，基础中的基础）✅ 必讲：  两层架构：Server层（解析SQL）+...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/04/16/2.Areas%F0%9F%8C%90/temp/ubuntu24.04%E8%A3%85%E6%9C%BA%E6%B8%85%E5%8D%95/" title="ubuntu24.04装机清单"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-16</div><div class="info-item-2">ubuntu24.04装机清单</div></div><div class="info-2"><div class="info-item-1">Ubuntu24.04装机，24G内存很好用 前期工作：  软件源 snap卸载+基于ppa重新安装firefox（可选） flatpak软件库（推荐）：https://www.cnblogs.com/lwlnice/p/18263967 星火应用商店（可选，个人使用时只能用终端版） 铁豌豆安装必要软件（可选） WPS365：测试 WPS 和 wayland 及其分数倍缩放率的契合度 Bilibili Todesk 向日葵（有远程UI操作需求，建议X11显示模式兼容性拉满，不要用wayland） 腾讯会议 QQ 微信 音乐软件 Splayer typora vim Steam   显卡驱动（坑：注意ubuntu的内核版本+当前显卡的兼容版本，一般的话确定好能跑的内核的版本后最好就不要动了，老显卡可能要考虑降内核版本） 局域网串流：moonlight + sunshine 自搭中继服务器远程ssh连接&#x2F;文件传输：RustDusk  软件清单：  输入法：fcitx5 + Rime（中州韵）+ rime-ice词库增强 +...</div></div></div></a><a class="pagination-related" href="/2026/04/16/2.Areas%F0%9F%8C%90/temp/%E9%9A%8F%E6%89%8B%E8%AE%B0%E5%BD%95%E5%8F%AF%E8%83%BD%E6%9C%89%E7%94%A8%E7%9A%84/" title="随手记录可能有用的"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-16</div><div class="info-item-2">随手记录可能有用的</div></div><div class="info-2"><div class="info-item-1">word转markdown（latex公式）+图片，使用pandoc，方便把导师&#x2F;老板喜欢的word，转换成AI喜欢的markdown，避免直接导入给AI把一些公式识别不出 pandoc 你的文档名.docx -o 输出.md -s --wrap=none --extract-media=./media  关键参数：--extract-media 提取图片，公式会自动转为 $...$（行内）&#x2F; $$...$$（块）标准 LaTeX 格式 打开输出的 输出.md 到 Typora，所有公式都是可编辑的 LaTeX 代码，不是图片  清除掉git误提交的密钥或配置等文件，使用git-filter-repo的python库组件使用的坑点  他为了保证远端仓库安全，本地清除后会删除掉远端地址，需要本地没问题后，手动进行添加 注意目录路径的变动，要用历史提交中的工作区路径，而不是当前工作区路径顺手的事： 顺便用到了git...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">829</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">81</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">109</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81Vibe-Coding-%E6%B0%9B%E5%9B%B4%E7%BC%96%E7%A8%8B"><span class="toc-text">一、Vibe Coding 氛围编程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81Agentic-Engineering-%E6%99%BA%E8%83%BD%E4%BD%93%E5%B7%A5%E7%A8%8B"><span class="toc-text">二、Agentic Engineering 智能体工程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81Harness-Engineering-%E9%A9%BE%E9%A9%AD%E5%B7%A5%E7%A8%8B"><span class="toc-text">三、Harness Engineering 驾驭工程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81Ralph-Wiggum-Loop"><span class="toc-text">四、Ralph Wiggum Loop</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81BMAD-%E6%95%8F%E6%8D%B7-AI-%E5%BC%80%E5%8F%91%E6%96%B9%E6%B3%95"><span class="toc-text">五、BMAD 敏捷 AI 开发方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81SDD-%E8%A7%84%E8%8C%83%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91"><span class="toc-text">六、SDD 规范驱动开发</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E6%AF%94%E4%B8%80%E4%B8%8B"><span class="toc-text">对比一下</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E5%90%8E"><span class="toc-text">最后</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/27/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-04-27T12:07:45.679Z" title="发表于 2026-04-27 20:07:45">2026-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/27/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-04-27T12:07:45.162Z" title="发表于 2026-04-27 20:07:45">2026-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/temp2/" title="temp2">temp2</a><time datetime="2026-04-23T11:16:35.000Z" title="发表于 2026-04-23 19:16:35">2026-04-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/temp/" title="temp">temp</a><time datetime="2026-04-23T11:12:41.000Z" title="发表于 2026-04-23 19:12:41">2026-04-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/tuomas%E5%87%86%E5%A4%87/" title="tuomas准备">tuomas准备</a><time datetime="2026-04-23T10:31:55.000Z" title="发表于 2026-04-23 18:31:55">2026-04-23</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

@@ -1,0 +1,472 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>2.智能体发展 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="学习本章主要是为了知道目前的思想是怎么来的。每一个新范式的出现，都是为了解决上一代范式的核心“痛点”或根本局限 。而新的解决方案在带来能力飞跃的同时，也引入了新的、在当时难以克服的“局限”，而这又为下一代范式的诞生埋下了伏笔 	 符号主义早期认为智能的实现依靠一套明确的规则。是一套预先定义好的知识库和推理规则，并不是自主学习得到。 早期物理符号假说PSSH中指导我们：**智能的本质，就是符号的计算">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2.智能体发展">
+<meta property="og:url" content="https://yuezi2048.github.io/2026/04/23/2.Areas%F0%9F%8C%90/AI/Hello-Agents/2.%E6%99%BA%E8%83%BD%E4%BD%93%E5%8F%91%E5%B1%95/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="学习本章主要是为了知道目前的思想是怎么来的。每一个新范式的出现，都是为了解决上一代范式的核心“痛点”或根本局限 。而新的解决方案在带来能力飞跃的同时，也引入了新的、在当时难以克服的“局限”，而这又为下一代范式的诞生埋下了伏笔 	 符号主义早期认为智能的实现依靠一套明确的规则。是一套预先定义好的知识库和推理规则，并不是自主学习得到。 早期物理符号假说PSSH中指导我们：**智能的本质，就是符号的计算">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2026-04-23T09:45:33.000Z">
+<meta property="article:modified_time" content="2026-04-23T09:45:33.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="Hello-Agents">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "2.智能体发展",
+  "url": "https://yuezi2048.github.io/2026/04/23/2.Areas%F0%9F%8C%90/AI/Hello-Agents/2.%E6%99%BA%E8%83%BD%E4%BD%93%E5%8F%91%E5%B1%95/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2026-04-23T09:45:33.000Z",
+  "dateModified": "2026-04-23T09:45:33.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2026/04/23/2.Areas%F0%9F%8C%90/AI/Hello-Agents/2.%E6%99%BA%E8%83%BD%E4%BD%93%E5%8F%91%E5%B1%95/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '2.智能体发展',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">829</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">81</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">109</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">2.智能体发展</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">2.智能体发展</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-04-23T09:45:33.000Z" title="发表于 2026-04-23 17:45:33">2026-04-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-23T09:45:33.000Z" title="更新于 2026-04-23 17:45:33">2026-04-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/AI/">AI</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/AI/Hello-Agents/">Hello-Agents</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">8.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>25分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>学习本章主要是为了知道目前的思想是怎么来的。<strong>每一个新范式的出现，都是为了解决上一代范式的核心“痛点”或根本局限 。而新的解决方案在带来能力飞跃的同时，也引入了新的、在当时难以克服的“局限”，而这又为下一代范式的诞生埋下了伏笔</strong></p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20260423145427153.png" alt="image-20260423145427153">	</p>
+<h2 id="符号主义"><a href="#符号主义" class="headerlink" title="符号主义"></a>符号主义</h2><p>早期认为智能的实现依靠一套明确的规则。是一套预先定义好的知识库和推理规则，并不是自主学习得到。</p>
+<p><code>早期物理符号假说PSSH</code>中指导我们：**智能的本质，就是符号的计算与处理。**只要我们能找到正确的方式来表示知识并设计出有效的推理算法，就一定能创造出与人类媲美的机器智能</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20260423145659521.png" alt="image-20260423145659521" style="zoom:50%;" />	
+
+<p>演变出<strong>专家系统（Expert System）</strong>，模拟特定领域的解决问题能力，思路是将专家知识编码成计算机程序，面对相似问题时就能给出建议。</p>
+<ul>
+<li><code>Knowledeg Base</code>知识库：核心是知识表示。常用表示方法是产生式规则，用IF-THEN的条件语句构成知识网络</li>
+<li><code>Inference Engine </code>推理机：正向链–匹配IF的过程；反向链–从一个目标出发，寻找能推导该目标的规则，并将该规则的IF作为新子目标，如此递归，“目标驱动”</li>
+</ul>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20260423150044530.png" alt="image-20260423150044530" style="zoom:50%;" />	
+
+<blockquote>
+<p>典型是：上世纪70年代的<strong>MYCIN系统</strong>，其知识库包含了约600条由医学专家提供的“IF-THEN”规则。推理机主要采用反向链的方式工作：从“确定致病菌”这一最高目标出发，反向推导需要哪些证据和条件，然后向医生提问以获取这些信息。其简化的工作流程如图2.4所示。</p>
+<ul>
+<li>他的创新点是引入了**置信因子（Certainty Factor, CF）**的概念，表示结论的可信度，从而处理模糊的医学问题</li>
+</ul>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20260423150454857.png" alt="image-20260423150454857" style="zoom:50%;" />	
+
+<p>MYCIN系统解决的是深度，而<code>SHRDLU</code>解决的是知识的广度，他是想构建一个能在“积木世界”这一微观环境中，通过自然语言与人类流畅交互的综合性智能体</p>
+<p>它的贡献是首次将多个独立的人工智能模块（如语言解析、规划、记忆）集成在一个统一的系统中，并使它们协同工作，其“感知-思考-行动”的闭环设计是现在Agent的基础。</p>
+<ul>
+<li><strong>自然语言理解</strong>：Find a block which is taller than the one you are holding and put it into the box.系统要能理解the one you are holding是当前手臂抓的物品</li>
+<li><strong>规划与行动</strong>：如果指令是“把蓝色积木放到红色积木上”，而红色积木上已经有另一个绿色积木，规划出“先把绿色积木移开，再把蓝色积木放上去”的动作序列。</li>
+<li><strong>记忆和回答</strong>：基于所处环境和记忆，已经可以进行回答了<ul>
+<li>世界状态：Is there a large block behind a pyramid?</li>
+<li>行为历史：Did you touch any pyramid before you put the green one on the little cube?</li>
+<li>行为动机：Why did you pick up the red block?  他能回答 BECAUSE YOU ASKED ME TO.</li>
+</ul>
+</li>
+</ul>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20260423150739493.png" alt="image-20260423150739493" style="zoom:50%;" />	</blockquote>
+<p>引申出的问题：</p>
+<ul>
+<li><strong>常识知识与知识获取瓶颈</strong><ul>
+<li><strong>知识获取瓶颈</strong>：这种知识依赖 繁琐的访谈、提炼和编码过程来构建，时间长 成本高，同时一些难以被IF-THEN规则的直觉性难以表示</li>
+<li><strong>常识问题</strong>：更广阔、模糊的常识背景是挑战</li>
+</ul>
+</li>
+<li><strong>框架问题与系统脆弱性</strong><ul>
+<li><strong>框架问题</strong>：执行一个动作后，如何判断这些状态的改变是难题</li>
+<li><strong>系统脆弱性</strong>：符号系统依赖预设规则，一旦遇到意料之外的情况，便可能失灵，无法变通。<ul>
+<li>SHRDLU的成功正是因为规定在了一个规则完备的封闭空间内，而真实世界非常复杂</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="实验2-复现ELIZA聊天机器人"><a href="#实验2-复现ELIZA聊天机器人" class="headerlink" title="实验2-复现ELIZA聊天机器人"></a>实验2-复现ELIZA聊天机器人</h3><p>实验：通过复现最早的聊天机器人ELIZA来直观感受<strong>基于规则设定的工作机制</strong>。ELIZA从不正面回答问题或提供信息，而是通过识别用户输入中的关键词，然后应用一套预设的转换规则，将用户的陈述转化为一个开放式的提问。例如，当用户说“我为我的男朋友感到难过”时，ELIZA可能会识别出关键词“我为……感到难过”，并应用规则生成回应：“你为什么会为你的男朋友感到难过？”</p>
+<p>思路并不是创建一个真的理解人情感的智能体，而是试图<strong>通过一些简单的句式转换技巧</strong>，机器可以在完全不理解对话内容的情况下，营造出一种“智能”和“共情”的假象。然而，出乎他意料的是，许多与ELIZA交互过的人都对其产生了情感上的依赖，深信它能够理解自己。</p>
+<p>他的思想是：基于<strong>模式匹配（Pattern Matching）与文本替换（Text Substitution）</strong>，可被清晰地分解为以下四个步骤：</p>
+<ol>
+<li><p>**关键词识别与排序：**规则库为每个关键词（如 <code>mother</code>, <code>dreamed</code>, <code>depressed</code>）设定一个优先级。当输入包含多个关键词时，程序会选择优先级最高的关键词所对应的规则进行处理。</p>
+</li>
+<li><p>分解规则：</p>
+<p>找到关键词后，程序使用带通配符（*）的分解规则来捕获句子的其余部分。</p>
+<ol>
+<li><strong>规则示例</strong>： <code>* my *</code></li>
+<li><strong>用户输入</strong>： <code>&quot;My mother is afraid of me&quot;</code></li>
+<li><strong>捕获结果</strong>： <code>[&quot;&quot;, &quot;mother is afraid of me&quot;]</code></li>
+</ol>
+</li>
+<li><p>重组规则：</p>
+<p>程序从与分解规则关联的一组重组规则中，选择一条来生成回应（通常随机选择以增加多样性），并可选择性地使用上一步捕获的内容。</p>
+<ol>
+<li><strong>规则示例</strong>： <code>&quot;Tell me more about your family.&quot;</code></li>
+<li><strong>生成输出</strong>： <code>&quot;Tell me more about your family.&quot;</code></li>
+</ol>
+</li>
+<li><p>**代词转换：**在重组前，程序会进行简单的代词转换（如 <code>I</code> → <code>you</code>, <code>my</code> → <code>your</code>），以维持对话的连贯性。</p>
+</li>
+</ol>
+<blockquote>
+<p>实际体验，就能发现以下问题：</p>
+<ul>
+<li><strong>缺乏语义理解</strong>：系统不理解词义。例如，面对“I am <strong>not</strong> happy”的输入，它仍会机械地匹配 <code>I am (.*)</code> 规则并生成语义不通的回应，因为它无法理解否定词“not”的作用。</li>
+<li><strong>无上下文记忆</strong>：系统是<strong>无状态的（Stateless）</strong>，每次回应仅基于当前单句输入，无法进行连贯的多轮对话。</li>
+<li><strong>规则的扩展性问题</strong>：尝试增加更多规则会导致规则库的规模爆炸式增长，规则间的冲突与优先级管理将变得极其复杂，最终导致系统难以维护。</li>
+</ul>
+</blockquote>
+<p>ELIZA的实践清晰地揭示了符号主义方法的核心矛盾：系统看似智能的表现，完全依赖于设计者预先编码的规则。然而，这种穷举式的方法注定不可扩展。系统没有真正的理解，只是在执行符号操作，这正是其脆弱性的根源。</p>
+<h2 id="心智社会"><a href="#心智社会" class="headerlink" title="心智社会"></a>心智社会</h2><p>在符号主义下，通过预设规则构建的、单一的、集中的推理引擎，似乎难以在真实世界中（模糊、复杂、无穷变化），通向真正的智能，显得僵化和脆弱。</p>
+<blockquote>
+<p><strong>马文·明斯基</strong>在**《心智社会》**中提到了这个革命性的问题”What magical trick makes us intelligent? The trick is that there is no trick. The power of intelligence stems from our vast diversity, not from any single, perfect principle.”，反思的问题是：</p>
+<ul>
+<li><strong>“理解”是什么？</strong> 当我们说我们理解一个故事时，这是一种单一的能力吗？还是说，它其实是视觉化能力、逻辑推理能力、情感共鸣能力、社会关系常识等数十种不同心智过程协同工作的结果？</li>
+<li><strong>“常识”是什么？</strong> 常识是一个包含了数百万条逻辑规则的庞大知识库吗（如Cyc项目的尝试）？还是说，它是一种分布式的、由无数具体经验和简单规则片段交织而成的网络？</li>
+<li><strong>智能体应该如何构建？</strong> 我们是否应该继续追求一个完美的、统一的逻辑系统，还是应该承认，智能本身就是“不完美”的、由许多功能各异、甚至会彼此冲突的简单部分组成的大杂烩？</li>
+</ul>
+<p>他认为强行将多样化的心智活动塞进一个僵化的逻辑框架中，正是导致早期人工智能研究停滞不前的根源，于是不再将心智视为一个金字塔式的层级结构，而是将其看作一个扁平化的、充满了互动与协作的“社会”。</p>
+</blockquote>
+<ul>
+<li>在心智社会下，智能体指的是一个极其简单的、专门化的心智过程，它自身是“无心”的。这些简单的智能体被组织起来，形成功能更强大的<strong>机构（Agency）</strong>。它们之间通过去中心化的激活与抑制信号相互影响，形成动态的控制流。<ul>
+<li>Agent：一个负责识别线条的<code>LINE-FINDER</code>智能体，或一个负责抓握的<code>GRASP</code>智能体。</li>
+<li>Agency：一个负责搭积木的<code>BUILD</code>机构，可能由<code>SEE</code>、<code>FIND</code>、<code>GET</code>、<code>PUT</code>等多个下层智能体或机构组成。</li>
+</ul>
+</li>
+<li>**涌现（Emergence）**是这套系统的关键，每个有目的性的智能行为，不是由某个智能体规划，而是多个简单底层智能体之间局部交互自发涌现出来的。<ul>
+<li>例如搭建积木的目标，它会激活一个名为<code>BUILD-TOWER</code>的高层机构<ul>
+<li><code>BUILD-TOWER</code>机构不需要负责具体物理动作，他唯一作用是激活下属机构，比如<code>BUILDER</code>。</li>
+<li><code>BUILDER</code>机构只包含一个循环逻辑：只要塔还没搭完，就激活<code>ADD-BLOCK</code>机构。</li>
+<li><code>ADD-BLOCK</code>机构则负责协调更具体的子任务，它会依次激活<code>FIND-BLOCK</code>、<code>GET-BLOCK</code>和<code>PUT-ON-TOP</code>这三个子机构。</li>
+<li>每一个子机构又由更底层的智能体构成。例如，<code>GET-BLOCK</code>机构会激活视觉系统中的<code>SEE-SHAPE</code>智能体、运动系统中的<code>REACH</code>和<code>GRASP</code>智能体。</li>
+</ul>
+</li>
+<li>当这个由无数“无心”的智能体组成的社会，通过简单的<strong>激活和抑制</strong>规则相互作用时，一个看似高度智能的行为，搭建积木塔，就自然而然地涌现了出来。</li>
+</ul>
+</li>
+</ul>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20260423162924455.png" alt="image-20260423162924455" style="zoom:50%;" />	
+
+<p>这种方式助于未来的一个从构建单一全能的智能体 到 多智能体协作的思考：<strong>如果一个心智内部的智能，是通过大量简单智能体的协作而涌现的，那么，在多个独立的、物理上分离的计算实体（计算机、机器人）之间，是否也能通过协作涌现出更强大的“群体智能”？</strong></p>
+<blockquote>
+<p>在**分布式人工智能（Distributed Artificial Intelligence, DAI）<strong>以及后来的</strong>多智能体系统（Multi-Agent System, MAS）**借鉴的内容：</p>
+<ul>
+<li><strong>去中心化控制（Decentralized Control）</strong>：理论的核心在于不存在中央控制器。这一思想被MAS领域完全继承，如何设计没有中心节点的协调机制和任务分配策略，成为了MAS的核心研究课题之一。</li>
+<li><strong>涌现式计算（Emergent Computation）</strong>：复杂问题的解决方案可以从简单的局部交互规则中自发产生。这启发了MAS中大量基于涌现思想的算法，如蚁群算法、粒子群优化等，用于解决复杂的优化和搜索问题。</li>
+<li><strong>智能体的社会性（Agent Sociality）</strong>：明斯基的理论强调了智能体之间的交互（激活、抑制）。MAS领域将其进一步扩展，系统地研究智能体之间的通信语言（如ACL）、交互协议（如契约网）、协商策略、信任模型乃至组织结构，从而构建起真正的计算社会。</li>
+</ul>
+</blockquote>
+<h2 id="学习范式"><a href="#学习范式" class="headerlink" title="学习范式"></a>学习范式</h2><p>在心智社会中，提供了一种<strong>群体智能和去中心化协作</strong>的合理思路，但是并没有具体的实现路径，同时符号主义的受挫也确定预先编码的规则无法构建真正鲁棒的智能。</p>
+<p>这引发了一个思考：<strong>如果智能无法被完全设计，那么它是否可以被学习出来？</strong></p>
+<p>我们不再手动编码知识，而是构建能从经验和数据中自动获取知识和能力的系统。这催生出：</p>
+<blockquote>
+<p>从<strong>联结主义</strong>奠定的学习基础，到<strong>强化学习实现的交互式学习</strong>，直至今日由<strong>大型语言模型驱动的现代智能体</strong>。</p>
+</blockquote>
+<h3 id="联结主义"><a href="#联结主义" class="headerlink" title="联结主义"></a>联结主义</h3><p>在上世纪80年代，对于符号主义局限性的体现就是<strong>联结主义（Connectionism）</strong>，不同于符号主义的自上而下，联结主义是一种自下而上的思想，来源于生物神经网络结构，他不是一种被动的逻辑推理机，而是能通过经验自我优化的系统：</p>
+<ol>
+<li><strong>知识的分布式表示</strong>：知识并非以明确的符号或规则形式存储在某个知识库中，而是以连接权重的形式，分布式地存储在大量简单的处理单元（即人工神经元）的连接之间。整个网络的连接模式本身就构成了知识。</li>
+<li><strong>简单的处理单元</strong>：每个神经元只执行非常简单的计算，如接收来自其他神经元的加权输入，通过一个激活函数进行处理，然后将结果输出给下一个神经元。</li>
+<li><strong>通过学习调整权重</strong>：系统的智能并非来自于设计者预先编写的复杂程序，而是来自于“学习”过程。系统通过接触大量样本，根据某种学习算法（如反向传播算法）自动、迭代地调整神经元之间的连接权重，从而使得整个网络的输出逐渐接近期望的目标。</li>
+</ol>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20260423164435492.png" alt="image-20260423164435492" style="zoom:50%;" />	
+
+
+
+<h3 id="强化学习（行为主义）"><a href="#强化学习（行为主义）" class="headerlink" title="强化学习（行为主义）"></a>强化学习（行为主义）</h3><p>联结主义主要解决了感知问题（例如，“这张图片里有什么？”），但智能体更核心的任务是进行决策（例如，“在这种情况下，我应该做什么？”）。</p>
+<p>**强化学习（Reinforcement Learning, RL）**正是专注于解决序贯决策问题的学习范式。它并非直接从标注好的静态数据集中学习，而是通过智能体与环境的直接交互，在“试错”的反馈信号中学习如何最大化其长期收益。</p>
+<blockquote>
+<p>以AlphaGo为例，其核心的自我对弈学习过程便是强化学习的经典体现[9]。在这个过程中，AlphaGo（智能体）通过观察棋盘的当前布局（环境状态），决定下一步棋的落子位置（行动）。一局棋结束后，根据胜负结果，它会收到一个明确的信号：赢了就是正向奖励，输了则是负向奖励。通过数百万次这样的自我对弈，AlphaGo不断调整其内部策略，逐渐学会了在何种棋局下选择何种行动，最有可能导向最终的胜利。这个过程完全是自主的，不依赖于人类棋谱的直接指导。</p>
+</blockquote>
+<p>强化学习的框架可以用几个核心要素来描述，可以发现是在一种“感知-行动-学习”的闭环中持续迭代：</p>
+<ul>
+<li><strong>智能体（Agent）</strong>：学习者和决策者。在AlphaGo的例子中，就是其决策程序。</li>
+<li><strong>环境（Environment）</strong>：智能体外部的一切，是智能体与之交互的对象。对AlphaGo而言，就是围棋的规则和对手。</li>
+<li><strong>状态（State, S）</strong>：对环境在某一时刻的特定描述，是智能体做出决策的依据。例如，棋盘上所有棋子的当前位置。</li>
+<li><strong>行动（Action, A）</strong>：智能体根据当前状态所能采取的操作。例如，在棋盘的某个合法位置上落下一子。</li>
+<li><strong>奖励（Reward, R）</strong>：环境在智能体执行一个行动后，反馈给智能体的一个标量信号，用于评价该行动在特定状态下的好坏。例如，在一局棋结束后，胜利获得+1的奖励，失败获得-1的奖励。</li>
+</ul>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20260423164836368.png" alt="image-20260423164836368" style="zoom:50%;" />	
+
+<blockquote>
+<p>具体的步骤如下：</p>
+<ol>
+<li>在时间步t，智能体观察到环境的当前状态$S_t$。</li>
+<li>基于状态 $S_t$，智能体根据其内部的**策略（Policy, π）**选择一个行动$ A_t$并执行它。策略本质上是一个从状态到行动的映射，定义了智能体的行为方式。</li>
+<li>环境接收到行动 $ A_t$后，会转移到一个新的状态 。$S_{t+1}$</li>
+<li>同时，环境会反馈给智能体一个即时奖励$R_{t+1}$</li>
+<li>智能体利用这个反馈（新状态 $S_{t+1}$和奖励）$R_{t+1}$来更新和优化其内部策略，以便在未来做出更好的决策。这个更新过程就是学习。</li>
+</ol>
+<p>最终的学习目标，最大化从当前时刻开始到未来的<strong>累积奖励（Cumulative Reward）</strong>，也称为<strong>回报（Return）</strong>。</p>
+<p>这意味着智能体需要具备“远见”，有时为了获得未来更大的奖励，需要牺牲当前的即时奖励（例如，围棋中的“弃子”策略）。通过在上述循环中不断探索、收集反馈并优化策略，智能体最终能够学会在复杂动态环境中进行自主决策和长期规划。</p>
+</blockquote>
+<h3 id="LLM推动"><a href="#LLM推动" class="headerlink" title="LLM推动"></a>LLM推动</h3><blockquote>
+<p>强化学习解决了智能体在交互中学习策略的能力，但需要大量先验知识，需要从零开始构建对任务的理解。无论是符号主义试图手动编码的常识，还是人类在决策时所依赖的背景知识，在RL智能体中都是缺失的。</p>
+</blockquote>
+<p>如何让智能体在开始学习具体任务前，就先具备对世界的广泛理解？解决方案在<strong>自然语言处理（Natural Language Processing, NLP）<strong>领域中浮现，其核心便是基于大规模数据的</strong>预训练（Pre-training）</strong>。</p>
+<p><strong>从特定任务到通用模型</strong></p>
+<p>在预训练范式出现之前，传统的自然语言处理模型通常是为单一特定任务（如情感分析、机器翻译）在专门标注的中小规模数据集上从零开始独立训练的。这种模式导致了几个问题：模型的知识面狭窄，难以将在一个任务中学到的知识泛化到另一个任务，并且每一个新任务都需要耗费大量的人力去标注数据。预训练与微调（Pre-training, Fine-tuning）范式的提出彻底改变了这一现状。其核心思想分为两步：</p>
+<ol>
+<li><strong>预训练阶段</strong>：首先在一个包含互联网级别海量文本数据的通用语料库上，通过**自监督学习（Self-supervised Learning）**的方式训练一个超大规模的神经网络模型。这个阶段的目标不是完成任何特定任务，而是学习语言本身内在的规律、语法结构、事实知识以及上下文逻辑。最常见的目标是“预测下一个词”。</li>
+<li><strong>微调阶段</strong>：完成预训练后，这个模型就已经学习到了和数据集有关的丰富知识。之后，针对特定的下游任务，只需使用少量该任务的标注数据对模型进行微调，即可让模型适应对应任务。</li>
+</ol>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20260423165613739.png" alt="image-20260423165613739" style="zoom:50%;" />	
+
+<p><strong>大型语言模型的诞生与涌现能力</strong></p>
+<p>通过在数万亿级别的文本上进行预训练，大型语言模型的神经网络权重实际上已经构建了一个关于世界知识的、高度压缩的隐式模型。它以一种全新的方式，解决了符号主义时代最棘手的“知识获取瓶颈”问题。更令人惊讶的是，当模型的规模（参数量、数据量、计算量）跨越某个阈值后，它们开始展现出未被直接训练的、预料之外的<strong>涌现能力（Emergent Abilities）</strong>，例如：</p>
+<ul>
+<li><strong>上下文学习（In-context Learning）</strong>：无需调整模型权重，仅在输入中提供<strong>几个示例（Few-shot）<strong>甚至</strong>零个示例（Zero-shot）</strong>，模型就能理解并完成新的任务。</li>
+<li><strong>思维链（Chain-of-Thought）推理</strong>：通过引导模型在回答复杂问题前，先输出一步步的推理过程，可以显著提升其在逻辑、算术和常识推理任务上的准确性。</li>
+</ul>
+<p>这些能力的出现，标志着LLM不再仅仅是一个语言模型，它已经演变成了一个兼具海量知识库和通用推理引擎双重角色的组件。</p>
+<p>至此，智能体发展的历史长河中，几大关键的技术拼图已经悉数登场：<code>符号主义</code>提供了逻辑推理的框架，<code>联结主义</code>和<code>强化学习</code>提供了学习与决策的能力，而<code>大型语言模型</code>则提供了前所未有的、通过预训练获得的世界知识和通用推理能力。</p>
+<p>下一节，我们将看到这些技术是如何在现代智能体的设计中融为一体的。</p>
+<h2 id="LLM推理"><a href="#LLM推理" class="headerlink" title="LLM推理"></a>LLM推理</h2><p>以LLM为核心的智能体已成为人工智能领域的新范式。它不仅能够理解和生成人类语言，更重要的是，能够通过与环境的交互，自主地感知、规划、决策和执行任务。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20260423165804445.png" alt="image-20260423165804445"></p>
+<p>如第一章所述，智能体与环境的交互可以被抽象为一个核心循环。LLM驱动的智能体通过一个由多个模块协同工作的、持续迭代的闭环流程来完成任务。该流程遵循图2.10所示的架构，具体步骤如下：</p>
+<ol>
+<li><strong>感知 (Perception)</strong> ：流程始于<strong>感知模块 (Perception Module)</strong>。它通过传感器从<strong>外部环境 (Environment)</strong> 接收原始输入，形成<strong>观察 (Observation)</strong>。这些观察信息（如用户指令、API返回的数据或环境状态的变化）是智能体决策的起点，处理后将被传递给思考阶段。</li>
+<li>思考 (Thought)：这是智能体的认知核心，对应图中的规划模块 (Planning Module) 和大型语言模型 (LLM) 的协同工作。<ul>
+<li><strong>规划与分解</strong>：首先，规划模块接收观察信息，进行高级策略制定。它通过<strong>反思 (Reflection)</strong> 和<strong>自我批判 (Self-criticism)</strong> 等机制，将宏观目标分解为更具体、可执行的步骤。</li>
+<li><strong>推理与决策</strong>：随后，作为中枢的<strong>LLM</strong> 接收来自规划模块的指令，并与<strong>记忆模块 (Memory)</strong> 交互以整合历史信息。LLM进行深度推理，最终决策出下一步要执行的具体操作，这通常表现为一个<strong>工具调用 (Tool Call)</strong>。</li>
+</ul>
+</li>
+<li><strong>行动 (Action)</strong> ：决策完成后，便进入行动阶段，由<strong>执行模块 (Execution Module)</strong> 负责。LLM生成的工具调用指令被发送到执行模块。该模块解析指令，从<strong>工具箱 (Tool Use)</strong> 中选择并调用合适的工具（如代码执行器、搜索引擎、API等）来与环境交互或执行任务。这个与环境的实际交互就是智能体的<strong>行动 (Action)</strong>。</li>
+<li>观察 (Observation)与循环 ：行动会改变环境的状态，并产生结果。<ul>
+<li>工具执行后会返回一个<strong>工具结果 (Tool Result)</strong> 给LLM，这构成了对行动效果的直接反馈。同时，智能体的行动改变了环境，从而产生了一个全新的<strong>环境状态</strong>。</li>
+<li>这个“工具结果”和“新的环境状态”共同构成了一轮全新的<strong>观察 (Observation)</strong>。这个新的观察会被感知模块再次捕获，同时LLM会根据行动结果<strong>更新记忆 (Memory Update)</strong>，从而启动下一轮“感知-思考-行动”的循环。</li>
+</ul>
+</li>
+</ol>
+<p>这种模块化的协同机制与持续的迭代循环，构成了LLM驱动智能体解决复杂问题的核心工作流。</p>
+<h2 id="发展节点总览"><a href="#发展节点总览" class="headerlink" title="发展节点总览"></a>发展节点总览</h2><p>人工智能体的发展史并非一条笔直的单行道，而是几大核心思想流派长达半个多世纪交织、竞争与融合的历程。理解这一历程，有助于我们洞察当前智能体架构范式形成的深刻根源。</p>
+<p>这其中，主要有三大思潮主导着不同时期的研究范式：</p>
+<ol>
+<li><strong>符号主义 (Symbolism)</strong> ：以<strong>赫伯特·西蒙 (Herbert A. Simon)</strong> 、<strong>明斯基 (Marvin Minsky)</strong> 等先驱为代表，认为智能的核心在于对符号的操作与逻辑推理。这一思想催生了能够理解自然语言指令的SHRDLU、知识驱动的专家系统以及在国际象棋领域取得巨大成功的“深蓝”计算机。</li>
+<li><strong>联结主义 (Connectionism)</strong> ：其灵感源于对大脑神经网络的模拟。尽管早期发展受限，但在<strong>杰弗里·辛顿 (Geoffrey Hinton)</strong> 等研究者的推动下，反向传播算法为神经网络的复苏奠定了基础。最终，随着深度学习时代的到来，这一思想通过卷积神经网络、Transformer等模型成为当前的主流。</li>
+<li><strong>行为主义 (Behaviorism)</strong> ：强调智能体通过与环境的互动和试错来学习最优策略，其现代化身为强化学习 。从早期的TD-Gammon到与深度学习结合并击败人类顶尖棋手的AlphaGo，这一流派为智能体赋予了从经验中习得复杂决策行为的能力。</li>
+</ol>
+<p>进入21世纪20年代，这些思想流派以前所未有的方式深度融合。以GPT系列为代表的大语言模型，其本身是联结主义的产物，却成为了执行符号推理、进行工具调用和规划决策的核心“大脑”，形成了神经-符号结合的现代智能体架构。为了系统性地回顾这一发展脉络，下图2.11梳理了从20世纪50年代至今，人工智能体发展史上的关键理论、项目与事件，为读者提供一个清晰的全局概览，作为本章知识的沉淀。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20260423165900653.png" alt="image-20260423165900653">	</p>
+<p>得益于大语言模型的突破，智能体技术栈呈现出前所未有的活跃度和多样性。图2.12展示了当前AI Agent领域的一个典型技术栈全貌，涵盖了从底层模型到上层应用的各个环节。</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/dd798b60-c316-45fa-af2c-5f7b11abba17.png" alt="img"  />	
+
+
+
+<p>本章回顾了智能体发展的历史脉络，探索了其核心思想从诞生到演进的过程，内容涵盖了人工智能领域几次关键的范式革命：</p>
+<ul>
+<li><strong>符号主义的探索与局限</strong>：从人工智能的古典时代出发，本章阐述了以专家系统为代表的早期智能体是如何尝试通过“知识+推理”来模拟智能的。通过亲手构建一个基于规则的聊天机器人，我们深刻体会到这一范式的能力边界及其面临的根本性挑战。</li>
+<li><strong>分布式智能思想的萌芽</strong>：探讨了马文·明斯基的“心智社会”理论。这一革命性的思想揭示了复杂的整体智能可以从简单的局部单元的交互中涌现，为后续的多智能体系统研究提供了重要的哲学启发。</li>
+<li><strong>学习范式的演进</strong>：见证了智能体获取能力方式的根本性变革。从联结主义赋予智能体感知世界的能力，到强化学习使其学会在与环境的交互中进行最优决策，再到基于大规模数据预训练的大型语言模型（LLM）为其提供了前所未有的世界知识和通用推理能力。</li>
+<li><strong>现代智能体的诞生</strong>：最后，我们对LLM驱动智能体进行分析。通过对其核心组件（模型、记忆、规划、工具等）和工作原理的分析，我们理解了历史上的各种技术思想是如何在现代Agent的架构中实现技术融合的。</li>
+</ul>
+<p>通过本章的学习，我们不仅理解了第一章所介绍的现代智能体从何而来，更能建立了一个关于智能体技术演进的宏观认知框架。可以发现，智能体的发展并非简单的技术迭代，而是一场关于如何定义“智能”、获取“知识”、进行“决策”的思想变革。</p>
+<p>既然现代智能体的核心是大型语言模型，那么深入理解其底层原理便至关重要。下一章将聚焦于大语言模型本身，探讨其基本概念，为后续在多智能体系统中的高级应用打下坚实的基础。</p>
+<h2 id="课后习题"><a href="#课后习题" class="headerlink" title="课后习题"></a>课后习题</h2><p>提示：以下的部分习题没有标准答案，旨在帮助学习者建立对智能体发展历史的系统性理解，并培养”以史为鉴”的技术洞察力。</p>
+<ol>
+<li><p>物理符号系统假说[1]是符号主义时代的理论基石。请分析：</p>
+<ul>
+<li>该假说的”充分性论断”和”必要性论断”分别是什么含义？</li>
+<li>结合本章内容，说明符号主义智能体在实践中遇到的哪些问题对该假说的”充分性”提出了挑战？</li>
+<li>大语言模型驱动的智能体是否符合物理符号系统假说？</li>
+</ul>
+</li>
+<li><p>专家系统MYCIN[2]在医疗诊断领域取得了显著成功，但最终并未大规模应用于临床实践。请思考：</p>
+<blockquote>
+<p><strong>提示</strong>：可以从技术、伦理、法律、用户接受度等多个角度分析</p>
+</blockquote>
+<ul>
+<li>除了本章提到的”知识获取瓶颈”和”脆弱性”，还有哪些因素可能阻碍了专家系统在医疗等高风险领域的应用？</li>
+<li>如果让现在的你设计一个医疗诊断智能体，你会如何设计系统来克服MYCIN的局限？</li>
+<li>在哪些垂直领域中，基于规则的专家系统至今仍然是比深度学习更好的选择？请举例说明。</li>
+</ul>
+</li>
+<li><p>在2.2节中，我们实现了一个简化版的ELIZA聊天机器人。请在此基础上进行扩展实践：</p>
+<blockquote>
+<p><strong>提示</strong>：这是一道动手实践题，建议实际编写代码</p>
+</blockquote>
+<ul>
+<li>为ELIZA添加3-5条新的规则，使其能够处理更多样化的对话场景（如谈论工作、学习、爱好等）</li>
+<li>实现一个简单的”上下文记忆”功能：让ELIZA能够记住用户在对话中提到的关键信息（如姓名、年龄、职业），并在后续对话中引用</li>
+<li>对比你扩展后的ELIZA与<a target="_blank" rel="noopener" href="https://chatgpt.com/">ChatGPT</a>，列举至少3个维度上存在的本质差异</li>
+<li>为什么基于规则的方法在处理开放域对话时会遇到”组合爆炸”问题并且难以扩展维护？能否使用数学的方法来说明？</li>
+</ul>
+</li>
+<li><p>马文·明斯基在”心智社会”理论[7]中提出了一个革命性的观点：智能源于大量简单智能体的协作，而非单一的完美系统。</p>
+<ul>
+<li>在图2.6”搭建积木塔”的例子中，如果 <code>GRASP</code> 智能体突然失效了，整个系统会发生什么？这种去中心化架构的优势和劣势是什么？</li>
+<li>将”心智社会”理论与现在的一些多智能体系统（如<a target="_blank" rel="noopener" href="https://docs.camel-ai.org/key_modules/workforce">CAMEL-Workforce</a>、<a target="_blank" rel="noopener" href="https://github.com/FoundationAgents/MetaGPT">MetaGPT</a>、<a target="_blank" rel="noopener" href="https://github.com/crewAIInc/crewAI">CrewAI</a>）进行对比，它们之间存在哪些关联和不同之处？</li>
+<li>马文·明斯基认为智能体可以是”无心”的简单过程，然而现在的大语言模型和智能体往往都拥有强大的推理能力。这是否意味着”心智社会”理论在大语言模型时代不再适用了？</li>
+</ul>
+</li>
+<li><p>强化学习与监督学习是两种不同的学习范式。请分析：</p>
+<ul>
+<li>用AlphaGo的例子说明强化学习的”试错学习”机制是如何工作的</li>
+<li>为什么强化学习特别适合序贯决策问题？它与监督学习在数据需求上有什么本质区别？</li>
+<li>现在我们需要训练一个会玩超级马里奥游戏的智能体。如果分别使用监督学习和强化学习，各需要什么数据？哪种方法对于这个任务来说更合适？</li>
+<li>在大语言模型的训练过程中，强化学习起到了什么关键性的作用？</li>
+</ul>
+</li>
+<li><p>预训练-微调范式是现代人工智能领域的重要突破。请深入思考：</p>
+<ul>
+<li>为什么说预训练解决了符号主义时代的”知识获取瓶颈”问题？它们在知识表示方式上有什么本质区别？</li>
+<li>预训练模型的知识绝大部分来自互联网数据，这可能带来哪些问题？如何缓解以上问题？</li>
+<li>你认为”预训练-微调”范式是否可能会被某种新范式取代？或者它会长期存在？</li>
+</ul>
+</li>
+<li><p>假设你要设计一个”智能代码审查助手”，它能够自动审查代码提交（Pull Request），概括代码的实现逻辑、检查代码质量、发现潜在BUG、提出改进建议。</p>
+<ul>
+<li>如果在符号主义时代（1980年代）设计这个系统，你会如何实现？会遇到什么困难？</li>
+<li>如果在没有大语言模型的深度学习时代（2015年左右），你会如何实现？</li>
+<li>在当前的大语言模型和智能体的时代，你会如何设计这个智能体的架构？它应该包含哪些模块（参考图2.10）？</li>
+<li>对比这三个时代的方案，说明智能体技术的演进如何使这个任务从”几乎不可能”变为”可行”</li>
+</ul>
+</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2026/04/23/2.Areas%F0%9F%8C%90/AI/Hello-Agents/2.%E6%99%BA%E8%83%BD%E4%BD%93%E5%8F%91%E5%B1%95/">https://yuezi2048.github.io/2026/04/23/2.Areas🌐/AI/Hello-Agents/2.智能体发展/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Hello-Agents/">Hello-Agents</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/04/21/2.Areas%F0%9F%8C%90/go/go%E5%85%A5%E9%97%A8-%E6%9E%AB%E6%9E%AB%E7%9F%A5%E9%81%93/2.%E7%8E%AF%E5%A2%83/" title="2.环境"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">2.环境</div></div><div class="info-2"><div class="info-item-1">转载：https://www.fengfengzhidao.com/p/go-dev-env-setup golang编译器下载https://studygolang.com/dl https://go.dev/dl/ https://studygolang.com/dl 直接将解压的bin添加到环境目录即可 验证go环境Go复制代码 go version  编写一个hello.go的文件，文件内容为 Go复制代码 package mainimport &quot;fmt&quot;func main() &#123;   fmt.Println(&quot;Hello, World!&quot;)&#125;  通过编译器运行go文件 Go复制代码 go run hello.go  如果出现“Hello...</div></div></div></a><a class="pagination-related  no-desc" href="/2026/04/23/2.Areas%F0%9F%8C%90/AI/Hello-Agents/3.%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%9F%BA%E7%A1%80/" title="3.大语言模型基础"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">3.大语言模型基础</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/04/17/2.Areas%F0%9F%8C%90/AI/Hello-Agents/1.%E6%99%BA%E8%83%BD%E4%BD%93%E5%88%9D%E8%AF%86/" title="1.智能体初识"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-17</div><div class="info-item-2">1.智能体初识</div></div><div class="info-2"><div class="info-item-1">refer：https://hello-agents.datawhale.cc/#/./chapter1/%E7%AC%AC%E4%B8%80%E7%AB%A0%20%E5%88%9D%E8%AF%86%E6%99%BA%E8%83%BD%E4%BD%93 在本章中，我们共同踏上了探索智能体的初识之旅。我们的旅程从最基本的问题开始：  什么是大语言模型驱动的智能体？ 我们首先明确了其定义，理解了现代智能体是具备了能力的实体。它不再仅仅是执行预设程序的脚本，而是能够自主推理和使用工具的决策者。 智能体如何工作？ 我们深入探讨了智能体与环境交互的运行机制。我们了解到，这个持续的闭环是智能体处理信息、做出决策、影响环境并根据反馈调整自身行为的基础。 如何构建智能体？ 这是本章的实践核心。我们以“智能旅行助手”为例，亲手构建了一个完整的、由真实 LLM 驱动的智能体。 智能体有哪些主流的应用范式？ 最后，我们将视野投向了更广阔的应用领域。我们探讨了两种主流的智能体交互模式：一是以 GitHub Copilot 和 Cursor 等为代表的、增强人类工作流的“开发者工具”；二是以...</div></div></div></a><a class="pagination-related no-desc" href="/2026/04/23/2.Areas%F0%9F%8C%90/AI/Hello-Agents/3.%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%9F%BA%E7%A1%80/" title="3.大语言模型基础"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-23</div><div class="info-item-2">3.大语言模型基础</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">829</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">81</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">109</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%A6%E5%8F%B7%E4%B8%BB%E4%B9%89"><span class="toc-text">符号主义</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C2-%E5%A4%8D%E7%8E%B0ELIZA%E8%81%8A%E5%A4%A9%E6%9C%BA%E5%99%A8%E4%BA%BA"><span class="toc-text">实验2-复现ELIZA聊天机器人</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BF%83%E6%99%BA%E7%A4%BE%E4%BC%9A"><span class="toc-text">心智社会</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%A6%E4%B9%A0%E8%8C%83%E5%BC%8F"><span class="toc-text">学习范式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%81%94%E7%BB%93%E4%B8%BB%E4%B9%89"><span class="toc-text">联结主义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%EF%BC%88%E8%A1%8C%E4%B8%BA%E4%B8%BB%E4%B9%89%EF%BC%89"><span class="toc-text">强化学习（行为主义）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LLM%E6%8E%A8%E5%8A%A8"><span class="toc-text">LLM推动</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LLM%E6%8E%A8%E7%90%86"><span class="toc-text">LLM推理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%91%E5%B1%95%E8%8A%82%E7%82%B9%E6%80%BB%E8%A7%88"><span class="toc-text">发展节点总览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BE%E5%90%8E%E4%B9%A0%E9%A2%98"><span class="toc-text">课后习题</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/27/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-04-27T12:07:45.679Z" title="发表于 2026-04-27 20:07:45">2026-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/27/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-04-27T12:07:45.162Z" title="发表于 2026-04-27 20:07:45">2026-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/temp2/" title="temp2">temp2</a><time datetime="2026-04-23T11:16:35.000Z" title="发表于 2026-04-23 19:16:35">2026-04-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/temp/" title="temp">temp</a><time datetime="2026-04-23T11:12:41.000Z" title="发表于 2026-04-23 19:12:41">2026-04-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/tuomas%E5%87%86%E5%A4%87/" title="tuomas准备">tuomas准备</a><time datetime="2026-04-23T10:31:55.000Z" title="发表于 2026-04-23 18:31:55">2026-04-23</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

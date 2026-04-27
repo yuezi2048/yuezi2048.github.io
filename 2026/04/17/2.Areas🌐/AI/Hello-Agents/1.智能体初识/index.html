@@ -1,0 +1,472 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>1.智能体初识 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="refer：https:&#x2F;&#x2F;hello-agents.datawhale.cc&#x2F;#&#x2F;.&#x2F;chapter1&#x2F;%E7%AC%AC%E4%B8%80%E7%AB%A0%20%E5%88%9D%E8%AF%86%E6%99%BA%E8%83%BD%E4%BD%93 在本章中，我们共同踏上了探索智能体的初识之旅。我们的旅程从最基本的问题开始：  什么是大语言模型驱动的智能体？ 我们首先明确了其定义，理解了现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1.智能体初识">
+<meta property="og:url" content="https://yuezi2048.github.io/2026/04/17/2.Areas%F0%9F%8C%90/AI/Hello-Agents/1.%E6%99%BA%E8%83%BD%E4%BD%93%E5%88%9D%E8%AF%86/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="refer：https:&#x2F;&#x2F;hello-agents.datawhale.cc&#x2F;#&#x2F;.&#x2F;chapter1&#x2F;%E7%AC%AC%E4%B8%80%E7%AB%A0%20%E5%88%9D%E8%AF%86%E6%99%BA%E8%83%BD%E4%BD%93 在本章中，我们共同踏上了探索智能体的初识之旅。我们的旅程从最基本的问题开始：  什么是大语言模型驱动的智能体？ 我们首先明确了其定义，理解了现">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2026-04-17T04:22:50.000Z">
+<meta property="article:modified_time" content="2026-04-17T04:22:50.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="Hello-Agents">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "1.智能体初识",
+  "url": "https://yuezi2048.github.io/2026/04/17/2.Areas%F0%9F%8C%90/AI/Hello-Agents/1.%E6%99%BA%E8%83%BD%E4%BD%93%E5%88%9D%E8%AF%86/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2026-04-17T04:22:50.000Z",
+  "dateModified": "2026-04-17T04:22:50.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2026/04/17/2.Areas%F0%9F%8C%90/AI/Hello-Agents/1.%E6%99%BA%E8%83%BD%E4%BD%93%E5%88%9D%E8%AF%86/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '1.智能体初识',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">829</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">81</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">109</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">1.智能体初识</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">1.智能体初识</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-04-17T04:22:50.000Z" title="发表于 2026-04-17 12:22:50">2026-04-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-17T04:22:50.000Z" title="更新于 2026-04-17 12:22:50">2026-04-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/AI/">AI</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/AI/Hello-Agents/">Hello-Agents</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">6.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>19分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>refer：<a target="_blank" rel="noopener" href="https://hello-agents.datawhale.cc/#/./chapter1/%E7%AC%AC%E4%B8%80%E7%AB%A0%20%E5%88%9D%E8%AF%86%E6%99%BA%E8%83%BD%E4%BD%93">https://hello-agents.datawhale.cc/#/./chapter1/%E7%AC%AC%E4%B8%80%E7%AB%A0%20%E5%88%9D%E8%AF%86%E6%99%BA%E8%83%BD%E4%BD%93</a></p>
+<p>在本章中，我们共同踏上了探索智能体的初识之旅。我们的旅程从最基本的问题开始：</p>
+<ul>
+<li><strong>什么是大语言模型驱动的智能体？</strong> 我们首先明确了其定义，理解了现代智能体是具备了能力的实体。它不再仅仅是执行预设程序的脚本，而是能够自主推理和使用工具的决策者。</li>
+<li><strong>智能体如何工作？</strong> 我们深入探讨了智能体与环境交互的运行机制。我们了解到，这个持续的闭环是智能体处理信息、做出决策、影响环境并根据反馈调整自身行为的基础。</li>
+<li><strong>如何构建智能体？</strong> 这是本章的实践核心。我们以“智能旅行助手”为例，亲手构建了一个完整的、由真实 LLM 驱动的智能体。</li>
+<li><strong>智能体有哪些主流的应用范式？</strong> 最后，我们将视野投向了更广阔的应用领域。我们探讨了两种主流的智能体交互模式：一是以 GitHub Copilot 和 Cursor 等为代表的、增强人类工作流的“开发者工具”；二是以 CrewAI、MetaGPT 和 AgentScope 等框架为代表的、能够独立完成高层级目标的“自主协作者”。同时讲解了 Workflow 与 Agent 的差异。</li>
+</ul>
+<h2 id="什么是智能体？"><a href="#什么是智能体？" class="headerlink" title="什么是智能体？"></a>什么是智能体？</h2><h3 id="宏观解释"><a href="#宏观解释" class="headerlink" title="宏观解释"></a>宏观解释</h3><ul>
+<li>输入：通过【Sesnsors】感知【Environment】</li>
+<li>输出：<strong>自主</strong> 通过【Actuators 】采取 【Action】</li>
+</ul>
+<blockquote>
+<p>智能是因为他的自主性（Autonomy），这意味着他能自主决策，而不是只是被动响应外部刺激或者预设指令的小呆瓜</p>
+</blockquote>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260417113700377.png" alt="image-20260417113700377"></p>
+<h2 id="有哪些类型？"><a href="#有哪些类型？" class="headerlink" title="有哪些类型？"></a>有哪些类型？</h2><h3 id="基于内部决策架构分类"><a href="#基于内部决策架构分类" class="headerlink" title="基于内部决策架构分类"></a>基于内部决策架构分类</h3><p>第一种分类维度是依据智能体内部决策架构的复杂程度，传统智能体，他的演进路径本身就构成了最经典的分类阶梯，</p>
+<p>它涵盖了从简单的<strong>反应式</strong>智能体，到引入内部模型的<strong>模型式</strong>智能体，再到更具前瞻性的<strong>基于目标</strong>和<strong>基于效用</strong>的智能体。此外，<strong>学习能力</strong>则是一种可赋予上述所有类型的元能力，能通过经验自我改进。</p>
+<ul>
+<li>起点：最简单的<strong>反射智能体（Simple Reflex Agent）</strong>，只有最简单的“条件-动作”，如恒温器，一旦高于设定值就启动制冷<ul>
+<li>问题：仅依赖当前感知输入，没有<strong>记忆 &#x2F; 预测能力</strong>，如果仅依靠预设条件不足以决策，怎么办？</li>
+</ul>
+</li>
+<li><strong>基于模型的反射智能体（Model-Based Reflex Agent）</strong>：内部有个<strong>世界模型（World Model）</strong>，可以试图追踪无法被直接感知的内容<ul>
+<li>它试图回答：“<strong>世界现在是什么样子的？</strong>”。这就发展出了简单的记忆，而不是依赖瞬时感知，有一个更完整的状态理解</li>
+<li>如自动驾驶汽车摄像头捕捉不到前方车辆，但他内部模型仍然会维持车存在、速度和预估位置的推断</li>
+</ul>
+</li>
+<li><strong>基于目标的智能体（Goal-Based Agent）</strong>：他不是被动对环境反应，而是针对target主动地、可预见地朝未来某个特定状态移动<ul>
+<li>回答的问题是：“<strong>我应该做什么才能达成目标？</strong>”，这就体现了未来的规划。</li>
+<li>如GPS会基于地图数据（世界模型），目的是去公司，会主动用A*等搜索算法规划（Planning）最优路径</li>
+<li>问题：我们不仅希望只是去公司一个目标，往往有同时多个目标，最省油 、最省时间等。</li>
+</ul>
+</li>
+<li><strong>基于效用的智能体（Utility-Based Agent）</strong>：为每一个可能的世界状态都赋予一个效用值，这个值代表了满意度的高低，目标是最大化期望效用<ul>
+<li>回答的是：<strong>哪种行为能为我带来最满意的结果？</strong>，这就是在互相冲突的目标相互权衡，其决策很接近人的理性选择了</li>
+<li>问题：所有决策依赖人类的先验知识，能否自主在与环境交互中学习？</li>
+</ul>
+</li>
+<li><strong>学习型智能体（Learning Agent）</strong>：**强化学习（Reinforcement Learning, RL）**是实现这一思想最具代表性的路径。在原先的性能元件基础上加入学习元件，通过不断观察行动带来的结果不断修正性能元件的决策策略。<ul>
+<li>如AlphaGo一开始可能随机落子，但最终赢下来时会给予正向奖励，通过大量自我对弈，学习元件会探索出最佳的棋路。</li>
+</ul>
+</li>
+</ul>
+<p>在**GPT（Generative Pre-trained Transformer）**等LLM大语言模型驱动下，Agent产生了新的范式，我们的核心是怎么引导这个大脑去规划、行动、学习，而不是开发专用工具本身。</p>
+<ul>
+<li>主要的优势是：LLM通过海量数据预训练，获取到了隐式的世界模型和强大的涌现能力，能更加泛化地应对复杂任务，这意味着他能直接处理模糊的、高层级的、充满上下文信息的自然语言指令。</li>
+<li>如旅行助手在LLM出来前，要手动切换不同的应用，最终由用户来整合与决策，而在LLM出来后，只需要接收到规划厦门的路线后，他会将整个流程整合：<ul>
+<li>规划和推理：分解子任务，如确认偏好–查询目的地信息–指定行程草案–预订住宿</li>
+<li>工具使用：识别到信息缺口，主动调用工具补全，比如天气工具有雨，那么就会在后面活动推荐尽量室内活动</li>
+<li>动态修正：根据用户反馈（预算等）会作为后续行动的约束，重新搜索并推荐新的选项，展现出根据上下文修正的能力</li>
+</ul>
+</li>
+</ul>
+<h3 id="基于时间与反应性分类（ReAct）"><a href="#基于时间与反应性分类（ReAct）" class="headerlink" title="基于时间与反应性分类（ReAct）"></a>基于时间与反应性分类（ReAct）</h3><p>这里关注的是智能体在接收到信息后，是立即行动还是规划后再行动。是追求速度的**反应性（Reactivity）<strong>与追求最优解的</strong>规划性（Deliberation）**之间的平衡，衍生出三种不同的智能体</p>
+<ul>
+<li>反应式：<strong>简单反应式</strong>和<strong>基于模型</strong>的智能体都属于此类别。速度快，计算开销低<ul>
+<li>快速决策的场景：安全气囊必须在发生事故毫秒级做出反应，但代价是缺乏长远规划</li>
+</ul>
+</li>
+<li>规划式：<strong>基于目标</strong>和<strong>基于效用</strong>的智能体很典型，他的决策就像是一个棋手深思熟虑评估每一个不同序列的结果来找到最佳路径<ul>
+<li>深思熟虑：指定商业计划或者旅行计划，但代价是可能错过执行最佳时机</li>
+</ul>
+</li>
+<li>混合式：而现实中我们往往既要及时反应又要长远规划，比如旅行助手规划好行程后又希望根据用户行为实时推荐，衍生出<code>ReAct</code>的行为模式：“思考-行动-观察”的循环，这样既能通过反馈应对环境实时变化，又有连贯的步骤可以完成复杂的长期目标。<ul>
+<li><strong>规划(Reasoning)</strong> ：LLM分析当前状况，规划出下一步的合理行动。这是一个审议过程。</li>
+<li><strong>反应(Acting &amp; Observing)</strong> ：在“行动”和“观察”阶段，智能体与外部工具或环境交互，并立即获得反馈。这是一个反应过程。</li>
+</ul>
+</li>
+</ul>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260417121505558.png" alt="image-20260417121505558" style="zoom: 33%;" />		
+
+<h3 id="基于知识表示的分类（逻辑推理-神经网络）"><a href="#基于知识表示的分类（逻辑推理-神经网络）" class="headerlink" title="基于知识表示的分类（逻辑推理-神经网络）"></a>基于知识表示的分类（逻辑推理-神经网络）</h3><p>这是更根本地表示知识是以何种形式存储在AI脑袋中</p>
+<ul>
+<li><p><strong>符号主义 AI（Symbolic AI）</strong>：</p>
+<ul>
+<li><p>理念是智能源于对于符号的逻辑操作</p>
+<ul>
+<li>好比是一个图书管理员，将世界整理为一个规则的知识图谱。</li>
+</ul>
+</li>
+<li><p>优势：透明和可解释，可追溯决策过程，适合金融医疗这种高风险。</p>
+</li>
+<li><p>劣势：但依赖一个规则体系，有“知识获取瓶颈”，任何未被覆盖的新情况都会导致系统失灵</p>
+</li>
+</ul>
+</li>
+<li><p><strong>亚符号主义 AI（Sub-symbolic AI）</strong></p>
+<ul>
+<li>隐式地作为神经元分布在神经网络中，是一种海量数据中的统计模式<ul>
+<li>如果说符号主义是图书管理员，那他就是一个小孩，不是学习猫会叫的规则，而是看过成千上万个猫后，神经网络中辨认出猫的视觉模式</li>
+</ul>
+</li>
+<li>优势：模式识别能力和噪声的鲁棒性，能处理图像等非结构化数据</li>
+<li>劣势：但通常被视为一个<strong>黑箱（Black Box）</strong>，在纯推理上表现差，会有幻觉问题</li>
+</ul>
+</li>
+<li><p><strong>神经符号主义 AI（Neuro-Symbolic AI）</strong></p>
+<ul>
+<li>这是针对讲规则的符号主义和讲经验的亚符号主义 统筹后的神经符号混合主义，思路就是混合这两个范式的优点，我既要能从神经网络中从数据学习，又能像符号系统一样进行逻辑推理，试图弥合感知和认知，直觉和理性的鸿沟，</li>
+</ul>
+</li>
+</ul>
+<p>下图中，是诺贝尔经济学奖得主丹尼尔·卡尼曼（Daniel Kahneman）在其著作《思考，快与慢》（Thinking, Fast and Slow）中提出的双系统理论，为我们理解神经符号主义提供了一个绝佳的类比</p>
+<ul>
+<li><strong>系统 1</strong>缓慢、有条理、基于逻辑的审慎思维，恰如符号主义 AI 的推理过程。</li>
+<li><strong>系统 2</strong>是快速、凭直觉、并行的思维模式，类似于亚符号主义 AI 强大的模式识别能力。</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="C:\Users\ljy\AppData\Roaming\Typora\typora-user-images\image-20260421153420738.png" alt="image-20260421153420738">	</p>
+<h2 id="怎么工作的？"><a href="#怎么工作的？" class="headerlink" title="怎么工作的？"></a>怎么工作的？</h2><p>我们首先要理解任务是什么，用<code>PEAS模型</code>来描述。</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20260421155545144.png" alt="image-20260421155545144">	</p>
+<p>值得说明：</p>
+<ul>
+<li>环境是<strong>部分可观察的</strong>，他一般获取的是部分航班数据，所以一般需要记忆（记住之前的路线）和探索（尝试查询不同日期）的能力</li>
+<li>环境有<strong>确定性和随机性</strong>，搜索票价价格可能不一样，所以需要具备对于不确定性的处理能力</li>
+<li>环境可能是在<strong>多智能体</strong>情况下，那么其他用户的自动化脚本等就是该智能体的环境中的其他智能体，他们的行动会影响当前智能体的决策</li>
+<li>任务是在<strong>序贯、动态的</strong>环境中。序贯是当前动作会影响未来，而动态说明环境自身也在随时变化，所以感知-思考-行动-观察循环必须迅速，灵活适应环境</li>
+</ul>
+<p>那么确定任务环境后，看一下具体的运行机制。核心是Agent Loop</p>
+<ul>
+<li>感知：即观察，是循环的起点，如传感器接收的信息，当然也可以是上一步的反馈</li>
+<li>思考：进入决策，通常是LLM驱动内部推理，内部有两个关键环节<ul>
+<li>规划：拆解子任务</li>
+<li>工具选择：从可用工具库中选择适合下一步骤的工具，并确定参数</li>
+</ul>
+</li>
+<li>行动：通过执行器执行具体行动，意图改变环境状态</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20260421160116392.png" alt="image-20260421160116392"></p>
+<p>我们需要一套<strong>交互协议</strong>来有效规范Agent和环境的信息交换，遵循特定格式文本，一般包含思考+行为</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Thought: 用户想知道北京的天气。我需要调用天气查询工具。</span><br><span class="line">Action: get_weather(&quot;北京&quot;)</span><br></pre></td></tr></table></figure>
+
+<p>外部解析器捕捉到这个行为后，就会调用对应函数。</p>
+<p>但LLM一般不希望JSON这种特殊格式，会引入冗余信息，所以感知系统会扮演传感器的角色，将原始输出改写为一个清晰的自然语言</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Observation: 北京当前天气为晴，气温25摄氏度，微风。</span><br></pre></td></tr></table></figure>
+
+<p>这段Observation则会给智能体，并作为下一轮的Thought和Action</p>
+<h2 id="实操1：开始第一个智能体"><a href="#实操1：开始第一个智能体" class="headerlink" title="实操1：开始第一个智能体"></a>实操1：开始第一个智能体</h2><p>集中演示了基于<code>Thought-Action-Observation</code>范式的智能体所具备的四项基本能力：任务分解、工具调用、上下文理解和结果合成。正是通过这个循环的不断迭代，智能体才得以将一个模糊的用户意图，转化为一系列具体、可执行的步骤，并最终达成目标。</p>
+<h2 id="智能体协作"><a href="#智能体协作" class="headerlink" title="智能体协作"></a>智能体协作</h2><p>其协作模式主要分为两种：</p>
+<ul>
+<li>一种是作为高效工具，深度融入我们的工作流；<ul>
+<li>像<strong>GitHubCopilot</strong>、<strong>Claude Code</strong>、<strong>Trae</strong>、<strong>Cursor</strong>增强了开发，帮助自动化处理繁琐、重复的任务，讲究人机协作，AI正在融入软件开发的生命周期。</li>
+</ul>
+</li>
+<li>另一种则是作为自主的协作者，与其他智能体协作完成复杂目标。</li>
+</ul>
+<p>在第二种模式下，智能体独立地进行规划、推理、执行和反思，直到最终交付成果，从“命令-执行”演变为“目标-委托”，他不是被动工具，而是主动的目标执行</p>
+<ul>
+<li><strong>单智能体自主循环</strong>： <strong>AgentGPT</strong> 所代表的模式。其核心是一个通用智能体通过“思考-规划-执行-反思”的闭环</li>
+<li><strong>多智能体协作</strong>：模拟人类团队的协作模式来解决复杂问题<ul>
+<li><strong>角色扮演式对话</strong>：如 <strong>CAMEL</strong> 框架，通过为两个智能体（例如，“程序员”和“产品经理”）设定明确的角色和沟通协议，让它们在一个结构化的对话中协同完成任务</li>
+<li><strong>组织化工作流</strong>：如 <strong>MetaGPT</strong> 和 <strong>CrewAI</strong>，它们模拟一个分工明确的“虚拟团队”（如软件公司或咨询小组）。每个智能体都有预设的职责和工作流程（SOP），通过层级化或顺序化的方式协作，产出高质量的复杂成果（如完整的代码库或研究报告）。</li>
+<li><strong>AutoGen</strong> 和 <strong>AgentScope</strong> 则提供了更灵活的对话模式，允许开发者自定义智能体间的复杂交互网络。</li>
+</ul>
+</li>
+<li><strong>高级控制流架构</strong>：诸如 <strong>LangGraph</strong> 等框架，则更侧重于为智能体提供更强大的底层工程基础。它将智能体的执行过程建模为状态图（State Graph），从而能更灵活、更可靠地实现循环、分支、回溯以及人工介入等复杂流程。</li>
+</ul>
+<blockquote>
+<p>有必要区分work-flow和agent</p>
+<p><strong>Workflow 是让 AI 按部就班地执行指令，而 Agent 则是赋予 AI 自由度去自主达成目标。</strong></p>
+<ul>
+<li>工作流是一种传统的自动化范式，其核心是<strong>对一系列任务或步骤进行预先定义的、结构化的编排</strong></li>
+<li>基于大型语言模型的智能体是一个<strong>具备自主性的、以目标为导向的系统</strong></li>
+</ul>
+<p>例子说明：智能旅行助手。当我们向它下达一个新指令，例如：<strong>“你好，请帮我查询一下今天北京的天气，然后根据天气推荐一个合适的旅游景点。”</strong> 它的处理过程充分展现了其自主性：</p>
+<ol>
+<li><strong>规划与工具调用：</strong> Agent 首先会把任务拆解为两个步骤：① 查询天气；② 基于天气推荐景点。随即，它会自主选择并调用“天气查询 API”，并将“北京”作为参数传入。</li>
+<li><strong>推理与决策：</strong> 假设 API 返回结果为“晴朗，微风”。Agent 的 LLM 大脑会基于这个信息进行推理：“晴天适合户外活动”。接着，它会根据这个判断，在它的知识库或通过搜索引擎这个工具中，筛选出北京的户外景点，如故宫、颐和园、天坛公园等。</li>
+<li><strong>生成结果：</strong> 最后，Agent 会综合信息，给出一个完整的、人性化的回答：“今天北京天气晴朗，微风，非常适合户外游玩。为您推荐前往【颐和园】，您可以在昆明湖上泛舟，欣赏美丽的皇家园林景色。”</li>
+</ol>
+<p>在这个过程中，没有任何写死的<code>if天气=晴天 then 推荐颐和园</code>的规则。如果天气是“雨天”，Agent 会自主推理并推荐国家博物馆、首都博物馆等室内场所。<strong>这种基于实时信息进行动态推理和决策的能力，正是 Agent 的核心价值所在。</strong></p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/image-20260423112648351.png" alt="image-20260423112648351" style="zoom:50%;" />	</blockquote>
+<h2 id="课后思考"><a href="#课后思考" class="headerlink" title="课后思考"></a>课后思考</h2><ol>
+<li><p>请分析以下四个 <code>case</code> 中的<strong>主体</strong>是否属于智能体，如果是，那么属于哪种类型的智能体（可以从多个分类维度进行分析），并说明理由：</p>
+<p><code>case A</code>：<strong>一台符合冯·诺依曼结构的超级计算机</strong>，拥有高达每秒 2EFlop 的峰值算力</p>
+<p>他不是智能体，只能被动执行指令，完全由外部程序定义，只能作为计算工具，而不是agent本身</p>
+<p><code>case B</code>：<strong>特斯拉自动驾驶系统</strong>在高速公路上行驶时，突然检测到前方有障碍物，需要在毫秒级做出刹车或变道决策</p>
+<p>从决策类型上，他是模型式智能体，有一定记忆了，能对潜在的情况进行分析</p>
+<p>时间反应上，仍是属于反应式</p>
+<p>知识表示上，神经符号混合架构，神经网络处理摄像头，上层通过符号化来处理刹车等安全决策</p>
+<p><code>case C</code>：<strong>AlphaGo</strong>在与人类棋手对弈时，需要评估当前局面并规划未来数十步的最优策略</p>
+<p>决策模型上，是学习型了，有强化学习的概念，可以根据不断的试错和补偿机制调整</p>
+<p>时间反应上，是规划式，有一个目标在，根据当前目标的收益会懂得分析下一步的目标了</p>
+<p>知识表示上，<strong>神经网络的直觉判断 + 符号系统的逻辑推理</strong>的结合</p>
+<p><code>case D</code>：<strong>ChatGPT 扮演的智能客服</strong>在处理用户投诉时，需要查询订单信息、分析问题原因、提供解决方案并安抚用户情绪</p>
+<p>决策模型上，是基于LLM的，用预处理模型能够更加泛化地处理自然语言、多模态数据</p>
+<p>时间反应上，是结合了反应式和规则式：“思考-行动-观察”，先拆解任务，再逐个执行，接着再根据执行结果继续分析，然后循环</p>
+<p>知识表示上，是结合了符号主义和亚符号主义，既能从神经网络中从数据学习，又能像符号系统一样进行逻辑推理，试图弥合感知和认知，直觉和理性的鸿沟</p>
+</li>
+<li><p>假设你需要为一个”智能健身教练”设计任务环境。这个智能体能够：</p>
+<ul>
+<li>通过可穿戴设备监测用户的心率、运动强度等生理数据</li>
+<li>根据用户的健身目标（减脂&#x2F;增肌&#x2F;提升耐力）动态调整训练计划</li>
+<li>在用户运动过程中提供实时语音指导和动作纠正</li>
+<li>评估训练效果并给出饮食建议</li>
+</ul>
+<p>请使用 PEAS 模型完整描述这个智能体的任务环境，并分析该环境具有哪些特性（如部分可观察、随机性、动态性等）。</p>
+<p>Performance：客户的健身目标达成率，用户的执行成功率，执行后的效果反馈</p>
+<p>Environment：用户状态、物理环境、穿戴设备、用户输入、时间</p>
+<p>Actuators：语音播报、计划文本生成、穿戴设备控制</p>
+<p>sensors：设备的生理数据，运动过程状态、用户输入</p>
+<p>部分可观察：只能观测到用户部分状态，主观感受、不能完全捕捉到用户所有的饮食，这就需要对已观察的推断，并通过反馈不断修正</p>
+<p>随机性：相同的输入会有不同结果，比如同样的用户输入，会有不同的训练计划，根据当前用户状态，动态调整策略</p>
+<p>序贯和动态性：心率、动作动态变化，要求Agent要实时响应，要在ReAct中快速响应，而不能规划好了才思考，当前决策会对未来的影响，今天训练会对未来的训练有影响，错误的指导导致用户出现损伤，也不能只看短期</p>
+<p>单智能体环境：多人训练场景下，可能需要考虑多智能体</p>
+</li>
+<li><p>某电商公司正在考虑两种方案来处理售后退款申请：</p>
+<p>方案 A（<code>Workflow</code>）：设计一套固定流程，例如：</p>
+<p>A.1 对于一般商品且在 7 天之内，金额 <code>&lt; 100RMB</code> 自动通过；<code>100-500RMB </code>由客服审核；<code>&gt;500RMB</code> 需主管审批；而特殊商品（如定制品）一律拒绝退款</p>
+<p>A.2 对于超过 7 天的商品，无论金额，只能由客服审核或主管审批；</p>
+<p>方案 B（<code>Agent</code>）：搭建一个智能体系统，让它理解退款政策、分析用户历史行为、评估商品状况，并自主决策是否批准退款</p>
+<p>请分析：</p>
+<ul>
+<li>这两种方案各自的优缺点是什么？<ul>
+<li>前者：实时性高，确定性高，成本低，可解释性高，抗风险强；但对应的就是僵化死板，复杂业务难处理，恶意用户薅羊毛行为，扩展性等</li>
+<li>后者：灵活性，上下文理解，自学习，用户体验，人工替代，适应性；但决策不确定（幻觉），维护高，可解释性差，prompt注入攻击等</li>
+</ul>
+</li>
+<li>在什么情况下 <code>Workflow</code> 更合适？什么情况下 <code>Agent</code> 更有优势？如果你是该电商公司的负责人，你更倾向于采用哪种方案？<ul>
+<li>workflow确定性高，适合确定的任务，7天无理由，并且时间要求很高，以及金融这种合规性要求很高，以及在流量大的场景下需要控制成本</li>
+<li>agent自主规划性高，适合复杂任务，比如问题边界模糊，需要多维度决策（历史信用 金额等），业务变化快，自然语言处理需求，减少人工工作量等</li>
+<li>我作为负责人，单独使用A或者B显然不好，前者20%复杂情况堆积到人工处理，后者所有用大模型成本又太高，以及错误决策风险</li>
+</ul>
+</li>
+<li>是否存在一个方案 C，能够结合两种方案，达到扬长避短的效果？<ul>
+<li>可以，先由 Workflow 处理标准化小额退款，复杂场景交由 Agent 决策，大额 &#x2F; 高风险订单由人工兜底</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>在 1.3 节的智能旅行助手基础上，请思考如何添加以下功能（可以只描述设计思路，也可以进一步尝试代码实现）：</p>
+<blockquote>
+<p><strong>提示</strong>：思考如何修改 <code>Thought-Action-Observation</code> 循环来实现这些功能。</p>
+</blockquote>
+<ul>
+<li>添加一个”记忆”功能，让智能体记住用户的偏好（如喜欢历史文化景点、预算范围等）<ul>
+<li>思路：在原先的临时列表改进，分为短期记忆（近期会话内容）和长期记忆（结构化用户画像），用JSON文件存储该会话ID下的历史会话，会话结束后，LLM更新用户画像，后续调用的时候会将历史会话记忆作为信息上下文即可</li>
+</ul>
+</li>
+<li>当推荐的景点门票已售罄时，智能体能够自动推荐备选方案<ul>
+<li>针对该需求，需要提供一个查询库存的工具</li>
+<li>依旧使用ReAct的方式，在这个过程中，就会思考先用这个查询库存先检查库存</li>
+<li>如果库存没有了，会在短期记忆里加入售罄的标识，在后续的思考阶段主动排除 短期记忆中的排除节点</li>
+</ul>
+</li>
+<li>如果用户连续拒绝了 3 个推荐，智能体能够反思并调整推荐策略<ul>
+<li>短期记忆记录一个拒绝数量和拒绝原因列表，当拒绝的时候添加，如果等于3之后，就把原因也加进来，LLM生成一个反思报告，推断出新的偏好，更新到用户长期记忆中</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>卡尼曼的”系统 1”（快速直觉）和”系统 2”（慢速推理）理论[2]为神经符号主义 AI 提供了很好的类比。请首先构思一个具体的智能体的落地应用场景，然后说明场景中的：</p>
+<blockquote>
+<p><strong>提示</strong>：医疗诊断助手、法律咨询机器人、金融风控系统等都是常见的应用场景</p>
+</blockquote>
+<ul>
+<li>哪些任务应该由”系统 1”处理？<ul>
+<li><strong>毫秒级实时感知与应急响应</strong>，如路况视觉识别、障碍物检测、紧急制动、车道偏离预警、突发碰撞预判，依赖神经网络快速直觉式判断。</li>
+</ul>
+</li>
+<li>哪些任务应该由”系统 2”处理？<ul>
+<li><strong>慢速、逻辑化的复杂决策与规划</strong>，如长途导航路径优化、复杂路况权衡决策、驾驶风险综合评估、事故原因逻辑推演。</li>
+</ul>
+</li>
+<li>这两个系统如何协同工作以达成最终目标？<ul>
+<li><strong>系统 1 先做实时安全兜底，快速处理突发状况；系统 2 基于系统 1 的感知数据做长期理性规划，同时系统 2 的决策指令约束系统 1 的执行，二者配合既保证驾驶安全实时性，又实现行程决策合理性</strong>。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>尽管大语言模型驱动的智能体系统展现出了强大的能力，但它们仍然存在诸多局限。请分析以下问题：</p>
+<ul>
+<li>为什么智能体或智能体系统有时会产生”幻觉”（生成看似合理但实际错误的信息）？<ul>
+<li>因为LLM本质是个文本概率生成模型，基于预训练词汇预测后续关联输出内容，没有事实校验的能力，为了文本通顺而加入非严格事实就是幻觉</li>
+</ul>
+</li>
+<li>在 1.3 节的案例中，我们设置了最大循环次数为 5 次。如果没有这个限制，智能体可能会陷入什么问题？<ul>
+<li>可能会死循环，卡死并且浪费token</li>
+</ul>
+</li>
+<li>如何评估一个智能体的”智能”程度？仅使用准确率指标是否足够？<ul>
+<li>不只是准确率，还有工具调用效率、资源消耗、反思纠错能力、逻辑规划能力、可解释性等</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2026/04/17/2.Areas%F0%9F%8C%90/AI/Hello-Agents/1.%E6%99%BA%E8%83%BD%E4%BD%93%E5%88%9D%E8%AF%86/">https://yuezi2048.github.io/2026/04/17/2.Areas🌐/AI/Hello-Agents/1.智能体初识/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Hello-Agents/">Hello-Agents</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/04/16/2.Areas%F0%9F%8C%90/temp/%E9%9A%8F%E6%89%8B%E8%AE%B0%E5%BD%95%E5%8F%AF%E8%83%BD%E6%9C%89%E7%94%A8%E7%9A%84/" title="随手记录可能有用的"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">随手记录可能有用的</div></div><div class="info-2"><div class="info-item-1">word转markdown（latex公式）+图片，使用pandoc，方便把导师&#x2F;老板喜欢的word，转换成AI喜欢的markdown，避免直接导入给AI把一些公式识别不出 pandoc 你的文档名.docx -o 输出.md -s --wrap=none --extract-media=./media  关键参数：--extract-media 提取图片，公式会自动转为 $...$（行内）&#x2F; $$...$$（块）标准 LaTeX 格式 打开输出的 输出.md 到 Typora，所有公式都是可编辑的 LaTeX 代码，不是图片  清除掉git误提交的密钥或配置等文件，使用git-filter-repo的python库组件使用的坑点  他为了保证远端仓库安全，本地清除后会删除掉远端地址，需要本地没问题后，手动进行添加 注意目录路径的变动，要用历史提交中的工作区路径，而不是当前工作区路径顺手的事： 顺便用到了git...</div></div></div></a><a class="pagination-related" href="/2026/04/19/3.Resources%F0%9F%93%94/%E8%AE%A4%E7%9F%A5%E5%8F%A5%E5%AD%90%E6%95%B4%E7%90%86/%E8%B4%A2%E5%AF%8C/" title="财富"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">财富</div></div><div class="info-2"><div class="info-item-1">14个tips所有赚钱的事，都是从微小处开始。先赚到第一笔盈利，再规划下一步，永远踩在实地上。学历只是人生的一部分，不是情商和人品的背书，真正值钱的是情商和办事能力。没有任何公司、任何平台能给你绝对安全感。你要时刻算清楚：离开现在的位置，你的能力和手里的筹码，还能让你赚多少钱。不屑于赚小钱的人，往往也赚不到大钱。路要自己一步步走，先扛过苦活、累活，才找得到属于自己的康庄大道，才知道什么适合自己。持续去做困难的事，才会真正成长。上坡路本来就难，觉得辛苦的时候，大概率就是在往上走，这么一想就宽慰多了。承认人生很难，不是消极，而是清醒。接受艰难的事实，然后去克服、去拼命工作，才能在辛苦之外，收获真正的快乐和踏实。看清真相，才会更努力学习、做事、对抗危机。格局打开，天地就宽了。很多事不是零和博弈，而是合作共赢，多去找能让 1+1＞2...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/04/23/2.Areas%F0%9F%8C%90/AI/Hello-Agents/2.%E6%99%BA%E8%83%BD%E4%BD%93%E5%8F%91%E5%B1%95/" title="2.智能体发展"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-23</div><div class="info-item-2">2.智能体发展</div></div><div class="info-2"><div class="info-item-1">学习本章主要是为了知道目前的思想是怎么来的。每一个新范式的出现，都是为了解决上一代范式的核心“痛点”或根本局限 。而新的解决方案在带来能力飞跃的同时，也引入了新的、在当时难以克服的“局限”，而这又为下一代范式的诞生埋下了伏笔 	 符号主义早期认为智能的实现依靠一套明确的规则。是一套预先定义好的知识库和推理规则，并不是自主学习得到。 早期物理符号假说PSSH中指导我们：**智能的本质，就是符号的计算与处理。**只要我们能找到正确的方式来表示知识并设计出有效的推理算法，就一定能创造出与人类媲美的机器智能 	  演变出专家系统（Expert System），模拟特定领域的解决问题能力，思路是将专家知识编码成计算机程序，面对相似问题时就能给出建议。  Knowledeg Base知识库：核心是知识表示。常用表示方法是产生式规则，用IF-THEN的条件语句构成知识网络 Inference Engine...</div></div></div></a><a class="pagination-related no-desc" href="/2026/04/23/2.Areas%F0%9F%8C%90/AI/Hello-Agents/3.%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%9F%BA%E7%A1%80/" title="3.大语言模型基础"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-23</div><div class="info-item-2">3.大语言模型基础</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">829</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">81</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">109</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%99%BA%E8%83%BD%E4%BD%93%EF%BC%9F"><span class="toc-text">什么是智能体？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%8F%E8%A7%82%E8%A7%A3%E9%87%8A"><span class="toc-text">宏观解释</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%89%E5%93%AA%E4%BA%9B%E7%B1%BB%E5%9E%8B%EF%BC%9F"><span class="toc-text">有哪些类型？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E5%86%85%E9%83%A8%E5%86%B3%E7%AD%96%E6%9E%B6%E6%9E%84%E5%88%86%E7%B1%BB"><span class="toc-text">基于内部决策架构分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E6%97%B6%E9%97%B4%E4%B8%8E%E5%8F%8D%E5%BA%94%E6%80%A7%E5%88%86%E7%B1%BB%EF%BC%88ReAct%EF%BC%89"><span class="toc-text">基于时间与反应性分类（ReAct）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E7%9F%A5%E8%AF%86%E8%A1%A8%E7%A4%BA%E7%9A%84%E5%88%86%E7%B1%BB%EF%BC%88%E9%80%BB%E8%BE%91%E6%8E%A8%E7%90%86-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%EF%BC%89"><span class="toc-text">基于知识表示的分类（逻辑推理-神经网络）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E5%B7%A5%E4%BD%9C%E7%9A%84%EF%BC%9F"><span class="toc-text">怎么工作的？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E6%93%8D1%EF%BC%9A%E5%BC%80%E5%A7%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%99%BA%E8%83%BD%E4%BD%93"><span class="toc-text">实操1：开始第一个智能体</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%99%BA%E8%83%BD%E4%BD%93%E5%8D%8F%E4%BD%9C"><span class="toc-text">智能体协作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BE%E5%90%8E%E6%80%9D%E8%80%83"><span class="toc-text">课后思考</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/27/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-04-27T12:07:45.679Z" title="发表于 2026-04-27 20:07:45">2026-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/27/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-04-27T12:07:45.162Z" title="发表于 2026-04-27 20:07:45">2026-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/temp2/" title="temp2">temp2</a><time datetime="2026-04-23T11:16:35.000Z" title="发表于 2026-04-23 19:16:35">2026-04-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/temp/" title="temp">temp</a><time datetime="2026-04-23T11:12:41.000Z" title="发表于 2026-04-23 19:12:41">2026-04-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/tuomas%E5%87%86%E5%A4%87/" title="tuomas准备">tuomas准备</a><time datetime="2026-04-23T10:31:55.000Z" title="发表于 2026-04-23 18:31:55">2026-04-23</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

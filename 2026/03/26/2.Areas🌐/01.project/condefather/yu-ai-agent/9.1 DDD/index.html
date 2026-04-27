@@ -1,0 +1,578 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>9.1 DDD | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="1) 事件风暴：用例&#x2F;场景 → 行为（命令）→ 事件 → 领域对象（实体&#x2F;值对象）你当前“AI 恋爱大师”已经覆盖了智能客服的一条最小闭环：用户发起会话消息 →（可选）查询改写 →（可选）RAG 检索增强 →（可选）工具&#x2F;外部能力调用 → 生成回复 → SSE 流式输出（见 AiController、LoveApp）。把它改造成“凌语 Agent 智能客服（多客户）”">
+<meta property="og:type" content="article">
+<meta property="og:title" content="9.1 DDD">
+<meta property="og:url" content="https://yuezi2048.github.io/2026/03/26/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/9.1%20DDD/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="1) 事件风暴：用例&#x2F;场景 → 行为（命令）→ 事件 → 领域对象（实体&#x2F;值对象）你当前“AI 恋爱大师”已经覆盖了智能客服的一条最小闭环：用户发起会话消息 →（可选）查询改写 →（可选）RAG 检索增强 →（可选）工具&#x2F;外部能力调用 → 生成回复 → SSE 流式输出（见 AiController、LoveApp）。把它改造成“凌语 Agent 智能客服（多客户）”">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2026-03-26T13:18:34.000Z">
+<meta property="article:modified_time" content="2026-03-26T13:18:34.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="yu-ai-agent">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "9.1 DDD",
+  "url": "https://yuezi2048.github.io/2026/03/26/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/9.1%20DDD/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2026-03-26T13:18:34.000Z",
+  "dateModified": "2026-03-26T13:18:34.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2026/03/26/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/9.1%20DDD/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '9.1 DDD',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">829</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">81</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">109</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">9.1 DDD</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">9.1 DDD</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-03-26T13:18:34.000Z" title="发表于 2026-03-26 21:18:34">2026-03-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-03-26T13:18:34.000Z" title="更新于 2026-03-26 21:18:34">2026-03-26</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/">01.project</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/">condefather</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/yu-ai-agent/">yu-ai-agent</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="1-事件风暴：用例-场景-→-行为（命令）→-事件-→-领域对象（实体-值对象）"><a href="#1-事件风暴：用例-场景-→-行为（命令）→-事件-→-领域对象（实体-值对象）" class="headerlink" title="1) 事件风暴：用例&#x2F;场景 → 行为（命令）→ 事件 → 领域对象（实体&#x2F;值对象）"></a>1) 事件风暴：用例&#x2F;场景 → 行为（命令）→ 事件 → 领域对象（实体&#x2F;值对象）</h2><p>你当前“AI 恋爱大师”已经覆盖了智能客服的一条最小闭环：<strong>用户发起会话消息 →（可选）查询改写 →（可选）RAG 检索增强 →（可选）工具&#x2F;外部能力调用 → 生成回复 → SSE 流式输出</strong>（见 <code>AiController</code>、<code>LoveApp</code>）。把它改造成“凌语 Agent 智能客服（多客户）”，建议先把用例抽象成通用客服域：</p>
+<h3 id="核心用例（建议的业务语言）"><a href="#核心用例（建议的业务语言）" class="headerlink" title="核心用例（建议的业务语言）"></a>核心用例（建议的业务语言）</h3><ul>
+<li><strong>租户接入与配置</strong>：租户开通、配置模型与检索策略、配置可用工具、发布&#x2F;回滚配置版本</li>
+<li><strong>知识库管理</strong>：导入文档&#x2F;网页、切分、向量化、索引构建、元数据标注、灰度发布、评估与回滚</li>
+<li><strong>会话与消息</strong>：创建会话、用户发消息、客服（AI）回复、上下文记忆、会话关闭&#x2F;归档</li>
+<li><strong>检索增强（RAG）</strong>：查询改写、检索、重排、引用证据、答案生成</li>
+<li><strong>Agent 编排与工具调用</strong>：计划&#x2F;执行、多步工具调用、权限与配额控制、终止、可观测审计</li>
+<li><strong>SSE 长连接交付</strong>：建立连接、心跳、分片推送、断线重连、背压与限流</li>
+<li><strong>稳定性与压测验证</strong>：限流&#x2F;熔断&#x2F;降级、隔离、缓存、回放、压测报告</li>
+</ul>
+<h3 id="行为（命令）与事件（Domain-Events）清单（按业务流分组）"><a href="#行为（命令）与事件（Domain-Events）清单（按业务流分组）" class="headerlink" title="行为（命令）与事件（Domain Events）清单（按业务流分组）"></a>行为（命令）与事件（Domain Events）清单（按业务流分组）</h3><blockquote>
+<p>下面用“命令 → 事件(过去式)”表示；事件用于审计&#x2F;回放&#x2F;一致性，命令用于驱动状态变化。</p>
+</blockquote>
+<h4 id="A-租户与配置"><a href="#A-租户与配置" class="headerlink" title="A. 租户与配置"></a>A. 租户与配置</h4><ul>
+<li><strong>CreateTenant</strong> → TenantCreated  </li>
+<li><strong>UpdateTenantPlan &#x2F; Quota</strong> → TenantQuotaUpdated  </li>
+<li><strong>PublishTenantAiConfig</strong> → TenantAiConfigPublished &#x2F; TenantAiConfigRolledBack  </li>
+<li><strong>EnableToolForTenant &#x2F; DisableToolForTenant</strong> → TenantToolPolicyChanged  </li>
+<li><strong>RotateApiKey &#x2F; CredentialUpdated</strong> → TenantCredentialRotated</li>
+</ul>
+<h4 id="B-会话与消息（你现有的-chatId-就是雏形）"><a href="#B-会话与消息（你现有的-chatId-就是雏形）" class="headerlink" title="B. 会话与消息（你现有的 chatId 就是雏形）"></a>B. 会话与消息（你现有的 <code>chatId</code> 就是雏形）</h4><ul>
+<li><strong>StartConversation</strong> → ConversationStarted  </li>
+<li><strong>SendUserMessage</strong> → UserMessageReceived  </li>
+<li><strong>AppendAssistantChunk</strong>（流式分片）→ AssistantChunkAppended  </li>
+<li><strong>FinalizeAssistantMessage</strong> → AssistantMessageFinalized  </li>
+<li><strong>CloseConversation</strong> → ConversationClosed  </li>
+<li><strong>RecordFeedback</strong>（👍👎&#x2F;标注是否命中知识）→ FeedbackRecorded</li>
+</ul>
+<h4 id="C-RAG（你现有的-QueryRewrite-VectorStore-检索增强就是雏形）"><a href="#C-RAG（你现有的-QueryRewrite-VectorStore-检索增强就是雏形）" class="headerlink" title="C. RAG（你现有的 QueryRewrite + VectorStore 检索增强就是雏形）"></a>C. RAG（你现有的 QueryRewrite + VectorStore 检索增强就是雏形）</h4><ul>
+<li><strong>RewriteQuery</strong> → QueryRewritten  </li>
+<li><strong>RetrieveDocuments</strong> → DocumentsRetrieved  </li>
+<li><strong>RerankDocuments</strong> → DocumentsReranked  </li>
+<li><strong>GroundAnswerWithCitations</strong> → AnswerGrounded  </li>
+<li><strong>RagFallbackToLLMOnly</strong>（检索为空&#x2F;阈值不达标）→ RagFallbackTriggered</li>
+</ul>
+<h4 id="D-Agent-与工具调用（你现有的-ToolCallback-MCP-YzManus-多步执行是雏形）"><a href="#D-Agent-与工具调用（你现有的-ToolCallback-MCP-YzManus-多步执行是雏形）" class="headerlink" title="D. Agent 与工具调用（你现有的 ToolCallback&#x2F;MCP + YzManus 多步执行是雏形）"></a>D. Agent 与工具调用（你现有的 ToolCallback&#x2F;MCP + <code>YzManus</code> 多步执行是雏形）</h4><ul>
+<li><strong>PlanAgentSteps</strong> → AgentPlanCreated  </li>
+<li><strong>ExecuteToolCall</strong> → ToolCallStarted &#x2F; ToolCallSucceeded &#x2F; ToolCallFailed  </li>
+<li><strong>AbortAgentRun</strong> → AgentRunAborted  </li>
+<li><strong>FinishAgentRun</strong> → AgentRunCompleted</li>
+</ul>
+<h4 id="E-SSE-长连接与交付"><a href="#E-SSE-长连接与交付" class="headerlink" title="E. SSE 长连接与交付"></a>E. SSE 长连接与交付</h4><ul>
+<li><strong>OpenSseConnection</strong> → SseConnectionOpened  </li>
+<li><strong>SendSseHeartbeat</strong> → SseHeartbeatSent  </li>
+<li><strong>DropSseConnection</strong> → SseConnectionClosed(Reason)  </li>
+<li><strong>ResumeStream</strong> → StreamResumed</li>
+</ul>
+<h4 id="F-知识库（PB-级向量库是你后续的核心域之一）"><a href="#F-知识库（PB-级向量库是你后续的核心域之一）" class="headerlink" title="F. 知识库（PB 级向量库是你后续的核心域之一）"></a>F. 知识库（PB 级向量库是你后续的核心域之一）</h4><ul>
+<li><strong>CreateKnowledgeBase</strong> → KnowledgeBaseCreated  </li>
+<li><strong>IngestDocument</strong> → DocumentIngested  </li>
+<li><strong>ChunkDocument</strong> → DocumentChunked  </li>
+<li><strong>EmbedChunks</strong> → EmbeddingsGenerated  </li>
+<li><strong>UpsertVectors</strong> → VectorsUpserted  </li>
+<li><strong>BuildIndex &#x2F; RebuildIndex</strong> → VectorIndexBuilt  </li>
+<li><strong>PublishKnowledgeBaseVersion</strong> → KnowledgeBaseVersionPublished &#x2F; RolledBack  </li>
+<li><strong>DeleteDocument</strong> → DocumentDeleted</li>
+</ul>
+<h3 id="由事件风暴反推领域对象（实体-值对象）"><a href="#由事件风暴反推领域对象（实体-值对象）" class="headerlink" title="由事件风暴反推领域对象（实体 + 值对象）"></a>由事件风暴反推领域对象（实体 + 值对象）</h3><blockquote>
+<p>“实体”有身份与生命周期；“值对象”用于表达规则&#x2F;度量&#x2F;不可变概念。</p>
+</blockquote>
+<h4 id="实体（Entities）"><a href="#实体（Entities）" class="headerlink" title="实体（Entities）"></a>实体（Entities）</h4><ul>
+<li><strong>Tenant（租户）</strong></li>
+<li><strong>TenantAiConfig（租户 AI 配置）</strong>：模型、提示词模板、RAG 策略、工具策略、超时&#x2F;重试、限流策略（通常版本化）</li>
+<li><strong>KnowledgeBase（知识库）</strong></li>
+<li><strong>Document（文档）</strong></li>
+<li><strong>Conversation（会话）</strong></li>
+<li><strong>Message（消息）</strong>：UserMessage &#x2F; AssistantMessage</li>
+<li><strong>AgentRun（一次 Agent 执行）</strong>：对应一次用户请求（可含多步）</li>
+<li><strong>ToolCall（工具调用记录）</strong>：每一步的输入&#x2F;输出&#x2F;耗时&#x2F;错误</li>
+<li><strong>SseSession（连接会话）</strong>：连接状态、订阅的 Conversation&#x2F;AgentRun</li>
+</ul>
+<h4 id="值对象（Value-Objects）"><a href="#值对象（Value-Objects）" class="headerlink" title="值对象（Value Objects）"></a>值对象（Value Objects）</h4><ul>
+<li><strong>TenantId &#x2F; KnowledgeBaseId &#x2F; ConversationId &#x2F; MessageId &#x2F; AgentRunId &#x2F; ToolCallId</strong></li>
+<li><strong>UserId &#x2F; EndUserKey</strong>（多租户下“终端用户身份”很关键）</li>
+<li><strong>PromptTemplate &#x2F; SystemPrompt</strong>（你当前 <code>SYSTEM_PROMPT</code> 可演进为模板）</li>
+<li><strong>ModelSpec</strong>（模型名、温度、maxTokens、topP…）</li>
+<li><strong>RagPolicy</strong>（topK、阈值、过滤表达式、重排策略；你当前 <code>topK=3</code>、<code>threshold=0.5</code>、<code>status</code> filter 是雏形）</li>
+<li><strong>FilterExpression &#x2F; Metadata</strong>（例如 <code>status=单身</code>，未来变为多维：业务线&#x2F;渠道&#x2F;语言&#x2F;地区&#x2F;产品等）</li>
+<li><strong>EmbeddingSpec</strong>（向量维度&#x2F;模型&#x2F;归一化）</li>
+<li><strong>Citation（引用证据）</strong>：文档片段 id、分数、位置</li>
+<li><strong>Quota &#x2F; RateLimitPolicy</strong>（万级并发、千级长连接需要明确建模）</li>
+<li><strong>ToolPolicy &#x2F; PermissionSet</strong>（哪些工具可用、参数白名单&#x2F;黑名单）</li>
+<li><strong>StreamChunk &#x2F; StreamCursor</strong>（流式分片与断点续传）</li>
+<li><strong>ErrorInfo &#x2F; RetryPolicy &#x2F; TimeoutPolicy</strong></li>
+</ul>
+<hr>
+<h2 id="2-聚合根：梳理对象关系-→-找到能代表一致性边界的根"><a href="#2-聚合根：梳理对象关系-→-找到能代表一致性边界的根" class="headerlink" title="2) 聚合根：梳理对象关系 → 找到能代表一致性边界的根"></a>2) 聚合根：梳理对象关系 → 找到能代表一致性边界的根</h2><p>按“一致性 + 生命周期 + 不变量”来定聚合根（AR）：</p>
+<h3 id="建议的聚合根（Aggregate-Roots）"><a href="#建议的聚合根（Aggregate-Roots）" class="headerlink" title="建议的聚合根（Aggregate Roots）"></a>建议的聚合根（Aggregate Roots）</h3><ul>
+<li><strong>Tenant（租户聚合根）</strong>  <ul>
+<li>关联：TenantAiConfig（版本集合）、ToolPolicy、Quota、Credential  </li>
+<li>不变量：租户下配置必须可追溯版本；工具策略必须与配额&#x2F;权限一致</li>
+</ul>
+</li>
+<li><strong>KnowledgeBase（知识库聚合根）</strong>  <ul>
+<li>关联：Document、Chunk、EmbeddingJob&#x2F;IndexJob、KnowledgeBaseVersion  </li>
+<li>不变量：发布版本只引用已完成索引的数据；删除文档要维护版本一致性</li>
+</ul>
+</li>
+<li><strong>Conversation（会话聚合根）</strong>  <ul>
+<li>关联：Message（窗口&#x2F;摘要）、SseSubscription（可作为外部关联）、Feedback  </li>
+<li>不变量：会话归属某 Tenant；消息顺序与幂等（防重）保证；窗口记忆&#x2F;摘要策略稳定</li>
+</ul>
+</li>
+<li><strong>AgentRun（Agent 执行聚合根）</strong>  <ul>
+<li>关联：ToolCall（步骤）、Plan、RunState  </li>
+<li>不变量：最大步数、终止条件、工具调用必须受 ToolPolicy 约束（你现有 <code>YzManus.setMaxSteps(20)</code> 是雏形）</li>
+</ul>
+</li>
+<li><strong>SseSession（连接聚合根）</strong>（可选：也可放到交付上下文作为“技术聚合”）  <ul>
+<li>关联：订阅目标（ConversationId&#x2F;AgentRunId）、心跳、重连游标  </li>
+<li>不变量：单连接的流控与背压；断线原因与清理必须一致</li>
+</ul>
+</li>
+</ul>
+<h3 id="聚合间关系（关键点）"><a href="#聚合间关系（关键点）" class="headerlink" title="聚合间关系（关键点）"></a>聚合间关系（关键点）</h3><ul>
+<li><strong>Conversation ↔ AgentRun</strong>：一次用户消息可能触发一个 AgentRun；但建议用 <strong>ID 引用</strong>而不是聚合内强引用对象，避免超大聚合。</li>
+<li><strong>Conversation ↔ KnowledgeBase</strong>：对话时“检索哪个 KB 版本”应来自 TenantAiConfig 或会话上下文（例如渠道&#x2F;业务线），同样用 ID 引用。</li>
+<li><strong>Tenant 是所有聚合的上层归属</strong>：任何聚合都带 TenantId 作为强约束（多租户隔离的根）。</li>
+</ul>
+<hr>
+<h2 id="3-聚合-→-领域服务-→-限界上下文（Bounded-Context）"><a href="#3-聚合-→-领域服务-→-限界上下文（Bounded-Context）" class="headerlink" title="3) 聚合 → 领域服务 → 限界上下文（Bounded Context）"></a>3) 聚合 → 领域服务 → 限界上下文（Bounded Context）</h2><p>结合你的目标约束（万级并发&#x2F;千级 SSE&#x2F; PB 级向量库&#x2F;可控 Agent），建议把“恋爱大师”拆成 5~7 个上下文；每个上下文内部再按聚合落地。</p>
+<h2 id="3-1-建议的限界上下文划分（从现有实现演进）"><a href="#3-1-建议的限界上下文划分（从现有实现演进）" class="headerlink" title="3.1 建议的限界上下文划分（从现有实现演进）"></a>3.1 建议的限界上下文划分（从现有实现演进）</h2><h3 id="A-Customer-Interaction-Context（客户交互上下文）"><a href="#A-Customer-Interaction-Context（客户交互上下文）" class="headerlink" title="A) Customer Interaction Context（客户交互上下文）"></a>A) <strong>Customer Interaction Context（客户交互上下文）</strong></h3><ul>
+<li><strong>聚合</strong>：Conversation、Message、Feedback  </li>
+<li><strong>领域服务</strong>：ConversationPolicy（记忆窗口&#x2F;摘要）、IdempotencyService（消息幂等）、SessionRouting（路由到对应 Agent&#x2F;RAG 配置）</li>
+<li><strong>你现有映射</strong>：<code>AiController</code> + <code>LoveApp</code> 的 chatId&#x2F;ChatMemory 是雏形</li>
+</ul>
+<h3 id="B-Agent-Orchestration-Context（Agent-编排上下文）"><a href="#B-Agent-Orchestration-Context（Agent-编排上下文）" class="headerlink" title="B) Agent Orchestration Context（Agent 编排上下文）"></a>B) <strong>Agent Orchestration Context（Agent 编排上下文）</strong></h3><ul>
+<li><strong>聚合</strong>：AgentRun、ToolCall  </li>
+<li><strong>领域服务</strong>：Planner、Executor、GuardrailService（步数&#x2F;超时&#x2F;权限&#x2F;参数约束）、ObservationService（审计与链路）</li>
+<li><strong>你现有映射</strong>：<code>YzManus</code>、<code>ToolCallAgent</code>、<code>TerminateTool</code>、<code>ToolCallback[]</code></li>
+</ul>
+<h3 id="C-RAG-Retrieval-Context（检索增强上下文）"><a href="#C-RAG-Retrieval-Context（检索增强上下文）" class="headerlink" title="C) RAG &amp; Retrieval Context（检索增强上下文）"></a>C) <strong>RAG &amp; Retrieval Context（检索增强上下文）</strong></h3><ul>
+<li><strong>聚合</strong>：RagRequest（可作为轻聚合&#x2F;领域模型）、RetrievalResult（值对象集合）  </li>
+<li><strong>领域服务</strong>：QueryRewriteService（你现有 <code>QueryRewriter</code>）、Retriever、Reranker、GroundingService（引用证据）</li>
+<li><strong>你现有映射</strong>：<code>LoveAppRagCustomAdvisorFactory</code>（filter&#x2F;topK&#x2F;threshold）、VectorStore、QueryRewriter</li>
+</ul>
+<h3 id="D-Knowledge-Management-Context（知识管理上下文）"><a href="#D-Knowledge-Management-Context（知识管理上下文）" class="headerlink" title="D) Knowledge Management Context（知识管理上下文）"></a>D) <strong>Knowledge Management Context（知识管理上下文）</strong></h3><ul>
+<li><strong>聚合</strong>：KnowledgeBase、Document、KnowledgeBaseVersion、IngestionJob&#x2F;IndexJob  </li>
+<li><strong>领域服务</strong>：IngestionService、ChunkingService、EmbeddingService、IndexService、PublishService</li>
+<li><strong>你现有映射</strong>：<code>LoveAppDocumentLoader</code>&#x2F;向量配置类（你项目里已有相关类名与配置痕迹）</li>
+</ul>
+<h3 id="E-Tenant-Governance-Context（租户与治理上下文）"><a href="#E-Tenant-Governance-Context（租户与治理上下文）" class="headerlink" title="E) Tenant &amp; Governance Context（租户与治理上下文）"></a>E) <strong>Tenant &amp; Governance Context（租户与治理上下文）</strong></h3><ul>
+<li><strong>聚合</strong>：Tenant、TenantAiConfig、Quota、ToolPolicy、Credential  </li>
+<li><strong>领域服务</strong>：ConfigPublishService、QuotaEnforcement、ToolAuthorization</li>
+<li><strong>为什么单独拆</strong>：多租户隔离、配额、权限、合规审计都在这里“定规则”，其它上下文只“执行规则”</li>
+</ul>
+<h3 id="F-Streaming-Delivery-Context（流式交付上下文）"><a href="#F-Streaming-Delivery-Context（流式交付上下文）" class="headerlink" title="F) Streaming Delivery Context（流式交付上下文）"></a>F) <strong>Streaming Delivery Context（流式交付上下文）</strong></h3><ul>
+<li><strong>聚合</strong>：SseSession（或 StreamSubscription）  </li>
+<li><strong>领域服务</strong>：BackpressureService、ReconnectService、HeartbeatService</li>
+<li><strong>你现有映射</strong>：<code>AiController</code> 里三种 SSE 方式（Flux&#x2F;SSEEmitter&#x2F;ServerSentEvent）是交付层雏形，但还缺领域化的连接治理</li>
+</ul>
+<h3 id="G-Observability-Reliability-Context（可观测与稳定性上下文）"><a href="#G-Observability-Reliability-Context（可观测与稳定性上下文）" class="headerlink" title="G) Observability &amp; Reliability Context（可观测与稳定性上下文）"></a>G) <strong>Observability &amp; Reliability Context（可观测与稳定性上下文）</strong></h3><ul>
+<li><strong>聚合</strong>：RunTrace &#x2F; AuditLog（事件存储&#x2F;审计实体）  </li>
+<li><strong>领域服务</strong>：CircuitBreakerPolicy、RetryManager、DegradeStrategy、LoadTestReportService</li>
+<li><strong>说明</strong>：这块很多是技术域，但你目标里“压测验证&#x2F;稳定性工程化”需要明确边界与产物（指标、追踪、回放）</li>
+</ul>
+<hr>
+<h2 id="4-把“恋爱大师”改造为“多租户客服”的关键-DDD-落点（你当前代码对应关系）"><a href="#4-把“恋爱大师”改造为“多租户客服”的关键-DDD-落点（你当前代码对应关系）" class="headerlink" title="4) 把“恋爱大师”改造为“多租户客服”的关键 DDD 落点（你当前代码对应关系）"></a>4) 把“恋爱大师”改造为“多租户客服”的关键 DDD 落点（你当前代码对应关系）</h2><ul>
+<li><strong>从单一 <code>LoveApp</code> 应用服务 → 拆为多个应用服务</strong>：  <ul>
+<li>ChatApplicationService（会话&#x2F;消息）  </li>
+<li>RagApplicationService（检索增强）  </li>
+<li>AgentApplicationService（编排&#x2F;工具）  </li>
+<li>StreamingApplicationService（SSE 交付）</li>
+</ul>
+</li>
+<li><strong>把 <code>SYSTEM_PROMPT</code>（固定字符串）升级为 TenantAiConfig 的一部分</strong>（可版本化、可回滚）</li>
+<li><strong>把 <code>status=单身</code> 这种过滤从“恋爱域字段”泛化为 “KnowledgeBase 元数据过滤表达式”</strong>（业务线&#x2F;产品&#x2F;渠道&#x2F;语言等维度）</li>
+<li><strong>把 <code>chatId</code> 统一建模为 ConversationId，并强制绑定 TenantId</strong>（多客户隔离）</li>
+<li><strong>将工具调用纳入 ToolPolicy + 审计事件</strong>（可控性：参数校验&#x2F;白名单&#x2F;沙箱&#x2F;超时）</li>
+</ul>
+<hr>
+<p>如果你愿意，我可以在不改代码的前提下，继续把上述 DDD 设计“落到你仓库的包结构&#x2F;模块拆分建议”上：例如按 <code>interfaces / application / domain / infrastructure</code> 分层，并指出你当前 <code>LoveApp</code>、<code>YzManus</code>、<code>rag/*</code>、<code>tools/*</code> 分别应该迁移到哪些层与上下文。</p>
+<hr>
+<h2 id="5-实际落地实现概览（截止当前代码）"><a href="#5-实际落地实现概览（截止当前代码）" class="headerlink" title="5) 实际落地实现概览（截止当前代码）"></a>5) 实际落地实现概览（截止当前代码）</h2><p>这一节描述的是目前代码中已经完成的 DDD 落地情况，便于后来者快速对照“设计 → 实现”。</p>
+<h3 id="5-1-分层架构（Layered-Architecture）现状"><a href="#5-1-分层架构（Layered-Architecture）现状" class="headerlink" title="5.1 分层架构（Layered Architecture）现状"></a>5.1 分层架构（Layered Architecture）现状</h3><ul>
+<li><p><strong>interfaces（接口层）</strong></p>
+<ul>
+<li><code>interfaces.web</code><ul>
+<li><code>AiController</code>：对外暴露 <code>/ai/**</code> 接口，负责：<ul>
+<li>解析 <code>X-Tenant-Id</code> Header 并透传给应用服务</li>
+<li>处理 SSE（Flux &#x2F; <code>ServerSentEvent</code> &#x2F; <code>SseEmitter</code>）</li>
+</ul>
+</li>
+<li><code>HealthController</code>：健康检查接口，返回 <code>BaseResponse&lt;String&gt;</code>。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>application（应用层）</strong></p>
+<ul>
+<li><code>application.interaction</code><ul>
+<li><code>LoveApp</code>：应用 Facade，不再直接拼 ChatClient，而是组合下列用例服务：<ul>
+<li><code>ChatApplicationService</code>：普通对话（同步&#x2F;流式）用例</li>
+<li><code>RagChatApplicationService</code>：RAG 增强对话用例</li>
+<li><code>ToolChatApplicationService</code>：本地工具增强对话用例</li>
+<li><code>McpChatApplicationService</code>：MCP 工具增强对话用例</li>
+</ul>
+</li>
+<li><code>LoveApp</code> 提供两类方法：<ul>
+<li>兼容旧接口：<code>doChat(message, chatId)</code> 等（内部默认租户 <code>default</code>）</li>
+<li>多租户接口：<code>doChat(message, chatId, tenantId)</code> 等（按租户加载配置）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>application.agent</code><ul>
+<li><code>BaseAgent / ReActAgent / ToolCallAgent / YzManus</code>：<ul>
+<li>BaseAgent: 管理 Agent 状态机（<code>AgentState</code>）、步骤循环、SSE 流式输出</li>
+<li>ReActAgent: 抽象“思考→行动”模式</li>
+<li>ToolCallAgent: 基于 Spring AI ToolCallingManager 的工具调用执行器</li>
+<li>YzManus: 具体的“超级 Agent”配置（system prompt &#x2F; next-step prompt &#x2F; maxSteps）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>application.tenant</code><ul>
+<li><code>TenantAiConfigService</code>：<ul>
+<li>对外提供 <code>getLoveAppConfig(tenantId)</code>：<ul>
+<li>先查仓储 <code>TenantAiConfigRepository</code></li>
+<li>查不到时回退到内置默认配置 <code>defaultLoveAppConfig</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>application.tenant.port</code><ul>
+<li><code>TenantAiConfigRepository</code>（端口）：<ul>
+<li><code>findLoveAppConfig(String tenantId)</code></li>
+<li><code>upsertLoveAppConfig(TenantAiConfig config)</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>domain（领域层）</strong></p>
+<ul>
+<li><code>domain.rag</code><ul>
+<li><code>RagPolicy</code>：RAG 策略（<code>topK</code>、<code>similarityThreshold</code>），目前用于 LoveApp 的 RAG 配置建模。</li>
+</ul>
+</li>
+<li><code>domain.agent.model</code><ul>
+<li><code>AgentState</code>：Agent 状态枚举（<code>IDLE/RUNNING/FINISHED/ERROR</code>）。</li>
+</ul>
+</li>
+<li><code>domain.tenant.model</code><ul>
+<li><code>TenantId</code>：租户标识（值对象）</li>
+<li><code>AiModelSpec</code>：大模型配置（provider &#x2F; model）</li>
+<li><code>ToolPolicy</code>：<ul>
+<li><code>enabled</code>: 是否允许工具调用</li>
+<li><code>allowedToolNames</code>: 工具名称白名单（<code>null</code> 或空 &#x3D; 不过滤）</li>
+</ul>
+</li>
+<li><code>TenantAiConfig</code>：<ul>
+<li><code>tenantId</code></li>
+<li><code>systemPrompt</code></li>
+<li><code>ragPolicy</code>（RAG 策略）</li>
+<li><code>toolPolicy</code>（工具策略）</li>
+<li><code>chatModelSpec</code>（大模型提供方+型号）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>infrastructure（基础设施层）</strong></p>
+<ul>
+<li><code>infrastructure.ai</code><ul>
+<li><code>ChatClientFactory</code>：<ul>
+<li>负责根据 <code>TenantAiConfig</code> 和 <code>ChatModel</code> 构造带记忆窗口的 <code>ChatClient</code></li>
+<li>统一注入 <code>systemPrompt</code>、<code>MessageChatMemoryAdvisor</code> 等</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>infrastructure.rag</code><ul>
+<li><code>LoveAppRagCustomAdvisorFactory</code>：<ul>
+<li>基于 <code>VectorStore</code> 构建自定义 <code>RetrievalAugmentationAdvisor</code></li>
+<li>当前默认使用 <code>status=单身</code> 过滤 + 固定 <code>topK / similarityThreshold</code>（下一步可以改用 <code>RagPolicy</code>）</li>
+</ul>
+</li>
+<li><code>QueryRewriter</code>：基于 Spring AI 的 <code>RewriteQueryTransformer</code> 实现查询改写</li>
+<li><code>LoveAppVectorStoreConfig</code>：构建内存向量库 <code>loveAppVectorStore</code></li>
+<li><code>PgVectorVectorStoreConfig</code>：构建 PGVector 存储（包括维度&#x2F;索引类型&#x2F;距离度量等）</li>
+<li><code>LoveAppDocumentLoader / MyTokenTextSplitter / MyKeywordEnricher</code>：知识文档加载与预处理组件</li>
+</ul>
+</li>
+<li><code>infrastructure.tool</code><ul>
+<li>工具实现：<ul>
+<li><code>FileOperationTool / PDFGenerationTool / WebSearchTool / WebScrapingTool / ResourceDownloadTool / TerminalOperationTool</code></li>
+<li><code>builtin.TerminateTool</code>：终止当前 Agent 执行</li>
+</ul>
+</li>
+<li><code>ToolRegistration</code>：统一注册上述工具为 <code>ToolCallback[] allTools</code></li>
+</ul>
+</li>
+<li><code>infrastructure.tenant</code><ul>
+<li><code>JdbcTenantAiConfigRepository</code>（<code>@Profile(&quot;!test&quot;)</code>）：<ul>
+<li>使用 Postgres + <code>JdbcTemplate</code></li>
+<li>启动时自动建表 <code>tenant_ai_config</code></li>
+<li>保存字段：<code>tenant_id / app_key / system_prompt / rag_top_k / rag_similarity_threshold / tool_enabled / tool_allowed_names_json / chat_provider / chat_model</code></li>
+<li>实现从 DB 加载&#x2F;更新 <code>TenantAiConfig</code></li>
+</ul>
+</li>
+<li><code>InMemoryTenantAiConfigRepository</code>（<code>@Profile(&quot;test&quot;)</code>）：<ul>
+<li>单元测试环境下的内存实现，避免测试依赖数据库</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>infrastructure.common / exception / advisor / constant / config / demo</code><ul>
+<li>原 <code>common</code>（<code>BaseResponse / ResultUtils / PageRequest / DeleteRequest</code>）统一迁移到 <code>infrastructure.common</code></li>
+<li>原 <code>exception</code>（<code>BusinessException / ErrorCode / ThrowUtils / GlobalExceptionHandler</code>）迁移到 <code>infrastructure.exception</code></li>
+<li>原日志&#x2F;提示 Advisor 统一到 <code>infrastructure.advisor</code></li>
+<li>文件常量 <code>FileConstant</code> 迁移到 <code>infrastructure.constant</code></li>
+<li>CORS&#x2F;配置等在 <code>infrastructure.config</code></li>
+<li>各种调用&#x2F;SDK demo 迁移到 <code>infrastructure.demo</code>，并加 <code>@Profile(&quot;!test&quot;)</code> 或 <code>main</code> 方式执行</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-2-多租户链路与配置生效路径"><a href="#5-2-多租户链路与配置生效路径" class="headerlink" title="5.2 多租户链路与配置生效路径"></a>5.2 多租户链路与配置生效路径</h3><ul>
+<li><p><strong>入口：<code>X-Tenant-Id</code> Header</strong></p>
+<ul>
+<li>所有 <code>/ai/love_app/**</code> 接口在 <code>AiController</code> 中解析 <code>X-Tenant-Id</code>：<ul>
+<li>若为空，使用 <code>TenantAiConfigService.DEFAULT_TENANT_ID</code>（<code>default</code>）</li>
+<li>调用 <code>LoveApp</code> 的重载方法：<code>doChat(message, chatId, tenantId)</code> 等</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>配置加载：<code>TenantAiConfigService</code></strong></p>
+<ul>
+<li><code>getLoveAppConfig(tenantId)</code>：<ol>
+<li>归一化 tenantId（空&#x2F;空白 → <code>default</code>）</li>
+<li>调用 <code>TenantAiConfigRepository.findLoveAppConfig(tenantId)</code></li>
+<li>若未找到，则回退到 <code>defaultLoveAppConfig(tenantId)</code>，提供一个内置默认配置</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><p><strong>ChatClient 构建：<code>ChatClientFactory</code></strong></p>
+<ul>
+<li>根据 <code>TenantAiConfig</code>：<ul>
+<li>设置 <code>systemPrompt</code>（租户可配）</li>
+<li>构建带 <code>MessageWindowChatMemory</code> 的 ChatClient（默认窗口 10 条消息）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>LoveApp 内的具体用例执行</strong></p>
+<ul>
+<li>普通聊天：<ul>
+<li><code>doChat</code> &#x2F; <code>doChatByStream</code>：使用 <code>ChatApplicationService</code>，驱动 ChatClient 同步&#x2F;流式输出</li>
+</ul>
+</li>
+<li>RAG 增强：<ul>
+<li><code>doChatWithRag</code>：使用 <code>RagChatApplicationService</code> + <code>loveAppVectorStore + QueryRewriter</code></li>
+<li>当前 RAG 使用默认策略（<code>RagPolicy.defaultLoveAppPolicy</code>），DB 中也已经为每个租户预留了 <code>rag_top_k / rag_similarity_threshold</code> 字段</li>
+</ul>
+</li>
+<li>工具调用（本地工具 &#x2F; MCP）：<ul>
+<li>使用 <code>ToolChatApplicationService</code> &#x2F; <code>McpChatApplicationService</code></li>
+<li><strong>ToolPolicy 已生效</strong>：<ul>
+<li>若 <code>toolPolicy.enabled=false</code>，直接抛错阻止调用</li>
+<li>若 <code>allowedToolNames</code> 非空，则通过反射从 <code>ToolCallback</code> 读取 Tool 名称，只保留白名单内的工具注入到 ChatClient</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-3-DDD-任务完成度小结"><a href="#5-3-DDD-任务完成度小结" class="headerlink" title="5.3 DDD 任务完成度小结"></a>5.3 DDD 任务完成度小结</h3><ul>
+<li>已完成：<ul>
+<li>清晰的四层分层（interfaces &#x2F; application &#x2F; domain &#x2F; infrastructure）</li>
+<li>核心上下文（交互 &#x2F; Agent &#x2F; RAG &#x2F; 租户 &#x2F; 工具）的软限界上下文划分</li>
+<li>多租户从入口到领域配置再到执行链路的全链路打通</li>
+<li>将 <code>systemPrompt / RagPolicy / ToolPolicy / ModelSpec</code> 显式建模为领域值对象，并通过仓储存储与加载</li>
+</ul>
+</li>
+<li>尚可继续演进（后续阶段）：<ul>
+<li>会话（Conversation）、消息（Message）、知识库（KnowledgeBase）等聚合根的实体化与仓储实现</li>
+<li>按限界上下文拆分为多个 Maven 模块 &#x2F; 独立服务</li>
+<li>更细粒度的限流&#x2F;熔断&#x2F;审计等治理策略上升到领域层</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>简言之：本项目在“AI 恋爱大师 → 多租户智能客服”的迁移中，已经完成了第一阶段的 DDD 改造：<strong>分层清晰、上下文轮廓明确、多租户与配置化真正落地、并通过工程实践（测试 + DB 适配）得到验证。</strong></p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2026/03/26/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/9.1%20DDD/">https://yuezi2048.github.io/2026/03/26/2.Areas🌐/01.project/condefather/yu-ai-agent/9.1 DDD/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/yu-ai-agent/">yu-ai-agent</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/03/25/2.Areas%F0%9F%8C%90/00.%E7%A7%8B%E6%8B%9B%E5%87%86%E5%A4%87%E6%96%B9%E5%90%91/%E5%AE%9E%E4%B9%A0%E7%B4%A7%E6%80%A5%E5%A4%87%E6%88%98/" title="实习紧急备战"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">实习紧急备战</div></div><div class="info-2"><div class="info-item-1">我不说空话，所有的话都是对着你当下的处境来的，每一条都能帮你省时间、少焦虑、不熬夜，同时既搞定眼前的实习，又不丢长期的壁垒。  一、先给你定死【不可动摇的优先级铁律】—— 这是你不崩、不熬夜、不白忙的核心你现在最大的内耗，是想同时把所有事做好，最后只会两头都顾不上。我给你把优先级锁死，绝对不能乱：  第一优先级（最多占 50% 时间）：能直接帮你拿到实习 offer 的事—— 精准版八股 + 高频版算法 + 现有两个项目的「面试亮点打磨」  研二下，先拿到入场券是第一位的，没有实习 offer，后面的长期壁垒都是空中楼阁。但不是让你瞎忙，是精准发力，不做无用功。  第二优先级（零额外时间）：能一份时间拿两份收益的事—— 把准备面试、做项目的过程，直接变成你的 github IP、博客内容  不用专门挤时间做 IP，你现在正在做的事，顺手就能沉淀成长期壁垒，完全不增加你的负担。  绝对不碰的事：为了 “长期壁垒” 新开的、和当下实习无关的坑  别再开新的小项目、别为了写博客而硬凑内容，你现有的两个项目已经完美贴合 AI...</div></div></div></a><a class="pagination-related" href="/2026/03/26/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/9.%E7%AE%80%E5%8E%86%E6%89%A9%E5%B1%95/" title="9.简历扩展"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">9.简历扩展</div></div><div class="info-2"><div class="info-item-1">后续工作：  自定义 Advisor, 比如权限校验、违禁词校验 Advisor 自定义对话记忆, 比如持久化对话到 MySQL 或 Redis 存储中 编写一套包含变量的 Prompt 模板, 并保存为资源文件, 从文件加载模板 开发一个多模态对话助手, 能够让 AI 解释图片 (建议使用国内的 AI 大模型) 阅读 Spring AI 官方的 ChatMemory 文档, 了解如何自主构建 ChatMemory  循环检测，防止无限循环，参考代码 private int duplicateThreshold = 2;    /**   * 处理陷入循环的状态   */  protected void handleStuckState() &#123;      String stuckPrompt = &quot;观察到重复响应。考虑新策略，避免重复已尝试过的无效路径。&quot;;      this.nextStepPrompt = stuckPrompt + &quot;\n&quot; + (this.nextStepPrompt != null ?...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/03/03/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/0.python%E8%A1%A5%E5%85%85%E8%AE%B0%E5%BD%95/" title="0.python补充记录"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-03</div><div class="info-item-2">0.python补充记录</div></div><div class="info-2"><div class="info-item-1">OpenManus源码拉取时间：2026.3.2  app\agent\base.py#134  results: List[str] = [] # List&lt;String&gt; results = new ArrayList&lt;&gt;();   这段是初始化Field的语法，这个冒号就可以近似地认为是java里的泛型，可以确定他的类型   补充：Optional类比java里的@Nullable注解，可以为空，这是tool\mcp#217中，McpClientTool中定义session字段的写法 session: Optional[ClientSession] = None  app\agent\base.py#135  async with self.state_context(AgentState.RUNNING):         while (             self.current_step &lt; self.max_steps and self.state != AgentState.FINISHED         ):       ...</div></div></div></a><a class="pagination-related" href="/2026/01/26/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/1.%E5%A4%A7%E6%A8%A1%E5%9E%8B%E6%8E%A5%E5%85%A5%E6%96%B9%E6%A1%88/" title="1.大模型接入方案"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-26</div><div class="info-item-2">1.大模型接入方案</div></div><div class="info-2"><div class="info-item-1">来源：大模型接入 相关文档 ai知识库学习  主流的AI库  lanchain4j文档 支持的模型 整合了国产模型的社区版本   springAI文档 支持的模型   springAI Alibaba文档 使用Spring AI Alibaba集成阿里云百炼大模型应用    AI接入服务：  阿里云百炼：可视化平台（智能体、工作流、智能体编排） 应用调用文档 dashScope(灵积)：API接口   ollama本地部署  AI客户端：  cherry studio cursor  大模型开发工作流	 程序如何交互大模型程序与大模型交互的实现思路（demo.invoke目录）：  SDK 依赖DashScope接入SDK——maven 平台申请API key 访问API：通义千问API参考   HTTP 有SDK优先SDK 设置API密钥、请求头、请求体 发送请求，处理响应   Spring AI  spring:  application:    name: spring-ai-alibaba-qwq-chat-client-example  ai:   ...</div></div></div></a><a class="pagination-related" href="/2026/01/26/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/2.%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/" title="2.大模型应用开发"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-26</div><div class="info-item-2">2.大模型应用开发</div></div><div class="info-2"><div class="info-item-1">• Prompt 工程基本概念 • Prompt 优化技巧 • AI 恋爱大师应用需求分析 • AI 恋爱大师应用方案设计 • Spring AI ChatClient &#x2F; Advisor &#x2F; ChatMemory 特性 • 多轮对话 AI 应用开发 • Spring AI 自定义 Advisor • Spring AI 结构化输出 - 恋爱报告功能 • Spring AI 对话记忆持久化 • Spring AI Prompt 模板特性 • 多模态概念和开发 Prompt工程Prompt工程：通过精心设计和优化提示词，引导AI模型的高质量输出 Prompt分类 基于角色   User Prompt：实际的指令 System Prompt：模型行为规则，角色定位隐藏指令 Assisant Prompt：响应内容（多轮对话中之前回复的内容）    基于功能   Instructional Prompts：指令型 Conversational Prompts：对话型 Creative Prompts：创意型，故事诗歌等 Role-playing...</div></div></div></a><a class="pagination-related" href="/2026/01/27/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/3.RAG/" title="3.RAG"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-27</div><div class="info-item-2">3.RAG</div></div><div class="info-2"><div class="info-item-1">使用RAG（Retrieval Augmentation Generation 检索增强生成）的需求分析：  知识扩展，给出更精准的回答  减小幻觉  个性化输出：特色服务和回答风格  推销：推销我们的产品和服务   工作机制概览  文档收集和切割  向量转换和存储  文档过滤和检索  查询增强和关联    文档收集与切割 收集的来源：网页、PDF、数据库等原始文档 预处理：清洗、标准化格式 切割：长文档划分为适当的片段（chunks） 基于固定大小（如512token） 基于语义边界（段落 章节） 基于递归分割策略（递归字符 n-gram）    向量转换和存储向量转换：将文本通过Embedding模型转化为高维向量，可捕获到语义特征 向量存储：存入向量数据库，支持相似度搜索   embedding 经典的有Word2Vec文本、ResNet图像，一般纬度越高语义信息越丰富但占用空间越多 向量数据库：存储向量的数据库，支持索引算法快速相似度搜索，支持k近邻查询（注：传统数据库也可以支持，如PGVector插件，Redis...</div></div></div></a><a class="pagination-related" href="/2026/01/30/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/4.RAG%E8%BF%9B%E9%98%B6/" title="4.RAG进阶"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-30</div><div class="info-item-2">4.RAG进阶</div></div><div class="info-2"><div class="info-item-1">我们先前已经了解RAG的整体工作流程，为了生成更加定制化的内容，现在要进行一些细节的RAG学习 	  RAG进阶学习文档收集与切割（ETL）ETLSpringAI-ETL ETL中的文档实际上不局限于文本，还有一系列的元信息MetaData、多媒体附件MediaContent 		  而针对于ETL，遵循一定的流程，对应着三大组件：  读取文档：DocumentReader负责从数据源加载文档 转换文档：根据需求将文档处理为指定的格式（如去除冗余信息、分词、词性标注等），可通过DocumentTransformer实现 写入文档：DocumentWriter将文档以特定格式保存到存储中，如以嵌入向量的形式写入向量数据库，或者通过k-v键值对保存到Redis等数据库中      Extract_DocumentReader实现了Supplier函数式接口，从数据源中得到Document集合 public interface DocumentReader extends Supplier&lt;List&lt;Document&gt;&gt; &#123;    default...</div></div></div></a><a class="pagination-related" href="/2026/01/31/2.Areas%F0%9F%8C%90/01.project/condefather/yu-ai-agent/5.%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/" title="5.工具调用"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-01-31</div><div class="info-item-2">5.工具调用</div></div><div class="info-2"><div class="info-item-1">具体内容包括: • 工具调用介绍 • Spring AI 工具开发 • 主流工具开发 • 文件操作 • 联网搜索 • 网页抓取 • 终端操作 • 资源下载 • PDF 生成 • 工具进阶知识 (原理和高级特性) 需求分析：现在通过RAG技术让AI可以根据外部知识库获取信息回答的能力，但是可能需要一些外部工具的场景：  联网搜索：如智能推荐约会地点（如cursor的联网搜索，阿里云百炼API也提供该选项支持） 网页抓取：如查看百度贴吧其他吧友是怎么解决情感问题的 资源下载：下载约会时的钢琴曲 终端操作：Python生成恋爱分析报告 文件操作：保存恋爱档案 PDF生成：生成七夕约会计划PDF，餐厅预订-活动流程-礼物清单   以上工具可进行组合搭配使用。让ai不再是简单的问答系统，而是能完成任务的智能体  工具调用 Tool Calling目的：让AI来使用外部工具完成自己做不到的事情，如查询天气，AI本身没有这些知识，但是可以通过联网搜索来完成任务 官方文档 工具调用支持的模型 工具调用的流程：  工具定义: 程序告诉 AI “你可以使用这些工具”,...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">829</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">81</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">109</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E4%BA%8B%E4%BB%B6%E9%A3%8E%E6%9A%B4%EF%BC%9A%E7%94%A8%E4%BE%8B-%E5%9C%BA%E6%99%AF-%E2%86%92-%E8%A1%8C%E4%B8%BA%EF%BC%88%E5%91%BD%E4%BB%A4%EF%BC%89%E2%86%92-%E4%BA%8B%E4%BB%B6-%E2%86%92-%E9%A2%86%E5%9F%9F%E5%AF%B9%E8%B1%A1%EF%BC%88%E5%AE%9E%E4%BD%93-%E5%80%BC%E5%AF%B9%E8%B1%A1%EF%BC%89"><span class="toc-text">1) 事件风暴：用例&#x2F;场景 → 行为（命令）→ 事件 → 领域对象（实体&#x2F;值对象）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E7%94%A8%E4%BE%8B%EF%BC%88%E5%BB%BA%E8%AE%AE%E7%9A%84%E4%B8%9A%E5%8A%A1%E8%AF%AD%E8%A8%80%EF%BC%89"><span class="toc-text">核心用例（建议的业务语言）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%8C%E4%B8%BA%EF%BC%88%E5%91%BD%E4%BB%A4%EF%BC%89%E4%B8%8E%E4%BA%8B%E4%BB%B6%EF%BC%88Domain-Events%EF%BC%89%E6%B8%85%E5%8D%95%EF%BC%88%E6%8C%89%E4%B8%9A%E5%8A%A1%E6%B5%81%E5%88%86%E7%BB%84%EF%BC%89"><span class="toc-text">行为（命令）与事件（Domain Events）清单（按业务流分组）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#A-%E7%A7%9F%E6%88%B7%E4%B8%8E%E9%85%8D%E7%BD%AE"><span class="toc-text">A. 租户与配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#B-%E4%BC%9A%E8%AF%9D%E4%B8%8E%E6%B6%88%E6%81%AF%EF%BC%88%E4%BD%A0%E7%8E%B0%E6%9C%89%E7%9A%84-chatId-%E5%B0%B1%E6%98%AF%E9%9B%8F%E5%BD%A2%EF%BC%89"><span class="toc-text">B. 会话与消息（你现有的 chatId 就是雏形）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#C-RAG%EF%BC%88%E4%BD%A0%E7%8E%B0%E6%9C%89%E7%9A%84-QueryRewrite-VectorStore-%E6%A3%80%E7%B4%A2%E5%A2%9E%E5%BC%BA%E5%B0%B1%E6%98%AF%E9%9B%8F%E5%BD%A2%EF%BC%89"><span class="toc-text">C. RAG（你现有的 QueryRewrite + VectorStore 检索增强就是雏形）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#D-Agent-%E4%B8%8E%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8%EF%BC%88%E4%BD%A0%E7%8E%B0%E6%9C%89%E7%9A%84-ToolCallback-MCP-YzManus-%E5%A4%9A%E6%AD%A5%E6%89%A7%E8%A1%8C%E6%98%AF%E9%9B%8F%E5%BD%A2%EF%BC%89"><span class="toc-text">D. Agent 与工具调用（你现有的 ToolCallback&#x2F;MCP + YzManus 多步执行是雏形）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#E-SSE-%E9%95%BF%E8%BF%9E%E6%8E%A5%E4%B8%8E%E4%BA%A4%E4%BB%98"><span class="toc-text">E. SSE 长连接与交付</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#F-%E7%9F%A5%E8%AF%86%E5%BA%93%EF%BC%88PB-%E7%BA%A7%E5%90%91%E9%87%8F%E5%BA%93%E6%98%AF%E4%BD%A0%E5%90%8E%E7%BB%AD%E7%9A%84%E6%A0%B8%E5%BF%83%E5%9F%9F%E4%B9%8B%E4%B8%80%EF%BC%89"><span class="toc-text">F. 知识库（PB 级向量库是你后续的核心域之一）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%B1%E4%BA%8B%E4%BB%B6%E9%A3%8E%E6%9A%B4%E5%8F%8D%E6%8E%A8%E9%A2%86%E5%9F%9F%E5%AF%B9%E8%B1%A1%EF%BC%88%E5%AE%9E%E4%BD%93-%E5%80%BC%E5%AF%B9%E8%B1%A1%EF%BC%89"><span class="toc-text">由事件风暴反推领域对象（实体 + 值对象）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E4%BD%93%EF%BC%88Entities%EF%BC%89"><span class="toc-text">实体（Entities）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%80%BC%E5%AF%B9%E8%B1%A1%EF%BC%88Value-Objects%EF%BC%89"><span class="toc-text">值对象（Value Objects）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E8%81%9A%E5%90%88%E6%A0%B9%EF%BC%9A%E6%A2%B3%E7%90%86%E5%AF%B9%E8%B1%A1%E5%85%B3%E7%B3%BB-%E2%86%92-%E6%89%BE%E5%88%B0%E8%83%BD%E4%BB%A3%E8%A1%A8%E4%B8%80%E8%87%B4%E6%80%A7%E8%BE%B9%E7%95%8C%E7%9A%84%E6%A0%B9"><span class="toc-text">2) 聚合根：梳理对象关系 → 找到能代表一致性边界的根</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E8%AE%AE%E7%9A%84%E8%81%9A%E5%90%88%E6%A0%B9%EF%BC%88Aggregate-Roots%EF%BC%89"><span class="toc-text">建议的聚合根（Aggregate Roots）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%81%9A%E5%90%88%E9%97%B4%E5%85%B3%E7%B3%BB%EF%BC%88%E5%85%B3%E9%94%AE%E7%82%B9%EF%BC%89"><span class="toc-text">聚合间关系（关键点）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E8%81%9A%E5%90%88-%E2%86%92-%E9%A2%86%E5%9F%9F%E6%9C%8D%E5%8A%A1-%E2%86%92-%E9%99%90%E7%95%8C%E4%B8%8A%E4%B8%8B%E6%96%87%EF%BC%88Bounded-Context%EF%BC%89"><span class="toc-text">3) 聚合 → 领域服务 → 限界上下文（Bounded Context）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-%E5%BB%BA%E8%AE%AE%E7%9A%84%E9%99%90%E7%95%8C%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%92%E5%88%86%EF%BC%88%E4%BB%8E%E7%8E%B0%E6%9C%89%E5%AE%9E%E7%8E%B0%E6%BC%94%E8%BF%9B%EF%BC%89"><span class="toc-text">3.1 建议的限界上下文划分（从现有实现演进）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#A-Customer-Interaction-Context%EF%BC%88%E5%AE%A2%E6%88%B7%E4%BA%A4%E4%BA%92%E4%B8%8A%E4%B8%8B%E6%96%87%EF%BC%89"><span class="toc-text">A) Customer Interaction Context（客户交互上下文）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-Agent-Orchestration-Context%EF%BC%88Agent-%E7%BC%96%E6%8E%92%E4%B8%8A%E4%B8%8B%E6%96%87%EF%BC%89"><span class="toc-text">B) Agent Orchestration Context（Agent 编排上下文）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C-RAG-Retrieval-Context%EF%BC%88%E6%A3%80%E7%B4%A2%E5%A2%9E%E5%BC%BA%E4%B8%8A%E4%B8%8B%E6%96%87%EF%BC%89"><span class="toc-text">C) RAG &amp; Retrieval Context（检索增强上下文）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#D-Knowledge-Management-Context%EF%BC%88%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%E4%B8%8A%E4%B8%8B%E6%96%87%EF%BC%89"><span class="toc-text">D) Knowledge Management Context（知识管理上下文）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#E-Tenant-Governance-Context%EF%BC%88%E7%A7%9F%E6%88%B7%E4%B8%8E%E6%B2%BB%E7%90%86%E4%B8%8A%E4%B8%8B%E6%96%87%EF%BC%89"><span class="toc-text">E) Tenant &amp; Governance Context（租户与治理上下文）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#F-Streaming-Delivery-Context%EF%BC%88%E6%B5%81%E5%BC%8F%E4%BA%A4%E4%BB%98%E4%B8%8A%E4%B8%8B%E6%96%87%EF%BC%89"><span class="toc-text">F) Streaming Delivery Context（流式交付上下文）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#G-Observability-Reliability-Context%EF%BC%88%E5%8F%AF%E8%A7%82%E6%B5%8B%E4%B8%8E%E7%A8%B3%E5%AE%9A%E6%80%A7%E4%B8%8A%E4%B8%8B%E6%96%87%EF%BC%89"><span class="toc-text">G) Observability &amp; Reliability Context（可观测与稳定性上下文）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E6%8A%8A%E2%80%9C%E6%81%8B%E7%88%B1%E5%A4%A7%E5%B8%88%E2%80%9D%E6%94%B9%E9%80%A0%E4%B8%BA%E2%80%9C%E5%A4%9A%E7%A7%9F%E6%88%B7%E5%AE%A2%E6%9C%8D%E2%80%9D%E7%9A%84%E5%85%B3%E9%94%AE-DDD-%E8%90%BD%E7%82%B9%EF%BC%88%E4%BD%A0%E5%BD%93%E5%89%8D%E4%BB%A3%E7%A0%81%E5%AF%B9%E5%BA%94%E5%85%B3%E7%B3%BB%EF%BC%89"><span class="toc-text">4) 把“恋爱大师”改造为“多租户客服”的关键 DDD 落点（你当前代码对应关系）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E5%AE%9E%E9%99%85%E8%90%BD%E5%9C%B0%E5%AE%9E%E7%8E%B0%E6%A6%82%E8%A7%88%EF%BC%88%E6%88%AA%E6%AD%A2%E5%BD%93%E5%89%8D%E4%BB%A3%E7%A0%81%EF%BC%89"><span class="toc-text">5) 实际落地实现概览（截止当前代码）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E5%88%86%E5%B1%82%E6%9E%B6%E6%9E%84%EF%BC%88Layered-Architecture%EF%BC%89%E7%8E%B0%E7%8A%B6"><span class="toc-text">5.1 分层架构（Layered Architecture）现状</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E5%A4%9A%E7%A7%9F%E6%88%B7%E9%93%BE%E8%B7%AF%E4%B8%8E%E9%85%8D%E7%BD%AE%E7%94%9F%E6%95%88%E8%B7%AF%E5%BE%84"><span class="toc-text">5.2 多租户链路与配置生效路径</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-DDD-%E4%BB%BB%E5%8A%A1%E5%AE%8C%E6%88%90%E5%BA%A6%E5%B0%8F%E7%BB%93"><span class="toc-text">5.3 DDD 任务完成度小结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/27/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-04-27T12:07:45.679Z" title="发表于 2026-04-27 20:07:45">2026-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/27/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-04-27T12:07:45.162Z" title="发表于 2026-04-27 20:07:45">2026-04-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/temp2/" title="temp2">temp2</a><time datetime="2026-04-23T11:16:35.000Z" title="发表于 2026-04-23 19:16:35">2026-04-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/temp/" title="temp">temp</a><time datetime="2026-04-23T11:12:41.000Z" title="发表于 2026-04-23 19:12:41">2026-04-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/tuomas%E5%87%86%E5%A4%87/" title="tuomas准备">tuomas准备</a><time datetime="2026-04-23T10:31:55.000Z" title="发表于 2026-04-23 18:31:55">2026-04-23</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>
