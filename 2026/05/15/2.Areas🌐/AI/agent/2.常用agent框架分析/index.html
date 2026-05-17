@@ -1,0 +1,511 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>2.常用agent框架分析 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="框架开发实践框架的价值：  代码复用：提供通用的BaseAgent，并封装Agent基本的ReAct&#x2F;PlanAndSolve等循环 组件的解耦和可扩展性： 模型层：支持替换不同的模型厂商 工具层：标准化定义工具，注册，执行，添加工具不影响其他代码。 记忆层：长期记忆&#x2F;短期记忆，根据需求可以切换不同记忆策略（滑动窗口&#x2F;摘要记忆等），更换&#x2F;升级组件会更加清晰">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2.常用agent框架分析">
+<meta property="og:url" content="https://yuezi2048.github.io/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/2.%E5%B8%B8%E7%94%A8agent%E6%A1%86%E6%9E%B6%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="框架开发实践框架的价值：  代码复用：提供通用的BaseAgent，并封装Agent基本的ReAct&#x2F;PlanAndSolve等循环 组件的解耦和可扩展性： 模型层：支持替换不同的模型厂商 工具层：标准化定义工具，注册，执行，添加工具不影响其他代码。 记忆层：长期记忆&#x2F;短期记忆，根据需求可以切换不同记忆策略（滑动窗口&#x2F;摘要记忆等），更换&#x2F;升级组件会更加清晰">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2026-05-15T03:07:33.000Z">
+<meta property="article:modified_time" content="2026-05-15T03:07:33.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="agent">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "2.常用agent框架分析",
+  "url": "https://yuezi2048.github.io/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/2.%E5%B8%B8%E7%94%A8agent%E6%A1%86%E6%9E%B6%E5%88%86%E6%9E%90/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2026-05-15T03:07:33.000Z",
+  "dateModified": "2026-05-15T03:07:33.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/2.%E5%B8%B8%E7%94%A8agent%E6%A1%86%E6%9E%B6%E5%88%86%E6%9E%90/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '2.常用agent框架分析',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">835</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">82</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">110</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">2.常用agent框架分析</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">2.常用agent框架分析</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-05-15T03:07:33.000Z" title="发表于 2026-05-15 11:07:33">2026-05-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-05-15T03:07:33.000Z" title="更新于 2026-05-15 11:07:33">2026-05-15</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/AI/">AI</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/AI/agent/">agent</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">9.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>32分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="框架开发实践"><a href="#框架开发实践" class="headerlink" title="框架开发实践"></a>框架开发实践</h2><p>框架的价值：</p>
+<ul>
+<li>代码复用：提供通用的BaseAgent，并封装Agent基本的ReAct&#x2F;PlanAndSolve等循环</li>
+<li>组件的解耦和可扩展性：<ul>
+<li>模型层：支持替换不同的模型厂商</li>
+<li>工具层：标准化定义工具，注册，执行，添加工具不影响其他代码。</li>
+<li>记忆层：长期记忆&#x2F;短期记忆，根据需求可以切换不同记忆策略（滑动窗口&#x2F;摘要记忆等），更换&#x2F;升级组件会更加清晰</li>
+</ul>
+</li>
+<li>状态管理标准化：我们之前ReflectionAgent中简单的用列表来表示状态，但真实的长时间运行的智能体需要考虑<code>上下文窗口限制、历史信息持久化、多轮对话状态跟踪</code>等问题，框架可以提供通用的状态管理机制，我们无须过于关注这些问题</li>
+<li>可观测性和调试过程：如事件回调机制，在关键节点自动触发日志上报</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260514172556137.png" alt="image-20260514172556137"></p>
+<ul>
+<li><strong>AutoGen</strong>：思想是将多智能体的协作看成是<code>群聊</code>，通过定义不同的角色+交互规则（Coder写完代码后Tester接管），如此对话——协作——迭代——完成目标，适合流程化的任务</li>
+<li><strong>AgentScope</strong>：亮点是<code>工程化</code>和易用性，提供了友好的编程接口定义智能体、构建通信网络（内置<code>消息传递机制</code> 分布式部署支持）、管理应用声明周期，大规模、运维复杂的多智能场景非常适用</li>
+<li><strong>CAMEL</strong>：他更强调<code>角色扮演</code>，为两个智能体设定好角色和共同目标后，就能在初始提示的引导下，自主多轮对话，相互启发，共同完成任务，复杂度更低，涌现效果好，适合创意性任务</li>
+<li><strong>LangGraph</strong>：亮点是将交互过程看成是<code>状态图</code>，这突破了传统的信息单向流动，我们每一步Agent的操作（调用LLM，执行工具）看成是图中的一个节点，通过边来定义跳转逻辑，这种结构天然支持循环，易于实现Reflection的迭代、修正，非常简单和直观。</li>
+</ul>
+<h3 id="AutoGen"><a href="#AutoGen" class="headerlink" title="AutoGen"></a>AutoGen</h3><blockquote>
+<p>0.7.4版本架构：</p>
+<ul>
+<li>分层设计<ul>
+<li><code>autogen-core</code>：底层核心，封装模型交互，消息传递，保证稳定性&#x2F;拓展性</li>
+<li><code>autogen-agentchat</code>：在 <code>core</code> 上层，提供开发智能体应用接口，符合职责单一性。</li>
+</ul>
+</li>
+<li>异步优先：该架构全面转向异步编程 (<code>async/await</code>)，在等待LLM响应时可以运行其他任务</li>
+<li>核心组件（明确区分了Assistant的思考和执行）<ul>
+<li><strong>AssistantAgent (助理智能体)：</strong> 核心，内部封装LLM，根据历史对话生成恢复，通过System Message可以赋予不同的角色</li>
+<li>**UserProxyAgent (用户代理智能体)：**这是AutoGen的特色，这里的用户有两个角色：<ul>
+<li>充当人类，发起任务</li>
+<li>充当执行器，执行代码&#x2F;调用工具，反馈给其他智能体</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260514173655809.png" alt="image-20260514173655809"></p>
+</blockquote>
+<p>工作思路是<strong>轮询群聊 (RoundRobinGroupChat)：</strong> <strong>确定性、顺序</strong>的对话协调方案，非常<code>适合流程固定</code>的任务，如软件开发流程中产品经理——工程师——代码审计</p>
+<ol>
+<li>首先，创建一个 <code>RoundRobinGroupChat</code> 实例，并将所有参与协作的智能体（如产品经理、工程师等）加入其中。</li>
+<li>当一个任务开始时，群聊会按照预设的顺序，依次激活相应的智能体。</li>
+<li>被选中的智能体根据当前的对话上下文进行响应。</li>
+<li>群聊将新的回复加入对话历史，并激活下一个智能体。</li>
+<li>这个过程会持续进行，直到达到最大对话轮次或满足预设的终止条件。</li>
+</ol>
+<h4 id="案例：软件开发团队"><a href="#案例：软件开发团队" class="headerlink" title="案例：软件开发团队"></a>案例：软件开发团队</h4><p>开发<strong>实时显示比特币当前价格</strong>，需要完整覆盖软件开发的典型环节：从需求分析、技术选型、编码实现到代码审查和最终测试。</p>
+<p>目标：感受<strong>自然的对话驱动协作</strong>、<strong>角色专业化分工</strong>、<strong>流程自动化管理</strong>和<strong>完整的开发闭环</strong>。</p>
+<blockquote>
+<p>客户端配置，0.7.4版本提供了OpenAIChatCompletionClient可以对接OpenAI API规范的模型（对于非 OpenAI 系列的模型，需要<code>OpenAIChatCompletionClient</code> 的参数中传入模型信息字典）</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> autogen_ext.models.openai <span class="keyword">import</span> OpenAIChatCompletionClient</span><br><span class="line"></span><br><span class="line">model_client = OpenAIChatCompletionClient(</span><br><span class="line">    model=<span class="string">&quot;deepseek-chat&quot;</span>,</span><br><span class="line">    api_key=os.getenv(<span class="string">&quot;DEEPSEEK_API_KEY&quot;</span>),</span><br><span class="line">    base_url=<span class="string">&quot;https://api.deepseek.com/v1&quot;</span>,</span><br><span class="line">    model_info=&#123;</span><br><span class="line">        <span class="string">&quot;function_calling&quot;</span>: <span class="literal">True</span>,</span><br><span class="line">        <span class="string">&quot;max_tokens&quot;</span>: <span class="number">4096</span>,</span><br><span class="line">        <span class="string">&quot;context_length&quot;</span>: <span class="number">32768</span>,</span><br><span class="line">        <span class="string">&quot;vision&quot;</span>: <span class="literal">False</span>,</span><br><span class="line">        <span class="string">&quot;json_output&quot;</span>: <span class="literal">True</span>,</span><br><span class="line">        <span class="string">&quot;family&quot;</span>: <span class="string">&quot;deepseek&quot;</span>,</span><br><span class="line">        <span class="string">&quot;structured_output&quot;</span>: <span class="literal">True</span>,</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure></blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> autogen_ext.models.openai <span class="keyword">import</span> OpenAIChatCompletionClient</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_openai_model_client</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;创建并配置 OpenAI 模型客户端&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> OpenAIChatCompletionClient(</span><br><span class="line">        model=os.getenv(<span class="string">&quot;LLM_MODEL_ID&quot;</span>, <span class="string">&quot;gpt-4o&quot;</span>),</span><br><span class="line">        api_key=os.getenv(<span class="string">&quot;LLM_API_KEY&quot;</span>),</span><br><span class="line">        base_url=os.getenv(<span class="string">&quot;LLM_BASE_URL&quot;</span>, <span class="string">&quot;https://api.openai.com/v1&quot;</span>)</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>智能体角色配置：关键是编写高质量的System Message, 职责确认：</p>
+<ul>
+<li><strong>ProductManager (产品经理):</strong> 负责将用户的模糊需求转化为清晰、可执行的开发计划。</li>
+<li><strong>Engineer (工程师):</strong> 依据开发计划，负责编写具体的应用程序代码。</li>
+<li><strong>CodeReviewer (代码审查员):</strong> 负责审查工程师提交的代码，确保其质量、可读性和健壮性。</li>
+<li><strong>UserProxy (用户代理):</strong> 代表最终用户，发起初始任务，并负责执行和验证最终交付的代码。</li>
+</ul>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">create_product_manager</span>(<span class="params">model_client</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;创建产品经理智能体&quot;&quot;&quot;</span></span><br><span class="line">    system_message = <span class="string">&quot;&quot;&quot;你是一位经验丰富的产品经理，专门负责软件产品的需求分析和项目规划。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">你的核心职责包括：</span></span><br><span class="line"><span class="string">1. **需求分析**：深入理解用户需求，识别核心功能和边界条件</span></span><br><span class="line"><span class="string">2. **技术规划**：基于需求制定清晰的技术实现路径</span></span><br><span class="line"><span class="string">3. **风险评估**：识别潜在的技术风险和用户体验问题</span></span><br><span class="line"><span class="string">4. **协调沟通**：与工程师和其他团队成员进行有效沟通</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">当接到开发任务时，请按以下结构进行分析：</span></span><br><span class="line"><span class="string">1. 需求理解与分析</span></span><br><span class="line"><span class="string">2. 功能模块划分</span></span><br><span class="line"><span class="string">3. 技术选型建议</span></span><br><span class="line"><span class="string">4. 实现优先级排序</span></span><br><span class="line"><span class="string">5. 验收标准定义</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">请简洁明了地回应，并在分析完成后说&quot;请工程师开始实现&quot;。&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> AssistantAgent(</span><br><span class="line">        name=<span class="string">&quot;ProductManager&quot;</span>,</span><br><span class="line">        model_client=model_client,</span><br><span class="line">        system_message=system_message,</span><br><span class="line">    )</span><br><span class="line">    </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_engineer</span>(<span class="params">model_client</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;创建软件工程师智能体&quot;&quot;&quot;</span></span><br><span class="line">    system_message = <span class="string">&quot;&quot;&quot;你是一位资深的软件工程师，擅长 Python 开发和 Web 应用构建。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">你的技术专长包括：</span></span><br><span class="line"><span class="string">1. **Python 编程**：熟练掌握 Python 语法和最佳实践</span></span><br><span class="line"><span class="string">2. **Web 开发**：精通 Streamlit、Flask、Django 等框架</span></span><br><span class="line"><span class="string">3. **API 集成**：有丰富的第三方 API 集成经验</span></span><br><span class="line"><span class="string">4. **错误处理**：注重代码的健壮性和异常处理</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">当收到开发任务时，请：</span></span><br><span class="line"><span class="string">1. 仔细分析技术需求</span></span><br><span class="line"><span class="string">2. 选择合适的技术方案</span></span><br><span class="line"><span class="string">3. 编写完整的代码实现</span></span><br><span class="line"><span class="string">4. 添加必要的注释和说明</span></span><br><span class="line"><span class="string">5. 考虑边界情况和异常处理</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">请提供完整的可运行代码，并在完成后说&quot;请代码审查员检查&quot;。&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> AssistantAgent(</span><br><span class="line">        name=<span class="string">&quot;Engineer&quot;</span>,</span><br><span class="line">        model_client=model_client,</span><br><span class="line">        system_message=system_message,</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_code_reviewer</span>(<span class="params">model_client</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;创建代码审查员智能体&quot;&quot;&quot;</span></span><br><span class="line">    system_message = <span class="string">&quot;&quot;&quot;你是一位经验丰富的代码审查专家，专注于代码质量和最佳实践。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">你的审查重点包括：</span></span><br><span class="line"><span class="string">1. **代码质量**：检查代码的可读性、可维护性和性能</span></span><br><span class="line"><span class="string">2. **安全性**：识别潜在的安全漏洞和风险点</span></span><br><span class="line"><span class="string">3. **最佳实践**：确保代码遵循行业标准和最佳实践</span></span><br><span class="line"><span class="string">4. **错误处理**：验证异常处理的完整性和合理性</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">审查流程：</span></span><br><span class="line"><span class="string">1. 仔细阅读和理解代码逻辑</span></span><br><span class="line"><span class="string">2. 检查代码规范和最佳实践</span></span><br><span class="line"><span class="string">3. 识别潜在问题和改进点</span></span><br><span class="line"><span class="string">4. 提供具体的修改建议</span></span><br><span class="line"><span class="string">5. 评估代码的整体质量</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">请提供具体的审查意见，完成后说&quot;代码审查完成，请用户代理测试&quot;。&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> AssistantAgent(</span><br><span class="line">        name=<span class="string">&quot;CodeReviewer&quot;</span>,</span><br><span class="line">        model_client=model_client,</span><br><span class="line">        system_message=system_message,</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_user_proxy</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;创建用户代理智能体&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> UserProxyAgent(</span><br><span class="line">        name=<span class="string">&quot;UserProxy&quot;</span>,</span><br><span class="line">        description=<span class="string">&quot;&quot;&quot;用户代理，负责以下职责：</span></span><br><span class="line"><span class="string">1. 代表用户提出开发需求</span></span><br><span class="line"><span class="string">2. 执行最终的代码实现</span></span><br><span class="line"><span class="string">3. 验证功能是否符合预期</span></span><br><span class="line"><span class="string">4. 提供用户反馈和建议</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">完成测试后请回复 TERMINATE。&quot;&quot;&quot;</span>,</span><br><span class="line">    )</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>服务编排</p>
+<ul>
+<li><strong>参与者顺序:</strong> <code>participants</code> 列表的顺序决定了智能体发言的先后次序。</li>
+<li><strong>终止条件:</strong> <code>termination_condition</code> 是控制协作流程何时结束的关键。这里我们设定，当任何消息中包含关键词 “TERMINATE” 时，对话便结束。在我们的设计中，这个指令由 <code>UserProxy</code> 在完成最终测试后发出。</li>
+<li><strong>最大轮次:</strong> <code>max_turns</code> 是一个安全阀，用于防止对话陷入无限循环，避免不必要的资源消耗。</li>
+</ul>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> autogen_agentchat.teams <span class="keyword">import</span> RoundRobinGroupChat</span><br><span class="line"><span class="keyword">from</span> autogen_agentchat.conditions <span class="keyword">import</span> TextMentionTermination</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义团队聊天和协作规则</span></span><br><span class="line">team_chat = RoundRobinGroupChat(</span><br><span class="line">    participants=[</span><br><span class="line">        product_manager,</span><br><span class="line">        engineer,</span><br><span class="line">        code_reviewer,</span><br><span class="line">        user_proxy</span><br><span class="line">    ],</span><br><span class="line">    termination_condition=TextMentionTermination(<span class="string">&quot;TERMINATE&quot;</span>),</span><br><span class="line">    max_turns=<span class="number">20</span>,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>执行</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">run_software_development_team</span>():</span><br><span class="line">    <span class="comment"># ... 初始化客户端和智能体 ...</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 定义任务描述</span></span><br><span class="line">    task = <span class="string">&quot;&quot;&quot;我们需要开发一个比特币价格显示应用，具体要求如下：</span></span><br><span class="line"><span class="string">            核心功能：</span></span><br><span class="line"><span class="string">            - 实时显示比特币当前价格（USD）</span></span><br><span class="line"><span class="string">            - 显示24小时价格变化趋势（涨跌幅和涨跌额）</span></span><br><span class="line"><span class="string">            - 提供价格刷新功能</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">            技术要求：</span></span><br><span class="line"><span class="string">            - 使用 Streamlit 框架创建 Web 应用</span></span><br><span class="line"><span class="string">            - 界面简洁美观，用户友好</span></span><br><span class="line"><span class="string">            - 添加适当的错误处理和加载状态</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">            请团队协作完成这个任务，从需求分析到最终实现。&quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 异步执行团队协作，并流式输出对话过程</span></span><br><span class="line">    result = <span class="keyword">await</span> Console(team_chat.run_stream(task=task))</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"><span class="comment"># 主程序入口</span></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    result = asyncio.run(run_software_development_team())</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h4><ul>
+<li>优势<ul>
+<li>流程透明：将流程自然映射成人类团队协作模式，精力更多可以放在角色定义和每个角色职责上，不需要精细控制流程的走向</li>
+<li>便于维护：一个精心设计提示词的智能体可以复用</li>
+<li>流程可控（human-in-loop）：这种设计，人类可以作为发起者，也可以作为监督者&#x2F;验收者，保证自动化系统可控</li>
+</ul>
+</li>
+<li>缺陷：<ul>
+<li>不确定性：可能会走到意外分支，死循环问题</li>
+<li>调试困难：调试时面对的是长串的对话历史，这种“对话式调试”定位问题点是非常棘手的</li>
+</ul>
+</li>
+</ul>
+<h3 id="AgentScope"><a href="#AgentScope" class="headerlink" title="AgentScope"></a>AgentScope</h3><blockquote>
+<p>如果说 AutoGen 的是灵活的”对话工作室”，那么达摩院开发的agentScope 就是一个完整的”智能体操作系统”，在<strong>组合式架构</strong>和<strong>消息驱动模式</strong>的工程实践下，提供了分布式部署、容错恢复、可观测性等企业级特性</p>
+<ul>
+<li><strong>基础组件层 (Foundational Components)</strong><ul>
+<li><code>Message</code>定义了统一的消息格式，从简单的文本到复杂的多模态</li>
+<li><code>Memory</code>提供了长短期记忆管理</li>
+<li><code>Model API</code>抽象了不同大预言模型调用</li>
+<li><code>Tool</code>封装了智能体和外部世界交互</li>
+<li>更高级的抽象：预构建智能体（浏览器等），经典ReAct范式、智能体钩子、并行工具调用、状态管理等，<strong>原生支持异步执行与实时控制</strong></li>
+</ul>
+</li>
+<li><strong>多智能体协作层 (Multi-Agent Cooperation)</strong> <ul>
+<li><code>MsgHub</code> 作为消息中心，负责智能体间的消息路由和状态管理</li>
+<li><code>Pipeline</code> 系统则提供了灵活的工作流编排能力，支持顺序、并发等多种执行模式</li>
+</ul>
+</li>
+<li><strong>开发与部署层 (Deployment &amp; Development)</strong><ul>
+<li><code>AgentScope Runtime</code> 提供了生产级的运行时环境</li>
+<li><code>AgentScope Studio</code> 则为开发者提供了完整的可视化开发工具链。</li>
+</ul>
+</li>
+</ul>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260514175819627.png" alt="image-20260514175819627" style="zoom: 33%;" />	</blockquote>
+<p>AgentScope的核心创新就是<code>消息驱动架构</code>，<strong>智能体交互抽象为消息接收和发送</strong>，天然支持了：</p>
+<ul>
+<li><strong>异步解耦</strong>: 消息的发送方和接收方在时间上解耦，无需相互等待，天然支持高并发场景。</li>
+<li><strong>位置透明</strong>: 智能体无需关心另一个智能体是在本地进程还是在远程服务器上，消息系统会自动处理路由。</li>
+<li><strong>可观测性</strong>: 每一条消息都可以被记录、追踪和分析，极大地简化了复杂系统的调试与监控。</li>
+<li><strong>可靠性</strong>: 消息可以被持久化存储和重试，即使系统出现故障，也能保证交互的最终一致性，提升了系统的容错能力。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> agentscope.message <span class="keyword">import</span> Msg</span><br><span class="line"></span><br><span class="line"><span class="comment"># 消息的标准结构</span></span><br><span class="line">message = Msg(</span><br><span class="line">    name=<span class="string">&quot;Alice&quot;</span>,           <span class="comment"># 发送者名称</span></span><br><span class="line">    content=<span class="string">&quot;Hello, Bob!&quot;</span>,  <span class="comment"># 消息内容</span></span><br><span class="line">    role=<span class="string">&quot;user&quot;</span>,           <span class="comment"># 角色类型</span></span><br><span class="line">    metadata=&#123;             <span class="comment"># 元数据信息</span></span><br><span class="line">        <span class="string">&quot;timestamp&quot;</span>: <span class="string">&quot;2024-01-15T10:30:00Z&quot;</span>,</span><br><span class="line">        <span class="string">&quot;message_type&quot;</span>: <span class="string">&quot;text&quot;</span>,</span><br><span class="line">        <span class="string">&quot;priority&quot;</span>: <span class="string">&quot;normal&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>每个智能体有明确的生命周期，基于基类AgentBase实现，解耦了内部逻辑和外部通信，开发者通常只需关心核心的<code>reply</code>方法</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> agentscope.agents <span class="keyword">import</span> AgentBase</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">CustomAgent</span>(<span class="title class_ inherited__">AgentBase</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, name: <span class="built_in">str</span>, **kwargs</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__(name=name, **kwargs)</span><br><span class="line">        <span class="comment"># 智能体初始化逻辑</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">reply</span>(<span class="params">self, x: Msg</span>) -&gt; Msg:</span><br><span class="line">        <span class="comment"># 智能体的核心响应逻辑</span></span><br><span class="line">        response = <span class="variable language_">self</span>.model(x.content)</span><br><span class="line">        <span class="keyword">return</span> Msg(name=<span class="variable language_">self</span>.name, content=response, role=<span class="string">&quot;assistant&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">observe</span>(<span class="params">self, x: Msg</span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">        <span class="comment"># 智能体的观察逻辑（可选）</span></span><br><span class="line">        <span class="variable language_">self</span>.memory.add(x)</span><br></pre></td></tr></table></figure>
+
+<p>消息传递：AgentScope中有一个**消息中心 (MsgHub)**作为整个消息驱动的中枢，他除了负责消息的路由和分发，还支持分布式通信和持久化的功能。</p>
+<ul>
+<li><strong>灵活的消息路由</strong>: 支持点对点、广播、组播等多种通信模式，可以构建灵活复杂的交互网络。</li>
+<li><strong>消息持久化</strong>: 能够将所有消息自动保存到数据库（如 SQLite, MongoDB），确保了长期运行任务的状态可以被恢复。</li>
+<li><strong>原生分布式支持</strong>: 这是 AgentScope 的标志性特性。智能体可以被部署在不同的进程或服务器上，<code>MsgHub</code> 会通过 RPC（远程过程调用）自动处理跨节点的通信，对开发者完全透明。</li>
+</ul>
+<h4 id="案例：三国狼人杀"><a href="#案例：三国狼人杀" class="headerlink" title="案例：三国狼人杀"></a>案例：三国狼人杀</h4><p>目标：体验每个智能体不仅完成狼人杀的任务，还要体现三国人物的性格特点和行为模式，感受<strong>多层次角色建模</strong></p>
+<p>架构设计，每个层次同时映射了AgentScope对应的组件：</p>
+<ul>
+<li><strong>游戏控制层 (Game Control Layer)</strong>：由一个 <code>ThreeKingdomsWerewolfGame</code> 类作为游戏的主控制器，负责维护全局状态（如玩家存活列表、当前游戏阶段）、推进游戏流程（调用夜晚阶段、白天阶段）以及裁定胜负。</li>
+<li><strong>智能体交互层 (Agent Interaction Layer)</strong>：完全由 <code>MsgHub</code> 驱动。所有智能体间的通信，无论是狼人间的秘密协商，还是白天的公开辩论，都通过消息中心进行路由和分发。</li>
+<li><strong>角色建模层 (Role Modeling Layer)</strong>：每个玩家都是一个基于 <code>DialogAgent</code> 的实例。我们通过精心设计的系统提示词，为每个智能体注入了“游戏角色”和“三国人格”的双重身份。</li>
+</ul>
+<p>思路：以<strong>消息驱动</strong>代替<strong>状态机</strong>来管理游戏流程。</p>
+<p>狼人阶段，通过<code>MsbHub</code>创建临时，仅狼人玩家的私密通信频道</p>
+<blockquote>
+<p>游戏逻辑遵循的范式：在特定上下文中，以何种模式进行消息交换，而不是僵硬的状态转换。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">werewolf_phase</span>(<span class="params">self, round_num: <span class="built_in">int</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;狼人阶段 - 展示消息驱动的协作模式&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> <span class="variable language_">self</span>.werewolves:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">        </span><br><span class="line">    <span class="comment"># 通过消息中心建立狼人专属通信频道</span></span><br><span class="line">    <span class="keyword">async</span> <span class="keyword">with</span> MsgHub(</span><br><span class="line">        <span class="variable language_">self</span>.werewolves,</span><br><span class="line">        enable_auto_broadcast=<span class="literal">True</span>,</span><br><span class="line">        announcement=<span class="keyword">await</span> <span class="variable language_">self</span>.moderator.announce(</span><br><span class="line">            <span class="string">f&quot;狼人们，请讨论今晚的击杀目标。存活玩家：<span class="subst">&#123;format_player_list(self.alive_players)&#125;</span>&quot;</span></span><br><span class="line">        ),</span><br><span class="line">    ) <span class="keyword">as</span> werewolves_hub:</span><br><span class="line">        <span class="comment"># 讨论阶段：狼人通过消息交换策略</span></span><br><span class="line">        <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(MAX_DISCUSSION_ROUND):</span><br><span class="line">            <span class="keyword">for</span> wolf <span class="keyword">in</span> <span class="variable language_">self</span>.werewolves:</span><br><span class="line">                <span class="keyword">await</span> wolf(structured_model=DiscussionModelCN)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 投票阶段：收集并统计狼人的击杀决策</span></span><br><span class="line">        werewolves_hub.set_auto_broadcast(<span class="literal">False</span>)</span><br><span class="line">        kill_votes = <span class="keyword">await</span> fanout_pipeline(</span><br><span class="line">            <span class="variable language_">self</span>.werewolves,</span><br><span class="line">            msg=<span class="keyword">await</span> <span class="variable language_">self</span>.moderator.announce(<span class="string">&quot;请选择击杀目标&quot;</span>),</span><br><span class="line">            structured_model=WerewolfKillModelCN,</span><br><span class="line">            enable_gather=<span class="literal">False</span>,</span><br><span class="line">        )</span><br></pre></td></tr></table></figure>
+
+<p>游戏规则通过结构化的输出约束（Field修饰）</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">DiscussionModelCN</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;讨论阶段的输出格式&quot;&quot;&quot;</span></span><br><span class="line">    reach_agreement: <span class="built_in">bool</span> = Field(</span><br><span class="line">        description=<span class="string">&quot;是否已达成一致意见&quot;</span>,</span><br><span class="line">        default=<span class="literal">False</span></span><br><span class="line">    )</span><br><span class="line">    confidence_level: <span class="built_in">int</span> = Field(</span><br><span class="line">        description=<span class="string">&quot;对当前推理的信心程度(1-10)&quot;</span>,</span><br><span class="line">        ge=<span class="number">1</span>, le=<span class="number">10</span>,</span><br><span class="line">        default=<span class="number">5</span></span><br><span class="line">    )</span><br><span class="line">    key_evidence: <span class="type">Optional</span>[<span class="built_in">str</span>] = Field(</span><br><span class="line">        description=<span class="string">&quot;支持你观点的关键证据&quot;</span>,</span><br><span class="line">        default=<span class="literal">None</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">WitchActionModelCN</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;女巫行动的输出格式&quot;&quot;&quot;</span></span><br><span class="line">    use_antidote: <span class="built_in">bool</span> = Field(description=<span class="string">&quot;是否使用解药&quot;</span>)</span><br><span class="line">    use_poison: <span class="built_in">bool</span> = Field(description=<span class="string">&quot;是否使用毒药&quot;</span>)</span><br><span class="line">    target_name: <span class="type">Optional</span>[<span class="built_in">str</span>] = Field(description=<span class="string">&quot;毒药目标玩家姓名&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>通过提示词工程，同时扮演两个角色（游戏+三国人物特征），这样就可以在游戏过程中看到曹操的伪装，张飞的冲动</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get_role_prompt</span>(<span class="params">role: <span class="built_in">str</span>, character: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;获取角色提示词 - 融合游戏规则与人物性格&quot;&quot;&quot;</span></span><br><span class="line">    base_prompt = <span class="string">f&quot;&quot;&quot;你是<span class="subst">&#123;character&#125;</span>，在这场三国狼人杀游戏中扮演<span class="subst">&#123;role&#125;</span>。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">重要规则：</span></span><br><span class="line"><span class="string">1. 你只能通过对话和推理参与游戏</span></span><br><span class="line"><span class="string">2. 不要尝试调用任何外部工具或函数</span></span><br><span class="line"><span class="string">3. 严格按照要求的JSON格式回复</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">角色特点：</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> role == <span class="string">&quot;狼人&quot;</span>:</span><br><span class="line">        <span class="keyword">return</span> base_prompt + <span class="string">f&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">- 你是狼人阵营，目标是消灭所有好人</span></span><br><span class="line"><span class="string">- 夜晚可以与其他狼人协商击杀目标</span></span><br><span class="line"><span class="string">- 白天要隐藏身份，误导好人</span></span><br><span class="line"><span class="string">- 以<span class="subst">&#123;character&#125;</span>的性格说话和行动</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>并发容错机制：得益于异步架构，在例如投票场景下，可以同时收集多个智能体的决策：</p>
+<blockquote>
+<p><code>fanout_pipeline</code>允许我们并行地向所有智能体发送相同的消息，并异步收集它们的响应。</p>
+<ul>
+<li>这不仅提高了游戏的执行效率，更重要的是模拟了真实狼人杀游戏中”同时投票”的场景。</li>
+</ul>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 并行收集所有玩家的投票决策</span></span><br><span class="line">vote_msgs = <span class="keyword">await</span> fanout_pipeline(</span><br><span class="line">    <span class="variable language_">self</span>.alive_players,</span><br><span class="line">    <span class="keyword">await</span> <span class="variable language_">self</span>.moderator.announce(<span class="string">&quot;请投票选择要淘汰的玩家&quot;</span>),</span><br><span class="line">    structured_model=get_vote_model_cn(<span class="variable language_">self</span>.alive_players),</span><br><span class="line">    enable_gather=<span class="literal">False</span>,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>在关键环节加入容错处理</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    response = <span class="keyword">await</span> wolf(</span><br><span class="line">        <span class="string">&quot;请分析当前局势并表达你的观点。&quot;</span>,</span><br><span class="line">        structured_model=DiscussionModelCN</span><br><span class="line">    )</span><br><span class="line"><span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;⚠️ <span class="subst">&#123;wolf.name&#125;</span> 讨论时出错: <span class="subst">&#123;e&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="comment"># 创建默认响应，确保游戏继续进行</span></span><br><span class="line">    default_response = DiscussionModelCN(</span><br><span class="line">        reach_agreement=<span class="literal">False</span>,</span><br><span class="line">        confidence_level=<span class="number">5</span>,</span><br><span class="line">        key_evidence=<span class="string">&quot;暂时无法分析&quot;</span></span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+
+<h4 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h4><ul>
+<li>原生并发：AgentScope通过消息驱动架构，将游戏流程优雅的映射成一系列并发、消息传递事件，避免传统状态机的僵硬</li>
+<li>异常兜底：结合结构化输出能力，将游戏规则在代码层面约束，并且如果有当个出现异常也有容错兜底</li>
+<li>代价：工程化的复杂性成本，异步编程和分布式通信门槛较高，同时对于简单的多智能体对话，这种架构可能存在过度工程化风险。对于快速原型和简单应用，轻量级的框架可能更合适</li>
+</ul>
+<h3 id="Camel"><a href="#Camel" class="headerlink" title="Camel"></a>Camel</h3><blockquote>
+<p>Canmel能自主协作的核心：<strong>角色扮演 (Role-Playing)</strong> 和 <strong>引导性提示 (Inception Prompting)</strong>。</p>
+<p>早期角色有两类：AI User（军师，下达指令） + AI Assistant（干活的，执行），两者相互协同。</p>
+<p>而最关键的是<code>引导性提示</code>，在对话开始前注入一段<code>行动纲领</code>作为初始指令，保证不能偏离主题，陷入无效循环，一般提示由这些组成：</p>
+<ul>
+<li><p><strong>明确自身角色</strong>：例如，“你是一位资深的股票交易员…”</p>
+</li>
+<li><p><strong>告知协作者角色</strong>：例如，“你正在与一位优秀的 Python 程序员合作…”</p>
+</li>
+<li><p><strong>定义共同目标</strong>：例如，“你们的共同目标是开发一个股票交易策略分析工具。”</p>
+</li>
+<li><p><strong>设定行为约束和沟通协议</strong>：这是最关键的一环。例如，指令会要求 AI 用户“一次只提出一个清晰、具体的步骤”，并要求 AI 助理“在完成上一步之前不要追问更多细节”，同时规定双方需在回复的末尾使用特定标志（如 <code>&lt;SOLUTION&gt;</code>）来标识任务的完成。</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260515103854302.png" alt="image-20260515103854302" style="zoom: 50%;" /></li>
+</ul>
+</blockquote>
+<h4 id="案例：心理电子书"><a href="#案例：心理电子书" class="headerlink" title="案例：心理电子书"></a>案例：心理电子书</h4><p>目标：创建一个面向普通读者的拖延症科普电子书，要有可读性和科学严谨性</p>
+<p>角色设定：</p>
+<ul>
+<li><strong>心理学家（Psychologist）</strong>：具备深厚的心理学理论基础，熟悉认知行为科学、神经科学等相关领域，能够提供专业的学术见解和实证研究支持</li>
+<li><strong>作家（Writer）</strong>：拥有优秀的写作技巧和叙述能力，善于将复杂的学术概念转化为生动易懂的文字，注重读者体验和内容的可读性</li>
+</ul>
+<p>首先定义共同目标，作为后续的引导性提示</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> colorama <span class="keyword">import</span> Fore</span><br><span class="line"><span class="keyword">from</span> camel.societies <span class="keyword">import</span> RolePlaying</span><br><span class="line"><span class="keyword">from</span> camel.utils <span class="keyword">import</span> print_text_animated</span><br><span class="line"><span class="keyword">from</span> camel.models <span class="keyword">import</span> ModelFactory</span><br><span class="line"><span class="keyword">from</span> camel.types <span class="keyword">import</span> ModelPlatformType</span><br><span class="line"><span class="keyword">from</span> dotenv <span class="keyword">import</span> load_dotenv</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line">load_dotenv()</span><br><span class="line">LLM_API_KEY = os.getenv(<span class="string">&quot;LLM_API_KEY&quot;</span>)</span><br><span class="line">LLM_BASE_URL = os.getenv(<span class="string">&quot;LLM_BASE_URL&quot;</span>)</span><br><span class="line">LLM_MODEL = os.getenv(<span class="string">&quot;LLM_MODEL&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#创建模型,在这里以Qwen为例,调用的百炼大模型平台API</span></span><br><span class="line">model = ModelFactory.create(</span><br><span class="line">    model_platform=ModelPlatformType.QWEN,</span><br><span class="line">    model_type=LLM_MODEL,</span><br><span class="line">    url=LLM_BASE_URL,</span><br><span class="line">    api_key=LLM_API_KEY</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义协作任务</span></span><br><span class="line">task_prompt = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">创作一本关于&quot;拖延症心理学&quot;的短篇电子书，目标读者是对心理学感兴趣的普通大众。</span></span><br><span class="line"><span class="string">要求：</span></span><br><span class="line"><span class="string">1. 内容科学严谨，基于实证研究</span></span><br><span class="line"><span class="string">2. 语言通俗易懂，避免过多专业术语</span></span><br><span class="line"><span class="string">3. 包含实用的改善建议和案例分析</span></span><br><span class="line"><span class="string">4. 篇幅控制在8000-10000字</span></span><br><span class="line"><span class="string">5. 结构清晰，包含引言、核心章节和总结</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(Fore.YELLOW + <span class="string">f&quot;协作任务:\n<span class="subst">&#123;task_prompt&#125;</span>\n&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>接下来提供user Role和Assistant Role</p>
+<blockquote>
+<p>通过Cammel的RolePlaying这个API，很方便地将负责规划结构的“作家”分配给 <code>user_role_name</code>，将负责提供专业知识的“心理学家”分配给 <code>assistant_role_name</code>。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 初始化角色扮演会话</span></span><br><span class="line"><span class="comment"># AI 作家作为 &quot;user&quot;，负责提出写作结构和要求</span></span><br><span class="line"><span class="comment"># AI 心理学家作为 &quot;assistant&quot;，负责提供专业知识和内容</span></span><br><span class="line">role_play_session = RolePlaying(</span><br><span class="line">    assistant_role_name=<span class="string">&quot;心理学家&quot;</span>,</span><br><span class="line">    user_role_name=<span class="string">&quot;作家&quot;</span>,</span><br><span class="line">    task_prompt=task_prompt,</span><br><span class="line">    model=model,</span><br><span class="line">    with_task_specify=<span class="literal">False</span>, <span class="comment"># 在本例中，我们直接使用给定的task_prompt</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(Fore.CYAN + <span class="string">f&quot;具体任务描述:\n<span class="subst">&#123;role_play_session.task_prompt&#125;</span>\n&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>最终开始协作，init_chat初始化我们之前的对话定义，通过step来驱动一轮</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 开始协作对话</span></span><br><span class="line">chat_turn_limit, n = <span class="number">30</span>, <span class="number">0</span></span><br><span class="line"><span class="comment"># 调用 init_chat() 来获得由 AI 生成的初始对话消息</span></span><br><span class="line">input_msg = role_play_session.init_chat()</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> n &lt; chat_turn_limit:</span><br><span class="line">    n += <span class="number">1</span></span><br><span class="line">    <span class="comment"># step() 方法驱动一轮完整的对话，AI 用户和 AI 助理各发言一次</span></span><br><span class="line">    assistant_response, user_response = role_play_session.step(input_msg)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 检查是否有消息返回，防止对话提前终止</span></span><br><span class="line">    <span class="keyword">if</span> assistant_response.msg <span class="keyword">is</span> <span class="literal">None</span> <span class="keyword">or</span> user_response.msg <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    </span><br><span class="line">    print_text_animated(Fore.BLUE + <span class="string">f&quot;作家 (AI User):\n\n<span class="subst">&#123;user_response.msg.content&#125;</span>\n&quot;</span>)</span><br><span class="line">    print_text_animated(Fore.GREEN + <span class="string">f&quot;心理学家 (AI Assistant):\n\n<span class="subst">&#123;assistant_response.msg.content&#125;</span>\n&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 检查任务完成标志</span></span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;&lt;CAMEL_TASK_DONE&gt;&quot;</span> <span class="keyword">in</span> user_response.msg.content <span class="keyword">or</span> <span class="string">&quot;&lt;CAMEL_TASK_DONE&gt;&quot;</span> <span class="keyword">in</span> assistant_response.msg.content:</span><br><span class="line">        <span class="built_in">print</span>(Fore.MAGENTA + <span class="string">&quot;✅ 电子书创作完成！&quot;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 将助理的回复作为下一轮对话的输入</span></span><br><span class="line">    input_msg = assistant_response.msg</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(Fore.YELLOW + <span class="string">f&quot;总共进行了 <span class="subst">&#123;n&#125;</span> 轮协作对话&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>最终就能得到一个完整的讨论结果</p>
+<blockquote>
+<p><strong>一阶段 (约 1-5 轮): 框架搭建与目标对齐</strong> 在对话的初期，“作家”智能体首先会扮演起主导者的角色，提出对电子书整体结构和章节安排的初步设想。随后，“心理学家”会从其专业角度对这个框架进行审视和补充，确保核心的学术模块（如理论基础、关键概念等）没有遗漏，从而在协作开始之初就对最终产出物达成共识。</p>
+<p><strong>第二阶段 (约 6-20 轮): 核心内容生成与知识转译</strong> 这是最高效的内容创作阶段。协作模式会变为一种稳定的“请求-响应”循环：</p>
+<ul>
+<li><strong>心理学家</strong>：负责提供“硬核”的专业知识，如对“时间折扣理论”、“执行功能缺陷”等核心概念的科学解释，并引用相关的实验研究来支撑观点。</li>
+<li><strong>作家</strong>：则发挥其“翻译官”的作用，将这些严谨但可能晦涩的学术概念，转化为生动、形象的比喻和贴近生活的案例。例如，它可能会将“大脑中的‘现在偏见’”这个概念，比作“一个只顾眼前糖果、不顾长远健康的任性孩子”。</li>
+</ul>
+<p><strong>第三阶段 (约 21-25 轮): 迭代优化与质量保证</strong> 当书籍的主体内容完成后，对话的重心会转移到对已有文本的打磨和完善上。此时，两位智能体的角色会发生微妙的变化：</p>
+<ul>
+<li><strong>作家</strong>：更侧重于审视文章的整体流畅性、逻辑衔接和语言风格，从“读者体验”出发提出修改建议。</li>
+<li><strong>心理学家</strong>：则再次扮演“事实核查员”，确保在转译和润色的过程中，核心知识的科学准确性没有丢失，并为某些观点补充更有力的实证研究支持。</li>
+</ul>
+<p><strong>第四阶段 (收尾): 总结与升华</strong> 在最后的几轮对话中，双方会协作完成实用建议的总结和全书的回顾，确保电子书有一个清晰、有力的结尾，为读者留下深刻印象并提供实际价值。</p>
+</blockquote>
+<h4 id="分析-2"><a href="#分析-2" class="headerlink" title="分析"></a>分析</h4><ul>
+<li>和AgentScope这类重工程的框架相比，最大优势就是重提示、轻架构，特点表现为<code>自然涌现的协作</code>，比硬编码的工作流更高效和灵活</li>
+<li>局限：提示词的高度依赖（随之带来的是调试复杂、不同LLM的一致性挑战）、缺乏复杂对话路由机制（分布式状态管理、有效的仲裁机制）</li>
+<li>场景分析<ul>
+<li>Cammel适合的是深度协作和创造性的任务</li>
+<li>严格流程控制可能LangGraph图结构更靠谱、大规模并发可能AgentScope的消息驱动更合适、复杂的决策树通过AutoGen的群聊模式更灵活</li>
+</ul>
+</li>
+</ul>
+<h3 id="LangGraph"><a href="#LangGraph" class="headerlink" title="LangGraph"></a>LangGraph</h3><blockquote>
+<p>LangGraph将智能体的流程建模为状态机，表现为有向图（节点是计算步骤，边是一个节点到另一个节点的跳转逻辑），从而天然支持循环，使得进行迭代、反思、自我修正，更直观、简单。</p>
+</blockquote>
+<p>三个基本要素：<strong>全局状态State、节点Node、边Edge</strong></p>
+<p><code>全局状态</code>：整个图围绕的共享对象，里面是我们需要跟踪的状态信息（历史信息、当前任务、最终答案、迭代次数等），一般用<code>TypedDict</code>列举</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> TypedDict, <span class="type">List</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义全局状态的数据结构</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">AgentState</span>(<span class="title class_ inherited__">TypedDict</span>):</span><br><span class="line">    messages: <span class="type">List</span>[<span class="built_in">str</span>]      <span class="comment"># 对话历史</span></span><br><span class="line">    current_task: <span class="built_in">str</span>        <span class="comment"># 当前任务</span></span><br><span class="line">    final_answer: <span class="built_in">str</span>        <span class="comment"># 最终答案</span></span><br><span class="line">    <span class="comment"># ... 任何其他需要追踪的状态</span></span><br></pre></td></tr></table></figure>
+
+<p><code>节点</code>：定义输入（接收当前状态），输出函数（返回更新后的状态），是图具体工作的单元。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 定义一个“规划者”节点函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">planner_node</span>(<span class="params">state: AgentState</span>) -&gt; AgentState:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;根据当前任务制定计划，并更新状态。&quot;&quot;&quot;</span></span><br><span class="line">    current_task = state[<span class="string">&quot;current_task&quot;</span>]</span><br><span class="line">    <span class="comment"># ... 调用LLM生成计划 ...</span></span><br><span class="line">    plan = <span class="string">f&quot;为任务 &#x27;<span class="subst">&#123;current_task&#125;</span>&#x27; 生成的计划...&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 将新消息追加到状态中</span></span><br><span class="line">    state[<span class="string">&quot;messages&quot;</span>].append(plan)</span><br><span class="line">    <span class="keyword">return</span> state</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义一个“执行者”节点函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">executor_node</span>(<span class="params">state: AgentState</span>) -&gt; AgentState:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;执行最新计划，并更新状态。&quot;&quot;&quot;</span></span><br><span class="line">    latest_plan = state[<span class="string">&quot;messages&quot;</span>][-<span class="number">1</span>]</span><br><span class="line">    <span class="comment"># ... 执行计划并获得结果 ...</span></span><br><span class="line">    result = <span class="string">f&quot;执行计划 &#x27;<span class="subst">&#123;latest_plan&#125;</span>&#x27; 的结果...&quot;</span></span><br><span class="line">    </span><br><span class="line">    state[<span class="string">&quot;messages&quot;</span>].append(result)</span><br><span class="line">    <span class="keyword">return</span> state</span><br></pre></td></tr></table></figure>
+
+<p><code>边</code>：来对节点工作流进行操作，指定了一个节点的输出流向另一个固定的节点。</p>
+<ul>
+<li>他有一个强大的功能是<code>条件边</code>，根据一个函数判断当前状态，根据不同的条件分支动态决定下一步要跳转的节点</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">should_continue</span>(<span class="params">state: AgentState</span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;条件函数：根据状态决定下一步路由。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment"># 假设如果消息少于3条，则需要继续规划</span></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(state[<span class="string">&quot;messages&quot;</span>]) &lt; <span class="number">3</span>:</span><br><span class="line">        <span class="comment"># 返回的字符串需要与添加条件边时定义的键匹配</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;continue_to_planner&quot;</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        state[<span class="string">&quot;final_answer&quot;</span>] = state[<span class="string">&quot;messages&quot;</span>][-<span class="number">1</span>]</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;end_workflow&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>最终拼接这些组件，组成图</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> langgraph.graph <span class="keyword">import</span> StateGraph, END</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化一个状态图，并绑定我们定义的状态结构</span></span><br><span class="line">workflow = StateGraph(AgentState)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将节点函数添加到图中</span></span><br><span class="line">workflow.add_node(<span class="string">&quot;planner&quot;</span>, planner_node)</span><br><span class="line">workflow.add_node(<span class="string">&quot;executor&quot;</span>, executor_node)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置图的入口点</span></span><br><span class="line">workflow.set_entry_point(<span class="string">&quot;planner&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加常规边，连接 planner 和 executor</span></span><br><span class="line">workflow.add_edge(<span class="string">&quot;planner&quot;</span>, <span class="string">&quot;executor&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加条件边，实现动态路由</span></span><br><span class="line">workflow.add_conditional_edges(</span><br><span class="line">    <span class="comment"># 起始节点</span></span><br><span class="line">    <span class="string">&quot;executor&quot;</span>,</span><br><span class="line">    <span class="comment"># 判断函数</span></span><br><span class="line">    should_continue,</span><br><span class="line">    <span class="comment"># 路由映射：将判断函数的返回值映射到目标节点</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;continue_to_planner&quot;</span>: <span class="string">&quot;planner&quot;</span>, <span class="comment"># 如果返回&quot;continue_to_planner&quot;，则跳回planner节点</span></span><br><span class="line">        <span class="string">&quot;end_workflow&quot;</span>: END               <span class="comment"># 如果返回&quot;end_workflow&quot;，则结束流程</span></span><br><span class="line">    &#125;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 编译图，生成可执行的应用</span></span><br><span class="line">app = workflow.<span class="built_in">compile</span>()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行图</span></span><br><span class="line">inputs = &#123;<span class="string">&quot;current_task&quot;</span>: <span class="string">&quot;分析最近的AI行业新闻&quot;</span>, <span class="string">&quot;messages&quot;</span>: []&#125;</span><br><span class="line"><span class="keyword">for</span> event <span class="keyword">in</span> app.stream(inputs):</span><br><span class="line">    <span class="built_in">print</span>(event)</span><br></pre></td></tr></table></figure>
+
+<h4 id="案例：三步问答助手"><a href="#案例：三步问答助手" class="headerlink" title="案例：三步问答助手"></a>案例：三步问答助手</h4><p>我们需要一个遵循清晰、固定的三步回答用户问题的场景：</p>
+<ol>
+<li><strong>理解 (Understand)</strong>：首先，分析用户的查询意图。</li>
+<li><strong>搜索 (Search)</strong>：然后，模拟搜索与意图相关的信息。</li>
+<li><strong>回答 (Answer)</strong>：最后，基于意图和搜索到的信息，生成最终答案。</li>
+</ol>
+<p>首先定义全局状态贯穿于整个工作流，<strong>这是一个共享的数据结构，它在图的每个节点之间传递，作为工作流的持久化上下文</strong></p>
+<blockquote>
+<ul>
+<li>全局状态：SearchState: TypedDict</li>
+<li>核心字段：user_query: str，search_query: str 表示用户输入提炼后的关键词</li>
+</ul>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> TypedDict, Annotated</span><br><span class="line"><span class="keyword">from</span> langgraph.graph.message <span class="keyword">import</span> add_messages</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SearchState</span>(<span class="title class_ inherited__">TypedDict</span>):</span><br><span class="line">    messages: Annotated[<span class="built_in">list</span>, add_messages]</span><br><span class="line">    user_query: <span class="built_in">str</span>      <span class="comment"># 经过LLM理解后的用户需求总结</span></span><br><span class="line">    search_query: <span class="built_in">str</span>    <span class="comment"># 优化后用于Tavily API的搜索查询</span></span><br><span class="line">    search_results: <span class="built_in">str</span>  <span class="comment"># Tavily搜索返回的结果</span></span><br><span class="line">    final_answer: <span class="built_in">str</span>    <span class="comment"># 最终生成的答案</span></span><br><span class="line">    step: <span class="built_in">str</span>            <span class="comment"># 标记当前步骤</span></span><br></pre></td></tr></table></figure>
+
+<p>接下来定义节点，具体就是定义执行具体任务的 Python 函数。这些函数接收当前的状态对象作为输入，并返回一个包含更新后字段的字典。</p>
+<p>首先初始化函数需要的Tavily搜索服务环境变量</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> dotenv <span class="keyword">import</span> load_dotenv</span><br><span class="line"><span class="keyword">from</span> langchain_openai <span class="keyword">import</span> ChatOpenAI</span><br><span class="line"><span class="keyword">from</span> langchain_core.messages <span class="keyword">import</span> HumanMessage, AIMessage, SystemMessage</span><br><span class="line"><span class="keyword">from</span> tavily <span class="keyword">import</span> TavilyClient</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载 .env 文件中的环境变量</span></span><br><span class="line">load_dotenv()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化模型</span></span><br><span class="line"><span class="comment"># 我们将使用这个 llm 实例来驱动所有节点的智能</span></span><br><span class="line">llm = ChatOpenAI(</span><br><span class="line">    model=os.getenv(<span class="string">&quot;LLM_MODEL_ID&quot;</span>, <span class="string">&quot;gpt-4o-mini&quot;</span>),</span><br><span class="line">    api_key=os.getenv(<span class="string">&quot;LLM_API_KEY&quot;</span>),</span><br><span class="line">    base_url=os.getenv(<span class="string">&quot;LLM_BASE_URL&quot;</span>, <span class="string">&quot;https://api.openai.com/v1&quot;</span>),</span><br><span class="line">    temperature=<span class="number">0.7</span></span><br><span class="line">)</span><br><span class="line"><span class="comment"># 初始化Tavily客户端</span></span><br><span class="line">tavily_client = TavilyClient(api_key=os.getenv(<span class="string">&quot;TAVILY_API_KEY&quot;</span>))</span><br></pre></td></tr></table></figure>
+
+<p>接下来创建三个节点：</p>
+<p><strong>理解与查询节点</strong>：理解用户意图，并为其生成一个最优化的搜索查询。</p>
+<blockquote>
+<p>LLM完成了“意图理解”和“关键词生成”的任务，结果填入<code>search_query</code> 字段</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">understand_query_node</span>(<span class="params">state: SearchState</span>) -&gt; <span class="built_in">dict</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;步骤1：理解用户查询并生成搜索关键词&quot;&quot;&quot;</span></span><br><span class="line">    user_message = state[<span class="string">&quot;messages&quot;</span>][-<span class="number">1</span>].content</span><br><span class="line">    </span><br><span class="line">    understand_prompt = <span class="string">f&quot;&quot;&quot;分析用户的查询：&quot;<span class="subst">&#123;user_message&#125;</span>&quot;</span></span><br><span class="line"><span class="string">请完成两个任务：</span></span><br><span class="line"><span class="string">1. 简洁总结用户想要了解什么</span></span><br><span class="line"><span class="string">2. 生成最适合搜索引擎的关键词（中英文均可，要精准）</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">格式：</span></span><br><span class="line"><span class="string">理解：[用户需求总结]</span></span><br><span class="line"><span class="string">搜索词：[最佳搜索关键词]&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    response = llm.invoke([SystemMessage(content=understand_prompt)])</span><br><span class="line">    response_text = response.content</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 解析LLM的输出，提取搜索关键词</span></span><br><span class="line">    search_query = user_message <span class="comment"># 默认使用原始查询</span></span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;搜索词：&quot;</span> <span class="keyword">in</span> response_text:</span><br><span class="line">        search_query = response_text.split(<span class="string">&quot;搜索词：&quot;</span>)[<span class="number">1</span>].strip()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="string">&quot;user_query&quot;</span>: response_text,</span><br><span class="line">        <span class="string">&quot;search_query&quot;</span>: search_query,</span><br><span class="line">        <span class="string">&quot;step&quot;</span>: <span class="string">&quot;understood&quot;</span>,</span><br><span class="line">        <span class="string">&quot;messages&quot;</span>: [AIMessage(content=<span class="string">f&quot;我将为您搜索：<span class="subst">&#123;search_query&#125;</span>&quot;</span>)]</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>搜索节点</strong>：调用 Tavily API 进行真实的互联网搜索，并具备基础的错误处理</p>
+<blockquote>
+<ul>
+<li>通过<code>tavily_client.search</code> 发起 API 调用。它被包裹在 <code>try...except</code> 块中，用于捕获可能的异常。<ul>
+<li>如果搜索失败，它会更新 <code>step</code> 状态为 <code>&quot;search_failed&quot;</code>，这个状态将被下一个节点用来触发备用方案。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">tavily_search_node</span>(<span class="params">state: SearchState</span>) -&gt; <span class="built_in">dict</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;步骤2：使用Tavily API进行真实搜索&quot;&quot;&quot;</span></span><br><span class="line">    search_query = state[<span class="string">&quot;search_query&quot;</span>]</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;🔍 正在搜索: <span class="subst">&#123;search_query&#125;</span>&quot;</span>)</span><br><span class="line">        response = tavily_client.search(</span><br><span class="line">            query=search_query, search_depth=<span class="string">&quot;basic&quot;</span>, max_results=<span class="number">5</span>, include_answer=<span class="literal">True</span></span><br><span class="line">        )</span><br><span class="line">        <span class="comment"># ... (处理和格式化搜索结果) ...</span></span><br><span class="line">        search_results = ... <span class="comment"># 格式化后的结果字符串</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            <span class="string">&quot;search_results&quot;</span>: search_results,</span><br><span class="line">            <span class="string">&quot;step&quot;</span>: <span class="string">&quot;searched&quot;</span>,</span><br><span class="line">            <span class="string">&quot;messages&quot;</span>: [AIMessage(content=<span class="string">&quot;✅ 搜索完成！正在整理答案...&quot;</span>)]</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="comment"># ... (处理错误) ...</span></span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            <span class="string">&quot;search_results&quot;</span>: <span class="string">f&quot;搜索失败：<span class="subst">&#123;e&#125;</span>&quot;</span>,</span><br><span class="line">            <span class="string">&quot;step&quot;</span>: <span class="string">&quot;search_failed&quot;</span>,</span><br><span class="line">            <span class="string">&quot;messages&quot;</span>: [AIMessage(content=<span class="string">&quot;❌ 搜索遇到问题...&quot;</span>)]</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>回答节点</strong>：能够根据上一步的搜索是否成功，来选择不同的回答策略</p>
+<blockquote>
+<p>检查 <code>state[&quot;step&quot;]</code> 的值来执行条件逻辑</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">generate_answer_node</span>(<span class="params">state: SearchState</span>) -&gt; <span class="built_in">dict</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;步骤3：基于搜索结果生成最终答案&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> state[<span class="string">&quot;step&quot;</span>] == <span class="string">&quot;search_failed&quot;</span>:</span><br><span class="line">        <span class="comment"># 如果搜索失败，执行回退策略，基于LLM自身知识回答</span></span><br><span class="line">        fallback_prompt = <span class="string">f&quot;搜索API暂时不可用，请基于您的知识回答用户的问题：\n用户问题：<span class="subst">&#123;state[<span class="string">&#x27;user_query&#x27;</span>]&#125;</span>&quot;</span></span><br><span class="line">        response = llm.invoke([SystemMessage(content=fallback_prompt)])</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="comment"># 搜索成功，基于搜索结果生成答案</span></span><br><span class="line">        answer_prompt = <span class="string">f&quot;&quot;&quot;基于以下搜索结果为用户提供完整、准确的答案：</span></span><br><span class="line"><span class="string">用户问题：<span class="subst">&#123;state[<span class="string">&#x27;user_query&#x27;</span>]&#125;</span></span></span><br><span class="line"><span class="string">搜索结果：\n<span class="subst">&#123;state[<span class="string">&#x27;search_results&#x27;</span>]&#125;</span></span></span><br><span class="line"><span class="string">请综合搜索结果，提供准确、有用的回答...&quot;&quot;&quot;</span></span><br><span class="line">        response = llm.invoke([SystemMessage(content=answer_prompt)])</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="string">&quot;final_answer&quot;</span>: response.content,</span><br><span class="line">        <span class="string">&quot;step&quot;</span>: <span class="string">&quot;completed&quot;</span>,</span><br><span class="line">        <span class="string">&quot;messages&quot;</span>: [AIMessage(content=response.content)]</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>构建图，边则通过节点的名称直接相连即可，最终编译就可以得到最终的图</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> langgraph.graph <span class="keyword">import</span> StateGraph, START, END</span><br><span class="line"><span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> InMemorySaver</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_search_assistant</span>():</span><br><span class="line">    workflow = StateGraph(SearchState)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 添加节点</span></span><br><span class="line">    workflow.add_node(<span class="string">&quot;understand&quot;</span>, understand_query_node)</span><br><span class="line">    workflow.add_node(<span class="string">&quot;search&quot;</span>, tavily_search_node)</span><br><span class="line">    workflow.add_node(<span class="string">&quot;answer&quot;</span>, generate_answer_node)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 设置线性流程</span></span><br><span class="line">    workflow.add_edge(START, <span class="string">&quot;understand&quot;</span>)</span><br><span class="line">    workflow.add_edge(<span class="string">&quot;understand&quot;</span>, <span class="string">&quot;search&quot;</span>)</span><br><span class="line">    workflow.add_edge(<span class="string">&quot;search&quot;</span>, <span class="string">&quot;answer&quot;</span>)</span><br><span class="line">    workflow.add_edge(<span class="string">&quot;answer&quot;</span>, END)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 编译图</span></span><br><span class="line">    memory = InMemorySaver()</span><br><span class="line">    app = workflow.<span class="built_in">compile</span>(checkpointer=memory)</span><br><span class="line">    <span class="keyword">return</span> app</span><br></pre></td></tr></table></figure>
+
+<h4 id="分析-3"><a href="#分析-3" class="headerlink" title="分析"></a>分析</h4><ul>
+<li><p>优势：</p>
+<ul>
+<li>高度的可控和可预测性：最大的优势就是对<code>循环</code>的原生支持，这意味着可以很容易构建反思-修正的循环，比如搜索失败后可以回退到备用方案<ul>
+<li>每个节点都是一个函数，这样子的模块化设计，是非常可控的，对于<code>人机协作”（Human-in-the-loop）</code>提供了坚实的基础</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>缺陷</p>
+<ul>
+<li>需要定义状态、节点、边一系列的构建，前期代码工作比较大，开发者需要在做什么（What）基础上，还得思考如何构建流程（how）。</li>
+<li>可控意味着缺乏对话式的动态、<code>涌现式</code>的交互，所以对应的场景就是确定、可靠的流程，而不是开放式不可预测的社会性协作</li>
+<li>调试比较困难，节点内部、节点的传递、边传递的条件等，需要对整个图有全局的理解</li>
+</ul>
+</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><blockquote>
+<p>我们看到，每一个框架都有自己实现智能体构建的思路：</p>
+<ul>
+<li><strong>AutoGen</strong> 将复杂的协作抽象为一场由多角色参与的、可自动进行的“群聊”，其核心在于“以对话驱动协作”。</li>
+<li><strong>AgentScope</strong> 则着眼于工业级应用的健壮性与可扩展性，为构建高并发、分布式的多智能体系统提供了坚实的工程基础。</li>
+<li><strong>CAMEL</strong> 以其轻量级的“角色扮演”和“引导性提示”范式，展示了如何用最少的代码激发两个专家智能体之间深度、自主的协作。</li>
+<li><strong>LangGraph</strong> 则回归到更底层的“状态机”模型，通过显式的图结构赋予开发者对工作流的精确控制，尤其是其循环能力，为构建可反思、可修正的智能体铺平了道路。</li>
+</ul>
+<p>通过对这些框架的深入分析，我们可以提炼出一个设计的权衡：<strong>“涌现式协作”与“显式控制”之间的选择</strong>。</p>
+<ul>
+<li>AutoGen 和 CAMEL 更多地依赖于定义智能体的“角色”和“目标”，让复杂的协作行为从简单的对话规则中“涌现”出来，这种方式更贴近人类的交互模式，但有时难以预测和调试。</li>
+<li>而 LangGraph 要求开发者明确地定义每一个步骤和跳转条件，牺牲了一部分“涌现”的惊喜，换来了高度的可靠性、可控性和可观测性。</li>
+<li>同时，AgentScope 则揭示了第二个同样重要的维度：<strong>工程化</strong>。无论我们选择哪种协作范式，要将其从实验原型推向生产应用，都必须面对并发、容错、分布式部署等工程挑战。AgentScope 正是为解决这些问题而生，它代表了从“能运行”到“能稳定服务”的关键跨越。</li>
+</ul>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/2.%E5%B8%B8%E7%94%A8agent%E6%A1%86%E6%9E%B6%E5%88%86%E6%9E%90/">https://yuezi2048.github.io/2026/05/15/2.Areas🌐/AI/agent/2.常用agent框架分析/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/agent/">agent</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related  no-desc" href="/2026/05/13/2.Areas%F0%9F%8C%90/AI/agent/9.%E5%AE%9E%E9%99%85%E6%A1%88%E4%BE%8B/" title="9.实际案例"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">9.实际案例</div></div></div></a><a class="pagination-related" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/3.agent%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA/" title="3.agent框架搭建"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">3.agent框架搭建</div></div><div class="info-2"><div class="info-item-1">agent范式 ReAct 纯思考型（COT），和纯行动型（没有规划和纠错）的融合产物 &#x3D;&gt; ReAct &#x3D; Reson + Act，推理让行动更有目的性，行动让推理提供事实依据，形成“思考-行动-观察”的闭环：  思考：反思上一步的结果 &#x2F; 分解任务 行动：采取具体动作（如调用一个工具，Search[‘华为最新手机’]） 观察：执行Action后的结果   工具定义以网页搜索为例，我们在工具中需要定义：  Name：简洁，唯一标识符。 Description描述：是决定智能体是否调用该工具的关键 执行逻辑：一段函数 &#x2F; 交给类管理  工具管理参考适配器模式，我们需要有一个工具注册中心来管理工具。 class ToolExecutor:    &quot;&quot;&quot;    一个工具执行器，负责管理和执行工具。    &quot;&quot;&quot;    def __init__(self):        self.tools: Dict[str, Dict[str, Any]] = &#123;&#125;  ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/1.agent%E5%9F%BA%E7%A1%80/" title="1.agent基础"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-15</div><div class="info-item-2">1.agent基础</div></div><div class="info-2"><div class="info-item-1">hello-agent-基础智能体是什么 智能体是什么：对环境感知，通过执行器进行自主性行动的闭环    智能体的发展历程： 基于反射（世界模型的记忆雏形）——基于目标（Planing概念）——基于效用（多目标权衡）——强化学习（通过状态S和奖励R自我修正的行为主义）  目前到达了基于LLM（涌现能力 few-shots上下文/COT），当收到指令后，agent在执行前分解子任务，执行时工具调用，执行后反思修正   智能体权衡点：速度的反应性 vs 最优解的规划性，衍生出混合式智能体（ReAct）  知识表示的历程：  符号主义：全盘使用已有符号描述，解释性强，但存在知识瓶颈  PSSH假说：认为智能本质是可以靠物理符号计算和推理得出的 专家系统（MYCIN系统）：用户界面+知识库（产生式规则IF-THEN描述）+推理机（正向链 从IF到THEN ，反向链 从假设目标THEN出发，将IF作为子目标递归），MYCIN系统中提出了置信因子的概念描述诊断结果可靠性 SHRDLU积木世界：首次将多个独立的人工智能模块（语言识别 规划...</div></div></div></a><a class="pagination-related" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/3.agent%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA/" title="3.agent框架搭建"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-15</div><div class="info-item-2">3.agent框架搭建</div></div><div class="info-2"><div class="info-item-1">agent范式 ReAct 纯思考型（COT），和纯行动型（没有规划和纠错）的融合产物 &#x3D;&gt; ReAct &#x3D; Reson + Act，推理让行动更有目的性，行动让推理提供事实依据，形成“思考-行动-观察”的闭环：  思考：反思上一步的结果 &#x2F; 分解任务 行动：采取具体动作（如调用一个工具，Search[‘华为最新手机’]） 观察：执行Action后的结果   工具定义以网页搜索为例，我们在工具中需要定义：  Name：简洁，唯一标识符。 Description描述：是决定智能体是否调用该工具的关键 执行逻辑：一段函数 &#x2F; 交给类管理  工具管理参考适配器模式，我们需要有一个工具注册中心来管理工具。 class ToolExecutor:    &quot;&quot;&quot;    一个工具执行器，负责管理和执行工具。    &quot;&quot;&quot;    def __init__(self):        self.tools: Dict[str, Dict[str, Any]] = &#123;&#125;  ...</div></div></div></a><a class="pagination-related" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/5.%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" title="5.上下文工程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-15</div><div class="info-item-2">5.上下文工程</div></div><div class="info-2"><div class="info-item-1"> context is all you need  我们主要学习上下文工程和两个相关工具：  ContextBuilder：基于GSSC (Gather-Select-Structure-Compress) 流水线，来统一管理上下文窗口 NoteTool：对智能体进行持久化的管理 TerminalTool：终端工具，对文件系统操作，进行即时上下文检索   请回答：上下文工程和早期提示词工程区别？为什么要上下文工程？上下文工程目标是什么？那怎么从上下文检索内容？长时程的任务你又怎么处理？  区别？ 提示工程：关注如何编写与组织 LLM...</div></div></div></a><a class="pagination-related" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/4.agent%E7%9A%84%E8%AE%B0%E5%BF%86%E5%92%8C%E6%A3%80%E7%B4%A2/" title="4.agent的记忆和检索"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-15</div><div class="info-item-2">4.agent的记忆和检索</div></div><div class="info-2"><div class="info-item-1">接下来是高级部分： 首先我们想要让agent能记忆和检索 然后我们需要上下文工程 随后引入了agent的通信协议，更方便地引入外部内容 当然最难的，也就是对其进行agent-RL工作。 最后我们需要对实现好的agent进行评估。 记忆和检索能力我们将记忆和检索看成是两个工具，对接存储层，整体架构如图  memory_tool负责存储和维护对话过程中的交互信息 rag_tool则负责从用户提供的知识库中检索相关信息作为上下文，并可将重要的检索结果自动存储到记忆系统中。   agents框架对照 HelloAgents记忆系统├── 基础设施层 (Infrastructure Layer)│   ├── MemoryManager - 记忆管理器（统一调度和协调）│   ├── MemoryItem - 记忆数据结构（标准化记忆项）│   ├── MemoryConfig - 配置管理（系统参数设置）│   └── BaseMemory - 记忆基类（通用接口定义）├── 记忆类型层 (Memory Types Layer)│   ├── WorkingMemory -...</div></div></div></a><a class="pagination-related no-desc" href="/2026/05/13/2.Areas%F0%9F%8C%90/AI/agent/9.%E5%AE%9E%E9%99%85%E6%A1%88%E4%BE%8B/" title="9.实际案例"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-13</div><div class="info-item-2">9.实际案例</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">835</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">82</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">110</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A1%86%E6%9E%B6%E5%BC%80%E5%8F%91%E5%AE%9E%E8%B7%B5"><span class="toc-text">框架开发实践</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AutoGen"><span class="toc-text">AutoGen</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9A%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91%E5%9B%A2%E9%98%9F"><span class="toc-text">案例：软件开发团队</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E6%9E%90"><span class="toc-text">分析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AgentScope"><span class="toc-text">AgentScope</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9A%E4%B8%89%E5%9B%BD%E7%8B%BC%E4%BA%BA%E6%9D%80"><span class="toc-text">案例：三国狼人杀</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E6%9E%90-1"><span class="toc-text">分析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Camel"><span class="toc-text">Camel</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9A%E5%BF%83%E7%90%86%E7%94%B5%E5%AD%90%E4%B9%A6"><span class="toc-text">案例：心理电子书</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E6%9E%90-2"><span class="toc-text">分析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LangGraph"><span class="toc-text">LangGraph</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9A%E4%B8%89%E6%AD%A5%E9%97%AE%E7%AD%94%E5%8A%A9%E6%89%8B"><span class="toc-text">案例：三步问答助手</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E6%9E%90-3"><span class="toc-text">分析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/17/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-05-17T03:19:58.038Z" title="发表于 2026-05-17 11:19:58">2026-05-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/17/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-05-17T03:19:57.489Z" title="发表于 2026-05-17 11:19:57">2026-05-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/5.%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" title="5.上下文工程">5.上下文工程</a><time datetime="2026-05-15T14:04:33.000Z" title="发表于 2026-05-15 22:04:33">2026-05-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/4.agent%E7%9A%84%E8%AE%B0%E5%BF%86%E5%92%8C%E6%A3%80%E7%B4%A2/" title="4.agent的记忆和检索">4.agent的记忆和检索</a><time datetime="2026-05-15T12:39:02.000Z" title="发表于 2026-05-15 20:39:02">2026-05-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/1.agent%E5%9F%BA%E7%A1%80/" title="1.agent基础">1.agent基础</a><time datetime="2026-05-15T04:47:21.000Z" title="发表于 2026-05-15 12:47:21">2026-05-15</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

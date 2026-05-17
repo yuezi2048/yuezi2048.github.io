@@ -1,0 +1,185 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>9.实际案例 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="积微者速成">
+<meta property="og:type" content="article">
+<meta property="og:title" content="9.实际案例">
+<meta property="og:url" content="https://yuezi2048.github.io/2026/05/13/2.Areas%F0%9F%8C%90/AI/agent/9.%E5%AE%9E%E9%99%85%E6%A1%88%E4%BE%8B/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="积微者速成">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2026-05-13T14:12:13.000Z">
+<meta property="article:modified_time" content="2026-05-13T14:12:13.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="agent">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "9.实际案例",
+  "url": "https://yuezi2048.github.io/2026/05/13/2.Areas%F0%9F%8C%90/AI/agent/9.%E5%AE%9E%E9%99%85%E6%A1%88%E4%BE%8B/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2026-05-13T14:12:13.000Z",
+  "dateModified": "2026-05-13T14:12:13.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2026/05/13/2.Areas%F0%9F%8C%90/AI/agent/9.%E5%AE%9E%E9%99%85%E6%A1%88%E4%BE%8B/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '9.实际案例',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">835</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">82</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">110</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">9.实际案例</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">9.实际案例</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-05-13T14:12:13.000Z" title="发表于 2026-05-13 22:12:13">2026-05-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-05-13T14:12:13.000Z" title="更新于 2026-05-13 22:12:13">2026-05-13</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/AI/">AI</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/AI/agent/">agent</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">0</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>1分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2026/05/13/2.Areas%F0%9F%8C%90/AI/agent/9.%E5%AE%9E%E9%99%85%E6%A1%88%E4%BE%8B/">https://yuezi2048.github.io/2026/05/13/2.Areas🌐/AI/agent/9.实际案例/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/agent/">agent</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/04/23/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/temp2/" title="temp2"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">temp2</div></div><div class="info-2"><div class="info-item-1">优化后完整版（100%对齐简历+岗位，直接背诵）第一部分：面试专用项目整体介绍1）1分钟极速版（自我介绍必背，和简历一字不差）我独立全栈开发了凌云团队相册管理平台，这是一个面向企业级多租户的图片存储与协作平台，解决了团队图片管理、多人协同编辑、高并发查询性能瓶颈等核心痛点，项目有在线演示地址，可直接体验。技术上我核心做了3件事：第一，设计「双策略热点计数+双重缓存」方案，首页平均查询延迟从120ms降至22ms；第二，基于ShardingSphere-JDBC实现按spaceId动态分表，千万级元数据查询延迟稳定在30ms内；第三，基于WebSocket+Disruptor无锁队列实现多用户实时协同，跨端同步延迟≤50ms，支持100+并发协同。全程我用Claude...</div></div></div></a><a class="pagination-related" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/2.%E5%B8%B8%E7%94%A8agent%E6%A1%86%E6%9E%B6%E5%88%86%E6%9E%90/" title="2.常用agent框架分析"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">2.常用agent框架分析</div></div><div class="info-2"><div class="info-item-1">框架开发实践框架的价值：  代码复用：提供通用的BaseAgent，并封装Agent基本的ReAct&#x2F;PlanAndSolve等循环 组件的解耦和可扩展性： 模型层：支持替换不同的模型厂商 工具层：标准化定义工具，注册，执行，添加工具不影响其他代码。 记忆层：长期记忆&#x2F;短期记忆，根据需求可以切换不同记忆策略（滑动窗口&#x2F;摘要记忆等），更换&#x2F;升级组件会更加清晰   状态管理标准化：我们之前ReflectionAgent中简单的用列表来表示状态，但真实的长时间运行的智能体需要考虑上下文窗口限制、历史信息持久化、多轮对话状态跟踪等问题，框架可以提供通用的状态管理机制，我们无须过于关注这些问题 可观测性和调试过程：如事件回调机制，在关键节点自动触发日志上报    AutoGen：思想是将多智能体的协作看成是群聊，通过定义不同的角色+交互规则（Coder写完代码后Tester接管），如此对话——协作——迭代——完成目标，适合流程化的任务 AgentScope：亮点是工程化和易用性，提供了友好的编程接口定义智能体、构建通信网络（内置消息传递机制...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/1.agent%E5%9F%BA%E7%A1%80/" title="1.agent基础"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-15</div><div class="info-item-2">1.agent基础</div></div><div class="info-2"><div class="info-item-1">hello-agent-基础智能体是什么 智能体是什么：对环境感知，通过执行器进行自主性行动的闭环    智能体的发展历程： 基于反射（世界模型的记忆雏形）——基于目标（Planing概念）——基于效用（多目标权衡）——强化学习（通过状态S和奖励R自我修正的行为主义）  目前到达了基于LLM（涌现能力 few-shots上下文/COT），当收到指令后，agent在执行前分解子任务，执行时工具调用，执行后反思修正   智能体权衡点：速度的反应性 vs 最优解的规划性，衍生出混合式智能体（ReAct）  知识表示的历程：  符号主义：全盘使用已有符号描述，解释性强，但存在知识瓶颈  PSSH假说：认为智能本质是可以靠物理符号计算和推理得出的 专家系统（MYCIN系统）：用户界面+知识库（产生式规则IF-THEN描述）+推理机（正向链 从IF到THEN ，反向链 从假设目标THEN出发，将IF作为子目标递归），MYCIN系统中提出了置信因子的概念描述诊断结果可靠性 SHRDLU积木世界：首次将多个独立的人工智能模块（语言识别 规划...</div></div></div></a><a class="pagination-related" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/2.%E5%B8%B8%E7%94%A8agent%E6%A1%86%E6%9E%B6%E5%88%86%E6%9E%90/" title="2.常用agent框架分析"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-15</div><div class="info-item-2">2.常用agent框架分析</div></div><div class="info-2"><div class="info-item-1">框架开发实践框架的价值：  代码复用：提供通用的BaseAgent，并封装Agent基本的ReAct&#x2F;PlanAndSolve等循环 组件的解耦和可扩展性： 模型层：支持替换不同的模型厂商 工具层：标准化定义工具，注册，执行，添加工具不影响其他代码。 记忆层：长期记忆&#x2F;短期记忆，根据需求可以切换不同记忆策略（滑动窗口&#x2F;摘要记忆等），更换&#x2F;升级组件会更加清晰   状态管理标准化：我们之前ReflectionAgent中简单的用列表来表示状态，但真实的长时间运行的智能体需要考虑上下文窗口限制、历史信息持久化、多轮对话状态跟踪等问题，框架可以提供通用的状态管理机制，我们无须过于关注这些问题 可观测性和调试过程：如事件回调机制，在关键节点自动触发日志上报    AutoGen：思想是将多智能体的协作看成是群聊，通过定义不同的角色+交互规则（Coder写完代码后Tester接管），如此对话——协作——迭代——完成目标，适合流程化的任务 AgentScope：亮点是工程化和易用性，提供了友好的编程接口定义智能体、构建通信网络（内置消息传递机制...</div></div></div></a><a class="pagination-related" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/3.agent%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA/" title="3.agent框架搭建"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-15</div><div class="info-item-2">3.agent框架搭建</div></div><div class="info-2"><div class="info-item-1">agent范式 ReAct 纯思考型（COT），和纯行动型（没有规划和纠错）的融合产物 &#x3D;&gt; ReAct &#x3D; Reson + Act，推理让行动更有目的性，行动让推理提供事实依据，形成“思考-行动-观察”的闭环：  思考：反思上一步的结果 &#x2F; 分解任务 行动：采取具体动作（如调用一个工具，Search[‘华为最新手机’]） 观察：执行Action后的结果   工具定义以网页搜索为例，我们在工具中需要定义：  Name：简洁，唯一标识符。 Description描述：是决定智能体是否调用该工具的关键 执行逻辑：一段函数 &#x2F; 交给类管理  工具管理参考适配器模式，我们需要有一个工具注册中心来管理工具。 class ToolExecutor:    &quot;&quot;&quot;    一个工具执行器，负责管理和执行工具。    &quot;&quot;&quot;    def __init__(self):        self.tools: Dict[str, Dict[str, Any]] = &#123;&#125;  ...</div></div></div></a><a class="pagination-related" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/5.%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" title="5.上下文工程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-15</div><div class="info-item-2">5.上下文工程</div></div><div class="info-2"><div class="info-item-1"> context is all you need  我们主要学习上下文工程和两个相关工具：  ContextBuilder：基于GSSC (Gather-Select-Structure-Compress) 流水线，来统一管理上下文窗口 NoteTool：对智能体进行持久化的管理 TerminalTool：终端工具，对文件系统操作，进行即时上下文检索   请回答：上下文工程和早期提示词工程区别？为什么要上下文工程？上下文工程目标是什么？那怎么从上下文检索内容？长时程的任务你又怎么处理？  区别？ 提示工程：关注如何编写与组织 LLM...</div></div></div></a><a class="pagination-related" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/4.agent%E7%9A%84%E8%AE%B0%E5%BF%86%E5%92%8C%E6%A3%80%E7%B4%A2/" title="4.agent的记忆和检索"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-15</div><div class="info-item-2">4.agent的记忆和检索</div></div><div class="info-2"><div class="info-item-1">接下来是高级部分： 首先我们想要让agent能记忆和检索 然后我们需要上下文工程 随后引入了agent的通信协议，更方便地引入外部内容 当然最难的，也就是对其进行agent-RL工作。 最后我们需要对实现好的agent进行评估。 记忆和检索能力我们将记忆和检索看成是两个工具，对接存储层，整体架构如图  memory_tool负责存储和维护对话过程中的交互信息 rag_tool则负责从用户提供的知识库中检索相关信息作为上下文，并可将重要的检索结果自动存储到记忆系统中。   agents框架对照 HelloAgents记忆系统├── 基础设施层 (Infrastructure Layer)│   ├── MemoryManager - 记忆管理器（统一调度和协调）│   ├── MemoryItem - 记忆数据结构（标准化记忆项）│   ├── MemoryConfig - 配置管理（系统参数设置）│   └── BaseMemory - 记忆基类（通用接口定义）├── 记忆类型层 (Memory Types Layer)│   ├── WorkingMemory -...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">835</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">82</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">110</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/17/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-05-17T03:19:58.038Z" title="发表于 2026-05-17 11:19:58">2026-05-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/17/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-05-17T03:19:57.489Z" title="发表于 2026-05-17 11:19:57">2026-05-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/5.%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" title="5.上下文工程">5.上下文工程</a><time datetime="2026-05-15T14:04:33.000Z" title="发表于 2026-05-15 22:04:33">2026-05-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/4.agent%E7%9A%84%E8%AE%B0%E5%BF%86%E5%92%8C%E6%A3%80%E7%B4%A2/" title="4.agent的记忆和检索">4.agent的记忆和检索</a><time datetime="2026-05-15T12:39:02.000Z" title="发表于 2026-05-15 20:39:02">2026-05-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/1.agent%E5%9F%BA%E7%A1%80/" title="1.agent基础">1.agent基础</a><time datetime="2026-05-15T04:47:21.000Z" title="发表于 2026-05-15 12:47:21">2026-05-15</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

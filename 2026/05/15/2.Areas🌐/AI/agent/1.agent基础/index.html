@@ -1,0 +1,430 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>1.agent基础 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="hello-agent-基础智能体是什么 智能体是什么：对环境感知，通过执行器进行自主性行动的闭环    智能体的发展历程： 基于反射（世界模型的记忆雏形）——基于目标（Planing概念）——基于效用（多目标权衡）——强化学习（通过状态S和奖励R自我修正的行为主义）  目前到达了基于LLM（涌现能力 few-shots上下文&#x2F;COT），当收到指令后，agent在执行前分解子任务，执行时工具调用，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1.agent基础">
+<meta property="og:url" content="https://yuezi2048.github.io/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/1.agent%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="hello-agent-基础智能体是什么 智能体是什么：对环境感知，通过执行器进行自主性行动的闭环    智能体的发展历程： 基于反射（世界模型的记忆雏形）——基于目标（Planing概念）——基于效用（多目标权衡）——强化学习（通过状态S和奖励R自我修正的行为主义）  目前到达了基于LLM（涌现能力 few-shots上下文&#x2F;COT），当收到指令后，agent在执行前分解子任务，执行时工具调用，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2026-05-15T04:47:21.000Z">
+<meta property="article:modified_time" content="2026-05-15T04:47:21.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="agent">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "1.agent基础",
+  "url": "https://yuezi2048.github.io/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/1.agent%E5%9F%BA%E7%A1%80/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2026-05-15T04:47:21.000Z",
+  "dateModified": "2026-05-15T04:47:21.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/1.agent%E5%9F%BA%E7%A1%80/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '1.agent基础',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">835</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">82</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">110</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">1.agent基础</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">1.agent基础</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-05-15T04:47:21.000Z" title="发表于 2026-05-15 12:47:21">2026-05-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-05-15T04:47:21.000Z" title="更新于 2026-05-15 12:47:21">2026-05-15</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/AI/">AI</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/AI/agent/">agent</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">5.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>18分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="hello-agent-基础"><a href="#hello-agent-基础" class="headerlink" title="hello-agent-基础"></a>hello-agent-基础</h2><h3 id="智能体是什么"><a href="#智能体是什么" class="headerlink" title="智能体是什么"></a>智能体是什么</h3><blockquote>
+<p>智能体是什么：对<strong>环境感知</strong>，通过<strong>执行器</strong>进行<strong>自主性行动</strong>的闭环</p>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260513211554444.png" alt="image-20260513211554444"></p>
+</blockquote>
+<ul>
+<li><p>智能体的发展历程： 基于反射（世界模型的记忆雏形）——基于目标（Planing概念）——基于效用（多目标权衡）——强化学习（通过状态S和奖励R自我修正的行为主义）</p>
+<ul>
+<li>目前到达了<code>基于LLM（涌现能力 few-shots上下文/COT）</code>，当收到指令后，agent在执行前分解子任务，执行时工具调用，执行后反思修正</li>
+</ul>
+</li>
+<li><p>智能体权衡点：速度的反应性 vs 最优解的规划性，衍生出<code>混合式智能体</code>（ReAct）</p>
+</li>
+<li><p>知识表示的历程：</p>
+<ul>
+<li><p><code>符号主义</code>：全盘使用已有符号描述，解释性强，但存在知识瓶颈</p>
+<ul>
+<li>PSSH假说：认为智能本质是可以靠物理符号计算和推理得出的</li>
+<li>专家系统（<strong>MYCIN系统</strong>）：用户界面+知识库（产生式规则IF-THEN描述）+推理机（正向链 从IF到THEN ，反向链 从假设目标THEN出发，将IF作为子目标递归），MYCIN系统中提出了置信因子的概念描述诊断结果可靠性</li>
+<li>SHRDLU积木世界：首次将多个独立的人工智能模块（语言识别 规划 记忆）整合并协同工作（贡献出<code>整合的思想</code>和微观世界的可行性）</li>
+<li>ELIZA基于模式匹配&#x2F;文本替换，进行聊天（I - &gt; You）—— <strong><code>上下文记忆</code>、<code>语义理解</code>、<code>规则扩展</code>的问题</strong>，残忍地揭露出符号主义这种穷举的方法，系统永远不理解，注定难以拓展，非常脆弱。</li>
+<li>那么针对以上问题，当时马文·明斯基提出了心智社会：一个搭建积木的BUILD机构，底下有SEE、PUT等下层智能体（当时还是认为智能体是僵化的），他们之间通过 去中心化的激活&#x2F;抑制，形成动态的控制流。每个无心的组件不知道全局任务是什么，但在这种激活相互作用下，搭建金字塔的行为就<code>涌现</code>了出来</li>
+</ul>
+</li>
+<li><p>亚符号主义（<code>联结主义</code>）：通过神经网络训练出一个黑箱，可以识别非结构化数据，可解释性弱，相比于符号主义的自上而下，他是自下而上的。</p>
+</li>
+<li><p><code>神经符号主义</code>：融合两者，弥合感知与认知、直觉与理性之间的鸿沟</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260513203401051.png" alt="image-20260513203401051"></p>
+<h3 id="智能体运行机制"><a href="#智能体运行机制" class="headerlink" title="智能体运行机制"></a>智能体运行机制</h3><ul>
+<li>首先要明确 任务环境（<code>PEAS模型</code>）：Performance Environment  Actuators Sensors<ul>
+<li>旅行AI助手中，明确在有限时间&#x2F;预算内，行程要求最大化用户满意度和结果合理度，环境提供了各种地图、天气API等服务，执行器通过fastAPI接口调用执行生成格式化文本，传感器则读入用户的输入，分析转换后的JSON</li>
+<li>在任务环境中，我们需要考虑<ul>
+<li>环境的部分可观测性（引伸出记忆、主动探索能力）、连贯&#x2F;动态性（感知-行动-观察“循环怎么保证及时输出结果，保证结果的时效性？）</li>
+<li>多智能体环境（如何实现多智能体交互？）</li>
+<li>行动结果是确定性还是随机性的（对输出的结果需要怎么监测处理？）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>运行机制：<code>“感知-思考-行动-观察”</code>的闭环</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260513204626289.png" alt="image-20260513204626289"></p>
+<h3 id="智能体应用"><a href="#智能体应用" class="headerlink" title="智能体应用"></a>智能体应用</h3><ul>
+<li>开发者工具：<strong>GitHubCopilot</strong>、CC、Trae、Cursor</li>
+<li>自主协作者的智能体：早期的 BabyAGI、AutoGPT，到如今更为成熟的 CrewAI、AutoGen、MetaGPT、LangGraph <ul>
+<li>AutoGPT是单智能体“**思考-规划-执行-反思”**自主循环经典范式</li>
+<li>多智能体<ul>
+<li>CAMEL通过角色扮演的方式来沟通完成</li>
+<li><strong>MetaGPT</strong> 和 <strong>CrewAI</strong>模拟一个多智能体团队，每个智能体有一套自己的SOP工作流程，通过层级&#x2F;顺序工作，交付高质量成果</li>
+<li><strong>AutoGen</strong> 和 <strong>AgentScope</strong>提供了更灵活的对话模式，允许开发者在智能体之间定义复杂的交互网络</li>
+</ul>
+</li>
+<li>更高级的控制：<strong>LangGraph</strong>等，将agent执行过程建模成<code>状态图</code>，能更灵活地实现循环、分支、回溯以及人工介入等复杂流程</li>
+</ul>
+</li>
+<li>agent区别于workflow：<strong>Workflow 是让 AI 按部就班地执行指令，而 Agent 则是赋予 AI 自由度去自主达成目标</strong>，他是能基于实时信息动态推理和决策的。</li>
+</ul>
+<h2 id="基本LLM模型"><a href="#基本LLM模型" class="headerlink" title="基本LLM模型"></a>基本LLM模型</h2><p>N-Gram模型到RNN</p>
+<p>预测一个句子的概率$P(w_m \mid w_1,\dots,w_{m-1})$，我们一般会想到链式法则，但我们发现w1 w2..的语料很可能没在训练集出现过，所以是不好直接算条件概率的<br>$$<br>P(S) &#x3D; P(w_1, w_2, \dots, w_m)<br>     &#x3D; P(w_1) \cdot P(w_2 \mid w_1) \cdot P(w_3 \mid w_1, w_2)<br>       \cdots P(w_m \mid w_1, \dots, w_{m-1})<br>$$<br>使用<strong>马尔可夫假设</strong>。一个词的出现概率近似认为和前面n-1个词相关，这就是<code>N-Gram</code>模型，N是上下文窗口，以N&#x3D;3为例，第n个词只和前两个词相关<br>$$<br>P(w_i \mid w_1, \dots, w_{i-1}) \approx P(w_i \mid w_{i-2}, w_{i-1})<br>$$<br>此时通过<strong>最大似然估计MLE</strong>（看到次数最多的就是最可能出现的）估计，那计算就只需要记录 语料库中 成对出现的次数 &#x2F; 前一个词出现的次数即可<br>$$<br>P(w_i \mid w_{i-1}) &#x3D; \frac{\text{Count}(w_{i-1}, w_i)}{\text{Count}(w_{i-1})}<br>$$<br>问题：数据稀疏（语料库没出现的概率就是0，即使平滑化处理也无法根除），泛化能力弱（无法理解agent和robot的相似性）</p>
+<p>此时2003年提出了<strong>前馈神经网络语言模型</strong>：通过神经网络拟合能力来学习前n-1个词向量，来预测第n个词</p>
+<ul>
+<li>词向量：每个词在高维空间中对应一个词向量Embedding，这样就能用余弦相似度等表示语义相近了<ul>
+<li>经典例子：vector(‘King’) - vector(‘Man’) + vector(‘Woman’) &#x3D; vector(‘Queen’)</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260513213531698.png" alt="image-20260513213531698"></p>
+<p>尽管解决了泛化问题，但上下文长度是固定的，引伸出<strong>循环神经网络</strong>RNN，他的思想就是给网络增加记忆能力。</p>
+<p>RNN设计中引入了隐藏状态向量h，理解为网络的短期记忆，RNN会读取当前输入词，结合上一步的$h_{t-1}$，生成当前步的$h_{t}$，这样就可以将信息向后传递。</p>
+<p>​	<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260513215832689.png" alt="image-20260513215832689" style="zoom: 50%;" /></p>
+<p>问题：LongTerm的长期依赖问题，序列长了，反向传播（根据输出的误差调整权重）的时候梯度连乘就会出现趋于0（梯度消失）或者趋于无限大（梯度爆炸）的情况，梯度消失后，无法学习到早期信息对后续输出影响，难以捕捉长距离依赖关系。</p>
+<p>引伸出<strong>长短时记忆网络</strong> LSTM，创新点是引入了细胞状态（独立于隐藏状态的信息通路便于在时间步中传递）和门控机制（小型神经网络，选择性的让信息通过来控制细胞的增加&#x2F;移除——遗忘门-从上一细胞状态中丢弃&#x2F;输入门-当前新输入信息存入细胞状态&#x2F;输出门-输出到隐藏状态）。</p>
+<h3 id="Transformer"><a href="#Transformer" class="headerlink" title="Transformer"></a>Transformer</h3><img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260513220508684.png" alt="image-20260513220508684" style="zoom:50%;" />	
+
+<h4 id="Encoding-Decoding"><a href="#Encoding-Decoding" class="headerlink" title="Encoding-Decoding"></a>Encoding-Decoding</h4><p>Transformer我们看成两个部分：</p>
+<ol>
+<li><strong>编码器 (Encoder)</strong> ：负责“<strong>理解</strong>”输入的整个句子。它会读取所有输入词元，最终为每个词元生成一个富含上下文信息的向量表示。</li>
+<li><strong>解码器 (Decoder)</strong> ：负责“<strong>生成</strong>”目标句子。它会参考自己已经生成的前文，并“咨询”编码器的理解结果，来生成下一个词。</li>
+</ol>
+<h4 id="自注意力到多头注意力"><a href="#自注意力到多头注意力" class="headerlink" title="自注意力到多头注意力"></a>自注意力到多头注意力</h4><blockquote>
+<p>自注意力</p>
+<p>The agent learns because <strong>it</strong> is intelligent. 读到it时，注意力应当在agent上，这就是自注意力的数学建模：</p>
+<ul>
+<li>序列中每一个词都会兼顾其他所有词赋予不同的注意力权重，越大的就表示关联性越高</li>
+<li>自注意力学习的三个核心角色向量<ul>
+<li>Q查询：负责主动查询其他词元</li>
+<li>K：表示被查询词元的key标签索引</li>
+<li>V：词元的value内容信息</li>
+</ul>
+</li>
+<li>学习<ul>
+<li>预料：通过原始词嵌入乘以可学习权重矩阵$W_Q, W_K, W_V$得到Q K V向量</li>
+<li>计算相关性：当计算词A的新表示时，通过A的Q向量去和所有词（包括A）的K向量点积运算，得到与A的相关性</li>
+<li>稳定化+归一化：除以缩放因子$\sqrt{d_k}$（$d_k$是K的向量维度）套上softmax归一化</li>
+<li>加权求和：上一步得到的权重乘以每个词的V向量，将所有结果相加，得到融合了全局上下文信息的最终A向量</li>
+</ul>
+</li>
+</ul>
+<p>$$<br>\text{Attention}(Q,K,V) &#x3D; \text{softmax}\left( \frac{QK^\mathrm{T}}{\sqrt{d_k}} \right)V<br>$$</p>
+</blockquote>
+<p>自注意力问题：当处理it时，可能只会关注到主语，但时态、从属等关系我们在语义理解中同样需要。引入了多头注意力机制（Q K V向量在维度上切成了h份，对应h头），可以有多个专家捕捉不同的特征关系，最终得到h个专家的输出向量后，通过线性变换整合得到最终输出。</p>
+<img src="/img/loading.gif" data-original="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20260514111933728.png" alt="image-20260514111933728" style="zoom:33%;" />	
+
+<h4 id="前馈神经网络"><a href="#前馈神经网络" class="headerlink" title="前馈神经网络"></a>前馈神经网络</h4><p>我们发现每个Encoder和Decoder层在多头注意力子层后跟着一个<strong>逐位置前馈网络FNN</strong>，如果说注意力是为了在整个序列中动态聚合信息，FNN则是从这个聚合信息中提取更高阶特征。</p>
+<blockquote>
+<ul>
+<li>FNN的关键在于逐位置，seq_len的序列意味着会被FNN调用seq_len次，每次处理一个词元，保证了对每个词元加工的能力</li>
+<li>FNN的网络共享权重变量，极大减少了参数量</li>
+<li>第一个线性层的输出维度 <code>d_ff</code> 会远大于输入的维度 <code>d_model</code>，经过 ReLU 激活后再通过第二个线性层映射回 <code>d_model</code> 维度。是“先扩大再缩小”的模式</li>
+</ul>
+<p>$$<br>\text{FFN}(x) &#x3D; \max(0, xW_1 + b_1)W_2 + b_2<br>$$</p>
+</blockquote>
+<h4 id="残差连接与层归一化"><a href="#残差连接与层归一化" class="headerlink" title="残差连接与层归一化"></a><strong>残差连接与层归一化</strong></h4><p>所有子模块中都会附带Add &amp; Norm的操作，目的是保证Transformer的稳定训练</p>
+<ul>
+<li><strong>残差连接 Add</strong>：输入直连输出，<strong>解决梯度消失</strong>，深层网络易训练<ul>
+<li>公式：(Output &#x3D; x + \text{Sublayer}(x))</li>
+</ul>
+</li>
+<li><strong>层归一化 Norm</strong>：解决<strong>内部协变量偏移</strong>，稳定分布、加快收敛<ul>
+<li>单样本特征归一化，均值 0 方差 1</li>
+</ul>
+</li>
+</ul>
+<h4 id="位置编码"><a href="#位置编码" class="headerlink" title="位置编码"></a>位置编码</h4><p>在使用注意力机制后，虽然学习到了任意两个词之间的关系，但是不包含词元顺序&#x2F;位置信息。引入位置编码</p>
+<ul>
+<li>思想：每个词元嵌入向量额外加上表示绝对位置和相对位置的位置向量，通过以下公式得到：pos是位置，i是向量的维度索引[0, $d_{model}$ &#x2F; 2]，$d_{model}$是向量维度</li>
+</ul>
+<p>$$<br>\begin{aligned}<br>\text{PE}<em>{(pos,2i)} &amp;&#x3D; \sin\left(pos \cdot 10000^{-\frac{2i}{d</em>{\text{model}}}}\right) \<br>\text{PE}<em>{(pos,2i+1)} &amp;&#x3D; \cos\left(pos \cdot 10000^{-\frac{2i}{d</em>{\text{model}}}}\right)<br>\end{aligned}<br>$$</p>
+<h3 id="Decoder-Only"><a href="#Decoder-Only" class="headerlink" title="Decoder-Only"></a>Decoder-Only</h3><blockquote>
+<p>OpenAI 在开发 <strong>GPT (Generative Pre-trained Transformer)</strong> 时，提出了一个更简单的思想：<strong>语言的核心任务，不就是预测下一个最有可能出现的词吗？</strong></p>
+</blockquote>
+<p>引伸出：抛弃编码器，只有解码器的部分，这就是Decoder-Only，结构更简单，目标更单一（预测下一个词），非常适合生成任务，工作方式是自回归：</p>
+<ul>
+<li>给定初始文本，预测下一个可能出现的词</li>
+<li>将刚刚生成的词添加到末尾，作为新的输入，如此循环，直到完整的句子&#x2F;停止条件</li>
+</ul>
+<p>而解码器为了保证不看到后面的内容，使用到<code>掩码自注意力机制</code></p>
+<blockquote>
+<p>得到注意力矩阵后，在softmax计算前，将其替换成一个非常大的负数，此时经过softmax变换后就是0，这样就截断了其信息，保证预测下一个词之后，只能依靠已经见过的，当前位置之前的信息，保证公平性和语义连贯性</p>
+</blockquote>
+<h2 id="LLM交互基础"><a href="#LLM交互基础" class="headerlink" title="LLM交互基础"></a>LLM交互基础</h2><h3 id="提示词工程"><a href="#提示词工程" class="headerlink" title="提示词工程"></a>提示词工程</h3><p>模型采样参数：</p>
+<ul>
+<li><code>Temperature</code>：控制随机性和确定性，令T&gt;0，softmax计算公式为$p_i(T) &#x3D; \frac{e^{z_i&#x2F;T}}{\sum\limits_{j&#x3D;1}^{k} e^{z_j&#x2F;T}}$，T越小，高概率权重会被放大，生成更保守重复率小的文本，反之则是创造性高但随机性大的文本</li>
+<li><code>Top-k</code>：将所有token概率从高到低排序，对筛选出来的前k个概率归一化$\hat{p}<em>i &#x3D; \frac{p_i}{\sum\limits</em>{j\in\text{候选集}} p_j}$</li>
+<li><code>Top-p</code>：token概率从高到底概率排序，从排序后的第一个token开始，逐步累加概率，直到到达p，此时所有token组成核集合，进行归一化<ul>
+<li>更能适应长尾特性，更适应概率分布不均匀场景</li>
+</ul>
+</li>
+</ul>
+<p>样本：零样本提示、<strong>单样本提示</strong>、**少样本提示 **</p>
+<p>指令调优：</p>
+<ul>
+<li><strong>少样本提示</strong>、<strong>角色扮演</strong>、<strong>上下文示例</strong> 、思维链</li>
+</ul>
+<h3 id="文本分词"><a href="#文本分词" class="headerlink" title="文本分词"></a>文本分词</h3><p><strong>分词 (Tokenization)</strong> 、**分词器 (Tokenizer)**的作用：文本序列转换成模型能处理的数字形式，划分成的最小单元，就是词元（token）</p>
+<p>分词策略：</p>
+<ul>
+<li>早期：按词分词（无法处理未登录词，无语义关系），按字符分词（单个字符没有独立语义）</li>
+<li>现代：<strong>子词分词</strong>，常见词保留完整词元，不常见词划分成有意义的子词片段（Token” 和 “ization”），平衡了词表大小，又能兼顾新词的表示</li>
+</ul>
+<p>目前常用<code>子词分词</code>方式：字节对编码 (Byte-Pair Encoding, <code>BPE</code>) ，GPT就是这种算法，思想是贪心：</p>
+<ul>
+<li>初始化：词表初始化语料库中出现的基本字符</li>
+<li>迭代合并：统计每个词元成对出现概率，成对频率最高的一对合并为新的词元，加入词表</li>
+<li>重复上一步，直到到达阈值</li>
+</ul>
+<p>很多算法就是在BPE思想基础上优化：</p>
+<ul>
+<li><strong>WordPiece</strong>：Google BERT 模型采用的算法，与BPE很类似，但合并词元的标准不是“最高频率”，而是“能最大化提升语料库的语言模型概率”。它会优先合并那些能让整个语料库的“通顺度”提升最大的词元对。</li>
+<li><strong>SentencePiece</strong>：Google 开源的一款分词工具，Llama 系列模型采用了此算法。它最大的特点是，将空格也视作一个普通字符（通常用下划线 <code>_</code> 表示）。这使得分词和解码过程完全可逆，且不依赖于特定的语言（它不需要知道中文不使用空格分词）。</li>
+</ul>
+<h3 id="模型选择"><a href="#模型选择" class="headerlink" title="模型选择"></a>模型选择</h3><ul>
+<li><strong>性能能力</strong>：核心！不同模型擅长不同任务（推理&#x2F;代码&#x2F;创作），参考公开基准排行榜</li>
+<li><strong>成本</strong>：闭源按Token计费（API），开源看硬件+运维（本地部署），结合预算选</li>
+<li><strong>速度（延迟）</strong>：实时交互（客服&#x2F;NPC）选轻量优化款（如GPT-3.5 Turbo）</li>
+<li><strong>上下文窗口</strong>：处理长文档&#x2F;长期对话，选大窗口（≥128K Token）</li>
+<li><strong>部署方式</strong>：API便捷但数据外发，本地部署保隐私但需技术+硬件</li>
+<li><strong>生态工具</strong>：选主流模型，配套工具（LangChain等）多、社区活跃，开发更高效</li>
+<li><strong>可微调性</strong>：特定领域&#x2F;任务，选支持微调的（开源更灵活），提升场景适配性</li>
+<li><strong>安全伦理</strong>：面向公众&#x2F;敏感场景，关注模型偏见、幻觉，优先合规款</li>
+</ul>
+<h2 id="LLM特性"><a href="#LLM特性" class="headerlink" title="LLM特性"></a>LLM特性</h2><h3 id="缩放法则"><a href="#缩放法则" class="headerlink" title="缩放法则"></a>缩放法则</h3><p><strong>缩放法则</strong>：模型性能与模型参数量、训练数据量以及计算资源之间存在着可预测的幂律关系。</p>
+<ul>
+<li>该定律指出，在给定的计算预算下，为了达到最优性能，<strong>模型参数量和训练数据量之间存在一个最优配比</strong>。如模型参数量少，但训练数据量大性能反而会好</li>
+<li><code>能力涌现</code>：当模型规模达到一定阈值后，会突然展现出在小规模模型中完全不存在或表现不佳的全新能力，如COT，指令遵循等，这是模型参数到达百亿甚至千亿显著涌现的</li>
+</ul>
+<blockquote>
+<p>只要我们持续、按比例地增加这三个要素，模型的性能就会可预测地、平滑地提升，而不会出现明显的瓶颈</p>
+</blockquote>
+<h3 id="模型幻觉"><a href="#模型幻觉" class="headerlink" title="模型幻觉"></a>模型幻觉</h3><p><strong>模型幻觉</strong>：大语言模型生成的内容与客观事实、用户输入或上下文信息相矛盾，或者生成了不存在的事实。</p>
+<blockquote>
+<p>原因：</p>
+<ul>
+<li><p>训练语料（RAG，外部工具）</p>
+<ul>
+<li>训练数据中可能包含错误或矛盾的信息；</li>
+<li>知识时效性不足和训练数据中存在的偏见等挑战</li>
+</ul>
+</li>
+<li><p>训练过程（自我纠正）</p>
+<ul>
+<li><p>自回归生成机制决定了它只是在预测下一个最可能的词元，没有内置的事实核查模块；</p>
+</li>
+<li><p>面对需要复杂推理的任务时，模型可能会在逻辑链条中出错；</p>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p>解决：</p>
+<ul>
+<li><strong>检索增强生成（RAG）</strong>：生成前从外部知识库检索相关信息，引导模型生成贴合事实的回答</li>
+<li><strong>多步推理与验证</strong>：引导模型分步推理，每一步进行自我检查或外部验证，提升准确性</li>
+<li><strong>引入外部工具</strong>：允许模型调用搜索引擎、计算器等工具，获取实时信息或完成精确计算</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote>
+<p>我们的agnet学习从最基本的问题开始：</p>
+<ul>
+<li><strong>什么是大语言模型驱动的智能体？</strong> 我们首先明确了其定义，理解了现代智能体是具备了能力的实体。它不再仅仅是执行预设程序的脚本，而是能够自主推理和使用工具的决策者。</li>
+<li><strong>智能体如何工作？</strong> 我们深入探讨了智能体与环境交互的运行机制。我们了解到，这个持续的闭环是智能体处理信息、做出决策、影响环境并根据反馈调整自身行为的基础。</li>
+<li><strong>如何构建智能体？</strong> 这是本章的实践核心。我们以“智能旅行助手”为例，亲手构建了一个完整的、由真实 LLM 驱动的智能体。</li>
+<li><strong>智能体有哪些主流的应用范式？</strong> 最后，我们将视野投向了更广阔的应用领域。我们探讨了两种主流的智能体交互模式：一是以 GitHub Copilot 和 Cursor 等为代表的、增强人类工作流的“开发者工具”；二是以 CrewAI、MetaGPT 和 AgentScope 等框架为代表的、能够独立完成高层级目标的“自主协作者”。同时讲解了 Workflow 与 Agent 的差异。</li>
+</ul>
+<p>并回顾了智能体发展的历史脉络，探索了其核心思想从诞生到演进的过程，内容涵盖了人工智能领域几次关键的范式革命：</p>
+<ul>
+<li><strong>符号主义的探索与局限</strong>：从人工智能的古典时代出发，本章阐述了以专家系统为代表的早期智能体是如何尝试通过“知识+推理”来模拟智能的。通过亲手构建一个基于规则的聊天机器人，我们深刻体会到这一范式的能力边界及其面临的根本性挑战。</li>
+<li><strong>分布式智能思想的萌芽</strong>：探讨了马文·明斯基的“心智社会”理论。这一革命性的思想揭示了复杂的整体智能可以从简单的局部单元的交互中涌现，为后续的多智能体系统研究提供了重要的哲学启发。</li>
+<li><strong>学习范式的演进</strong>：见证了智能体获取能力方式的根本性变革。从联结主义赋予智能体感知世界的能力，到强化学习使其学会在与环境的交互中进行最优决策，再到基于大规模数据预训练的大型语言模型（LLM）为其提供了前所未有的世界知识和通用推理能力。</li>
+<li><strong>现代智能体的诞生</strong>：最后，我们对LLM驱动智能体进行分析。通过对其核心组件（模型、记忆、规划、工具等）和工作原理的分析，我们理解了历史上的各种技术思想是如何在现代Agent的架构中实现技术融合的。</li>
+</ul>
+<p>我们不仅理解了第一章所介绍的现代智能体从何而来，更能建立了一个关于智能体技术演进的宏观认知框架。可以发现，智能体的发展并非简单的技术迭代，而是一场关于如何定义“智能”、获取“知识”、进行“决策”的思想变革。</p>
+<p>既然现代智能体的核心是大型语言模型，那么深入理解其底层原理便至关重要。重点围绕作为其核心组件的大语言模型 (LLM) 展开。内容从语言模型的早期发展开始，详细讲解了 Transformer 架构，并介绍了与 LLM 进行交互的方法。最后，本章对当前主流的模型生态、发展规律及其固有局限性进行了梳理。</p>
+<p><strong>核心知识点回顾：</strong></p>
+<ul>
+<li><strong>模型演进与核心架构</strong>：本章追溯了从统计语言模型 (N-gram) 到神经网络模型 (RNN, LSTM)，再到奠定现代 LLM 基础的 Transformer 架构。通过“自顶向下”的代码实现，本章拆解了 Transformer 的核心组件，并阐述了自注意力机制在并行计算和捕捉长距离依赖中的关键作用。</li>
+<li><strong>与模型的交互方式</strong>：本章介绍了与 LLM 交互的两个核心环节：提示工程 (Prompt Engineering) 和文本分词 (Tokenization)。前者用于指导模型的行为，后者是理解模型输入处理的基础。通过本地部署并运行开源模型的实践，将理论知识应用于实际操作。</li>
+<li><strong>模型生态与选型</strong>：本章系统地梳理了为智能体选择模型时需要权衡的关键因素，并概览了以 OpenAI GPT、Google Gemini 为代表的闭源模型和以 Llama、Mistral 为代表的开源模型的特点与定位。</li>
+<li><strong>法则与局限</strong>：本章探讨了驱动 LLM 能力提升的缩放法则，阐述了其背后的基本原理。同时，本章也分析了模型存在的如事实幻觉、知识过时等固有局限性，这对于构建可靠、鲁棒的智能体至关重要。</li>
+</ul>
+<p><strong>从 LLM 基础到构建智能体：</strong></p>
+<p>这一章的LLM基础主要是为了帮助大家更好的理解大模型的诞生以及发展过程，其中也蕴含了智能体设计的部分思考。例如，如何设计有效的提示词来引导 Agent 的规划与决策，如何根据任务需求选择合适的模型，以及如何在 Agent 的工作流中加入验证机制以规避模型的幻觉等问题，其解决方案均建立在本章的基础之上。我们现在已经准备好从理论转向实践。</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/1.agent%E5%9F%BA%E7%A1%80/">https://yuezi2048.github.io/2026/05/15/2.Areas🌐/AI/agent/1.agent基础/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/agent/">agent</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/3.agent%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA/" title="3.agent框架搭建"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">3.agent框架搭建</div></div><div class="info-2"><div class="info-item-1">agent范式 ReAct 纯思考型（COT），和纯行动型（没有规划和纠错）的融合产物 &#x3D;&gt; ReAct &#x3D; Reson + Act，推理让行动更有目的性，行动让推理提供事实依据，形成“思考-行动-观察”的闭环：  思考：反思上一步的结果 &#x2F; 分解任务 行动：采取具体动作（如调用一个工具，Search[‘华为最新手机’]） 观察：执行Action后的结果   工具定义以网页搜索为例，我们在工具中需要定义：  Name：简洁，唯一标识符。 Description描述：是决定智能体是否调用该工具的关键 执行逻辑：一段函数 &#x2F; 交给类管理  工具管理参考适配器模式，我们需要有一个工具注册中心来管理工具。 class ToolExecutor:    &quot;&quot;&quot;    一个工具执行器，负责管理和执行工具。    &quot;&quot;&quot;    def __init__(self):        self.tools: Dict[str, Dict[str, Any]] = &#123;&#125;  ...</div></div></div></a><a class="pagination-related" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/4.agent%E7%9A%84%E8%AE%B0%E5%BF%86%E5%92%8C%E6%A3%80%E7%B4%A2/" title="4.agent的记忆和检索"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">4.agent的记忆和检索</div></div><div class="info-2"><div class="info-item-1">接下来是高级部分： 首先我们想要让agent能记忆和检索 然后我们需要上下文工程 随后引入了agent的通信协议，更方便地引入外部内容 当然最难的，也就是对其进行agent-RL工作。 最后我们需要对实现好的agent进行评估。 记忆和检索能力我们将记忆和检索看成是两个工具，对接存储层，整体架构如图  memory_tool负责存储和维护对话过程中的交互信息 rag_tool则负责从用户提供的知识库中检索相关信息作为上下文，并可将重要的检索结果自动存储到记忆系统中。   agents框架对照 HelloAgents记忆系统├── 基础设施层 (Infrastructure Layer)│   ├── MemoryManager - 记忆管理器（统一调度和协调）│   ├── MemoryItem - 记忆数据结构（标准化记忆项）│   ├── MemoryConfig - 配置管理（系统参数设置）│   └── BaseMemory - 记忆基类（通用接口定义）├── 记忆类型层 (Memory Types Layer)│   ├── WorkingMemory -...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/2.%E5%B8%B8%E7%94%A8agent%E6%A1%86%E6%9E%B6%E5%88%86%E6%9E%90/" title="2.常用agent框架分析"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-15</div><div class="info-item-2">2.常用agent框架分析</div></div><div class="info-2"><div class="info-item-1">框架开发实践框架的价值：  代码复用：提供通用的BaseAgent，并封装Agent基本的ReAct&#x2F;PlanAndSolve等循环 组件的解耦和可扩展性： 模型层：支持替换不同的模型厂商 工具层：标准化定义工具，注册，执行，添加工具不影响其他代码。 记忆层：长期记忆&#x2F;短期记忆，根据需求可以切换不同记忆策略（滑动窗口&#x2F;摘要记忆等），更换&#x2F;升级组件会更加清晰   状态管理标准化：我们之前ReflectionAgent中简单的用列表来表示状态，但真实的长时间运行的智能体需要考虑上下文窗口限制、历史信息持久化、多轮对话状态跟踪等问题，框架可以提供通用的状态管理机制，我们无须过于关注这些问题 可观测性和调试过程：如事件回调机制，在关键节点自动触发日志上报    AutoGen：思想是将多智能体的协作看成是群聊，通过定义不同的角色+交互规则（Coder写完代码后Tester接管），如此对话——协作——迭代——完成目标，适合流程化的任务 AgentScope：亮点是工程化和易用性，提供了友好的编程接口定义智能体、构建通信网络（内置消息传递机制...</div></div></div></a><a class="pagination-related" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/3.agent%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA/" title="3.agent框架搭建"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-15</div><div class="info-item-2">3.agent框架搭建</div></div><div class="info-2"><div class="info-item-1">agent范式 ReAct 纯思考型（COT），和纯行动型（没有规划和纠错）的融合产物 &#x3D;&gt; ReAct &#x3D; Reson + Act，推理让行动更有目的性，行动让推理提供事实依据，形成“思考-行动-观察”的闭环：  思考：反思上一步的结果 &#x2F; 分解任务 行动：采取具体动作（如调用一个工具，Search[‘华为最新手机’]） 观察：执行Action后的结果   工具定义以网页搜索为例，我们在工具中需要定义：  Name：简洁，唯一标识符。 Description描述：是决定智能体是否调用该工具的关键 执行逻辑：一段函数 &#x2F; 交给类管理  工具管理参考适配器模式，我们需要有一个工具注册中心来管理工具。 class ToolExecutor:    &quot;&quot;&quot;    一个工具执行器，负责管理和执行工具。    &quot;&quot;&quot;    def __init__(self):        self.tools: Dict[str, Dict[str, Any]] = &#123;&#125;  ...</div></div></div></a><a class="pagination-related" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/5.%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" title="5.上下文工程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-15</div><div class="info-item-2">5.上下文工程</div></div><div class="info-2"><div class="info-item-1"> context is all you need  我们主要学习上下文工程和两个相关工具：  ContextBuilder：基于GSSC (Gather-Select-Structure-Compress) 流水线，来统一管理上下文窗口 NoteTool：对智能体进行持久化的管理 TerminalTool：终端工具，对文件系统操作，进行即时上下文检索   请回答：上下文工程和早期提示词工程区别？为什么要上下文工程？上下文工程目标是什么？那怎么从上下文检索内容？长时程的任务你又怎么处理？  区别？ 提示工程：关注如何编写与组织 LLM...</div></div></div></a><a class="pagination-related" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/4.agent%E7%9A%84%E8%AE%B0%E5%BF%86%E5%92%8C%E6%A3%80%E7%B4%A2/" title="4.agent的记忆和检索"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-15</div><div class="info-item-2">4.agent的记忆和检索</div></div><div class="info-2"><div class="info-item-1">接下来是高级部分： 首先我们想要让agent能记忆和检索 然后我们需要上下文工程 随后引入了agent的通信协议，更方便地引入外部内容 当然最难的，也就是对其进行agent-RL工作。 最后我们需要对实现好的agent进行评估。 记忆和检索能力我们将记忆和检索看成是两个工具，对接存储层，整体架构如图  memory_tool负责存储和维护对话过程中的交互信息 rag_tool则负责从用户提供的知识库中检索相关信息作为上下文，并可将重要的检索结果自动存储到记忆系统中。   agents框架对照 HelloAgents记忆系统├── 基础设施层 (Infrastructure Layer)│   ├── MemoryManager - 记忆管理器（统一调度和协调）│   ├── MemoryItem - 记忆数据结构（标准化记忆项）│   ├── MemoryConfig - 配置管理（系统参数设置）│   └── BaseMemory - 记忆基类（通用接口定义）├── 记忆类型层 (Memory Types Layer)│   ├── WorkingMemory -...</div></div></div></a><a class="pagination-related no-desc" href="/2026/05/13/2.Areas%F0%9F%8C%90/AI/agent/9.%E5%AE%9E%E9%99%85%E6%A1%88%E4%BE%8B/" title="9.实际案例"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-13</div><div class="info-item-2">9.实际案例</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">835</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">82</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">110</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#hello-agent-%E5%9F%BA%E7%A1%80"><span class="toc-text">hello-agent-基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%99%BA%E8%83%BD%E4%BD%93%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-text">智能体是什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%99%BA%E8%83%BD%E4%BD%93%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6"><span class="toc-text">智能体运行机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%99%BA%E8%83%BD%E4%BD%93%E5%BA%94%E7%94%A8"><span class="toc-text">智能体应用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%ACLLM%E6%A8%A1%E5%9E%8B"><span class="toc-text">基本LLM模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Transformer"><span class="toc-text">Transformer</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Encoding-Decoding"><span class="toc-text">Encoding-Decoding</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%87%AA%E6%B3%A8%E6%84%8F%E5%8A%9B%E5%88%B0%E5%A4%9A%E5%A4%B4%E6%B3%A8%E6%84%8F%E5%8A%9B"><span class="toc-text">自注意力到多头注意力</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E9%A6%88%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="toc-text">前馈神经网络</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AE%8B%E5%B7%AE%E8%BF%9E%E6%8E%A5%E4%B8%8E%E5%B1%82%E5%BD%92%E4%B8%80%E5%8C%96"><span class="toc-text">残差连接与层归一化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%8D%E7%BD%AE%E7%BC%96%E7%A0%81"><span class="toc-text">位置编码</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Decoder-Only"><span class="toc-text">Decoder-Only</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LLM%E4%BA%A4%E4%BA%92%E5%9F%BA%E7%A1%80"><span class="toc-text">LLM交互基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E7%A4%BA%E8%AF%8D%E5%B7%A5%E7%A8%8B"><span class="toc-text">提示词工程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E6%9C%AC%E5%88%86%E8%AF%8D"><span class="toc-text">文本分词</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9"><span class="toc-text">模型选择</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LLM%E7%89%B9%E6%80%A7"><span class="toc-text">LLM特性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%A9%E6%94%BE%E6%B3%95%E5%88%99"><span class="toc-text">缩放法则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E5%B9%BB%E8%A7%89"><span class="toc-text">模型幻觉</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/17/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-05-17T03:19:58.038Z" title="发表于 2026-05-17 11:19:58">2026-05-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/17/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-05-17T03:19:57.489Z" title="发表于 2026-05-17 11:19:57">2026-05-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/5.%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" title="5.上下文工程">5.上下文工程</a><time datetime="2026-05-15T14:04:33.000Z" title="发表于 2026-05-15 22:04:33">2026-05-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/4.agent%E7%9A%84%E8%AE%B0%E5%BF%86%E5%92%8C%E6%A3%80%E7%B4%A2/" title="4.agent的记忆和检索">4.agent的记忆和检索</a><time datetime="2026-05-15T12:39:02.000Z" title="发表于 2026-05-15 20:39:02">2026-05-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/1.agent%E5%9F%BA%E7%A1%80/" title="1.agent基础">1.agent基础</a><time datetime="2026-05-15T04:47:21.000Z" title="发表于 2026-05-15 12:47:21">2026-05-15</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

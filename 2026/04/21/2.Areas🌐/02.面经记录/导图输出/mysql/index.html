@@ -1,0 +1,296 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>mysql | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="完全正确！这是最高效的准备策略先把80%的核心必考点讲透、讲顺、讲成自己的话，剩下20%的深挖题和边缘题完全可以等核心模块录完、基础打牢后再补充。这样既能快速产出完整的面试视频，又能保证面试时90%的基础题和中等题都能对答如流。 我帮你把内容再做一次终极优先级划分，明确告诉你：✅ 必须100%讲透，漏了直接扣分⚠️ 可以一句话带过，后面再展开❌ 暂时完全跳过，等所有核心讲完再补  一、各模块必讲&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql">
+<meta property="og:url" content="https://yuezi2048.github.io/2026/04/21/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AF%BC%E5%9B%BE%E8%BE%93%E5%87%BA/mysql/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="完全正确！这是最高效的准备策略先把80%的核心必考点讲透、讲顺、讲成自己的话，剩下20%的深挖题和边缘题完全可以等核心模块录完、基础打牢后再补充。这样既能快速产出完整的面试视频，又能保证面试时90%的基础题和中等题都能对答如流。 我帮你把内容再做一次终极优先级划分，明确告诉你：✅ 必须100%讲透，漏了直接扣分⚠️ 可以一句话带过，后面再展开❌ 暂时完全跳过，等所有核心讲完再补  一、各模块必讲&amp;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2026-04-21T02:16:27.000Z">
+<meta property="article:modified_time" content="2026-04-21T02:16:27.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="导图输出">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "mysql",
+  "url": "https://yuezi2048.github.io/2026/04/21/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AF%BC%E5%9B%BE%E8%BE%93%E5%87%BA/mysql/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2026-04-21T02:16:27.000Z",
+  "dateModified": "2026-04-21T02:16:27.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yuezi2048.github.io/2026/04/21/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AF%BC%E5%9B%BE%E8%BE%93%E5%87%BA/mysql/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?bfb48b678d82bea9f9cc9d59227767e4";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+btf.addGlobalFn('pjaxComplete', () => {
+  _hmt.push(['_trackPageview',window.location.pathname])
+}, 'baidu_analytics')
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":6,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":350,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'mysql',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">835</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">82</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">110</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">mysql</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">mysql</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-04-21T02:16:27.000Z" title="发表于 2026-04-21 10:16:27">2026-04-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-21T02:16:27.000Z" title="更新于 2026-04-21 10:16:27">2026-04-21</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/">02.面经记录</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AF%BC%E5%9B%BE%E8%BE%93%E5%87%BA/">导图输出</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>6分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="完全正确！这是最高效的准备策略"><a href="#完全正确！这是最高效的准备策略" class="headerlink" title="完全正确！这是最高效的准备策略"></a>完全正确！这是最高效的准备策略</h1><p><strong>先把80%的核心必考点讲透、讲顺、讲成自己的话</strong>，剩下20%的深挖题和边缘题完全可以等核心模块录完、基础打牢后再补充。这样既能快速产出完整的面试视频，又能保证面试时90%的基础题和中等题都能对答如流。</p>
+<p>我帮你把内容再做一次<strong>终极优先级划分</strong>，明确告诉你：<br>✅ <strong>必须100%讲透，漏了直接扣分</strong><br>⚠️ <strong>可以一句话带过，后面再展开</strong><br>❌ <strong>暂时完全跳过，等所有核心讲完再补</strong></p>
+<hr>
+<h2 id="一、各模块必讲-选讲-跳过清单"><a href="#一、各模块必讲-选讲-跳过清单" class="headerlink" title="一、各模块必讲&#x2F;选讲&#x2F;跳过清单"></a>一、各模块必讲&#x2F;选讲&#x2F;跳过清单</h2><h3 id="0-技术选型（必讲，开场第一题）"><a href="#0-技术选型（必讲，开场第一题）" class="headerlink" title="0. 技术选型（必讲，开场第一题）"></a>0. 技术选型（必讲，开场第一题）</h3><p>✅ <strong>必讲</strong>：</p>
+<ul>
+<li>为什么不用文件？（乱，无约束）</li>
+<li>为什么不用Oracle？（贵，重）</li>
+<li>为什么不用Redis？（限，不支持复杂查询和事务）</li>
+<li>一句话总结：MySQL是中小业务结构化数据存储的最优解</li>
+</ul>
+<p>⚠️ <strong>选讲</strong>：逻辑删除vs物理删除<br>❌ <strong>跳过</strong>：MySQL vs PostgreSQL、MySQL vs MongoDB</p>
+<hr>
+<h3 id="1-MySQL整体架构（必讲，基础中的基础）"><a href="#1-MySQL整体架构（必讲，基础中的基础）" class="headerlink" title="1. MySQL整体架构（必讲，基础中的基础）"></a>1. MySQL整体架构（必讲，基础中的基础）</h3><p>✅ <strong>必讲</strong>：</p>
+<ul>
+<li>两层架构：Server层（解析SQL）+ 存储引擎层（存数据）</li>
+<li>Server层流程：连接器→分析器→优化器→执行器</li>
+<li>存储引擎：InnoDB默认，MyISAM只提一句（不支持事务和行锁）</li>
+</ul>
+<p>⚠️ <strong>选讲</strong>：查询缓存8.0废弃<br>❌ <strong>跳过</strong>：各组件的详细实现</p>
+<hr>
+<h3 id="2-InnoDB核心架构（重中之重，占面试40-）"><a href="#2-InnoDB核心架构（重中之重，占面试40-）" class="headerlink" title="2. InnoDB核心架构（重中之重，占面试40%）"></a>2. InnoDB核心架构（重中之重，占面试40%）</h3><h4 id="2-1-B-树索引（必讲）"><a href="#2-1-B-树索引（必讲）" class="headerlink" title="2.1 B+树索引（必讲）"></a>2.1 B+树索引（必讲）</h4><p>✅ <strong>必讲</strong>：</p>
+<ul>
+<li>为什么不用红黑树？（树太高，IO多）</li>
+<li>为什么不用B树？（非叶子节点存数据，树更高，范围查询差）</li>
+<li>B+树核心优势：非叶子节点只存索引，叶子节点存所有数据且有序串联</li>
+<li>3层B+树能存多少数据？（1600万行，这个数字一定要准确）</li>
+</ul>
+<p>⚠️ <strong>选讲</strong>：B+树查询数据的三步流程<br>❌ <strong>跳过</strong>：二叉树、AVL树、红黑树的详细区别</p>
+<h4 id="2-2-核心组件（必讲）"><a href="#2-2-核心组件（必讲）" class="headerlink" title="2.2 核心组件（必讲）"></a>2.2 核心组件（必讲）</h4><p>✅ <strong>必讲</strong>（每个组件只讲”是什么+解决什么问题”）：</p>
+<ul>
+<li><strong>Buffer Pool</strong>：缓存数据页，避免每次读磁盘，用LRU变种解决热点数据污染</li>
+<li><strong>Redo Log</strong>：存储引擎层物理日志，WAL机制，保证崩溃恢复</li>
+<li><strong>Undo Log</strong>：存历史版本，用于事务回滚和MVCC</li>
+<li><strong>Binlog</strong>：Server层逻辑日志，用于主从同步和数据备份</li>
+<li><strong>Double Write Buffer</strong>：解决16KB页的部分写问题，保证数据页完整</li>
+</ul>
+<p>⚠️ <strong>选讲</strong>：Change Buffer（只说”缓存二级索引修改，减少随机IO，唯一索引不能用”）<br>❌ <strong>跳过</strong>：Log Buffer、Undo Purge、Buffer Pool三大链表</p>
+<h4 id="2-3-事务二阶段提交（必讲，面试官最爱追问）"><a href="#2-3-事务二阶段提交（必讲，面试官最爱追问）" class="headerlink" title="2.3 事务二阶段提交（必讲，面试官最爱追问）"></a>2.3 事务二阶段提交（必讲，面试官最爱追问）</h4><p>✅ <strong>必讲</strong>：</p>
+<ul>
+<li>为什么需要二阶段提交？（单独写redo或binlog，宕机都会数据不一致）</li>
+<li>四步流程：执行事务→redo prepare→binlog落盘→redo commit</li>
+<li>崩溃恢复规则：redo只有prepare且binlog不存在→回滚；redo有prepare且binlog存在→提交</li>
+</ul>
+<p>⚠️ <strong>选讲</strong>：二阶段提交的两种异常情况分析<br>❌ <strong>跳过</strong>：组提交、刷盘策略的详细参数</p>
+<hr>
+<h3 id="3-表设计（必讲，工程实践题）"><a href="#3-表设计（必讲，工程实践题）" class="headerlink" title="3. 表设计（必讲，工程实践题）"></a>3. 表设计（必讲，工程实践题）</h3><p>✅ <strong>必讲</strong>：</p>
+<ul>
+<li>字段设计：int(11)是显示宽度、金额用Decimal&#x2F;Bigint、推荐逻辑删除</li>
+<li>索引基础：聚簇索引vs非聚簇索引（回表）、联合索引最左匹配原则</li>
+<li>覆盖索引：查询字段都在索引里，不需要回表</li>
+<li>三大范式：1NF原子性、2NF消除部分依赖、3NF消除传递依赖，实际适当反范式</li>
+</ul>
+<p>⚠️ <strong>选讲</strong>：索引下推（一句话：把条件下推到存储引擎过滤，减少回表）<br>❌ <strong>跳过</strong>：前缀索引、分区表、主键设计的细节</p>
+<hr>
+<h3 id="4-SQL运行（必讲，调优基础）"><a href="#4-SQL运行（必讲，调优基础）" class="headerlink" title="4. SQL运行（必讲，调优基础）"></a>4. SQL运行（必讲，调优基础）</h3><p>✅ <strong>必讲</strong>：</p>
+<ul>
+<li>SELECT执行顺序：FROM→JOIN→WHERE→GROUP BY→HAVING→SELECT→ORDER BY→LIMIT</li>
+<li>count对比：count(<em>)≈count(1)&gt;count(主键)&gt;count(字段)，count(</em>)是MySQL专门优化的</li>
+<li>join优化：小表驱动大表，被驱动表建索引</li>
+<li>EXISTS vs IN：EXISTS适合内表大，IN适合内表小</li>
+</ul>
+<p>⚠️ <strong>选讲</strong>：DELETE vs TRUNCATE vs DROP的区别<br>❌ <strong>跳过</strong>：Join底层算法、文件排序的详细原理</p>
+<hr>
+<h3 id="5-并发事务（最难也最重要，区分度最高）"><a href="#5-并发事务（最难也最重要，区分度最高）" class="headerlink" title="5. 并发事务（最难也最重要，区分度最高）"></a>5. 并发事务（最难也最重要，区分度最高）</h3><p>✅ <strong>必讲</strong>：</p>
+<ul>
+<li>锁基础：S锁&#x2F;X锁、意向锁、行锁&#x2F;表锁</li>
+<li>事务隔离级别：四个级别+解决的问题（脏读→不可重复读→幻读）</li>
+<li>MySQL默认RR级别，用Next-Key Lock（记录锁+间隙锁）解决幻读</li>
+<li>MVCC核心原理：Undo Log版本链 + Read View可见性判断</li>
+<li>RC和RR的区别：RC每次快照读生成新Read View，RR第一次生成后复用</li>
+</ul>
+<p>⚠️ <strong>选讲</strong>：长事务的风险（锁竞争、主从延迟、回滚慢）<br>❌ <strong>跳过</strong>：行锁加锁规则、死锁检测、半一致读</p>
+<hr>
+<h3 id="6-性能调优（必讲，工程题）"><a href="#6-性能调优（必讲，工程题）" class="headerlink" title="6. 性能调优（必讲，工程题）"></a>6. 性能调优（必讲，工程题）</h3><p>✅ <strong>必讲</strong>：</p>
+<ul>
+<li>慢SQL排查流程：开启慢日志→分析→Explain定位</li>
+<li>Explain重点看：type（访问类型）、key（用到的索引）、rows（扫描行数）、Extra</li>
+<li>分库分表：水平分表（按user_id哈希）、垂直分表（按业务拆分）</li>
+<li>分库分表带来的问题：分布式事务、跨库join、全局ID、排序分页</li>
+</ul>
+<p>⚠️ <strong>选讲</strong>：缓存一致性Cache Aside模式（先更数据库，再删缓存）<br>❌ <strong>跳过</strong>：InnoDB参数调优、连接池调优、深度分页优化</p>
+<hr>
+<h3 id="7-高可用与数据迁移（必讲，最后一个模块）"><a href="#7-高可用与数据迁移（必讲，最后一个模块）" class="headerlink" title="7. 高可用与数据迁移（必讲，最后一个模块）"></a>7. 高可用与数据迁移（必讲，最后一个模块）</h3><p>✅ <strong>必讲</strong>：</p>
+<ul>
+<li>主从架构：主库写，从库读，故障切换</li>
+<li>主从同步流程：主库写binlog→从库IO线程拉取→写relay log→SQL线程重放</li>
+<li>不停服数据迁移：双写方案→数据核对→灰度切流→关闭旧库</li>
+</ul>
+<p>⚠️ <strong>选讲</strong>：主从延迟的原因<br>❌ <strong>跳过</strong>：MGR、xtrabackup备份、Binlog恢复数据</p>
+<hr>
+<h2 id="二、录视频黄金法则（保证效果）"><a href="#二、录视频黄金法则（保证效果）" class="headerlink" title="二、录视频黄金法则（保证效果）"></a>二、录视频黄金法则（保证效果）</h2><ol>
+<li><strong>每个模块控制在3-5分钟</strong>，最长不超过8分钟</li>
+<li><strong>严格按照”结论先行→核心原理→一句话总结”的结构讲</strong><br>例：”为什么有redo log还要binlog？<br>结论：因为它们是不同层面的日志，作用完全不同。<br>原理：redo是存储引擎层的物理日志，用于崩溃恢复；binlog是Server层的逻辑日志，用于主从同步和备份。<br>总结：两者通过二阶段提交共同保证数据一致性。”</li>
+<li><strong>所有关键数字一定要准确</strong>：16KB页、3层B+树1600万行、int4字节</li>
+<li><strong>不要背PPT，用自己的话讲</strong>，卡壳了就停下来重录，不要硬撑</li>
+<li><strong>遇到复杂的概念，用类比</strong>：比如把Buffer Pool比作电脑的内存，把Redo Log比作笔记本</li>
+</ol>
+<hr>
+<h2 id="三、面试灵活应对技巧（针对你现在的准备程度）"><a href="#三、面试灵活应对技巧（针对你现在的准备程度）" class="headerlink" title="三、面试灵活应对技巧（针对你现在的准备程度）"></a>三、面试灵活应对技巧（针对你现在的准备程度）</h2><ol>
+<li><strong>面试官问你没准备的问题，直接说”这个我暂时没深入了解，但我知道相关的XX”</strong><br>例：面试官问”Change Buffer的merge时机？”<br>你可以说：”这个我暂时没记太清楚，但我知道Change Buffer是用来缓存二级索引的修改操作，批量合并到磁盘，减少随机IO，唯一索引因为要校验唯一性所以不能用。”</li>
+<li><strong>主动引导面试官到你准备好的内容上</strong><br>例：讲完MVCC，可以主动说：”MVCC在不同隔离级别下的实现是不一样的，RC和RR的Read View生成时机不同，这也是它们能解决不同问题的原因。”</li>
+<li><strong>不要不懂装懂</strong>，面试官一眼就能看出来，诚实说不会反而会留下好印象</li>
+</ol>
+<hr>
+<h2 id="四、后续补充计划（等核心录完再做）"><a href="#四、后续补充计划（等核心录完再做）" class="headerlink" title="四、后续补充计划（等核心录完再做）"></a>四、后续补充计划（等核心录完再做）</h2><ol>
+<li>第一优先级补充：InnoDB行锁加锁规则、MySQL 8.0新特性、线上故障排查</li>
+<li>第二优先级补充：缓存三大问题、分布式ID、秒杀场景优化</li>
+<li>第三优先级补充：分区表、存储过程、视图等边缘知识点</li>
+</ol>
+<p>按照这个节奏来，你一周内就能产出一套高质量的MySQL面试视频，而且面试时大部分问题都能轻松应对。</p>
+<p>需要我帮你把<strong>每个必讲模块的3句话核心话术</strong>写出来，让你直接照着念，录视频的时候更顺畅吗？</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2026/04/21/2.Areas%F0%9F%8C%90/02.%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AF%BC%E5%9B%BE%E8%BE%93%E5%87%BA/mysql/">https://yuezi2048.github.io/2026/04/21/2.Areas🌐/02.面经记录/导图输出/mysql/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AF%BC%E5%9B%BE%E8%BE%93%E5%87%BA/">导图输出</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/04/20/2.Areas%F0%9F%8C%90/temp/AI%20native/" title="AI native"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">AI native</div></div><div class="info-2"><div class="info-item-1">AI 编程 !&#x3D; Vibe Coding Vibe Coding 只是 AI 编程众多模式中的一种，而且是最随性的那种。如今 AI 编程的模式已经非常多了，从跟着感觉走到按流程来，从一个人问 AI 到一整套方法论驱动，不同场景有不同的最佳实践。 今天就给大家一次性讲清楚，目前主流的 6 种 AI 编程模式到底是什么？有什么区别？各自适合什么场景？ 搞懂这些，下次面试再被问到 AI 编程，你就能从容地掏出一整套体系了。  本文内容节选自鱼皮免费开源的 《AI 编程零基础入门教程》 中的「Vibe Coding 概念大全」篇，想系统学习 AI 编程的朋友可以直接去看完整教程。  一、Vibe Coding 氛围编程Vibe Coding 是由计算机科学家 Andrej Karpathy 在 2025 年 2 月提出的概念。它描述了一种全新的编程方式：通过自然语言和 AI 对话，让 AI 帮你写代码，你只需要描述需求、测试结果、指导方向。 你不需要精通编程语法，只需要能清楚表达你的想法，AI 负责把你的想法变成可运行的代码。 所以说，Vibe Coding...</div></div></div></a><a class="pagination-related" href="/2026/04/21/2.Areas%F0%9F%8C%90/go/go%E5%85%A5%E9%97%A8-%E6%9E%AB%E6%9E%AB%E7%9F%A5%E9%81%93/1.%E8%AE%A1%E5%88%92/" title="1.计划"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">1.计划</div></div><div class="info-2"><div class="info-item-1">发源于Google，21世纪的C语言：  简洁高效，像C语言，编写像python GoRoutine 方便进行并发 跨平台支持 标准库：内置http库，加密json等 静态类型，静态语言开发方便，后期维护方便go语言项目： docker，搭建软件环境 nsq：高可用，分布式实时消息队列 Promethus  监控告警开源系统 CokroachDB 分布式关系型DB  国外：google（grpc） UBER FaceBook国内：360 腾讯 JD go语言学习计划：  环境 变量定义，输入输出 数组 切片 map if for 函数（指针） init和defer函数 结构体 自定义数据类型 接口 协程，channel 线程安全，Sync.Map 异常处理 泛型 文件操作 单元测试 反射 网络编程 部署  </div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">835</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">82</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">110</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%8C%E5%85%A8%E6%AD%A3%E7%A1%AE%EF%BC%81%E8%BF%99%E6%98%AF%E6%9C%80%E9%AB%98%E6%95%88%E7%9A%84%E5%87%86%E5%A4%87%E7%AD%96%E7%95%A5"><span class="toc-text">完全正确！这是最高效的准备策略</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%90%84%E6%A8%A1%E5%9D%97%E5%BF%85%E8%AE%B2-%E9%80%89%E8%AE%B2-%E8%B7%B3%E8%BF%87%E6%B8%85%E5%8D%95"><span class="toc-text">一、各模块必讲&#x2F;选讲&#x2F;跳过清单</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0-%E6%8A%80%E6%9C%AF%E9%80%89%E5%9E%8B%EF%BC%88%E5%BF%85%E8%AE%B2%EF%BC%8C%E5%BC%80%E5%9C%BA%E7%AC%AC%E4%B8%80%E9%A2%98%EF%BC%89"><span class="toc-text">0. 技术选型（必讲，开场第一题）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-MySQL%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84%EF%BC%88%E5%BF%85%E8%AE%B2%EF%BC%8C%E5%9F%BA%E7%A1%80%E4%B8%AD%E7%9A%84%E5%9F%BA%E7%A1%80%EF%BC%89"><span class="toc-text">1. MySQL整体架构（必讲，基础中的基础）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-InnoDB%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84%EF%BC%88%E9%87%8D%E4%B8%AD%E4%B9%8B%E9%87%8D%EF%BC%8C%E5%8D%A0%E9%9D%A2%E8%AF%9540-%EF%BC%89"><span class="toc-text">2. InnoDB核心架构（重中之重，占面试40%）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-B-%E6%A0%91%E7%B4%A2%E5%BC%95%EF%BC%88%E5%BF%85%E8%AE%B2%EF%BC%89"><span class="toc-text">2.1 B+树索引（必讲）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%EF%BC%88%E5%BF%85%E8%AE%B2%EF%BC%89"><span class="toc-text">2.2 核心组件（必讲）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-%E4%BA%8B%E5%8A%A1%E4%BA%8C%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%EF%BC%88%E5%BF%85%E8%AE%B2%EF%BC%8C%E9%9D%A2%E8%AF%95%E5%AE%98%E6%9C%80%E7%88%B1%E8%BF%BD%E9%97%AE%EF%BC%89"><span class="toc-text">2.3 事务二阶段提交（必讲，面试官最爱追问）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E8%A1%A8%E8%AE%BE%E8%AE%A1%EF%BC%88%E5%BF%85%E8%AE%B2%EF%BC%8C%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5%E9%A2%98%EF%BC%89"><span class="toc-text">3. 表设计（必讲，工程实践题）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-SQL%E8%BF%90%E8%A1%8C%EF%BC%88%E5%BF%85%E8%AE%B2%EF%BC%8C%E8%B0%83%E4%BC%98%E5%9F%BA%E7%A1%80%EF%BC%89"><span class="toc-text">4. SQL运行（必讲，调优基础）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E5%B9%B6%E5%8F%91%E4%BA%8B%E5%8A%A1%EF%BC%88%E6%9C%80%E9%9A%BE%E4%B9%9F%E6%9C%80%E9%87%8D%E8%A6%81%EF%BC%8C%E5%8C%BA%E5%88%86%E5%BA%A6%E6%9C%80%E9%AB%98%EF%BC%89"><span class="toc-text">5. 并发事务（最难也最重要，区分度最高）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%EF%BC%88%E5%BF%85%E8%AE%B2%EF%BC%8C%E5%B7%A5%E7%A8%8B%E9%A2%98%EF%BC%89"><span class="toc-text">6. 性能调优（必讲，工程题）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E9%AB%98%E5%8F%AF%E7%94%A8%E4%B8%8E%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB%EF%BC%88%E5%BF%85%E8%AE%B2%EF%BC%8C%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA%E6%A8%A1%E5%9D%97%EF%BC%89"><span class="toc-text">7. 高可用与数据迁移（必讲，最后一个模块）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%BD%95%E8%A7%86%E9%A2%91%E9%BB%84%E9%87%91%E6%B3%95%E5%88%99%EF%BC%88%E4%BF%9D%E8%AF%81%E6%95%88%E6%9E%9C%EF%BC%89"><span class="toc-text">二、录视频黄金法则（保证效果）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E9%9D%A2%E8%AF%95%E7%81%B5%E6%B4%BB%E5%BA%94%E5%AF%B9%E6%8A%80%E5%B7%A7%EF%BC%88%E9%92%88%E5%AF%B9%E4%BD%A0%E7%8E%B0%E5%9C%A8%E7%9A%84%E5%87%86%E5%A4%87%E7%A8%8B%E5%BA%A6%EF%BC%89"><span class="toc-text">三、面试灵活应对技巧（针对你现在的准备程度）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%90%8E%E7%BB%AD%E8%A1%A5%E5%85%85%E8%AE%A1%E5%88%92%EF%BC%88%E7%AD%89%E6%A0%B8%E5%BF%83%E5%BD%95%E5%AE%8C%E5%86%8D%E5%81%9A%EF%BC%89"><span class="toc-text">四、后续补充计划（等核心录完再做）</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/17/Excalidraw/Drawing%202024-11-01%2015.37.37.excalidraw/" title="Drawing 2024-11-01 15.37.37.excalidraw">Drawing 2024-11-01 15.37.37.excalidraw</a><time datetime="2026-05-17T03:19:58.038Z" title="发表于 2026-05-17 11:19:58">2026-05-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/17/2.Areas%F0%9F%8C%90/01.project/condefather/yupao/back-end/7.%E4%BC%98%E5%8C%96%E4%B8%BB%E9%A1%B5%E6%80%A7%E8%83%BD-%E4%BC%98%E5%8C%96%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE/" title="7.优化主页性能-优化批量导入数据">7.优化主页性能-优化批量导入数据</a><time datetime="2026-05-17T03:19:57.489Z" title="发表于 2026-05-17 11:19:57">2026-05-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/5.%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" title="5.上下文工程">5.上下文工程</a><time datetime="2026-05-15T14:04:33.000Z" title="发表于 2026-05-15 22:04:33">2026-05-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/4.agent%E7%9A%84%E8%AE%B0%E5%BF%86%E5%92%8C%E6%A3%80%E7%B4%A2/" title="4.agent的记忆和检索">4.agent的记忆和检索</a><time datetime="2026-05-15T12:39:02.000Z" title="发表于 2026-05-15 20:39:02">2026-05-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/15/2.Areas%F0%9F%8C%90/AI/agent/1.agent%E5%9F%BA%E7%A1%80/" title="1.agent基础">1.agent基础</a><time datetime="2026-05-15T04:47:21.000Z" title="发表于 2026-05-15 12:47:21">2026-05-15</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/default.png);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>
