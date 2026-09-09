@@ -1,0 +1,565 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>5. 决策树 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="[TOC] 五、决策树 决策树（decision tree）是一个基本的分类和回归方法，这里主要讨论分类 决策树模型是树型结构，表示基于特征对实例进行分类的过程 被认为是if-then规则的集合（说明了可解释性） 也可以认为是定义在特征空间和类空间上的条件概率分布 有点就是可读性与分类速度快   学习时，在训练数据集上通过损失函数最小化建立决策树模型。预测时，对测试集利用决策树模型进行分类 学习包">
+<meta property="og:type" content="article">
+<meta property="og:title" content="5. 决策树">
+<meta property="og:url" content="https://yuezi2048.github.io/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/5.%20%E5%86%B3%E7%AD%96%E6%A0%91/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="[TOC] 五、决策树 决策树（decision tree）是一个基本的分类和回归方法，这里主要讨论分类 决策树模型是树型结构，表示基于特征对实例进行分类的过程 被认为是if-then规则的集合（说明了可解释性） 也可以认为是定义在特征空间和类空间上的条件概率分布 有点就是可读性与分类速度快   学习时，在训练数据集上通过损失函数最小化建立决策树模型。预测时，对测试集利用决策树模型进行分类 学习包">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2024-12-27T03:10:01.000Z">
+<meta property="article:modified_time" content="2024-12-27T03:10:01.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="1.监督学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "5. 决策树",
+  "url": "https://yuezi2048.github.io/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/5.%20%E5%86%B3%E7%AD%96%E6%A0%91/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2024-12-27T03:10:01.000Z",
+  "dateModified": "2024-12-27T03:10:01.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://yuezi2048.github.io/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/5.%20%E5%86%B3%E7%AD%96%E6%A0%91/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'undefined')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'undefined')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":10,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  algoliaAssets: {"client":"https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js","instantSearch":"https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js","runtime":"/js/search/algolia.js"},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false,
+  darkmodeTitle: {
+    night: '切换到日间状态',
+    day: '切换到夜间状态'
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '5. 决策树',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 8.1.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar" loading="lazy"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">900</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">92</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">121</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><button class="site-page" id="tree-drawer-btn" type="button" title="目录导航" aria-label="目录导航"><i class="fas fa-bars fa-fw"></i></button><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">5. 决策树</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><button class="site-page" id="toc-drawer-btn" type="button" title="目录" aria-label="目录"><i class="fas fa-list-ul fa-fw"></i></button><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><button class="site-page" id="darkmode-nav" type="button" title="切换到日间状态" aria-label="切换到日间状态"><i class="fas fa-fw fa-moon"></i></button><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">5. 决策树</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-12-27T03:10:01.000Z" title="发表于 2024-12-27 11:10:01">2024-12-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-12-27T03:10:01.000Z" title="更新于 2024-12-27 11:10:01">2024-12-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/">science</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/">Pre</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/">统计学习方法</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1-%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/">1.监督学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">4.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>14分钟</span></span><span class="post-meta-separator">|</span><span id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="umamiPV" data-path="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/5.%20%E5%86%B3%E7%AD%96%E6%A0%91/"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout hide-aside" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>[TOC]</p>
+<h1 id="五、决策树"><a href="#五、决策树" class="headerlink" title="五、决策树"></a>五、决策树</h1><ul>
+<li><code>决策树</code>（decision tree）是一个基本的分类和回归方法，这里主要讨论分类</li>
+<li>决策树模型是树型结构，表示基于特征对实例进行分类的过程<ul>
+<li>被认为是<code>if-then</code>规则的集合（说明了可解释性）</li>
+<li>也可以认为是定义在特征空间和类空间上的条件概率分布</li>
+<li>有点就是可读性与分类速度快</li>
+</ul>
+</li>
+<li>学习时，在训练数据集上通过损失函数最小化建立决策树模型。预测时，对测试集利用决策树模型进行分类</li>
+<li>学习包含三个步骤<ul>
+<li><code>特征选择</code></li>
+<li><code>决策树的生成</code></li>
+<li><code>决策树的修剪</code>（防止过拟合）</li>
+</ul>
+</li>
+<li>决策树的算法包括：Quinlan在1986年提出的<code>ID3方法</code>，1993年提出的<code>C4.5算法</code>，Breiman等人1986年提出的<code>CART算法</code></li>
+</ul>
+<p>注：这里是后续学习XGBoost和GBDT等高阶决策树模型的基础，所以也需要了解基础模型。</p>
+<h2 id="5-1-决策树模型和学习"><a href="#5-1-决策树模型和学习" class="headerlink" title="5.1 决策树模型和学习"></a>5.1 决策树模型和学习</h2><h3 id="5-1-1-决策树模型"><a href="#5-1-1-决策树模型" class="headerlink" title="5.1.1 决策树模型"></a>5.1.1 决策树模型</h3><ul>
+<li>决策树的定义：树形结构，内部结点表示特征，叶子结点表示类</li>
+</ul>
+<img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012092856512.png" alt="image-20241012092856512" style="zoom: 67%;"  loading="lazy"/>	
+
+<p>决策树进行分类，过程如下：</p>
+<ul>
+<li>首先从根节点开始，对实例的特征进行测试</li>
+<li>根据测试结果分配到对应子节点（对应一个特征取值）</li>
+<li>从该子节点递归对实例进行测试和分配</li>
+<li>直到实例被分配到叶节点的类中</li>
+</ul>
+<p>决策树模型图示如下，圆形结点是内部结点，方框是叶子结点</p>
+<img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012093257339.png" alt="image-20241012093257339" style="zoom:67%;"  loading="lazy"/>	
+
+
+
+<h3 id="5-1-2-if-then原则"><a href="#5-1-2-if-then原则" class="headerlink" title="5.1.2 if-then原则"></a>5.1.2 if-then原则</h3><ul>
+<li>决策树实际上可看成<code>if-then规则</code>的集合，具体构建过程如下<ul>
+<li>从根节点到叶节点每条路径构建一条规则（经过内部结点的特征经对应规则的if，到达叶节点的类对应规则的then）</li>
+</ul>
+</li>
+<li>if-then的性质：互斥且完备<ul>
+<li>互斥是说每一个实例只能被一条路径（规则）覆盖</li>
+<li>完备是说每一个实例分别都能被一条路径（规则）覆盖</li>
+</ul>
+</li>
+<li><code>覆盖</code>是说特征和路径上特征一致的实例满足规则</li>
+</ul>
+<h3 id="5-1-3-条件概率分布"><a href="#5-1-3-条件概率分布" class="headerlink" title="5.1.3 条件概率分布"></a>5.1.3 条件概率分布</h3><ul>
+<li>决策树亦可看成给定特征条件下，类的<code>条件概率分布</code>。<ul>
+<li>该条件概率分布可定义为特征空间的划分，划分为互不相交的<code>单元和区域</code></li>
+<li>决策树的一条路径就对应于划分的一个单元，各个路径给定条件下的类的分布集合，就是决策树表示的条件概率分布</li>
+</ul>
+</li>
+<li>符号说明：X是表示特征的随机变量，Y是表示类的随机变量，类的条件概率就是P(Y | X)，于是我们就可以根据各叶节点（单元）条件概率偏向于某一类概率大，就判断该类属于哪一类别</li>
+</ul>
+<p>这里，我们假设特征空间只有正类+1和负类-1，我们可以看到特征空间划分的情况，以及确定划分后的条件概率分布</p>
+<p>如果某个单元c的条件概率满足P(Y &#x3D; +1 | X &#x3D; c) &gt; 0.5时，判断称为正类，即该单元实例为正类，最终的决策树如图C所示。</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012094505620.png" alt="image-20241012094505620" loading="lazy">	</p>
+<h3 id="5-1-4-决策树学习"><a href="#5-1-4-决策树学习" class="headerlink" title="5.1.4 决策树学习"></a>5.1.4 决策树学习</h3><p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012095045710.png" alt="image-20241012095045710" loading="lazy">	</p>
+<ul>
+<li><p>目标：通过决策树从训练集中构建出一个与数据集矛盾较小的决策树的模型，并具有一定的泛化能力（也可看做是条件概率模型）。</p>
+</li>
+<li><p>策略：通常是使用<code>正则化的极大似然函数</code>来表示模型的损失函数，那么策略就是以损失函数为目标函数的最小化问题</p>
+<ul>
+<li>此时学习目标转化为损失函数意义下，最优决策树模型问题，但从所有决策树模型选择最优是<code>NP完全问题</code>，所以通常采用<code>启发式方法</code>近似求解，得到次优模型</li>
+</ul>
+</li>
+<li><p>启发式算法思想：递归选择最优特征，根据该特征对数据集分割，使得各子数据集有一个最好的分类的过程，特征的划分就对应决策树的构建，具体过程如下：</p>
+<ul>
+<li>首先构建根节点。所有数据在根节点中选择最优特征，然后分割为子集，使得各子集有一个最好分类</li>
+<li>如果子集能满足能基本正确分类的阈值，那么就构建叶节点，将该子集放入叶节点中去</li>
+<li>如果不能满足，则对子集继续进行递归，重新选择最优特征，进行分割，构建结点。直到没有特征或者能基本正确分类为止</li>
+<li>最终每个子集分配到叶节点上，都有明确的类，就生成了一颗决策树</li>
+</ul>
+</li>
+<li><p>以上是决策树的生成思路，但存在过拟合的问题，所以要进行剪枝使模型简单，具有一定泛化能力。</p>
+</li>
+<li><p>如果本身特征很多，那么在一开始的学习中，就应当选择对分类能力贡献度大的特征，去除贡献度少的特征</p>
+</li>
+<li><p>决策树的生成对应模型的<code>局部选择</code>（旨在提高训练集的信息增益），决策树的剪枝对应模型的<code>全局选择</code>（旨在优化损失函数 减少对于测试集的模型复杂度）</p>
+</li>
+</ul>
+<h2 id="5-2-特征选择"><a href="#5-2-特征选择" class="headerlink" title="5.2 特征选择"></a>5.2 特征选择</h2><ul>
+<li>我们首先要选取对训练数据具有分类贡献的特征（<code>feature importance</code>），提高决策树学习的效率</li>
+<li>选择的准则包括：<code>信息增益</code>或<code>信息增益比</code></li>
+</ul>
+<p>给出一个贷款决策问题，具体特征和类别判定如下</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012100838741.png" alt="image-20241012100838741" loading="lazy">	</p>
+<p>从下面两个特征选择的情况图可以发现，可以构建出两个可能的决策树，我们需要选择能够更好的分类的特征（即按照该特征分割后各子集能有更好的分类）</p>
+<p>信息增益可以很好的表示这一直观的原则，我们接下来展开说这个关键的概念</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012104513278.png" alt="image-20241012104513278" loading="lazy">	</p>
+<h3 id="5-2-1-信息增益"><a href="#5-2-1-信息增益" class="headerlink" title="5.2.1 信息增益"></a>5.2.1 信息增益</h3><p> 我们引入<code>熵</code>和<code>条件熵</code>的定义</p>
+<ul>
+<li>熵表示随机变量不确定性的度量，如果X表示取有限个值的随机变量，随机变量为<img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012104753471.png" alt="image-20241012104753471" style="zoom: 50%;"  loading="lazy"/></li>
+<li>那么关于随机变量X的熵的定义为：</li>
+</ul>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012104821952.png" alt="image-20241012104821952" loading="lazy">	</p>
+<ul>
+<li>如果pi&#x3D;0，定义0log0&#x3D;0，且log一般以2为底，熵的单位叫做比特bit或者纳特nat。	</li>
+<li>可以看到熵只依赖于X的分布，与X的取值无关，所以我们一般把H(X)也记作H(p)</li>
+</ul>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012105016072.png" alt="image-20241012105016072" loading="lazy">	</p>
+<ul>
+<li>熵越大，随机变量不确定性越大，由熵的定义，有如下不等式成立</li>
+</ul>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012105041899.png" alt="image-20241012105041899" loading="lazy">	</p>
+<p>给出一个例子，给定一个01取值的伯努利分布，那么熵可以得到如下：</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012105131321.png" alt="image-20241012105131321" loading="lazy">	</p>
+<ul>
+<li>可以发现当p&#x3D;0或p&#x3D;1时，H(p) &#x3D; 0，此时完全没有不确定性，而当p&#x3D;0.5时，熵最大，随机变量不确定性最大</li>
+</ul>
+<p>给出随机变量(X, Y)，给出<code>条件熵H(Y | X)</code>的计算公式，实际上简单理解就是分情况讨论，将x的所有情况下y的不确定性进行期望计算</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012105315469.png" alt="image-20241012105315469" loading="lazy">	</p>
+<ul>
+<li>如果熵和条件熵是通过数据估计（<code>极大似然估计</code>）得到，得到的熵我们称为<code>经验熵</code>和<code>经验条件熵</code></li>
+</ul>
+<p>ok，有了以上的基础，我们定义信息增益：</p>
+<ul>
+<li><code>信息增益</code>表示得知特征X的信息而使得Y信息不确定性减少的程度，可定义为关于数据集D的熵和条件熵的差值（<code>互信息</code>）</li>
+</ul>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012105601237.png" alt="image-20241012105601237" loading="lazy">	</p>
+<ul>
+<li>我们正是通过信息增益来选择特征，对于信息增益大的特征来说，我们认为具有更强的分类能力</li>
+</ul>
+<h3 id="5-2-2-信息增益算法"><a href="#5-2-2-信息增益算法" class="headerlink" title="5.2.2 信息增益算法"></a>5.2.2 信息增益算法</h3><p>有了上述信息增益的变量的基础，我们可以得到信息增益准则的算法</p>
+<p>首先给出算法的思路：对数据集（子集）D计算每个特征的信息增益，选择信息增益最大的特征</p>
+<p>算法涉及到的数学符号如下：</p>
+<ul>
+<li>设数据集D的样本容量为|D| ，有K个类Ck（k&#x3D;1,2,3,…,K）|Ck|表示类Ck的样本个数</li>
+<li>特征A有n个不同取值{a1, a2, …, an}，则A将D划分为n个子集D1, D2,…Dn，|Di|表示Di的样本个数</li>
+<li>而对于子集Di来说，Di属类样本Ck的样本集合为Dik，即Di和Ck的交集，|Dik为样本的个数|</li>
+</ul>
+<p>算法描述：</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012110212884.png" alt="image-20241012110212884" loading="lazy">	</p>
+<p>以上述贷款的案例，计算过程如下：</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012110510831.png" alt="image-20241012110510831" loading="lazy">	</p>
+<h3 id="5-2-3-信息增益比"><a href="#5-2-3-信息增益比" class="headerlink" title="5.2.3 信息增益比"></a>5.2.3 信息增益比</h3><ul>
+<li>信息增益存在问题：<strong>信息增益划分的特征会偏向于选择取值较多的特征</strong><ul>
+<li>理解：分的子集如果多了，那么减掉的就少了，那么信息增益就大，就会偏向于选择这个</li>
+<li>给出极端的情况：如果上述案例按照ID划分，有n个取值，子集熵就为0，那么就没有意义了</li>
+</ul>
+</li>
+<li>所以用<code>信息增益比</code>来表示加入条件以后，不确定性的相对关系变化，而非<code>信息增益</code>表示的绝对关系</li>
+</ul>
+<img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012110831177.png" alt="image-20241012110831177" style="zoom:80%;"  loading="lazy"/>	
+
+
+
+<h2 id="5-3-决策树生成"><a href="#5-3-决策树生成" class="headerlink" title="5.3 决策树生成"></a>5.3 决策树生成</h2><h3 id="5-3-1-ID3算法"><a href="#5-3-1-ID3算法" class="headerlink" title="5.3.1 ID3算法"></a>5.3.1 ID3算法</h3><p>ID3算法的核心思路就是我们之前天然想到的启发式生成想法：各个结点通过信息增益选择最优特征，递归构建决策树（提前告知，需区分CART算法，这不是二叉树）</p>
+<ul>
+<li>从根节点开始计算所有可能的信息增益，选取最大信息增益作为特征，由该特征不同的取值建立子节点</li>
+<li>对子节点递归调用以上方法</li>
+<li>所有特征信息增益小于某个阈值（后续会被认作为单节点树），或没有特征可以选择递归停止</li>
+</ul>
+<p>基于上述思路，我们可以得到一套递归的过程如下：</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012111838545.png" alt="image-20241012111838545" loading="lazy">	</p>
+<p>给出先前的贷款例子，尝试使用ID3算法构建决策树</p>
+<ul>
+<li>思考：为什么要对信息增益有一个阈值0.5？即这里为什么只用两个特征，没有用上所有特征<ul>
+<li>个人理解，两个原因，一个是生成效率，一个是泛化能力</li>
+</ul>
+</li>
+<li>即使选择了强特征，因为只有生成，还是容易产生过拟合的现象，所以后续还要剪枝</li>
+</ul>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012112003881.png" alt="image-20241012112003881" loading="lazy">	</p>
+<h3 id="5-3-2-C4-5算法"><a href="#5-3-2-C4-5算法" class="headerlink" title="5.3.2 C4.5算法"></a>5.3.2 C4.5算法</h3><p>在ID3基础上做了简单的改进，这里第三步替换为了计算D的信息增益比，其他没什么区别</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012112419426.png" alt="image-20241012112419426" loading="lazy">	</p>
+<h2 id="5-4-决策树剪枝"><a href="#5-4-决策树剪枝" class="headerlink" title="5.4 决策树剪枝"></a>5.4 决策树剪枝</h2><p>先前根据局部最优已经生成了一颗初步的决策树，接下来就是考虑树的复杂度，对决策树进行<code>剪枝</code>（pruning），来提升整体的泛化能力。具体来说，就是在已生成的树上裁掉子树或结点，并将根节点或父节点作为新的叶节点</p>
+<p>给出一个简单的剪枝算法：</p>
+<ul>
+<li>核心思路：极小化决策树整体的损失函数（<code>代价函数 Cost function</code>）</li>
+<li>相关数学符号：|T|为树T的叶节点个数，t为树T的叶节点，该叶结点包含Nt个样本点，这些样本点中为k类样本点的个数为Ntk个（k&#x3D;1,2,…,K），Ht(T)是叶节点t的经验熵，α ≥ 0，是一个超参数</li>
+</ul>
+<p>定义的损失函数如下：通过5.14，我们就可以简单的理解为损失函数就是决策树模型拟合程度和复杂程度的加权和</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012112951818.png" alt="image-20241012112951818" loading="lazy">	</p>
+<ul>
+<li>那么剪枝就需要确定α后（泛化能力的权重），选择损失函数最小的子树。<ul>
+<li>如果模型复杂，即子树多，测试误差小但泛化能力差了，容易造成过拟合</li>
+<li>如果模型简单，即子树少，泛化能力好些但会造成测试误差大，造成欠拟合</li>
+</ul>
+</li>
+<li>剪枝考虑了模型的复杂度，那么在这个过程中，就是在学习整体的模型（决策树的生成仅学习局部的模型）</li>
+<li>直接给出结论，这里损失函数的最小化就等价于正则化的极大似然估计，所以这里利用损失函数最小要换则剪枝就是正则化极大似然轨迹的模型选择</li>
+</ul>
+<p>剪枝算法的过程描述如下：</p>
+<ul>
+<li>简单来说，就是从叶节点开始找哪些结点如果剪掉，造成损失函数更小或者不变，那么就剪掉</li>
+</ul>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012113736746.png" alt="image-20241012113736746" loading="lazy">	</p>
+<h2 id="5-5-CART算法"><a href="#5-5-CART算法" class="headerlink" title="5.5 CART算法"></a>5.5 CART算法</h2><p><code>分类和回归树</code>（classfication and regression tree, CART）是应用广泛的决策树学习方法，其同样由特征选择、树的生成、树的剪枝组成，既可以用于分类也可以用于回归。</p>
+<ul>
+<li><p>CART是给定输入随机变量X下输出随机变量Y的条件概率分布的方法，CART假设决策树为二叉树，内部结点的取值为true or false，左分支为true，右分支为false。</p>
+</li>
+<li><p>递归地二分每个特征， 将输入空间即特征空间划分为有限个单元，并在这些单元中预测概率分布，即输入条件下输出的条件概率分布</p>
+</li>
+<li><p>CART算法和前面一样，主要分为两步：</p>
+<ul>
+<li><p>决策树生成：基于训练数据集生成决策树，尽可能大</p>
+</li>
+<li><p>决策树剪枝：用验证数据集对已生成的树进行剪枝并选择最优子树，此时以最有函数最少作为剪枝的标准</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-5-1-CART生成"><a href="#5-5-1-CART生成" class="headerlink" title="5.5.1 CART生成"></a>5.5.1 CART生成</h3><p>那么CART就是递归构建二叉决策树的过程，对回归树采用的是<code>平方误差最小化准则</code>，对分类树采用<code>基尼指数最小化原则</code>，进行特征选择</p>
+<h4 id="回归树生成"><a href="#回归树生成" class="headerlink" title="回归树生成"></a>回归树生成</h4><p>给定数据集D，生成回归树</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012195941714.png" alt="image-20241012195941714" loading="lazy">	</p>
+<ul>
+<li><p>首先可以明确的是，一棵回归树对应的是对输入空间的一个划分，以及在划分的单元的输出值。</p>
+</li>
+<li><p>接下来我们假设输入空间被划分为<strong>M个单元R1 R2…Rm</strong>, 并且在每个单元Rm上有一个固定的输出值cm，此时回归树的模型可表示为</p>
+</li>
+</ul>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012200113244.png" alt="image-20241012200113244" loading="lazy">	</p>
+<ul>
+<li><p>对输入空间确定划分后，我们使用<code>平方误差</code>来表示训练数据的预测误差，根据<code>平方误差最小原则</code>求解每个单元最优输出值。</p>
+<ul>
+<li><p>输入空间Rm上的<strong>cm的最优值cm^</strong>，就是Rm上所有输入实例xi对应输出yi的均值，数学表达式如下</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012200349670.png" alt="image-20241012200349670" loading="lazy"></p>
+</li>
+</ul>
+</li>
+<li><p>好，确定好每个区域的输出值后，考虑如何划分区域。依然采用<code>启发式</code>的思路。</p>
+<ul>
+<li><p>对于每次划分，我们将选择第j个变量x^(j)，取它的值s，作为<code>切分变量</code>和<code>切分点</code>，这样就可以划出两个区域，数学表示如下</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012200558981.png" alt="image-20241012200558981" loading="lazy">    </p>
+</li>
+<li><p>接下来问题就是<strong>寻找最优切分变量j和最优切分点s</strong>，根据下述公式求解（优先明确算法流程，后面我会细说这个公式什么意思，不理解没事慢慢来多看几遍）：</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012200648245.png" alt="image-20241012200648245" loading="lazy">    </p>
+<ul>
+<li>说明：从内往外看，首先是得到划分后满足R1输入空间误差最小和R2空间输入空间最小的基础上得到最优的划分，即同时考虑两个维度上的最优损失</li>
+</ul>
+</li>
+<li><p>确定最优分割变量 最优切分点后，按照公式5.18划分的两个区域，根据公式5.17可以得到对应划分区域输入空间的最优值。</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012200838764.png" alt="image-20241012200838764" loading="lazy"></p>
+</li>
+</ul>
+</li>
+<li><p>我们遍历所有的输入变量x^(j)，找到最优的切分变量作为本次的划分。接下来对每个区域重复上述划分过程，直到满足停止条件为止</p>
+</li>
+</ul>
+<p>至此，可以得到一颗<code>最小二乘回归树</code></p>
+<p>算法描述如下</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012202214718.png" alt="image-20241012202214718" loading="lazy">	</p>
+<h4 id="分类树生成"><a href="#分类树生成" class="headerlink" title="分类树生成"></a>分类树生成</h4><p>分类树根据<code>基尼指数</code>选择最优特征，决定该特征的最优二值切分点</p>
+<ul>
+<li>基尼指数的定义如下<ul>
+<li>对于5.24，实际上是按照大数定理，把样本估计当作总体估计了</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012202433015.png" alt="image-20241012202433015" loading="lazy">	</p>
+<p>样本集合D根据特征A是否取某一可能值a，分割为D1和D2两个部分</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012202714512.png" alt="image-20241012202714512" loading="lazy">	</p>
+<p>那么在特征A的条件下，集合D的基尼指数为</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012202736394.png" alt="image-20241012202736394" loading="lazy">	</p>
+<p>基尼指数Gini(D)表示集合D的不确定性，Gimi(D, A)表示经过A&#x3D;a分割后，集合D的不确定性。</p>
+<p>基尼指数越大，表示不确定性越大，这和熵很类似，实际熵在二类分类问题中，根据下图分辨确实如此。都是可以近似的表现为误差率。</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012202844984.png" alt="image-20241012202844984" loading="lazy">	</p>
+<p>那么有了先前的ID3和C4.5基础，并且做了依据基尼指数来划分二叉树的改进后，具体的CART生成算法如下</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012202946475.png" alt="image-20241012202946475" loading="lazy">	</p>
+<p>给出案例</p>
+<ul>
+<li>注：如果特征取值只有是或否，那么一定可以划分为一个二叉树，但依旧需要算二叉树，因为后续需要根据该参数进行特征选择</li>
+</ul>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012203122014.png" alt="image-20241012203122014" loading="lazy">	</p>
+<h3 id="5-5-2-CART剪枝"><a href="#5-5-2-CART剪枝" class="headerlink" title="5.5.2 CART剪枝"></a>5.5.2 CART剪枝</h3><p>CART剪枝由两步组成：</p>
+<ul>
+<li><p>通过生成算法产生的决策树T0底端开始不断<code>剪枝</code>，直至T0的根节点，形成子树序列（T0, T1, T2….Tn）</p>
+</li>
+<li><p>通过<code>交叉验证法</code>在独立的验证数据集对每个子树序列进行预测，选择最优子树</p>
+</li>
+</ul>
+<p>类似地，首先计算子树的损失函数</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012203640976.png" alt="image-20241012203640976" loading="lazy">	</p>
+<p>其中，C(T)是与训练数据的预测误差（基尼指数），|T|是子树结点个数，α≥0为超参数，Cα(T)表示参数为α时，子树T的整体损失。参数α需权衡拟合程度和模型的复杂度</p>
+<ul>
+<li>对于固定的α，是一定能找到使得整体损失函数Cα(T)最小的子树Tα，因为具有单调性，子树Tα是唯一的<ul>
+<li>当α大的时候，最优子树Tα偏小。α-&gt;∞，得到只有根节点的单节点树为最优</li>
+<li>当α小的时候，最优子树Tα偏大。α-&gt;0，此时整体树是最优的</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012204131424.png" alt="image-20241012204131424" loading="lazy">	</p>
+<p>此时α再增大，不等式5.29就反向了。</p>
+<p>分析完对于以内部结点t为根节点（剪枝前）和单节点（剪枝后）的损失函数后，</p>
+<p>不难得出结论：当<img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012204222185.png" alt="image-20241012204222185" style="zoom:80%;"  loading="lazy"/>时，Tt和t具有相同的损失函数，t的结点少，因此t会更可取，对Tt进行剪枝操作</p>
+<p>基于上述，对T0的每个内部结点t，<strong>定义函数g(t)表示剪枝后整体函数减小的程度</strong>。</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012204313536.png" alt="image-20241012204313536" loading="lazy">	</p>
+<p>经过上述操作后，T0会减去g(t)中最小的Tt，将得到的子树为T1，并将最小的g(t)作为α1。此时T1为[α1，α2) 的最优子树</p>
+<p>如此不断进行剪枝，直到根节点，在这个过程中，也会不断增加α值，产生新的区间。</p>
+<p>接下来，通过<code>交叉验证法</code>选取最优子树</p>
+<p>具体做法是：</p>
+<ul>
+<li>通过独立验证数据集，测试子树T0 T1…Tn各个子树的平方误差或基尼指数，最小的被认为是最优决策树</li>
+<li>由于每颗子树对应一个参数α，因此当Tk确定时，对应的αk也会被确定，此时得到最优决策树Tα</li>
+</ul>
+<p>得到最后的算法描述</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images%2Fimage-20241012204712665.png" alt="image-20241012204712665" loading="lazy"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/5.%20%E5%86%B3%E7%AD%96%E6%A0%91/">https://yuezi2048.github.io/2024/12/27/2.Areas🌐/science/Pre/统计学习方法/1.监督学习/5. 决策树/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/1-%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/">1.监督学习</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="tree-drawer-mask"></div><div id="tree-drawer"><div class="tree-drawer-head"><span><i class="fas fa-folder-open"></i>目录导航</span><button id="tree-drawer-close" type="button" title="关闭" aria-label="关闭"><i class="fas fa-times"></i></button></div><div class="tree-drawer-body"><div class="card-widget card-categories card-category-tree"><ul class="card-category-list expandBtn" id="drawer-cat-list"><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/0-InBox%F0%9F%90%AD/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">0.InBox🐭</span><span class="card-category-list-count">3</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/0-InBox%F0%9F%90%AD/md/"><span class="card-category-list-name">md</span><span class="card-category-list-count">3</span></a></li></ul></li><li class="card-category-list-item parent on-path"><a class="card-category-list-link expand" href="/categories/2-Areas%F0%9F%8C%90/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">2.Areas🌐</span><span class="card-category-list-count">877</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/00-%E7%A7%8B%E6%8B%9B%E5%87%86%E5%A4%87%E6%96%B9%E5%90%91/"><span class="card-category-list-name">00.秋招准备方向</span><span class="card-category-list-count">7</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">01.project</span><span class="card-category-list-count">54</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">condefather</span><span class="card-category-list-count">37</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/tuku/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">tuku</span><span class="card-category-list-count">2</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/tuku/backend/"><span class="card-category-list-name">backend</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/user-center/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">user-center</span><span class="card-category-list-count">9</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/user-center/back-end/"><span class="card-category-list-name">back-end</span><span class="card-category-list-count">8</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/user-center/front-end/"><span class="card-category-list-name">front-end</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/yu-ai-agent/"><span class="card-category-list-name">yu-ai-agent</span><span class="card-category-list-count">11</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/yupao/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">yupao</span><span class="card-category-list-count">14</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/yupao/back-end/"><span class="card-category-list-name">back-end</span><span class="card-category-list-count">13</span></a></li></ul></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/invoice-manager-BugVault/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">invoice-manager&amp;BugVault</span><span class="card-category-list-count">17</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/invoice-manager-BugVault/%E5%87%86%E5%A4%871/"><span class="card-category-list-name">准备1</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/invoice-manager-BugVault/resume/"><span class="card-category-list-name">resume</span><span class="card-category-list-count">8</span></a></li></ul></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">02.面经记录</span><span class="card-category-list-count">501</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AF%BC%E5%9B%BE%E8%BE%93%E5%87%BA/"><span class="card-category-list-name">导图输出</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%BF%AB%E9%80%9F%E5%9B%9E%E9%A1%BE/"><span class="card-category-list-name">快速回顾</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">面试鸭</span><span class="card-category-list-count">484</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/408-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"><span class="card-category-list-name">408-计算机网络</span><span class="card-category-list-count">36</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/Java%E5%9F%BA%E7%A1%80/"><span class="card-category-list-name">Java基础</span><span class="card-category-list-count">64</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/Java%E9%9B%86%E5%90%88/"><span class="card-category-list-name">Java集合</span><span class="card-category-list-count">26</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/JUC/"><span class="card-category-list-name">JUC</span><span class="card-category-list-count">63</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/JVM/"><span class="card-category-list-name">JVM</span><span class="card-category-list-count">47</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/mybatis/"><span class="card-category-list-name">mybatis</span><span class="card-category-list-count">17</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/MySQL/"><span class="card-category-list-name">MySQL</span><span class="card-category-list-count">81</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/Redis/"><span class="card-category-list-name">Redis</span><span class="card-category-list-count">53</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/Spring/"><span class="card-category-list-name">Spring</span><span class="card-category-list-count">71</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/SpringBoot/"><span class="card-category-list-name">SpringBoot</span><span class="card-category-list-count">26</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">实习面试总结</span><span class="card-category-list-count">7</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/ai%E9%9D%A2%E8%AF%95/"><span class="card-category-list-name">ai面试</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%A1%B9%E7%9B%AE/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">项目</span><span class="card-category-list-count">4</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%A1%B9%E7%9B%AE/%E4%BA%91%E5%9B%BE%E5%BA%93/"><span class="card-category-list-name">云图库</span><span class="card-category-list-count">3</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/ai%E6%A8%A1%E6%8B%9F/"><span class="card-category-list-name">ai模拟</span><span class="card-category-list-count">3</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/03-algorithm/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">03.algorithm</span><span class="card-category-list-count">23</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/03-algorithm/01/"><span class="card-category-list-name">01</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/03-algorithm/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/"><span class="card-category-list-name">代码随想录</span><span class="card-category-list-count">15</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/03-algorithm/%E5%AE%9E%E4%B9%A0%E5%87%86%E5%A4%87%E6%80%9D%E8%B7%AF/"><span class="card-category-list-name">实习准备思路</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/03-algorithm/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80%E8%AF%BE/"><span class="card-category-list-name">算法基础课</span><span class="card-category-list-count">2</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">AI</span><span class="card-category-list-count">55</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/%E5%A4%A7%E4%BD%AC%E5%AD%A6%E4%B9%A0/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">大佬学习</span><span class="card-category-list-count">12</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/%E5%A4%A7%E4%BD%AC%E5%AD%A6%E4%B9%A0/mattpocock/"><span class="card-category-list-name">mattpocock</span><span class="card-category-list-count">12</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3AI%E9%9A%8F%E8%AE%B0/"><span class="card-category-list-name">深入理解AI随记</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/%E5%AE%9E%E4%B9%A0%E5%87%86%E5%A4%87/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">实习准备</span><span class="card-category-list-count">1</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/%E5%AE%9E%E4%B9%A0%E5%87%86%E5%A4%87/%E9%9D%A2%E8%AF%95/"><span class="card-category-list-name">面试</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/%E9%9A%8F%E8%AE%B0/"><span class="card-category-list-name">随记</span><span class="card-category-list-count">11</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/agent/"><span class="card-category-list-name">agent</span><span class="card-category-list-count">10</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/Hello-Agents/"><span class="card-category-list-name">Hello-Agents</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/learn-claude-code/"><span class="card-category-list-name">learn-claude-code</span><span class="card-category-list-count">14</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/openclaw/"><span class="card-category-list-name">openclaw</span><span class="card-category-list-count">2</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">back-end-java</span><span class="card-category-list-count">90</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/0-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">0.源码分析</span><span class="card-category-list-count">10</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/0-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/Mybatis/"><span class="card-category-list-name">Mybatis</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/0-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/SpringMVC/"><span class="card-category-list-name">SpringMVC</span><span class="card-category-list-count">9</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/1-JavaSE/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">1.JavaSE</span><span class="card-category-list-count">23</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/1-JavaSE/%E5%9F%BA%E7%A1%80%E7%AF%87%E2%80%94%E2%80%94%E9%9F%A9%E9%A1%BA%E5%B9%B3/"><span class="card-category-list-name">基础篇——韩顺平</span><span class="card-category-list-count">23</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/2-MySQL/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">2.MySQL</span><span class="card-category-list-count">14</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/2-MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/"><span class="card-category-list-name">基础篇</span><span class="card-category-list-count">14</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/3-JDBC/"><span class="card-category-list-name">3.JDBC</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/4-JavaWeb/"><span class="card-category-list-name">4.JavaWeb</span><span class="card-category-list-count">10</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/5-Maven%E4%B8%93%E9%A2%98/"><span class="card-category-list-name">5.Maven专题</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/6-SSM/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">6.SSM</span><span class="card-category-list-count">20</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/6-SSM/Mybatis/"><span class="card-category-list-name">Mybatis</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/6-SSM/Spring/"><span class="card-category-list-name">Spring</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/6-SSM/Spring-MVC/"><span class="card-category-list-name">Spring MVC</span><span class="card-category-list-count">11</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/6-SSM/SSM%E6%95%B4%E5%90%88/"><span class="card-category-list-name">SSM整合</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/7-SpringBoot/"><span class="card-category-list-name">7.SpringBoot</span><span class="card-category-list-count">7</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/docker/"><span class="card-category-list-name">docker</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/basic-408/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">basic-408</span><span class="card-category-list-count">10</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"><span class="card-category-list-name">数据结构</span><span class="card-category-list-count">10</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/dev-env/"><span class="card-category-list-name">dev-env</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/front-end/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">front-end</span><span class="card-category-list-count">2</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/front-end/vue/"><span class="card-category-list-name">vue</span><span class="card-category-list-count">2</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/go/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">go</span><span class="card-category-list-count">2</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/go/go%E5%85%A5%E9%97%A8-%E6%9E%AB%E6%9E%AB%E7%9F%A5%E9%81%93/"><span class="card-category-list-name">go入门-枫枫知道</span><span class="card-category-list-count">2</span></a></li></ul></li><li class="card-category-list-item parent on-path"><a class="card-category-list-link expand" href="/categories/2-Areas%F0%9F%8C%90/science/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">science</span><span class="card-category-list-count">131</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E6%AF%95%E4%B8%9A%E8%AE%BA%E6%96%87%E6%95%B4%E7%90%86/"><span class="card-category-list-name">毕业论文整理</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">小论文准备</span><span class="card-category-list-count">91</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">论文复现总结</span><span class="card-category-list-count">71</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E5%8F%AF%E8%83%BD%E4%BC%9A%E7%94%A8%E5%88%B0%E7%9A%84%E6%A8%A1%E5%9D%97/"><span class="card-category-list-name">可能会用到的模块</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">论文缝合方案实验记录</span><span class="card-category-list-count">12</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER-%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5-%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/"><span class="card-category-list-name">第一次实验：MENTER+用户注入+因果正则</span><span class="card-category-list-count">12</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/"><span class="card-category-list-name">论文梳理</span><span class="card-category-list-count">30</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E5%B0%8F%E8%AE%BA%E6%96%87%E6%95%85%E4%BA%8B%E7%BA%BF%E5%92%8C%E6%A8%A1%E5%9D%97%E8%AE%B0%E5%BD%95%E7%B4%A0%E6%9D%90/"><span class="card-category-list-name">小论文故事线和模块记录素材</span><span class="card-category-list-count">6</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">早期工作的基础知识</span><span class="card-category-list-count">18</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95/"><span class="card-category-list-name">基本方法</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%9F%BA%E6%9C%AC%E9%97%AE%E9%A2%98/"><span class="card-category-list-name">基本问题</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E8%AE%BA%E6%96%87/"><span class="card-category-list-name">论文</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/LightGCN%E7%9A%84%E6%BC%94%E5%8C%96/"><span class="card-category-list-name">LightGCN的演化</span><span class="card-category-list-count">6</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/pytorch%E5%9F%BA%E6%9C%AC%E5%8A%9F/"><span class="card-category-list-name">pytorch基本功</span><span class="card-category-list-count">3</span></a></li></ul></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E5%AE%9E%E9%AA%8C/"><span class="card-category-list-name">实验</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E6%B0%B4%E8%AE%BA%E6%96%87%E7%9A%84%E7%A8%8B%E5%BA%8F%E7%8C%BF/"><span class="card-category-list-name">水论文的程序猿</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83/"><span class="card-category-list-name">云服务器运行环境</span><span class="card-category-list-count">7</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/Github/"><span class="card-category-list-name">Github</span><span class="card-category-list-count">2</span></a></li></ul></li><li class="card-category-list-item parent on-path"><a class="card-category-list-link expand" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">Pre</span><span class="card-category-list-count">39</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0/"><span class="card-category-list-name">代码实现</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">基础知识</span><span class="card-category-list-count">1</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/GNN/"><span class="card-category-list-name">GNN</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E8%AE%BA%E6%96%87%E6%95%B4%E7%90%86/"><span class="card-category-list-name">论文整理</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E6%A8%A1%E5%9E%8B%E6%95%B4%E7%90%86/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">模型整理</span><span class="card-category-list-count">2</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E6%A8%A1%E5%9E%8B%E6%95%B4%E7%90%86/%E5%BA%8F%E5%88%97%E6%8E%A8%E8%8D%90/"><span class="card-category-list-name">序列推荐</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent on-path"><a class="card-category-list-link expand" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">统计学习方法</span><span class="card-category-list-count">11</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item  on-path current"><a class="card-category-list-link expand" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1-%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/"><span class="card-category-list-name">1.监督学习</span><span class="card-category-list-count">8</span></a><ul class="card-category-list child posts"><li class="card-category-list-item"><a class="card-category-list-link" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/1.%20%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E5%8F%8A%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0%E6%A6%82%E8%AE%BA/"><span class="card-category-list-name">1. 统计学习及监督学习概论</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/2.%20%E6%84%9F%E7%9F%A5%E6%9C%BA/"><span class="card-category-list-name">2. 感知机</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/3.%20k%E8%BF%91%E9%82%BB%E6%B3%95/"><span class="card-category-list-name">3. k近邻法</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/4.%20%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%B3%95/"><span class="card-category-list-name">4. 朴素贝叶斯法</span></a></li><li class="card-category-list-item"><a class="card-category-list-link active" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/5.%20%E5%86%B3%E7%AD%96%E6%A0%91/"><span class="card-category-list-name">5. 决策树</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/6.%20%E9%80%BB%E8%BE%91%E6%96%AF%E8%92%82%E5%9B%9E%E5%BD%92%E5%92%8C%E6%9C%80%E5%A4%A7%E7%86%B5%E6%A8%A1%E5%9E%8B/"><span class="card-category-list-name">6. 逻辑斯蒂回归和最大熵模型</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/7.%20%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/"><span class="card-category-list-name">7. 支持向量机</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2024/12/27/2.Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1.%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/8.%20Boosting/"><span class="card-category-list-name">8. Boosting</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/2-%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/"><span class="card-category-list-name">2.无监督学习</span><span class="card-category-list-count">3</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/"><span class="card-category-list-name">综述</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/Awesome-LLM-for-RecSys-main/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">Awesome-LLM-for-RecSys-main</span><span class="card-category-list-count">1</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/Awesome-LLM-for-RecSys-main/Awesome-LLM-for-RecSys-main/"><span class="card-category-list-name">Awesome-LLM-for-RecSys-main</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/pytorch%E5%AD%A6%E4%B9%A0/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">pytorch学习</span><span class="card-category-list-count">19</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/pytorch%E5%AD%A6%E4%B9%A0/Transformer%E5%89%8D%E4%B8%96%E4%BB%8A%E7%94%9F/"><span class="card-category-list-name">Transformer前世今生</span><span class="card-category-list-count">19</span></a></li></ul></li></ul></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/tools/"><span class="card-category-list-name">tools</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/3-Resources%F0%9F%93%94/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">3.Resources📔</span><span class="card-category-list-count">5</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/3-Resources%F0%9F%93%94/%E8%AE%A4%E7%9F%A5%E5%8F%A5%E5%AD%90%E6%95%B4%E7%90%86/"><span class="card-category-list-name">认知句子整理</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/3-Resources%F0%9F%93%94/%E6%80%9D%E7%BB%B4%E8%AF%AF%E5%8C%BA%E6%95%B4%E7%90%86/"><span class="card-category-list-name">思维误区整理</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/3-Resources%F0%9F%93%94/communication/"><span class="card-category-list-name">communication</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/4-Archives%F0%9F%97%91/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">4.Archives🗑</span><span class="card-category-list-count">11</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/4-Archives%F0%9F%97%91/KOB/"><span class="card-category-list-name">KOB</span><span class="card-category-list-count">11</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/5-Tasks%F0%9F%93%9D/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">5.Tasks📝</span><span class="card-category-list-count">3</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/5-Tasks%F0%9F%93%9D/%E6%97%A5%E8%A7%84%E5%88%92/"><span class="card-category-list-name">日规划</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/5-Tasks%F0%9F%93%9D/%E6%80%BB%E4%BD%93%E8%A7%84%E5%88%92/"><span class="card-category-list-name">总体规划</span><span class="card-category-list-count">2</span></a></li></ul></li></ul></div></div></div><div id="toc-drawer-mask"></div><div id="toc-drawer"><div class="toc-drawer-body"><div id="toc-drawer-top"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar" loading="lazy"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">900</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">92</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">121</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div></div><div id="toc-drawer-main"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span class="toc-percentage"></span><button id="toc-drawer-close" type="button" title="关闭" aria-label="关闭"><i class="fas fa-times"></i></button></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%86%B3%E7%AD%96%E6%A0%91"><span class="toc-text">五、决策树</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#5-1-%E5%86%B3%E7%AD%96%E6%A0%91%E6%A8%A1%E5%9E%8B%E5%92%8C%E5%AD%A6%E4%B9%A0"><span class="toc-text">5.1 决策树模型和学习</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-1-%E5%86%B3%E7%AD%96%E6%A0%91%E6%A8%A1%E5%9E%8B"><span class="toc-text">5.1.1 决策树模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-2-if-then%E5%8E%9F%E5%88%99"><span class="toc-text">5.1.2 if-then原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-3-%E6%9D%A1%E4%BB%B6%E6%A6%82%E7%8E%87%E5%88%86%E5%B8%83"><span class="toc-text">5.1.3 条件概率分布</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-4-%E5%86%B3%E7%AD%96%E6%A0%91%E5%AD%A6%E4%B9%A0"><span class="toc-text">5.1.4 决策树学习</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-2-%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9"><span class="toc-text">5.2 特征选择</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-1-%E4%BF%A1%E6%81%AF%E5%A2%9E%E7%9B%8A"><span class="toc-text">5.2.1 信息增益</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-2-%E4%BF%A1%E6%81%AF%E5%A2%9E%E7%9B%8A%E7%AE%97%E6%B3%95"><span class="toc-text">5.2.2 信息增益算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-3-%E4%BF%A1%E6%81%AF%E5%A2%9E%E7%9B%8A%E6%AF%94"><span class="toc-text">5.2.3 信息增益比</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-3-%E5%86%B3%E7%AD%96%E6%A0%91%E7%94%9F%E6%88%90"><span class="toc-text">5.3 决策树生成</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-1-ID3%E7%AE%97%E6%B3%95"><span class="toc-text">5.3.1 ID3算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-2-C4-5%E7%AE%97%E6%B3%95"><span class="toc-text">5.3.2 C4.5算法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-4-%E5%86%B3%E7%AD%96%E6%A0%91%E5%89%AA%E6%9E%9D"><span class="toc-text">5.4 决策树剪枝</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-5-CART%E7%AE%97%E6%B3%95"><span class="toc-text">5.5 CART算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-5-1-CART%E7%94%9F%E6%88%90"><span class="toc-text">5.5.1 CART生成</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9B%9E%E5%BD%92%E6%A0%91%E7%94%9F%E6%88%90"><span class="toc-text">回归树生成</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E7%B1%BB%E6%A0%91%E7%94%9F%E6%88%90"><span class="toc-text">分类树生成</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-5-2-CART%E5%89%AA%E6%9E%9D"><span class="toc-text">5.5.2 CART剪枝</span></a></li></ol></li></ol></li></ol></div></div></div></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="切换到日间状态" aria-label="切换到日间状态"><i class="fas fa-moon"></i></button><div class="layout-switcher-wrap"><button id="layout-btn" type="button" title="单栏和双栏切换"><i class="fas fa-columns"></i></button><div class="layout-switcher" id="layout-switcher"><button class="layout-option" data-layout="left" type="button"><i class="fas fa-align-left"></i><span>左对齐</span></button><button class="layout-option" data-layout="immersive" type="button"><i class="fas fa-align-center"></i><span>沉浸模式</span></button><button class="layout-option" data-layout="right" type="button"><i class="fas fa-align-right"></i><span>右对齐</span></button></div></div></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(async () => {
+  const showKatex = () => {
+    document.querySelectorAll('#article-container .katex').forEach(el => el.classList.add('katex-show'))
+  }
+
+  if (!window.katex_js_css) {
+    window.katex_js_css = true
+    await btf.getCSS('https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css')
+    if (false) {
+      await btf.getScript('https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js')
+    }
+  }
+
+  showKatex()
+})()</script></div><script src="/js/custom.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script>(() => {
+  const option = null
+  const config = {"site_uv":true,"site_pv":true,"page_pv":true,"token":null}
+  const shareId = 'ldZzVkaLBXQp45r2'
+  let shareAuth = null
+  const getVal = v => v && typeof v === 'object' ? v.value : v
+
+  const runTrack = () => {
+    umami.track(props => ({ ...props, url: window.location.pathname, title: GLOBAL_CONFIG_SITE.title }))
+  }
+
+  const loadUmamiJS = () => {
+    // Load the vendored same-origin copy (source/js/app.js) so ad blockers
+    // cannot block the request. The filename is deliberately neutral: some
+    // blockers filter any URL containing "umami", even on the same origin.
+    // Tracking data is still POSTed to the Umami server via data-host-url.
+    btf.getScript('/js/app.js', {
+      'data-website-id': '2db0436a-1277-492a-b8d5-548e1a7c5bf4',
+      'data-host-url': 'https://umami.lingio.cn',
+      'data-auto-track': 'false',
+      ...option
+    }).then(runTrack).catch(() => {})
+  }
+
+  const getShareAuth = async () => {
+    if (!shareAuth) {
+      const res = await fetch(`https://umami.lingio.cn/api/share/${shareId}`)
+      if (!res.ok) throw new Error(`Failed to get Umami share token: ${res.status}`)
+      shareAuth = await res.json()
+    }
+    return shareAuth
+  }
+
+  const getData = async (isPost) => {
+    const now = Date.now()
+    const keyUrl = isPost ? `&url=${window.location.pathname}` : ''
+    const headerList = { 'Accept': 'application/json' }
+    let statsWebsiteId = '2db0436a-1277-492a-b8d5-548e1a7c5bf4'
+    if (shareId) {
+      const share = await getShareAuth()
+      statsWebsiteId = share.websiteId
+      headerList['x-umami-share-token'] = share.token
+      headerList['x-umami-share-context'] = '1'
+    } else if (true) {
+      headerList['Authorization'] = `Bearer ${config.token}`
+    } else {
+      headerList['x-umami-api-key'] = config.token
+    }
+    const res = await fetch(`https://umami.lingio.cn/api/websites/${statsWebsiteId}/stats?startAt=0000000000&endAt=${now}${keyUrl}`, {
+      method: "GET",
+      headers: headerList
+    })
+    return await res.json()
+  }
+
+  const insertData = async () => {
+    try {
+      if (GLOBAL_CONFIG_SITE.pageType === 'post' && config.page_pv) {
+        const pagePV = document.getElementById('umamiPV')
+        if (pagePV) {
+          const data = await getData(true)
+          pagePV.textContent = getVal(data.pageviews)
+        }
+      } else {
+        const data = (config.site_uv || config.site_pv) && await getData()
+        if (config.site_uv) {
+          const siteUV = document.getElementById('umami-site-uv')
+          if (siteUV) siteUV.textContent = getVal(data.visitors)
+        }
+        if (config.site_pv) {
+          const sitePV = document.getElementById('umami-site-pv')
+          if (sitePV) sitePV.textContent = getVal(data.pageviews)
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load Umami Analytics:', e)
+    }
+  }
+
+  btf.addGlobalFn('pjaxComplete', runTrack, 'umami_analytics_run_track')
+  btf.addGlobalFn('pjaxComplete', insertData, 'umami_analytics_insert')
+
+  loadUmamiJS()
+  insertData()
+})()</script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="/js/search/algolia-loader.js"></script></div></div></body></html>

@@ -1,0 +1,583 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>interview-prep | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="面试追问预判 &amp; 回答锚点 基于简历内容逐条埋点分析，按追问概率分三级。面试前P0必背到脱口而出，P1熟读知道方向即可。   P0 — 必问（90%+，必须背到脱口而出）1. MCP 到底是什么？和普通 API 接口、插件有什么区别？简历埋点：链路编排 — 通过MCP协议严格隔离 | 兼容主流MCP客户端 | ADR含MCP vs Skill分析 回答框架： MCP 是一套标准化的工具通信">
+<meta property="og:type" content="article">
+<meta property="og:title" content="interview-prep">
+<meta property="og:url" content="https://yuezi2048.github.io/2026/06/25/2.Areas%F0%9F%8C%90/01.project/invoice-manager&BugVault/resume/interview-prep/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="面试追问预判 &amp; 回答锚点 基于简历内容逐条埋点分析，按追问概率分三级。面试前P0必背到脱口而出，P1熟读知道方向即可。   P0 — 必问（90%+，必须背到脱口而出）1. MCP 到底是什么？和普通 API 接口、插件有什么区别？简历埋点：链路编排 — 通过MCP协议严格隔离 | 兼容主流MCP客户端 | ADR含MCP vs Skill分析 回答框架： MCP 是一套标准化的工具通信">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2026-06-25T03:50:55.000Z">
+<meta property="article:modified_time" content="2026-06-25T03:50:55.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="resume">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "interview-prep",
+  "url": "https://yuezi2048.github.io/2026/06/25/2.Areas%F0%9F%8C%90/01.project/invoice-manager&BugVault/resume/interview-prep/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2026-06-25T03:50:55.000Z",
+  "dateModified": "2026-06-25T03:50:55.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://yuezi2048.github.io/2026/06/25/2.Areas%F0%9F%8C%90/01.project/invoice-manager&amp;BugVault/resume/interview-prep/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'undefined')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'undefined')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":10,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  algoliaAssets: {"client":"https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js","instantSearch":"https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js","runtime":"/js/search/algolia.js"},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false,
+  darkmodeTitle: {
+    night: '切换到日间状态',
+    day: '切换到夜间状态'
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'interview-prep',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 8.1.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar" loading="lazy"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">900</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">92</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">121</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><button class="site-page" id="tree-drawer-btn" type="button" title="目录导航" aria-label="目录导航"><i class="fas fa-bars fa-fw"></i></button><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">interview-prep</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><button class="site-page" id="toc-drawer-btn" type="button" title="目录" aria-label="目录"><i class="fas fa-list-ul fa-fw"></i></button><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><button class="site-page" id="darkmode-nav" type="button" title="切换到日间状态" aria-label="切换到日间状态"><i class="fas fa-fw fa-moon"></i></button><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">interview-prep</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-06-25T03:50:55.000Z" title="发表于 2026-06-25 11:50:55">2026-06-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-06-25T03:50:55.000Z" title="更新于 2026-06-25 11:50:55">2026-06-25</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/">01.project</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/invoice-manager-BugVault/">invoice-manager&amp;BugVault</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/invoice-manager-BugVault/resume/">resume</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">5.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>16分钟</span></span><span class="post-meta-separator">|</span><span id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="umamiPV" data-path="/2026/06/25/2.Areas%F0%9F%8C%90/01.project/invoice-manager&amp;BugVault/resume/interview-prep/"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout hide-aside" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="面试追问预判-回答锚点"><a href="#面试追问预判-回答锚点" class="headerlink" title="面试追问预判 &amp; 回答锚点"></a>面试追问预判 &amp; 回答锚点</h1><blockquote>
+<p>基于简历内容逐条埋点分析，按追问概率分三级。<br><strong>面试前P0必背到脱口而出，P1熟读知道方向即可。</strong></p>
+</blockquote>
+<hr>
+<h2 id="P0-—-必问（90-，必须背到脱口而出）"><a href="#P0-—-必问（90-，必须背到脱口而出）" class="headerlink" title="P0 — 必问（90%+，必须背到脱口而出）"></a>P0 — 必问（90%+，必须背到脱口而出）</h2><h3 id="1-MCP-到底是什么？和普通-API-接口、插件有什么区别？"><a href="#1-MCP-到底是什么？和普通-API-接口、插件有什么区别？" class="headerlink" title="1. MCP 到底是什么？和普通 API 接口、插件有什么区别？"></a>1. MCP 到底是什么？和普通 API 接口、插件有什么区别？</h3><p><strong>简历埋点</strong>：<code>链路编排</code> — 通过MCP协议严格隔离 | 兼容主流MCP客户端 | ADR含MCP vs Skill分析</p>
+<p><strong>回答框架</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MCP 是一套标准化的工具通信协议，做到&quot;一次编写，所有 MCP 客户端通用&quot;。</span><br><span class="line"></span><br><span class="line">和普通 API 的区别：</span><br><span class="line">- API 是点对点对接，每个 AI 工具要自己写一套调用逻辑</span><br><span class="line">- MCP 定义了工具发现、调用、返回的统一格式，AI 可以自动识别和调用</span><br><span class="line"></span><br><span class="line">和插件的区别：</span><br><span class="line">- 插件绑定平台（Claude插件/OpenAI插件/Cursor插件各一套）</span><br><span class="line">- MCP 基于 stdio 本地传输，不需要开端口、不需要公网</span><br><span class="line">- 数据完全不出本地，安全可控</span><br><span class="line">- 兼容 Claude、Cursor 等所有 MCP 客户端，不需要每个平台单独写适配器</span><br></pre></td></tr></table></figure>
+
+<p><strong>项目印证</strong>：BugVault 5个工具注册后，Claude Desktop、Claude Code、Cursor 都能直接用，不用改任何代码。</p>
+<p><strong>参考文档</strong>：<code>docs/refer/分析/02.为什么不做成skill.md</code></p>
+<hr>
+<h3 id="2-为什么用-RRF-做融合，不直接给向量和全文加权重？"><a href="#2-为什么用-RRF-做融合，不直接给向量和全文加权重？" class="headerlink" title="2. 为什么用 RRF 做融合，不直接给向量和全文加权重？"></a>2. 为什么用 RRF 做融合，不直接给向量和全文加权重？</h3><p><strong>简历埋点</strong>：<code>RAG链路设计</code> — RRF融合</p>
+<p><strong>回答框架</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">向量相似度和 BM25 分数是两个完全不同量纲的指标：</span><br><span class="line">- 向量距离是 [0, 2] 的浮点数，分布取决于嵌入模型</span><br><span class="line">- BM25 分数是从 0 到几十不等的 TF-IDF 统计值</span><br><span class="line"></span><br><span class="line">直接加权相加没有物理意义，结果很容易被某一路带偏。</span><br><span class="line">比如某一轮 BM25 分数普遍偏高，权重就形同虚设。</span><br><span class="line"></span><br><span class="line">RRF 是基于排名的融合算法，只看两路召回结果的排名位置，和分数大小无关。</span><br><span class="line">K=60 是业界标准值，能保证同时被两路命中的文档总分显著高于单路命中的文档。</span><br><span class="line">鲁棒性更强，是工业界双路召回的标准方案。</span><br></pre></td></tr></table></figure>
+
+<p><strong>项目印证</strong>：BugVault 实测中，混合检索效果显著优于单路检索。</p>
+<p><strong>参考文档</strong>：<code>src/bugvault/services/retrieval_svc.py</code> rrf_fusion()</p>
+<hr>
+<h3 id="3-父子分块是怎么设计的？解决了什么问题？"><a href="#3-父子分块是怎么设计的？解决了什么问题？" class="headerlink" title="3. 父子分块是怎么设计的？解决了什么问题？"></a>3. 父子分块是怎么设计的？解决了什么问题？</h3><p><strong>简历埋点</strong>：<code>RAG链路设计</code> — 双表架构分离元数据与向量块，确保报错特征不被长方案文本稀释</p>
+<p><strong>回答框架</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">之前单块向量的问题：</span><br><span class="line">一条 Bug 记录包含标题、堆栈、尝试方法、解决方案等多段内容。</span><br><span class="line">向量化是整段生成的，解决方案很长的时候会把报错的特征稀释掉。</span><br><span class="line">比如搜 &quot;KeyError: 42&quot;，匹配到的可能是解决方案里恰好也提到了 KeyError，而不是真正的报错场景。</span><br><span class="line"></span><br><span class="line">父子分块的方案：</span><br><span class="line">- 父表（bug_records）：存完整记录元数据</span><br><span class="line">- 子表（bugvault_chunks）：按两种类型分块存储</span><br><span class="line">  - error_log 块：专门匹配精确报错特征（堆栈、错误消息）</span><br><span class="line">  - semantic 块：匹配问题场景和解决方案的语义</span><br><span class="line"></span><br><span class="line">检索流程：</span><br><span class="line">chunk 级召回 → parent_id 去重 → 回查父表取完整文档 → Cross-Encoder 精排</span><br><span class="line"></span><br><span class="line">这样就保证了精确报错的命中率，又不丢失语义匹配能力。</span><br></pre></td></tr></table></figure>
+
+<p><strong>参考文档</strong>：<code>src/bugvault/models/bug_record.py</code> to_chunks()</p>
+<hr>
+<h3 id="4-Invoice-的-Agent-是怎么做到零侵入业务代码的？"><a href="#4-Invoice-的-Agent-是怎么做到零侵入业务代码的？" class="headerlink" title="4. Invoice 的 Agent 是怎么做到零侵入业务代码的？"></a>4. Invoice 的 Agent 是怎么做到零侵入业务代码的？</h3><p><strong>简历埋点</strong>：<code>Agent子系统</code> — 内部Token认证透传实现Agent层与Java后端松耦合</p>
+<p><strong>回答框架</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Agent 是一个独立的 Python FastAPI 微服务，和 Java 后端通过 HTTP 接口交互。</span><br><span class="line"></span><br><span class="line">认证流程：</span><br><span class="line">用户通过 Web 或微信登录后，登录凭证会透传到 Agent 层。</span><br><span class="line">Agent 调用后端 API 时带上这个凭证（Cookie 或内部 Token），</span><br><span class="line">Java 端的 AgentAuthFilter 拦截请求、解析身份、注入上下文，</span><br><span class="line">后端业务代码完全感知不到 Agent 的存在。</span><br><span class="line"></span><br><span class="line">带来的好处：</span><br><span class="line">新增工具只需要在 Agent 层写调用逻辑，不用改后端业务代码。</span><br><span class="line">不修改后端代码 → 不需要重新部署 → 不需要回归测试 → 业务零风险。</span><br><span class="line">权限和后端 RBAC 完全一致，不会出现 Agent 能看到业务员不该看的数据。</span><br></pre></td></tr></table></figure>
+
+<p><strong>参考文档</strong>：<code>refer/invoice-mangager/invoice-agent-service/auth/context.py</code></p>
+<hr>
+<h2 id="P1-—-深挖防翻车（50-概率）"><a href="#P1-—-深挖防翻车（50-概率）" class="headerlink" title="P1 — 深挖防翻车（50% 概率）"></a>P1 — 深挖防翻车（50% 概率）</h2><h3 id="5-RAG-评测是怎么做的？claim-level-评测具体逻辑是什么？"><a href="#5-RAG-评测是怎么做的？claim-level-评测具体逻辑是什么？" class="headerlink" title="5. RAG 评测是怎么做的？claim-level 评测具体逻辑是什么？"></a>5. RAG 评测是怎么做的？claim-level 评测具体逻辑是什么？</h3><p><strong>简历埋点</strong>：<code>效果与质量</code> — simple&#x2F;claim-level两阶段评测 | context_relevance + faithfulness</p>
+<p><strong>回答框架</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">两阶段策略，按 eval_depth 参数切换：</span><br><span class="line"></span><br><span class="line">simple（~300 tokens）：</span><br><span class="line">快速整体打分，适合日常质量监控</span><br><span class="line">→ context_relevance 0-5：检索结果和查询的相关程度</span><br><span class="line">→ faithfulness 0-5：检索结果对源文档的忠实程度</span><br><span class="line">→ rag_confidence_score = 两者之和（0-10）</span><br><span class="line"></span><br><span class="line">claim-level（~1500 tokens）：</span><br><span class="line">深度分析，适合 bad case 归因</span><br><span class="line">→ Step 1：LLM 从检索文档中提取所有原子事实声明</span><br><span class="line">→ Step 2：逐条验证声明是否被源文档支持（supported/unsupported/partial）</span><br><span class="line">→ Step 3：faithfulness = supported_claims / total_claims</span><br><span class="line"></span><br><span class="line">双重熔断器保护：</span><br><span class="line">会话级配额上限（默认10次），超量自动降级为 simple</span><br><span class="line">JSON 解析异常自动重试一次，失败后跳过评估不阻塞检索</span><br></pre></td></tr></table></figure>
+
+<p><strong>参考文档</strong>：<code>docs/refer/设计/evaluation-strategy.md</code></p>
+<hr>
+<h3 id="6-Cross-Encoder-和-Bi-Encoder-有什么区别？为什么精排用-Cross-Encoder？"><a href="#6-Cross-Encoder-和-Bi-Encoder-有什么区别？为什么精排用-Cross-Encoder？" class="headerlink" title="6. Cross-Encoder 和 Bi-Encoder 有什么区别？为什么精排用 Cross-Encoder？"></a>6. Cross-Encoder 和 Bi-Encoder 有什么区别？为什么精排用 Cross-Encoder？</h3><p><strong>简历埋点</strong>：<code>RAG链路设计</code> — Cross-Encoder二次精排</p>
+<p><strong>回答框架</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Bi-Encoder：查询和文档各自独立编码成向量，用余弦相似度比较</span><br><span class="line">  优点：文档向量可预计算，检索速度快，适合召回阶段</span><br><span class="line">  缺点：查询和文档之间没有交互，丢失细粒度语义匹配</span><br><span class="line"></span><br><span class="line">Cross-Encoder：查询和文档拼接后一起输入模型，输出相关性分数</span><br><span class="line">  优点：查询和文档有完整交互，精度更高</span><br><span class="line">  缺点：不能预计算，每对都要跑一次模型，速度慢</span><br><span class="line"></span><br><span class="line">选型逻辑：</span><br><span class="line">召回阶段用 Bi-Encoder（ANN 向量检索，快但粗）</span><br><span class="line">精排阶段对 top-K 候选用 Cross-Encoder 二次打分（慢但准）</span><br><span class="line">两者互补，不是替代关系，是漏斗型架构的两级</span><br><span class="line"></span><br><span class="line">选型文档里有和 ColBERT 的对比：ColBERT 需要独立 PyTorch 索引（~1.5GB），</span><br><span class="line">对于 20 条候选的重排场景，Cross-Encoder ONNX（1.1GB）精度更高、依赖更少。</span><br></pre></td></tr></table></figure>
+
+<p><strong>参考文档</strong>：<code>docs/refer/设计/adr-cross-encoder-vs-colbert.md</code></p>
+<hr>
+<h3 id="7-Agent-死循环怎么处理？工具调用出错怎么兜底？"><a href="#7-Agent-死循环怎么处理？工具调用出错怎么兜底？" class="headerlink" title="7. Agent 死循环怎么处理？工具调用出错怎么兜底？"></a>7. Agent 死循环怎么处理？工具调用出错怎么兜底？</h3><p><strong>简历埋点</strong>：<code>Agent子系统</code> — AgentLoop设循环上限 | 每次调用写入日志</p>
+<p><strong>回答框架</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">死循环处理：</span><br><span class="line">1. 硬限制：AgentLoop 设最大工具调用轮次，超限自动终止本轮</span><br><span class="line">2. 软约束：system prompt 明确要求单轮只调一个工具</span><br><span class="line">3. 可观测：每次调用写入日志（参数、耗时、结果），异常循环可追溯</span><br><span class="line"></span><br><span class="line">出错兜底：</span><br><span class="line">1. ToolRegistry 统一 try/except 包裹，异常返回结构化错误信息</span><br><span class="line">2. 连续出错 N 次后 Agent 主动向用户报告，不静默重试</span><br><span class="line">3. P0 查询工具失败返回友好提示，不阻塞后续交互</span><br></pre></td></tr></table></figure>
+
+<p><strong>参考文档</strong>：<code>refer/invoice-mangager/invoice-agent-service/agent/loop.py</code></p>
+<hr>
+<h3 id="8-为什么选-LanceDB-不选-Chroma、Milvus？"><a href="#8-为什么选-LanceDB-不选-Chroma、Milvus？" class="headerlink" title="8. 为什么选 LanceDB 不选 Chroma、Milvus？"></a>8. 为什么选 LanceDB 不选 Chroma、Milvus？</h3><p><strong>简历埋点</strong>：<code>RAG系统</code> — LanceDB 向量+全文双索引</p>
+<p><strong>回答框架</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">选 LanceDB 的原因：</span><br><span class="line">1. 零运维嵌入式 — 不用 Docker、不用单独部署，进程内嵌（向量界的 SQLite）</span><br><span class="line">2. 内置 FTS — 同时支持 ANN 向量检索和 BM25 全文检索，省掉 ES</span><br><span class="line">3. 列式存储 — 原生支持元数据过滤下推</span><br><span class="line">4. MVCC — 无锁并发读写，适合异步写入+同步读取</span><br><span class="line"></span><br><span class="line">不选 Chroma：FTS 支持弱，混合检索需要额外搭 ES</span><br><span class="line">不选 Milvus：太重，需要 Docker 等基础设施，不符合本地优先的定位</span><br></pre></td></tr></table></figure>
+
+<p><strong>参考文档</strong>：<code>docs/refer/分析/03.为什么选择LanceDB.md</code></p>
+<hr>
+<h2 id="P2-—-低频陷阱（20-30-）"><a href="#P2-—-低频陷阱（20-30-）" class="headerlink" title="P2 — 低频陷阱（20-30%）"></a>P2 — 低频陷阱（20-30%）</h2><h3 id="9-96-测试覆盖率怎么算的？"><a href="#9-96-测试覆盖率怎么算的？" class="headerlink" title="9. 96% 测试覆盖率怎么算的？"></a>9. 96% 测试覆盖率怎么算的？</h3><p><strong>避坑要点</strong>：<br>不要说「行覆盖率」，要说 <strong>功能特性覆盖率</strong>——137 个测试覆盖了核心功能点的 96%，<br>包含单元测试（模型&#x2F;工具函数）、集成测试（chunk管道&#x2F;MCP往返）、协议冒烟测试。<br>避免被追问行覆盖率统计工具和标准。</p>
+<hr>
+<h3 id="10-70-重复率降低怎么算的？"><a href="#10-70-重复率降低怎么算的？" class="headerlink" title="10. 70%+ 重复率降低怎么算的？"></a>10. 70%+ 重复率降低怎么算的？</h3><p><strong>避坑要点</strong>：<br>必须明确限定场景：</p>
+<ul>
+<li>基于我个人开发过程中遇到的 Bug 记录</li>
+<li>回溯了约 2 个月的修复记录做的验证</li>
+<li>是小样本的验证结果，不是大规模企业级 A&#x2F;B 测试<br>诚实说清楚不扣分。</li>
+</ul>
+<hr>
+<h3 id="11-6-篇-ADR-能说上来哪几篇？"><a href="#11-6-篇-ADR-能说上来哪几篇？" class="headerlink" title="11. 6 篇 ADR 能说上来哪几篇？"></a>11. 6 篇 ADR 能说上来哪几篇？</h3><p><strong>避坑要点</strong>：<br>面试官可能让你具体讲讲。至少能说出 <strong>3 篇核心决策</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>篇目</th>
+<th>核心决策内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>MCP 协议选型</strong></td>
+<td>MCP vs Skill → 标准化、跨客户端、本地安全</td>
+</tr>
+<tr>
+<td><strong>LanceDB 选型</strong></td>
+<td>LanceDB vs Chroma vs Milvus → 嵌入式+FTS+MVCC</td>
+</tr>
+<tr>
+<td><strong>Cross-Encoder 选型</strong></td>
+<td>Cross-Encoder vs ColBERT → ONNX轻量、精度高、依赖少</td>
+</tr>
+</tbody></table>
+<p>剩下3篇可以提到：<strong>父子分块架构</strong>（chunk策略）、<strong>RAG评测体系</strong>（两阶段策略）、<strong>熔断降级设计</strong>（双路保护）。</p>
+<hr>
+<h2 id="避坑清单"><a href="#避坑清单" class="headerlink" title="避坑清单"></a>避坑清单</h2><table>
+<thead>
+<tr>
+<th>坑</th>
+<th>建议</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>主动提「商业化、卖给老板」</td>
+<td>❌ 不说，面试官不问不提个人规划</td>
+</tr>
+<tr>
+<td>Skill 模板吹太满</td>
+<td>✅ 「当前是预置模板+基础统计，后续计划迭代」</td>
+</tr>
+<tr>
+<td>运营看板说成「完善的数据平台」</td>
+<td>✅ 「基础统计+bad case归因，够日常使用」</td>
+</tr>
+<tr>
+<td>70%+ 重复率说得太绝对</td>
+<td>✅ 「基于个人项目2个月回溯的验证，小样本」</td>
+</tr>
+<tr>
+<td>96% 覆盖率说成行覆盖率</td>
+<td>✅ 「功能特性覆盖率，含单元&#x2F;集成&#x2F;冒烟测试」</td>
+</tr>
+<tr>
+<td>被问「你和同学怎么分工」</td>
+<td>✅ 「我负责架构设计+前端+Agent+测试，他完成后端接口编码」</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="灵魂质问：「你这不就是在调-API-吗？」"><a href="#灵魂质问：「你这不就是在调-API-吗？」" class="headerlink" title="灵魂质问：「你这不就是在调 API 吗？」"></a>灵魂质问：「你这不就是在调 API 吗？」</h2><p><strong>这是 Agent 方向面试最常见的挑战，回答得好是加分项，回答不好直接减分。</strong></p>
+<h3 id="核心逻辑：调-API-和搭系统是两码事"><a href="#核心逻辑：调-API-和搭系统是两码事" class="headerlink" title="核心逻辑：调 API 和搭系统是两码事"></a>核心逻辑：调 API 和搭系统是两码事</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">调 API：拿到一个 SDK 调通接口，返回结果展示出来</span><br><span class="line">搭系统：选型、集成、编排、兜底、评测、迭代</span><br><span class="line"></span><br><span class="line">你的项目属于后者，因为有这些&quot;调 API 不会遇到的问题&quot;：</span><br></pre></td></tr></table></figure>
+
+<h3 id="BugVault-的反驳链条"><a href="#BugVault-的反驳链条" class="headerlink" title="BugVault 的反驳链条"></a>BugVault 的反驳链条</h3><table>
+<thead>
+<tr>
+<th>你说「这就是调API」</th>
+<th>我可以回答「我解决的是这些工程问题」</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Embedding 调一下 fastembed</td>
+<td>多模型选型对比（BGE vs text-embedding-3-small），ONNX 本地 vs API 成本权衡</td>
+</tr>
+<tr>
+<td>检索就是调 LanceDB query</td>
+<td>双路召回策略设计（向量+全文为什么要两条路），RRF k 值怎么调，双表 why</td>
+</tr>
+<tr>
+<td>评测调 LLM 打分</td>
+<td>simple&#x2F;claim-level 两阶段设计，熔断器阈值多少次，降级策略怎么定</td>
+</tr>
+<tr>
+<td>保存就是 upsert</td>
+<td>父子分块为什么这么分，MD5 去重键碰撞概率，自动 Schema 迁移兼容性</td>
+</tr>
+</tbody></table>
+<h3 id="Invoice-Manager-的反驳链条"><a href="#Invoice-Manager-的反驳链条" class="headerlink" title="Invoice Manager 的反驳链条"></a>Invoice Manager 的反驳链条</h3><table>
+<thead>
+<tr>
+<th>你说「这就是调API」</th>
+<th>我可以回答「我解决的是这些工程问题」</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Agent 就是调 LLM</td>
+<td>AgentLoop 状态机怎么设计（BUILD&#x2F;RUN&#x2F;CONFIRM&#x2F;RESPOND），防死循环轮次上限多少</td>
+</tr>
+<tr>
+<td>工具就是调后端接口</td>
+<td>意图路由策略（LLM 怎么知道该调哪个工具），参数校验怎么做的，异常怎么兜底</td>
+</tr>
+<tr>
+<td>权限就是调 RBAC</td>
+<td>双模式认证透传（Cookie + 内部 Token），后业务代码为什么不用改</td>
+</tr>
+<tr>
+<td>记忆就是存 localStorage</td>
+<td>跨会话记忆恢复怎么做到的，上下文窗口超出怎么截断</td>
+</tr>
+</tbody></table>
+<h3 id="深度分析：发票查询场景要不要做-Agent-记忆？"><a href="#深度分析：发票查询场景要不要做-Agent-记忆？" class="headerlink" title="深度分析：发票查询场景要不要做 Agent 记忆？"></a>深度分析：发票查询场景要不要做 Agent 记忆？</h3><p><strong>这是面试中区分「调API」和「做架构」的关键一问。先给结论：</strong></p>
+<blockquote>
+<p>在发票管理这个业务场景下，<strong>不做长期记忆是正确的架构取舍</strong>，<br>30 分钟 Redis TTL 是合理边界。理由如下。</p>
+</blockquote>
+<h4 id="场景画像：发票查询-vs-通用对话"><a href="#场景画像：发票查询-vs-通用对话" class="headerlink" title="场景画像：发票查询 vs 通用对话"></a>场景画像：发票查询 vs 通用对话</h4><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>通用对话（ChatGPT）</th>
+<th>发票查询（Invoice Agent）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数据性质</td>
+<td>无结构文本，跨轮依赖语义</td>
+<td><strong>结构化数据，每轮查询自包含</strong></td>
+</tr>
+<tr>
+<td>用户意图</td>
+<td>延续话题、修正理解</td>
+<td><strong>查某张发票、统计某公司、登记一笔收支</strong></td>
+</tr>
+<tr>
+<td>关键信息</td>
+<td>上轮说了什么</td>
+<td><strong>数据库里的业务记录</strong></td>
+</tr>
+<tr>
+<td>记忆价值</td>
+<td>高（否则无法理解指代）</td>
+<td><strong>低（SQL 查一下就有）</strong></td>
+</tr>
+</tbody></table>
+<h4 id="为什么「查聊天记录」不如「查数据库」？"><a href="#为什么「查聊天记录」不如「查数据库」？" class="headerlink" title="为什么「查聊天记录」不如「查数据库」？"></a>为什么「查聊天记录」不如「查数据库」？</h4><p>假设用户说：</p>
+<blockquote>
+<p>「查一下 JH001 上个月的销项发票」</p>
+</blockquote>
+<p>正确做法：Agent 直接调 <code>query_invoice(company=&quot;JH001&quot;, date_range=&quot;2026-06&quot;)</code> → 后端查 MySQL → 返回结果。</p>
+<p>错误做法：Agent 先翻聊天记录「用户上个月是不是查过 JH001？」→ 没找到 → 再问用户 → 用户说 JH001 → 再查数据库。</p>
+<p><strong>结论：真实的业务上下文在 MySQL 里，不在聊天记录里。</strong></p>
+<h4 id="30-分钟-TTL-为什么合理？"><a href="#30-分钟-TTL-为什么合理？" class="headerlink" title="30 分钟 TTL 为什么合理？"></a>30 分钟 TTL 为什么合理？</h4><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>TTL 内（正常）</th>
+<th>TTL 外（过期）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>连续查发票</td>
+<td>记忆正常，JH001 上下文延续</td>
+<td>用户重新说「查 JH001」，唯一损失是少打了几个字</td>
+</tr>
+<tr>
+<td>中断确认资金操作</td>
+<td><code>_confirm_state</code> 持久化，<strong>重启都能恢复</strong></td>
+<td>30 分钟不确认，业务上应该<strong>自动取消</strong>（本来就是这么设计的：60s 超时自动取消，Redis TTL 30min &gt; 60s，不存在 TTL 先过期的情况）</td>
+</tr>
+<tr>
+<td>跨天复用查询</td>
+<td>—</td>
+<td>用户重新说一次查询条件，Agent 重新查 MySQL 返回最新数据（<strong>数据比昨天更准</strong>，因为发票状态可能变了）</td>
+</tr>
+</tbody></table>
+<h4 id="如果硬要做长期记忆，会引入什么问题？"><a href="#如果硬要做长期记忆，会引入什么问题？" class="headerlink" title="如果硬要做长期记忆，会引入什么问题？"></a>如果硬要做长期记忆，会引入什么问题？</h4><table>
+<thead>
+<tr>
+<th>方案</th>
+<th>问题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MySQL 存聊天记录</td>
+<td><strong>存储爆炸</strong>：每条查询都存，一张表几百万行；<strong>检索困难</strong>：搜「JH001」可能命中 1000 条记录，不知道哪条有用</td>
+</tr>
+<tr>
+<td>向量记忆（RAG on 聊天）</td>
+<td><strong>语义垃圾进垃圾出</strong>：聊天记录里是「查一下」「统计一下」「返回第 3 条」这类指令性语言，不是知识，向量化后互相打架</td>
+</tr>
+<tr>
+<td>固定摘要 + 长期存储</td>
+<td><strong>维护成本高</strong>：摘要需要 LLM 生成，每轮对话都消耗 token；用户很少回看几天前的聊天</td>
+</tr>
+</tbody></table>
+<h4 id="真正的记忆应该是什么？"><a href="#真正的记忆应该是什么？" class="headerlink" title="真正的记忆应该是什么？"></a>真正的记忆应该是什么？</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">做发票 Agent 的记忆，重点不是记用户说了什么，</span><br><span class="line">而是记用户的权限能看到什么、公司有哪些、常用查询模式是什么。</span><br><span class="line"></span><br><span class="line">这些信息在：</span><br><span class="line">- RBAC 权限表（用户能看到哪些公司）</span><br><span class="line">- 用户行为日志（常用查询菜单、高频公司）</span><br><span class="line">- 业务配置表（发票类型、科目分类）</span><br><span class="line"></span><br><span class="line">而不是在聊天记录里。</span><br></pre></td></tr></table></figure>
+
+<h4 id="部分的妥协：查询条件继承"><a href="#部分的妥协：查询条件继承" class="headerlink" title="部分的妥协：查询条件继承"></a>部分的妥协：查询条件继承</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">如果一定要做记忆，我倾向做「查询条件继承」而非向量记忆——</span><br><span class="line"></span><br><span class="line">上轮查询的筛选条件（公司、日期范围、发票状态）作为默认值自动带入下一轮查询，</span><br><span class="line">用户可手动覆盖。这已经在系统里实现了。</span><br><span class="line"></span><br><span class="line">这个方案比 RAG on 聊天记录更轻量、更可靠、对用户更透明：</span><br><span class="line">1. 不增加存储成本（只需保存最近一组的 key-value）</span><br><span class="line">2. 不依赖 LLM 理解聊天历史（直接从前端拿到结构化参数）</span><br><span class="line">3. 用户可预期（「上次选了 JH001，这次默认还是 JH001」）</span><br><span class="line"></span><br><span class="line">如果积累的用户行为数据足够多，</span><br><span class="line">还可以从统计角度推断用户的默认查询偏好，</span><br><span class="line">但这需要更多数据支撑，当前阶段做查询条件继承已经够用。</span><br></pre></td></tr></table></figure>
+
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">这个场景不需要做 Agent 长期记忆，因为：</span><br><span class="line"></span><br><span class="line">1. 业务数据在 MySQL 里，不在聊天记录里</span><br><span class="line">2. 30 分钟 TTL 覆盖了单次操作窗口</span><br><span class="line">3. 资金操作的中断确认有专门的状态持久化（不依赖记忆模块）</span><br><span class="line">4. 长记忆反而引入检索噪声和维护成本</span><br><span class="line"></span><br><span class="line">如果硬要说一个可以改进的方向：</span><br><span class="line">查 MySQL 时带上上一轮筛选条件作为默认值（比如「上次查的是已付款发票」），</span><br><span class="line">这比向量记忆更轻量、更可靠、对用户更透明。</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="Invoice-会话记忆：Redis-挂了怎么办？"><a href="#Invoice-会话记忆：Redis-挂了怎么办？" class="headerlink" title="Invoice 会话记忆：Redis 挂了怎么办？"></a>Invoice 会话记忆：Redis 挂了怎么办？</h3><p><strong>面试官可能问</strong>：你们用 Redis 做会话持久化，那 Redis 挂了怎么办？数据会丢吗？</p>
+<p><strong>回答框架</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Redis 挂了不会丢业务数据，原因有三层兜底：</span><br><span class="line"></span><br><span class="line">1. 优雅降级：RedisSessionStore.from_url() 连接失败时返回 None，</span><br><span class="line">   SessionManager 自动退化为纯内存模式，用户当前会话不受影响</span><br><span class="line">   → 业务不阻塞，只是重启后会丢失历史</span><br><span class="line"></span><br><span class="line">2. 双重缓存：内存热缓存是首选手，Redis 是持久层，</span><br><span class="line">   正常运行时每次请求都会 save() 到 Redis，写入即同步</span><br><span class="line">   → Redis 正常时重启零丢失</span><br><span class="line"></span><br><span class="line">3. 关键状态可恢复：连中断确认中的资金操作进度都做了序列化（_confirm_state），</span><br><span class="line">   包括当前工具调用参数、已执行轮次、等待用户确认的摘要信息</span><br><span class="line">   → 重启后用户看到的是「继续确认」，而不是「从头再来」</span><br><span class="line"></span><br><span class="line">唯一真正丢失的场景是：Redis 和 Agent 服务同时宕机——这需要异地多活，</span><br><span class="line">对于中小企业发票管理场景来说过度设计了。</span><br><span class="line"></span><br><span class="line">**追问：那历史消息丢了怎么办？**</span><br></pre></td></tr></table></figure>
+<p>丢了就丢了，这是业务场景决定的合理取舍：</p>
+<ol>
+<li><p>会话 TTL 30 分钟，日常使用中用户持续操作会自动续期，<br>真正过期丢失的场景是「用户离开了半小时以上」——回来后 Agent 不清楚之前的对话上下文。</p>
+</li>
+<li><p>但这不是问题，因为用户的<strong>业务数据没有丢</strong>——<br>发票记录、银行流水、入账历史全部在 MySQL 里，Agent 查不了历史聊天，<br>但能查「上个月开了多少发票」「JH001 客户的到款记录」这些真正有用的信息。</p>
+</li>
+<li><p>产品设计上初始化和用户的预期对齐：<br>入口层提示「当前是新的会话，如有需要可重新说明查询条件」，<br>就像 Claude Code 新会话不知道你昨天的操作一样——这是 Agent 产品的行业常态。</p>
+</li>
+<li><p>如果要解决，方向是让 Agent 从 MySQL 的业务日志里自动推断上下文，<br>而不是把聊天记录当知识库存着。聊天记录是操作记录，不是知识。</p>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">```</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line"></span><br><span class="line">### 延伸质疑：「BugVault 的 Hook + Skill 工作流，这不就是写脚本吗？」</span><br><span class="line"></span><br><span class="line">**面试官可能问**：你在 BugVault 上写的 preflight/postflight，本质上不就是几个脚本调用 MCP 工具吗？这也算工作流编排？</span><br><span class="line"></span><br><span class="line">**回答策略**：承认本质是脚本，但强调工程化的差异。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>你的质疑是对的，底层确实是脚本调用 MCP 工具。但它和「随便写个 bash 脚本」的区别在于：</p>
+<ol>
+<li>标准化入口：preflight&#x2F;postflight 封装为 Skill，通过 &#x2F;skill 或 run_skill 统一调用<br>→ 不是散落在各处的 shell alias 或 memo</li>
+<li>结构化输出：preflight 输出结构化的坑点清单（含相关度过滤、缓存去重），<br>postflight 判断类型后分发子 skill（doc-bug&#x2F;doc-path&#x2F;doc-adr&#x2F;git-commit）<br>→ 不是 echo 打印</li>
+<li>与 BugVault 深度集成：自动查经验、自动存记录<br>→ 不是手动 cp 归档</li>
+<li>编排而非单步：多个子 skill 按依赖顺序执行，有异常处理<br>→ 不是 &amp;&amp; 串起来</li>
+</ol>
+<p>如果只用「是不是脚本」来判断，那 CI&#x2F;CD 也是脚本、K8s Operator 也是脚本。<br>区别在于有没有形成可复用、可诊断、可扩展的工程化封装。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">---</span><br><span class="line"></span><br><span class="line">### 一句话总结</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>如果只是调 API，我不会遇到这些问题：</p>
+<ul>
+<li>向量距离和 BM25 分数量纲不同怎么融合？（RRF 设计）</li>
+<li>长文本稀释报错特征怎么解决？（父子分块）</li>
+<li>评测 LLM 挂了怎么不阻塞检索？（双重熔断器）</li>
+<li>新工具上线怎么不重新部署后端？（零侵入 Token 透传）</li>
+</ul>
+<p>这些不是调 API 能遇到的，是做系统才会踩的坑。</p>
+<pre><code>
+---
+
+## 面试官视角的加分信号
+
+| 简历埋点 | 面试官看到的信号 |
+|---------|----------------|
+| 6 篇 ADR（含 MCP/LanceDB/CE 选型） | 做技术决策有记录习惯，不只是凭感觉写代码 |
+| 137 测试 96% 功能特性覆盖 | 有质量意识，不是写完就跑 |
+| simple/claim-level 两阶段评测 | 不只是搭了 RAG，还知道怎么量化效果 |
+| 零侵入集成（Token透传） | 有架构思维，知道解耦的价值 |
+| 父子分块（error_log/semantic） | 对 RAG 的理解到了 chunk 策略层面，不是调包 |
+| 校企合作真实商业项目 | 项目经受过真实业务验证，不是 toy project |
+| 主动写 ADR / STAR 文档 | 有工程化沉淀习惯，不只是写代码 |
+
+---
+
+## 文件说明
+
+| 文件 | 用途 |
+|------|------|
+| `interview-prep.md` | 本文件，面试追问点与回答锚点 |
+| `session-summary.md` | 简历优化全过程技术归档 |
+| `xiecheng-resume.tex` | 最终版简历 |
+</code></pre>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2026/06/25/2.Areas%F0%9F%8C%90/01.project/invoice-manager&amp;BugVault/resume/interview-prep/">https://yuezi2048.github.io/2026/06/25/2.Areas🌐/01.project/invoice-manager&amp;BugVault/resume/interview-prep/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/resume/">resume</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="tree-drawer-mask"></div><div id="tree-drawer"><div class="tree-drawer-head"><span><i class="fas fa-folder-open"></i>目录导航</span><button id="tree-drawer-close" type="button" title="关闭" aria-label="关闭"><i class="fas fa-times"></i></button></div><div class="tree-drawer-body"><div class="card-widget card-categories card-category-tree"><ul class="card-category-list expandBtn" id="drawer-cat-list"><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/0-InBox%F0%9F%90%AD/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">0.InBox🐭</span><span class="card-category-list-count">3</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/0-InBox%F0%9F%90%AD/md/"><span class="card-category-list-name">md</span><span class="card-category-list-count">3</span></a></li></ul></li><li class="card-category-list-item parent on-path"><a class="card-category-list-link expand" href="/categories/2-Areas%F0%9F%8C%90/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">2.Areas🌐</span><span class="card-category-list-count">877</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/00-%E7%A7%8B%E6%8B%9B%E5%87%86%E5%A4%87%E6%96%B9%E5%90%91/"><span class="card-category-list-name">00.秋招准备方向</span><span class="card-category-list-count">7</span></a></li><li class="card-category-list-item parent on-path"><a class="card-category-list-link expand" href="/categories/2-Areas%F0%9F%8C%90/01-project/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">01.project</span><span class="card-category-list-count">54</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">condefather</span><span class="card-category-list-count">37</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/tuku/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">tuku</span><span class="card-category-list-count">2</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/tuku/backend/"><span class="card-category-list-name">backend</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/user-center/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">user-center</span><span class="card-category-list-count">9</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/user-center/back-end/"><span class="card-category-list-name">back-end</span><span class="card-category-list-count">8</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/user-center/front-end/"><span class="card-category-list-name">front-end</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/yu-ai-agent/"><span class="card-category-list-name">yu-ai-agent</span><span class="card-category-list-count">11</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/yupao/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">yupao</span><span class="card-category-list-count">14</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/yupao/back-end/"><span class="card-category-list-name">back-end</span><span class="card-category-list-count">13</span></a></li></ul></li></ul></li><li class="card-category-list-item parent on-path"><a class="card-category-list-link expand" href="/categories/2-Areas%F0%9F%8C%90/01-project/invoice-manager-BugVault/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">invoice-manager&amp;BugVault</span><span class="card-category-list-count">17</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/invoice-manager-BugVault/%E5%87%86%E5%A4%871/"><span class="card-category-list-name">准备1</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item  on-path current"><a class="card-category-list-link expand" href="/categories/2-Areas%F0%9F%8C%90/01-project/invoice-manager-BugVault/resume/"><span class="card-category-list-name">resume</span><span class="card-category-list-count">8</span></a><ul class="card-category-list child posts"><li class="card-category-list-item"><a class="card-category-list-link" href="/2026/06/30/2.Areas%F0%9F%8C%90/01.project/invoice-manager&amp;BugVault/resume/ai-mode/"><span class="card-category-list-name">ai-mode</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2026/06/25/2.Areas%F0%9F%8C%90/01.project/invoice-manager&amp;BugVault/resume/defense-manual/"><span class="card-category-list-name">defense-manual</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2026/06/30/2.Areas%F0%9F%8C%90/01.project/invoice-manager&amp;BugVault/resume/final-answer/"><span class="card-category-list-name">final-answer</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2026/06/22/2.Areas%F0%9F%8C%90/01.project/invoice-manager&amp;BugVault/resume/interview-plan/"><span class="card-category-list-name">interview-plan</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2026/06/22/2.Areas%F0%9F%8C%90/01.project/invoice-manager&amp;BugVault/resume/reading-guide/"><span class="card-category-list-name">reading-guide</span></a></li><li class="card-category-list-item"><a class="card-category-list-link active" href="/2026/06/25/2.Areas%F0%9F%8C%90/01.project/invoice-manager&amp;BugVault/resume/interview-prep/"><span class="card-category-list-name">interview-prep</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2026/06/18/2.Areas%F0%9F%8C%90/01.project/invoice-manager&amp;BugVault/resume/session-summary/"><span class="card-category-list-name">session-summary</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2026/06/22/2.Areas%F0%9F%8C%90/01.project/invoice-manager&amp;BugVault/resume/star-cheatsheet/"><span class="card-category-list-name">star-cheatsheet</span></a></li></ul></li></ul></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">02.面经记录</span><span class="card-category-list-count">501</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AF%BC%E5%9B%BE%E8%BE%93%E5%87%BA/"><span class="card-category-list-name">导图输出</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%BF%AB%E9%80%9F%E5%9B%9E%E9%A1%BE/"><span class="card-category-list-name">快速回顾</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">面试鸭</span><span class="card-category-list-count">484</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/408-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"><span class="card-category-list-name">408-计算机网络</span><span class="card-category-list-count">36</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/Java%E5%9F%BA%E7%A1%80/"><span class="card-category-list-name">Java基础</span><span class="card-category-list-count">64</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/Java%E9%9B%86%E5%90%88/"><span class="card-category-list-name">Java集合</span><span class="card-category-list-count">26</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/JUC/"><span class="card-category-list-name">JUC</span><span class="card-category-list-count">63</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/JVM/"><span class="card-category-list-name">JVM</span><span class="card-category-list-count">47</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/mybatis/"><span class="card-category-list-name">mybatis</span><span class="card-category-list-count">17</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/MySQL/"><span class="card-category-list-name">MySQL</span><span class="card-category-list-count">81</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/Redis/"><span class="card-category-list-name">Redis</span><span class="card-category-list-count">53</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/Spring/"><span class="card-category-list-name">Spring</span><span class="card-category-list-count">71</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/SpringBoot/"><span class="card-category-list-name">SpringBoot</span><span class="card-category-list-count">26</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">实习面试总结</span><span class="card-category-list-count">7</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/ai%E9%9D%A2%E8%AF%95/"><span class="card-category-list-name">ai面试</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%A1%B9%E7%9B%AE/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">项目</span><span class="card-category-list-count">4</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%A1%B9%E7%9B%AE/%E4%BA%91%E5%9B%BE%E5%BA%93/"><span class="card-category-list-name">云图库</span><span class="card-category-list-count">3</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/ai%E6%A8%A1%E6%8B%9F/"><span class="card-category-list-name">ai模拟</span><span class="card-category-list-count">3</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/03-algorithm/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">03.algorithm</span><span class="card-category-list-count">23</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/03-algorithm/01/"><span class="card-category-list-name">01</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/03-algorithm/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/"><span class="card-category-list-name">代码随想录</span><span class="card-category-list-count">15</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/03-algorithm/%E5%AE%9E%E4%B9%A0%E5%87%86%E5%A4%87%E6%80%9D%E8%B7%AF/"><span class="card-category-list-name">实习准备思路</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/03-algorithm/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80%E8%AF%BE/"><span class="card-category-list-name">算法基础课</span><span class="card-category-list-count">2</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">AI</span><span class="card-category-list-count">55</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/%E5%A4%A7%E4%BD%AC%E5%AD%A6%E4%B9%A0/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">大佬学习</span><span class="card-category-list-count">12</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/%E5%A4%A7%E4%BD%AC%E5%AD%A6%E4%B9%A0/mattpocock/"><span class="card-category-list-name">mattpocock</span><span class="card-category-list-count">12</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3AI%E9%9A%8F%E8%AE%B0/"><span class="card-category-list-name">深入理解AI随记</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/%E5%AE%9E%E4%B9%A0%E5%87%86%E5%A4%87/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">实习准备</span><span class="card-category-list-count">1</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/%E5%AE%9E%E4%B9%A0%E5%87%86%E5%A4%87/%E9%9D%A2%E8%AF%95/"><span class="card-category-list-name">面试</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/%E9%9A%8F%E8%AE%B0/"><span class="card-category-list-name">随记</span><span class="card-category-list-count">11</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/agent/"><span class="card-category-list-name">agent</span><span class="card-category-list-count">10</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/Hello-Agents/"><span class="card-category-list-name">Hello-Agents</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/learn-claude-code/"><span class="card-category-list-name">learn-claude-code</span><span class="card-category-list-count">14</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/openclaw/"><span class="card-category-list-name">openclaw</span><span class="card-category-list-count">2</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">back-end-java</span><span class="card-category-list-count">90</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/0-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">0.源码分析</span><span class="card-category-list-count">10</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/0-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/Mybatis/"><span class="card-category-list-name">Mybatis</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/0-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/SpringMVC/"><span class="card-category-list-name">SpringMVC</span><span class="card-category-list-count">9</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/1-JavaSE/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">1.JavaSE</span><span class="card-category-list-count">23</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/1-JavaSE/%E5%9F%BA%E7%A1%80%E7%AF%87%E2%80%94%E2%80%94%E9%9F%A9%E9%A1%BA%E5%B9%B3/"><span class="card-category-list-name">基础篇——韩顺平</span><span class="card-category-list-count">23</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/2-MySQL/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">2.MySQL</span><span class="card-category-list-count">14</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/2-MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/"><span class="card-category-list-name">基础篇</span><span class="card-category-list-count">14</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/3-JDBC/"><span class="card-category-list-name">3.JDBC</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/4-JavaWeb/"><span class="card-category-list-name">4.JavaWeb</span><span class="card-category-list-count">10</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/5-Maven%E4%B8%93%E9%A2%98/"><span class="card-category-list-name">5.Maven专题</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/6-SSM/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">6.SSM</span><span class="card-category-list-count">20</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/6-SSM/Mybatis/"><span class="card-category-list-name">Mybatis</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/6-SSM/Spring/"><span class="card-category-list-name">Spring</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/6-SSM/Spring-MVC/"><span class="card-category-list-name">Spring MVC</span><span class="card-category-list-count">11</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/6-SSM/SSM%E6%95%B4%E5%90%88/"><span class="card-category-list-name">SSM整合</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/7-SpringBoot/"><span class="card-category-list-name">7.SpringBoot</span><span class="card-category-list-count">7</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/docker/"><span class="card-category-list-name">docker</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/basic-408/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">basic-408</span><span class="card-category-list-count">10</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"><span class="card-category-list-name">数据结构</span><span class="card-category-list-count">10</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/dev-env/"><span class="card-category-list-name">dev-env</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/front-end/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">front-end</span><span class="card-category-list-count">2</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/front-end/vue/"><span class="card-category-list-name">vue</span><span class="card-category-list-count">2</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/go/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">go</span><span class="card-category-list-count">2</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/go/go%E5%85%A5%E9%97%A8-%E6%9E%AB%E6%9E%AB%E7%9F%A5%E9%81%93/"><span class="card-category-list-name">go入门-枫枫知道</span><span class="card-category-list-count">2</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">science</span><span class="card-category-list-count">131</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E6%AF%95%E4%B8%9A%E8%AE%BA%E6%96%87%E6%95%B4%E7%90%86/"><span class="card-category-list-name">毕业论文整理</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">小论文准备</span><span class="card-category-list-count">91</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">论文复现总结</span><span class="card-category-list-count">71</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E5%8F%AF%E8%83%BD%E4%BC%9A%E7%94%A8%E5%88%B0%E7%9A%84%E6%A8%A1%E5%9D%97/"><span class="card-category-list-name">可能会用到的模块</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">论文缝合方案实验记录</span><span class="card-category-list-count">12</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER-%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5-%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/"><span class="card-category-list-name">第一次实验：MENTER+用户注入+因果正则</span><span class="card-category-list-count">12</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/"><span class="card-category-list-name">论文梳理</span><span class="card-category-list-count">30</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E5%B0%8F%E8%AE%BA%E6%96%87%E6%95%85%E4%BA%8B%E7%BA%BF%E5%92%8C%E6%A8%A1%E5%9D%97%E8%AE%B0%E5%BD%95%E7%B4%A0%E6%9D%90/"><span class="card-category-list-name">小论文故事线和模块记录素材</span><span class="card-category-list-count">6</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">早期工作的基础知识</span><span class="card-category-list-count">18</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95/"><span class="card-category-list-name">基本方法</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%9F%BA%E6%9C%AC%E9%97%AE%E9%A2%98/"><span class="card-category-list-name">基本问题</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E8%AE%BA%E6%96%87/"><span class="card-category-list-name">论文</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/LightGCN%E7%9A%84%E6%BC%94%E5%8C%96/"><span class="card-category-list-name">LightGCN的演化</span><span class="card-category-list-count">6</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/pytorch%E5%9F%BA%E6%9C%AC%E5%8A%9F/"><span class="card-category-list-name">pytorch基本功</span><span class="card-category-list-count">3</span></a></li></ul></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E5%AE%9E%E9%AA%8C/"><span class="card-category-list-name">实验</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E6%B0%B4%E8%AE%BA%E6%96%87%E7%9A%84%E7%A8%8B%E5%BA%8F%E7%8C%BF/"><span class="card-category-list-name">水论文的程序猿</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83/"><span class="card-category-list-name">云服务器运行环境</span><span class="card-category-list-count">7</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/Github/"><span class="card-category-list-name">Github</span><span class="card-category-list-count">2</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">Pre</span><span class="card-category-list-count">39</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0/"><span class="card-category-list-name">代码实现</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">基础知识</span><span class="card-category-list-count">1</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/GNN/"><span class="card-category-list-name">GNN</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E8%AE%BA%E6%96%87%E6%95%B4%E7%90%86/"><span class="card-category-list-name">论文整理</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E6%A8%A1%E5%9E%8B%E6%95%B4%E7%90%86/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">模型整理</span><span class="card-category-list-count">2</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E6%A8%A1%E5%9E%8B%E6%95%B4%E7%90%86/%E5%BA%8F%E5%88%97%E6%8E%A8%E8%8D%90/"><span class="card-category-list-name">序列推荐</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">统计学习方法</span><span class="card-category-list-count">11</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1-%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/"><span class="card-category-list-name">1.监督学习</span><span class="card-category-list-count">8</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/2-%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/"><span class="card-category-list-name">2.无监督学习</span><span class="card-category-list-count">3</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/"><span class="card-category-list-name">综述</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/Awesome-LLM-for-RecSys-main/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">Awesome-LLM-for-RecSys-main</span><span class="card-category-list-count">1</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/Awesome-LLM-for-RecSys-main/Awesome-LLM-for-RecSys-main/"><span class="card-category-list-name">Awesome-LLM-for-RecSys-main</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/pytorch%E5%AD%A6%E4%B9%A0/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">pytorch学习</span><span class="card-category-list-count">19</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/pytorch%E5%AD%A6%E4%B9%A0/Transformer%E5%89%8D%E4%B8%96%E4%BB%8A%E7%94%9F/"><span class="card-category-list-name">Transformer前世今生</span><span class="card-category-list-count">19</span></a></li></ul></li></ul></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/tools/"><span class="card-category-list-name">tools</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/3-Resources%F0%9F%93%94/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">3.Resources📔</span><span class="card-category-list-count">5</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/3-Resources%F0%9F%93%94/%E8%AE%A4%E7%9F%A5%E5%8F%A5%E5%AD%90%E6%95%B4%E7%90%86/"><span class="card-category-list-name">认知句子整理</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/3-Resources%F0%9F%93%94/%E6%80%9D%E7%BB%B4%E8%AF%AF%E5%8C%BA%E6%95%B4%E7%90%86/"><span class="card-category-list-name">思维误区整理</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/3-Resources%F0%9F%93%94/communication/"><span class="card-category-list-name">communication</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/4-Archives%F0%9F%97%91/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">4.Archives🗑</span><span class="card-category-list-count">11</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/4-Archives%F0%9F%97%91/KOB/"><span class="card-category-list-name">KOB</span><span class="card-category-list-count">11</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/5-Tasks%F0%9F%93%9D/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">5.Tasks📝</span><span class="card-category-list-count">3</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/5-Tasks%F0%9F%93%9D/%E6%97%A5%E8%A7%84%E5%88%92/"><span class="card-category-list-name">日规划</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/5-Tasks%F0%9F%93%9D/%E6%80%BB%E4%BD%93%E8%A7%84%E5%88%92/"><span class="card-category-list-name">总体规划</span><span class="card-category-list-count">2</span></a></li></ul></li></ul></div></div></div><div id="toc-drawer-mask"></div><div id="toc-drawer"><div class="toc-drawer-body"><div id="toc-drawer-top"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar" loading="lazy"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">900</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">92</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">121</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div></div><div id="toc-drawer-main"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span class="toc-percentage"></span><button id="toc-drawer-close" type="button" title="关闭" aria-label="关闭"><i class="fas fa-times"></i></button></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%A2%E8%AF%95%E8%BF%BD%E9%97%AE%E9%A2%84%E5%88%A4-%E5%9B%9E%E7%AD%94%E9%94%9A%E7%82%B9"><span class="toc-text">面试追问预判 &amp; 回答锚点</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#P0-%E2%80%94-%E5%BF%85%E9%97%AE%EF%BC%8890-%EF%BC%8C%E5%BF%85%E9%A1%BB%E8%83%8C%E5%88%B0%E8%84%B1%E5%8F%A3%E8%80%8C%E5%87%BA%EF%BC%89"><span class="toc-text">P0 — 必问（90%+，必须背到脱口而出）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-MCP-%E5%88%B0%E5%BA%95%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E5%92%8C%E6%99%AE%E9%80%9A-API-%E6%8E%A5%E5%8F%A3%E3%80%81%E6%8F%92%E4%BB%B6%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="toc-text">1. MCP 到底是什么？和普通 API 接口、插件有什么区别？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8-RRF-%E5%81%9A%E8%9E%8D%E5%90%88%EF%BC%8C%E4%B8%8D%E7%9B%B4%E6%8E%A5%E7%BB%99%E5%90%91%E9%87%8F%E5%92%8C%E5%85%A8%E6%96%87%E5%8A%A0%E6%9D%83%E9%87%8D%EF%BC%9F"><span class="toc-text">2. 为什么用 RRF 做融合，不直接给向量和全文加权重？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%88%B6%E5%AD%90%E5%88%86%E5%9D%97%E6%98%AF%E6%80%8E%E4%B9%88%E8%AE%BE%E8%AE%A1%E7%9A%84%EF%BC%9F%E8%A7%A3%E5%86%B3%E4%BA%86%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="toc-text">3. 父子分块是怎么设计的？解决了什么问题？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Invoice-%E7%9A%84-Agent-%E6%98%AF%E6%80%8E%E4%B9%88%E5%81%9A%E5%88%B0%E9%9B%B6%E4%BE%B5%E5%85%A5%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81%E7%9A%84%EF%BC%9F"><span class="toc-text">4. Invoice 的 Agent 是怎么做到零侵入业务代码的？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#P1-%E2%80%94-%E6%B7%B1%E6%8C%96%E9%98%B2%E7%BF%BB%E8%BD%A6%EF%BC%8850-%E6%A6%82%E7%8E%87%EF%BC%89"><span class="toc-text">P1 — 深挖防翻车（50% 概率）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-RAG-%E8%AF%84%E6%B5%8B%E6%98%AF%E6%80%8E%E4%B9%88%E5%81%9A%E7%9A%84%EF%BC%9Fclaim-level-%E8%AF%84%E6%B5%8B%E5%85%B7%E4%BD%93%E9%80%BB%E8%BE%91%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-text">5. RAG 评测是怎么做的？claim-level 评测具体逻辑是什么？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-Cross-Encoder-%E5%92%8C-Bi-Encoder-%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F%E4%B8%BA%E4%BB%80%E4%B9%88%E7%B2%BE%E6%8E%92%E7%94%A8-Cross-Encoder%EF%BC%9F"><span class="toc-text">6. Cross-Encoder 和 Bi-Encoder 有什么区别？为什么精排用 Cross-Encoder？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-Agent-%E6%AD%BB%E5%BE%AA%E7%8E%AF%E6%80%8E%E4%B9%88%E5%A4%84%E7%90%86%EF%BC%9F%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8%E5%87%BA%E9%94%99%E6%80%8E%E4%B9%88%E5%85%9C%E5%BA%95%EF%BC%9F"><span class="toc-text">7. Agent 死循环怎么处理？工具调用出错怎么兜底？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89-LanceDB-%E4%B8%8D%E9%80%89-Chroma%E3%80%81Milvus%EF%BC%9F"><span class="toc-text">8. 为什么选 LanceDB 不选 Chroma、Milvus？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#P2-%E2%80%94-%E4%BD%8E%E9%A2%91%E9%99%B7%E9%98%B1%EF%BC%8820-30-%EF%BC%89"><span class="toc-text">P2 — 低频陷阱（20-30%）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#9-96-%E6%B5%8B%E8%AF%95%E8%A6%86%E7%9B%96%E7%8E%87%E6%80%8E%E4%B9%88%E7%AE%97%E7%9A%84%EF%BC%9F"><span class="toc-text">9. 96% 测试覆盖率怎么算的？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-70-%E9%87%8D%E5%A4%8D%E7%8E%87%E9%99%8D%E4%BD%8E%E6%80%8E%E4%B9%88%E7%AE%97%E7%9A%84%EF%BC%9F"><span class="toc-text">10. 70%+ 重复率降低怎么算的？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-6-%E7%AF%87-ADR-%E8%83%BD%E8%AF%B4%E4%B8%8A%E6%9D%A5%E5%93%AA%E5%87%A0%E7%AF%87%EF%BC%9F"><span class="toc-text">11. 6 篇 ADR 能说上来哪几篇？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%81%BF%E5%9D%91%E6%B8%85%E5%8D%95"><span class="toc-text">避坑清单</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%81%B5%E9%AD%82%E8%B4%A8%E9%97%AE%EF%BC%9A%E3%80%8C%E4%BD%A0%E8%BF%99%E4%B8%8D%E5%B0%B1%E6%98%AF%E5%9C%A8%E8%B0%83-API-%E5%90%97%EF%BC%9F%E3%80%8D"><span class="toc-text">灵魂质问：「你这不就是在调 API 吗？」</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E9%80%BB%E8%BE%91%EF%BC%9A%E8%B0%83-API-%E5%92%8C%E6%90%AD%E7%B3%BB%E7%BB%9F%E6%98%AF%E4%B8%A4%E7%A0%81%E4%BA%8B"><span class="toc-text">核心逻辑：调 API 和搭系统是两码事</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BugVault-%E7%9A%84%E5%8F%8D%E9%A9%B3%E9%93%BE%E6%9D%A1"><span class="toc-text">BugVault 的反驳链条</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Invoice-Manager-%E7%9A%84%E5%8F%8D%E9%A9%B3%E9%93%BE%E6%9D%A1"><span class="toc-text">Invoice Manager 的反驳链条</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B1%E5%BA%A6%E5%88%86%E6%9E%90%EF%BC%9A%E5%8F%91%E7%A5%A8%E6%9F%A5%E8%AF%A2%E5%9C%BA%E6%99%AF%E8%A6%81%E4%B8%8D%E8%A6%81%E5%81%9A-Agent-%E8%AE%B0%E5%BF%86%EF%BC%9F"><span class="toc-text">深度分析：发票查询场景要不要做 Agent 记忆？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF%E7%94%BB%E5%83%8F%EF%BC%9A%E5%8F%91%E7%A5%A8%E6%9F%A5%E8%AF%A2-vs-%E9%80%9A%E7%94%A8%E5%AF%B9%E8%AF%9D"><span class="toc-text">场景画像：发票查询 vs 通用对话</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E3%80%8C%E6%9F%A5%E8%81%8A%E5%A4%A9%E8%AE%B0%E5%BD%95%E3%80%8D%E4%B8%8D%E5%A6%82%E3%80%8C%E6%9F%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E3%80%8D%EF%BC%9F"><span class="toc-text">为什么「查聊天记录」不如「查数据库」？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#30-%E5%88%86%E9%92%9F-TTL-%E4%B8%BA%E4%BB%80%E4%B9%88%E5%90%88%E7%90%86%EF%BC%9F"><span class="toc-text">30 分钟 TTL 为什么合理？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E7%A1%AC%E8%A6%81%E5%81%9A%E9%95%BF%E6%9C%9F%E8%AE%B0%E5%BF%86%EF%BC%8C%E4%BC%9A%E5%BC%95%E5%85%A5%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="toc-text">如果硬要做长期记忆，会引入什么问题？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9C%9F%E6%AD%A3%E7%9A%84%E8%AE%B0%E5%BF%86%E5%BA%94%E8%AF%A5%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-text">真正的记忆应该是什么？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%83%A8%E5%88%86%E7%9A%84%E5%A6%A5%E5%8D%8F%EF%BC%9A%E6%9F%A5%E8%AF%A2%E6%9D%A1%E4%BB%B6%E7%BB%A7%E6%89%BF"><span class="toc-text">部分的妥协：查询条件继承</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Invoice-%E4%BC%9A%E8%AF%9D%E8%AE%B0%E5%BF%86%EF%BC%9ARedis-%E6%8C%82%E4%BA%86%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F"><span class="toc-text">Invoice 会话记忆：Redis 挂了怎么办？</span></a></li></ol></li></ol></li></ol></div></div></div></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="切换到日间状态" aria-label="切换到日间状态"><i class="fas fa-moon"></i></button><div class="layout-switcher-wrap"><button id="layout-btn" type="button" title="单栏和双栏切换"><i class="fas fa-columns"></i></button><div class="layout-switcher" id="layout-switcher"><button class="layout-option" data-layout="left" type="button"><i class="fas fa-align-left"></i><span>左对齐</span></button><button class="layout-option" data-layout="immersive" type="button"><i class="fas fa-align-center"></i><span>沉浸模式</span></button><button class="layout-option" data-layout="right" type="button"><i class="fas fa-align-right"></i><span>右对齐</span></button></div></div></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(async () => {
+  const showKatex = () => {
+    document.querySelectorAll('#article-container .katex').forEach(el => el.classList.add('katex-show'))
+  }
+
+  if (!window.katex_js_css) {
+    window.katex_js_css = true
+    await btf.getCSS('https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css')
+    if (false) {
+      await btf.getScript('https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js')
+    }
+  }
+
+  showKatex()
+})()</script></div><script src="/js/custom.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script>(() => {
+  const option = null
+  const config = {"site_uv":true,"site_pv":true,"page_pv":true,"token":null}
+  const shareId = 'ldZzVkaLBXQp45r2'
+  let shareAuth = null
+  const getVal = v => v && typeof v === 'object' ? v.value : v
+
+  const runTrack = () => {
+    umami.track(props => ({ ...props, url: window.location.pathname, title: GLOBAL_CONFIG_SITE.title }))
+  }
+
+  const loadUmamiJS = () => {
+    // Load the vendored same-origin copy (source/js/app.js) so ad blockers
+    // cannot block the request. The filename is deliberately neutral: some
+    // blockers filter any URL containing "umami", even on the same origin.
+    // Tracking data is still POSTed to the Umami server via data-host-url.
+    btf.getScript('/js/app.js', {
+      'data-website-id': '2db0436a-1277-492a-b8d5-548e1a7c5bf4',
+      'data-host-url': 'https://umami.lingio.cn',
+      'data-auto-track': 'false',
+      ...option
+    }).then(runTrack).catch(() => {})
+  }
+
+  const getShareAuth = async () => {
+    if (!shareAuth) {
+      const res = await fetch(`https://umami.lingio.cn/api/share/${shareId}`)
+      if (!res.ok) throw new Error(`Failed to get Umami share token: ${res.status}`)
+      shareAuth = await res.json()
+    }
+    return shareAuth
+  }
+
+  const getData = async (isPost) => {
+    const now = Date.now()
+    const keyUrl = isPost ? `&url=${window.location.pathname}` : ''
+    const headerList = { 'Accept': 'application/json' }
+    let statsWebsiteId = '2db0436a-1277-492a-b8d5-548e1a7c5bf4'
+    if (shareId) {
+      const share = await getShareAuth()
+      statsWebsiteId = share.websiteId
+      headerList['x-umami-share-token'] = share.token
+      headerList['x-umami-share-context'] = '1'
+    } else if (true) {
+      headerList['Authorization'] = `Bearer ${config.token}`
+    } else {
+      headerList['x-umami-api-key'] = config.token
+    }
+    const res = await fetch(`https://umami.lingio.cn/api/websites/${statsWebsiteId}/stats?startAt=0000000000&endAt=${now}${keyUrl}`, {
+      method: "GET",
+      headers: headerList
+    })
+    return await res.json()
+  }
+
+  const insertData = async () => {
+    try {
+      if (GLOBAL_CONFIG_SITE.pageType === 'post' && config.page_pv) {
+        const pagePV = document.getElementById('umamiPV')
+        if (pagePV) {
+          const data = await getData(true)
+          pagePV.textContent = getVal(data.pageviews)
+        }
+      } else {
+        const data = (config.site_uv || config.site_pv) && await getData()
+        if (config.site_uv) {
+          const siteUV = document.getElementById('umami-site-uv')
+          if (siteUV) siteUV.textContent = getVal(data.visitors)
+        }
+        if (config.site_pv) {
+          const sitePV = document.getElementById('umami-site-pv')
+          if (sitePV) sitePV.textContent = getVal(data.pageviews)
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load Umami Analytics:', e)
+    }
+  }
+
+  btf.addGlobalFn('pjaxComplete', runTrack, 'umami_analytics_run_track')
+  btf.addGlobalFn('pjaxComplete', insertData, 'umami_analytics_insert')
+
+  loadUmamiJS()
+  insertData()
+})()</script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="/js/search/algolia-loader.js"></script></div></div></body></html>

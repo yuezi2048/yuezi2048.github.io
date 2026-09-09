@@ -1,0 +1,1018 @@
+/* ==========================================================
+   Vue style overrides (typora-vue-theme: vue / vue-dark)
+   ========================================================== */
+
+/* ---- Code blocks: light mode (vue light) ---- */
+:root {
+  --hl-bg: #f8f8f8;
+  --hl-color: #34495e;
+  --hltools-bg: #f2f2f2;
+  --hltools-color: #8590a0;
+  --hlnumber-bg: #f8f8f8;
+  --hlnumber-color: #b0b8c0;
+  --hlscrollbar-bg: #e2e2e2;
+  --hlexpand-bg: linear-gradient(180deg, rgba(248, 248, 248, 0.6), rgba(248, 248, 248, 0.95));
+}
+
+.container figure.highlight {
+  border: 1px solid #f0f0f0;
+}
+
+/* ---- Code blocks: dark mode (vue dark) ---- */
+[data-theme='dark'] {
+  --hl-bg: #1a1a1a;
+  --hl-color: #eeeeee;
+  --hltools-bg: #242424;
+  --hltools-color: #9a9a9a;
+  --hlnumber-bg: #1a1a1a;
+  --hlnumber-color: #5f5f5f;
+  --hlscrollbar-bg: #2d2d2d;
+  --hlexpand-bg: linear-gradient(180deg, rgba(26, 26, 26, 0.6), rgba(26, 26, 26, 0.95));
+}
+
+[data-theme='dark'] .container figure.highlight {
+  border: 1px solid #2e2e2e;
+}
+
+/* ---- Syntax tokens: light mode (vue-light inspired) ---- */
+.container figure.highlight pre .comment {
+  color: #a0a8b0;
+}
+
+.container figure.highlight pre .meta {
+  color: #7c4dff;
+}
+
+.container figure.highlight pre .deletion {
+  color: #e53935;
+}
+
+.container figure.highlight pre .addition {
+  color: #2e9e86;
+}
+
+.container figure.highlight pre .keyword,
+.container figure.highlight pre .title {
+  color: #9c4fa8;
+}
+
+.container figure.highlight pre .variable,
+.container figure.highlight pre .attribute,
+.container figure.highlight pre .regexp,
+.container figure.highlight pre .tag .name {
+  color: #d64541;
+}
+
+.container figure.highlight pre .tag {
+  color: #2f8f4e;
+}
+
+.container figure.highlight pre .number,
+.container figure.highlight pre .literal,
+.container figure.highlight pre .params,
+.container figure.highlight pre .constant,
+.container figure.highlight pre .command {
+  color: #2e9e86;
+}
+
+.container figure.highlight pre .built_in {
+  color: #e36209;
+}
+
+.container figure.highlight pre .string,
+.container figure.highlight pre .value {
+  color: #22a2c9;
+}
+
+.container figure.highlight pre .function {
+  color: #3b5bdb;
+}
+
+.container figure.highlight pre .tag .attr {
+  color: #6e5fd8;
+}
+
+/* ---- Syntax tokens: dark mode (vue-dark exact palette) ---- */
+[data-theme='dark'] .container figure.highlight pre .comment {
+  color: hsl(0, 0%, 35%);
+}
+
+[data-theme='dark'] .container figure.highlight pre .meta {
+  color: hsl(0, 0%, 33%);
+}
+
+[data-theme='dark'] .container figure.highlight pre .deletion {
+  color: #eea1a1;
+}
+
+[data-theme='dark'] .container figure.highlight pre .addition {
+  color: #90cc90;
+}
+
+[data-theme='dark'] .container figure.highlight pre .keyword {
+  color: #bb7fc3;
+}
+
+[data-theme='dark'] .container figure.highlight pre .title {
+  color: #7f7fff;
+}
+
+[data-theme='dark'] .container figure.highlight pre .variable {
+  color: #efefef;
+}
+
+[data-theme='dark'] .container figure.highlight pre .attribute {
+  color: #7f7fe5;
+}
+
+[data-theme='dark'] .container figure.highlight pre .regexp {
+  color: #ffaa7f;
+}
+
+[data-theme='dark'] .container figure.highlight pre .tag,
+[data-theme='dark'] .container figure.highlight pre .tag .name {
+  color: #88bb7f;
+}
+
+[data-theme='dark'] .container figure.highlight pre .number,
+[data-theme='dark'] .container figure.highlight pre .literal,
+[data-theme='dark'] .container figure.highlight pre .params,
+[data-theme='dark'] .container figure.highlight pre .constant,
+[data-theme='dark'] .container figure.highlight pre .command {
+  color: #88b2a1;
+}
+
+[data-theme='dark'] .container figure.highlight pre .built_in {
+  color: #997fd4;
+}
+
+[data-theme='dark'] .container figure.highlight pre .string,
+[data-theme='dark'] .container figure.highlight pre .value {
+  color: #d48888;
+}
+
+[data-theme='dark'] .container figure.highlight pre .function {
+  color: #7f7fff;
+}
+
+[data-theme='dark'] .container figure.highlight pre .tag .attr {
+  color: #7f7fe5;
+}
+
+/* ---- Language label: weak, subtle ---- */
+.container figure.highlight .highlight-tools .code-lang {
+  text-transform: none;
+  font-weight: 400;
+  font-size: 0.9em;
+  letter-spacing: 0.02em;
+  opacity: 0.7;
+}
+
+/* ---- Article summary (本文核心) ---- */
+.article-summary {
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  border-left: 4px solid #42b983;
+  border-radius: 6px;
+  background: rgba(66, 185, 131, 0.08);
+}
+
+.article-summary .article-summary-title {
+  margin-bottom: 8px;
+  color: #42b983;
+  font-weight: 600;
+}
+
+.article-summary .article-summary-title i {
+  margin-right: 6px;
+}
+
+.article-summary .article-summary-content p {
+  margin: 0;
+  line-height: 1.8;
+}
+
+[data-theme='dark'] .article-summary {
+  background: rgba(66, 185, 131, 0.12);
+}
+
+/* ---- Featured posts (homepage) ---- */
+.home-section-title {
+  margin: 0 0 18px;
+  color: #42b983;
+  font-weight: 600;
+}
+
+.home-section-title i {
+  margin-right: 8px;
+}
+
+.home-list-meta {
+  display: none;
+}
+
+.home-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.home-section-header .home-section-title {
+  margin: 0;
+}
+
+.home-section-header.latest-header {
+  margin-top: 42px;
+}
+
+.section-more {
+  color: var(--card-meta);
+  font-size: 0.92em;
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+
+.section-more:hover {
+  color: #42b983;
+}
+
+.featured-title {
+  margin: 0 0 18px;
+  color: #42b983;
+  font-weight: 600;
+}
+
+.featured-title i {
+  margin-right: 8px;
+}
+
+.recent-post-item .article-title .sticky {
+  margin-right: 6px;
+  color: #f5a623;
+}
+
+/* ---- Navbar dark-mode button ---- */
+#darkmode-nav {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  border: none;
+  background: transparent;
+  color: var(--font-color);
+  font-size: 1em;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+#darkmode-nav:hover {
+  color: #42b983;
+}
+
+/* ==========================================================
+   Prev / Next post navigation (and related posts): lighter green
+   ========================================================== */
+#pagination .pagination-related,
+.relatedPosts .pagination-related {
+  /* fallback cover color (also used by inline `background: var(--default-bg-color)`) */
+  --default-bg-color: #a8e6cf;
+  background: #a8e6cf;
+}
+
+#pagination .pagination-related .info,
+.relatedPosts .pagination-related .info {
+  color: #1e5b43;
+}
+
+#pagination .pagination-related .info .info-item-1,
+.relatedPosts .pagination-related .info .info-item-1 {
+  color: #25694d;
+}
+
+#pagination .pagination-related .info .info-item-2,
+.relatedPosts .pagination-related .info .info-item-2 {
+  color: #1e5b43;
+}
+
+[data-theme='dark'] #pagination .pagination-related,
+[data-theme='dark'] .relatedPosts .pagination-related {
+  --default-bg-color: #2c6b4e;
+  background: #2c6b4e;
+}
+
+[data-theme='dark'] #pagination .pagination-related .info,
+[data-theme='dark'] .relatedPosts .pagination-related .info {
+  color: var(--white);
+}
+
+[data-theme='dark'] #pagination .pagination-related .info .info-item-1,
+[data-theme='dark'] .relatedPosts .pagination-related .info .info-item-1 {
+  color: #cfeadd;
+}
+
+[data-theme='dark'] #pagination .pagination-related .info .info-item-2,
+[data-theme='dark'] .relatedPosts .pagination-related .info .info-item-2 {
+  color: var(--white);
+}
+
+/* ---- 每页数量选择器 ---- */
+#pagination {
+  position: relative;
+}
+
+nav.pagination-section {
+  position: relative;
+}
+
+.per-page-selector {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: var(--font-color);
+  font-size: 0.92em;
+}
+
+.per-page-selector select {
+  padding: 2px 6px;
+  border: 1px solid var(--hr-border);
+  border-radius: 6px;
+  background: var(--card-bg);
+  color: var(--font-color);
+  cursor: pointer;
+}
+
+@media screen and (max-width: 1100px) {
+  .per-page-selector {
+    position: static;
+    transform: none;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
+}
+
+/* ==========================================================
+   导航重构：紧凑首页、分类树、归档折叠、页脚
+   ========================================================== */
+
+/* ---- 首页条目：标题 / 元信息 / 正文 分块展示（沿用 spec 构建前样式），框间距收紧 ---- */
+.recent-posts .recent-post-item {
+  height: auto !important;
+  padding: 14px 20px;
+  margin-bottom: 12px;
+}
+
+.recent-posts .recent-post-item .recent-post-info {
+  display: block;
+  width: 100%;
+  padding: 0;
+}
+
+.recent-posts .recent-post-item .recent-post-info > .article-title {
+  display: block;
+  margin: 0 0 6px;
+}
+
+.recent-posts .recent-post-item .recent-post-info > .article-meta-wrap {
+  margin: 0;
+  font-size: 0.88em;
+}
+
+.recent-posts .recent-post-item .recent-post-info > .content {
+  margin-top: 8px;
+  font-size: 0.95em;
+}
+
+/* ---- 分类树：默认折叠，阅读页自动展开当前路径 ---- */
+.card-category-tree ul.card-category-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card-category-tree .card-category-list.child {
+  display: none;
+  padding-left: 16px;
+}
+
+.card-category-tree .card-category-list > .card-category-list-item > a {
+  display: flex;
+  align-items: center;
+  margin: 2px 0;
+  padding: 2px 8px;
+  color: var(--font-color);
+  border-radius: 6px;
+  transition: all 0.3s;
+}
+
+.card-category-tree .card-category-list > .card-category-list-item > a:hover {
+  padding: 2px 12px;
+  background-color: var(--text-bg-hover);
+  color: var(--white);
+}
+
+.card-category-tree .card-category-list > .card-category-list-item > a .card-category-list-name {
+  flex: 1;
+  min-width: 0;
+  width: auto !important;
+}
+
+.card-category-tree .card-category-list > .parent > a.expand + .child,
+.card-category-tree li.current > .child.posts {
+  display: block;
+}
+
+/* 同级文章列表：并入整树滚动（不再单独限高），当前文章高亮 */
+.card-category-tree .card-category-list.child.posts {
+  max-height: none;
+  overflow-y: visible;
+  padding-left: 16px;
+}
+
+.card-category-tree .card-category-list.child.posts .card-category-list-link.active {
+  color: #42b983;
+  font-weight: 600;
+}
+
+.card-category-tree .card-category-list-item.on-path > a {
+  color: #42b983;
+}
+
+/* ---- 归档：按年折叠 ---- */
+#aside-content .card-archives .card-archive-list.child {
+  display: none;
+  padding-left: 16px;
+}
+
+#aside-content .card-archives .card-archive-list > .parent > a.expand + .child {
+  display: block;
+}
+
+/* ---- 卡片收缩（TOC / 分类树 / 归档） ---- */
+.card-widget .item-headline {
+  display: flex;
+  align-items: center;
+  padding-bottom: 6px;
+}
+
+.card-widget .item-headline .card-collapse-btn {
+  float: none;
+  margin: 0 8px 0 auto;
+  cursor: pointer;
+  color: var(--font-color);
+  transition: transform 0.3s;
+}
+
+.card-widget .item-headline .card-more-btn {
+  float: none;
+}
+
+.card-widget .item-headline .card-collapse-btn:hover {
+  color: #42b983;
+}
+
+.card-widget.collapsed .card-collapse-btn {
+  transform: rotate(180deg);
+}
+
+.card-widget.collapsed > .toc-content,
+.card-widget.card-category-tree.collapsed > ul,
+.card-widget.card-archives.collapsed > ul {
+  display: none !important;
+}
+
+/* ---- 文章页侧栏：目录卡片占满整列、内部滚动（分类树已迁移到抽屉） ---- */
+@media screen and (min-width: 900px) {
+  /* 侧栏整列限高：sticky 顶偏移 20px + 底部留白 20px */
+  #body-wrap.post .sticky_layout {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 40px);
+  }
+
+  /* 顶部导航固定/滑出时，sticky 顶偏移为 70px */
+  #page-header.fixed + .layout > .aside-content > .sticky_layout,
+  #page-header.nav-visible:not(.fixed) + .layout > .aside-content > .sticky_layout {
+    max-height: calc(100vh - 90px);
+  }
+
+  #body-wrap.post #card-toc {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  #body-wrap.post #card-toc {
+    flex: 1 1 auto;
+  }
+
+  #body-wrap.post #card-toc .toc-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none !important;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  /* 收缩时只留标题行，不占空间 */
+  #body-wrap.post #card-toc.collapsed {
+    flex: 0 0 auto;
+  }
+}
+
+/* ==========================================================
+   目录树抽屉（顶栏左侧三横线入口）
+   ========================================================== */
+/* 顶栏抽屉按钮：位置随布局模式互换（左对齐：树左/目录右；右对齐：目录左/树右），
+   左右槽位分别统一样式，按钮移动后间距保持不变 */
+#nav > #tree-drawer-btn,
+#nav > #toc-drawer-btn {
+  padding: 0 12px 0 0;
+  font-size: 1.05em;
+  line-height: 1;
+  color: var(--light-grey);
+}
+
+#menus > #tree-drawer-btn,
+#menus > #toc-drawer-btn {
+  padding: 0 0 0 10px;
+  font-size: 0.9em;
+  line-height: 1;
+  color: var(--light-grey);
+}
+
+#nav #tree-drawer-btn:hover,
+#nav #toc-drawer-btn:hover {
+  color: #42b983;
+}
+
+#page-header.not-top-img #nav #tree-drawer-btn,
+#page-header.nav-fixed #nav #tree-drawer-btn,
+#page-header.not-top-img #nav #toc-drawer-btn,
+#page-header.nav-fixed #nav #toc-drawer-btn {
+  color: var(--font-color);
+}
+
+/* 固定导航覆盖左右抽屉（抽屉 z-index 1001）：导航浮现时按钮可直接关闭抽屉 */
+#page-header.nav-fixed #nav {
+  z-index: 1002;
+}
+
+#tree-drawer-mask,
+#toc-drawer-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+#tree-drawer-mask.open,
+#toc-drawer-mask.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#tree-drawer,
+#toc-drawer {
+  position: fixed;
+  top: 0;
+  z-index: 1001;
+  width: min(340px, 86vw);
+  height: 100vh;
+  overflow-y: auto;
+  scrollbar-width: none;
+  background: var(--card-bg);
+  transition: transform 0.3s;
+}
+
+#tree-drawer {
+  left: 0;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.25);
+  transform: translateX(-100%);
+}
+
+#toc-drawer {
+  right: 0;
+  box-shadow: -2px 0 12px rgba(0, 0, 0, 0.25);
+  transform: translateX(100%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--global-bg);
+}
+
+#tree-drawer::-webkit-scrollbar,
+#toc-drawer::-webkit-scrollbar {
+  display: none;
+}
+
+#tree-drawer.open,
+#toc-drawer.open {
+  transform: translateX(0);
+}
+
+#tree-drawer .tree-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px 12px;
+  color: #42b983;
+  font-size: 1.15em;
+  font-weight: 600;
+}
+
+#tree-drawer .tree-drawer-head span i {
+  margin-right: 8px;
+}
+
+#tree-drawer-close {
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  color: var(--font-color);
+  font-size: 1em;
+}
+
+#tree-drawer-close:hover,
+#toc-drawer-close:hover {
+  color: #42b983;
+}
+
+/* 目录卡片标题行：覆盖主题 float/负 margin；折叠箭头已删除，
+   margin-left:auto 右推阅读进度与 X（保持 X 在行内最右） */
+#toc-drawer .toc-drawer-body #card-toc .toc-percentage,
+#aside-content #card-toc .toc-percentage {
+  float: none;
+  margin: 0 6px 0 auto;
+}
+
+/* 目录抽屉关闭按钮缩至约 24px，位于卡片标题行（item-headline）最右侧 */
+#card-toc #toc-drawer-close {
+  width: 24px;
+  height: 24px;
+  margin-left: 4px;
+  border-radius: 5px;
+  color: var(--font-color);
+  font-size: 0.9em;
+}
+
+#tree-drawer .tree-drawer-body .card-category-tree {
+  margin: 0;
+  padding: 0 24px 24px;
+  background: none;
+  box-shadow: none;
+}
+
+/* 目录抽屉内的侧栏卡片：去掉卡片背景，融入抽屉面板 */
+#toc-drawer .toc-drawer-body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 20px;
+  /* 中和主题 aside.styl 根块布局规则：抽屉面板宽度/内边距/外边距由抽屉自身控制 */
+  width: auto;
+  margin: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* 目录抽屉内的侧栏卡片：还原 Butterfly 卡片样式（主题样式作用域在 #aside-content 内） */
+#toc-drawer .toc-drawer-body .card-widget {
+  margin-bottom: 20px;
+  background: var(--card-bg);
+  box-shadow: var(--card-box-shadow);
+  border-radius: 8px;
+}
+
+#toc-drawer .toc-drawer-body .card-widget:hover {
+  box-shadow: var(--card-hover-box-shadow);
+}
+
+/* 主题的 :last-child 规则会让各段末尾卡片贴在一起；间距用容器 padding 承载，
+   避免最后一张卡的 margin 在钉住平移时残留 20px 空隙 */
+#toc-drawer .toc-drawer-body #toc-drawer-top {
+  padding-bottom: 20px;
+}
+
+#toc-drawer .toc-drawer-body #toc-drawer-top .card-widget:last-child {
+  margin-bottom: 0;
+}
+
+#toc-drawer-top,
+#toc-drawer-main {
+  will-change: transform;
+}
+
+/* 移动端目录按钮已由导航内的目录抽屉按钮接管 */
+#rightside #mobile-toc-button {
+  display: none !important;
+}
+
+/* 移动端：目录卡片放进抽屉后，取消主题的浮层缩放，随抽屉整体显示 */
+@media screen and (max-width: 899px) {
+  /* 权重与主题 #toc-drawer .toc-drawer-body #card-toc 对齐，确保移动端覆盖生效 */
+  #toc-drawer .toc-drawer-body #card-toc {
+    position: static;
+    transform: none;
+    width: auto;
+    max-width: none;
+    max-height: none;
+  }
+
+  #toc-drawer .toc-drawer-body #card-toc .toc-content {
+    max-height: none;
+  }
+}
+
+/* 桌面端：两个抽屉常驻并占用布局空间（VS Code 风格），位置随布局模式互换 */
+@media screen and (min-width: 900px) {
+  #tree-drawer,
+  #toc-drawer {
+    top: 60px; /* JS 会按内容顶部动态对齐 */
+    height: calc(100vh - 60px);
+    width: 300px;
+  }
+
+  #tree-drawer-mask,
+  #toc-drawer-mask {
+    display: none;
+  }
+
+  /* 非文章页文件树抽屉为浮层：保留遮罩以便点击外部关闭 */
+  body:has(#body-wrap.page) #tree-drawer-mask {
+    display: block;
+  }
+
+  /* 桌面端：目录抽屉随页面滚动（作者卡片上滑消失、目录钉住），面板本身不滚动 */
+  #toc-drawer .toc-drawer-body {
+    overflow: hidden;
+  }
+
+  /* 右侧抽屉打开时，右侧设置按钮左移让位（#rightside 与 #body-wrap 是兄弟节点）：
+     - 左对齐：右侧抽屉=目录（文章页）
+     - 右对齐：右侧抽屉=树（文章页占位 / 非文章页浮层，浮层另抬到遮罩之上保持可点） */
+  html:not(.layout-right) body:has(#body-wrap.post).toc-drawer-docked #rightside.rightside-show,
+  html.layout-right body:has(#body-wrap.post).tree-drawer-docked #rightside.rightside-show,
+  html.layout-right body:has(#body-wrap.page).tree-drawer-docked #rightside.rightside-show {
+    transform: translate(-368px, 0);
+  }
+
+  html.layout-right body:has(#body-wrap.page).tree-drawer-docked #rightside.rightside-show {
+    z-index: 1002;
+  }
+
+  /* 左对齐 / 沉浸：树在左、目录在右 */
+  #tree-drawer {
+    transform: translateX(-100%);
+  }
+
+  #toc-drawer {
+    transform: translateX(100%);
+  }
+
+  #tree-drawer.open,
+  #toc-drawer.open {
+    transform: translateX(0);
+  }
+
+  /* 右对齐：树在右、目录在左（避免与左置侧栏重叠） */
+  html.layout-right #tree-drawer {
+    left: auto;
+    right: 0;
+    transform: translateX(100%);
+  }
+
+  html.layout-right #toc-drawer {
+    right: auto;
+    left: 0;
+    transform: translateX(-100%);
+  }
+
+  html.layout-right #tree-drawer.open,
+  html.layout-right #toc-drawer.open {
+    transform: translateX(0);
+  }
+
+  /* 内容不再随抽屉开合位移：文章页正文固定几何（见下），非文章页保持主题默认布局 */
+
+  /* 文章页：正文固定在“默认两抽屉都打开”的几何（左/右对齐一致），
+     整体再略偏左（约 30px，1440 及以下仍贴齐 300px）；
+     不随抽屉开合移动或伸缩；沉浸/阅读模式除外（维持居中 + 抽屉隐藏）。
+     保留 html.layout-right 变体，防止任何单抽屉规则优先级压过 */
+  html:not(.layout-immersive) body:not(.read-mode) #body-wrap.post .layout,
+  html:not(.layout-immersive) body:not(.read-mode) #body-wrap.post #footer,
+  html.layout-right:not(.layout-immersive) body:not(.read-mode) #body-wrap.post .layout,
+  html.layout-right:not(.layout-immersive) body:not(.read-mode) #body-wrap.post #footer {
+    margin-left: max(300px, calc(40% - 370px));
+    margin-right: max(300px, calc(60% - 630px));
+    width: calc(100% - 600px);
+    max-width: 1000px;
+  }
+}
+
+/* ---- 页脚：去掉图片背景，跟随主题黑 / 白 ---- */
+#footer {
+  background-image: none !important;
+  background-color: var(--global-bg);
+}
+
+#footer-wrap,
+#footer-wrap a {
+  color: var(--font-color);
+}
+
+/* ---- 分类树 / 归档：行内展开箭头（朝右，展开后朝下），右侧小图标进页面 ---- */
+.card-category-tree .card-category-list > .parent > a,
+#aside-content .card-archives .card-archive-list > .parent > a {
+  align-items: center;
+}
+
+.card-category-tree .card-category-list > .parent > a i,
+#aside-content .card-archives .card-archive-list > .parent > a i {
+  float: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tree-caret {
+  margin-right: 8px !important;
+  color: var(--card-meta);
+  font-size: 0.9em;
+  transition: transform 0.3s;
+}
+
+.card-category-tree .card-category-list > .parent > a.expand .tree-caret,
+#aside-content .card-archives .card-archive-list > .parent > a.expand .tree-caret {
+  transform: rotate(90deg);
+}
+
+.tree-open {
+  margin-left: 10px !important;
+  color: var(--card-meta);
+  font-size: 0.85em;
+  opacity: 0.55;
+  cursor: pointer;
+}
+
+.card-category-tree .card-category-list > .parent > a.expand .tree-open,
+#aside-content .card-archives .card-archive-list > .parent > a.expand .tree-open {
+  transform: none;
+}
+
+.tree-open:hover {
+  color: #42b983;
+  opacity: 1;
+}
+
+/* 分类父行：去掉主题里写死的 70% 宽度，让箭头/名称/计数/入口图标自适应 */
+.card-category-tree .card-category-list > .parent > a .card-category-list-name {
+  width: auto !important;
+  flex: 1;
+}
+
+.card-category-tree .card-category-list > .parent > a .card-category-list-count {
+  width: auto !important;
+  text-align: right;
+}
+
+/* 归档箭头与文字对齐 */
+#aside-content .card-archives .card-archive-list-link {
+  align-items: center;
+}
+
+#aside-content .card-archives .card-archive-list-link .card-archive-list-date {
+  flex: 1;
+  min-width: 0;
+}
+
+#aside-content .card-archives .card-archive-list-count {
+  margin-left: 8px;
+}
+
+/* ==========================================================
+   布局切换（单栏 / 双栏 / 左导航 / VSCode）
+   ========================================================== */
+.layout-switcher-wrap {
+  position: relative;
+}
+
+.layout-switcher-wrap #layout-btn {
+  display: block;
+  margin-bottom: 5px;
+  width: 35px;
+  height: 35px;
+  padding: 0;
+  border: none;
+  background-color: var(--btn-bg);
+  color: var(--btn-color);
+  text-align: center;
+  font-size: 16px;
+  line-height: 35px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.layout-switcher-wrap #layout-btn:hover {
+  background-color: var(--btn-hover-color);
+}
+
+.layout-switcher {
+  display: none;
+  position: absolute;
+  right: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  min-width: 132px;
+  padding: 8px;
+  background: var(--card-bg);
+  border: 1px solid var(--hr-border);
+  border-radius: 8px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.14);
+}
+
+.layout-switcher.open {
+  display: block;
+}
+
+.layout-switcher .layout-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  background: transparent;
+  color: var(--font-color);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.92em;
+  text-align: left;
+  transition: background 0.2s, color 0.2s;
+}
+
+.layout-switcher .layout-option:hover {
+  background: var(--text-bg-hover);
+  color: var(--white);
+}
+
+.layout-switcher .layout-option.active {
+  color: #42b983;
+  font-weight: 600;
+}
+
+@media screen and (min-width: 901px) {
+  /* 沉浸模式：隐藏侧栏，内容居中，文字居中 */
+  html.layout-immersive .layout > .aside-content {
+    display: none;
+  }
+
+  html.layout-immersive .layout {
+    justify-content: center;
+  }
+
+  html.layout-immersive .layout > div:first-child {
+    width: 80%;
+  }
+
+  html.layout-immersive .home-section-header {
+    justify-content: center;
+  }
+
+  html.layout-immersive .home-section-title {
+    text-align: center;
+  }
+
+  html.layout-immersive .recent-post-item .article-title,
+  html.layout-immersive .recent-post-item .article-meta-wrap,
+  html.layout-immersive .recent-post-item .content {
+    text-align: center;
+  }
+
+  /* 右对齐：文章在右、导航在左，博客区与导航栏之间留间距 */
+  html.layout-right .layout {
+    flex-direction: row-reverse;
+    column-gap: 24px;
+  }
+
+  html.layout-right .layout > div:first-child {
+    width: auto;
+    flex: 1;
+  }
+
+  html.layout-right #aside-content {
+    width: 300px;
+    flex: 0 0 300px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}

@@ -1,0 +1,553 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>5.部署 | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="项目部署多环境理论 多环境：同个项目在不同的阶段（本地开发-&gt;测试调试–&gt;部署上线）需要根据情况需要部署到不同的机器上 好处（针对不同环境做不同的事情）：  每个环境互不影响； 区分不同的阶段（开发&#x2F;测试&#x2F;生产） 项目优化，有些依赖不需要放到线上 本地日志 精简依赖：lombook、接口文档 项目的环境 &#x2F; 参数调整（JVM堆内存等参数）    分类：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="5.部署">
+<meta property="og:url" content="https://yuezi2048.github.io/2025/09/18/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/5.%E9%83%A8%E7%BD%B2/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="项目部署多环境理论 多环境：同个项目在不同的阶段（本地开发-&gt;测试调试–&gt;部署上线）需要根据情况需要部署到不同的机器上 好处（针对不同环境做不同的事情）：  每个环境互不影响； 区分不同的阶段（开发&#x2F;测试&#x2F;生产） 项目优化，有些依赖不需要放到线上 本地日志 精简依赖：lombook、接口文档 项目的环境 &#x2F; 参数调整（JVM堆内存等参数）    分类：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2025-09-18T12:09:13.000Z">
+<meta property="article:modified_time" content="2025-09-18T12:09:13.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="back-end">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "5.部署",
+  "url": "https://yuezi2048.github.io/2025/09/18/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/5.%E9%83%A8%E7%BD%B2/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2025-09-18T12:09:13.000Z",
+  "dateModified": "2025-09-18T12:09:13.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://yuezi2048.github.io/2025/09/18/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/5.%E9%83%A8%E7%BD%B2/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'undefined')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'undefined')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":10,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  algoliaAssets: {"client":"https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js","instantSearch":"https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js","runtime":"/js/search/algolia.js"},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false,
+  darkmodeTitle: {
+    night: '切换到日间状态',
+    day: '切换到夜间状态'
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '5.部署',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 8.1.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar" loading="lazy"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">900</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">92</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">121</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><button class="site-page" id="tree-drawer-btn" type="button" title="目录导航" aria-label="目录导航"><i class="fas fa-bars fa-fw"></i></button><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">5.部署</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><button class="site-page" id="toc-drawer-btn" type="button" title="目录" aria-label="目录"><i class="fas fa-list-ul fa-fw"></i></button><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><button class="site-page" id="darkmode-nav" type="button" title="切换到日间状态" aria-label="切换到日间状态"><i class="fas fa-fw fa-moon"></i></button><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">5.部署</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-09-18T12:09:13.000Z" title="发表于 2025-09-18 20:09:13">2025-09-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-09-18T12:09:13.000Z" title="更新于 2025-09-18 20:09:13">2025-09-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/">01.project</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/">condefather</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/user-center/">user-center</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/user-center/back-end/">back-end</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="umamiPV" data-path="/2025/09/18/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/5.%E9%83%A8%E7%BD%B2/"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout hide-aside" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="项目部署"><a href="#项目部署" class="headerlink" title="项目部署"></a>项目部署</h2><h3 id="多环境理论"><a href="#多环境理论" class="headerlink" title="多环境理论"></a>多环境理论</h3><blockquote>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_41701290/article/details/120173283">多环境</a>：同个项目在不同的阶段（本地开发-&gt;测试调试–&gt;部署上线）需要根据情况需要部署到不同的机器上</p>
+<p>好处（针对不同环境做不同的事情）：</p>
+<ul>
+<li>每个环境互不影响；</li>
+<li>区分不同的阶段（开发&#x2F;测试&#x2F;生产）</li>
+<li>项目优化，有些依赖不需要放到线上<ul>
+<li>本地日志</li>
+<li>精简依赖：lombook、接口文档</li>
+<li>项目的环境 &#x2F; 参数调整（JVM堆内存等参数）</li>
+</ul>
+</li>
+</ul>
+<p>分类：</p>
+<ul>
+<li>本地环境：localhost:8080</li>
+<li>开发环境（远程开发）：为了开发方便，大家连同一台机器</li>
+<li>测试环境（测试 独立数据库 独立服务器）：开发 &#x2F; 测试 &#x2F; 产品<ul>
+<li>性能测试 &#x2F; 功能测试 &#x2F; 系统集成测试</li>
+<li>沙箱环境（实验环境）：完全隔离的环境，做实验</li>
+</ul>
+</li>
+<li>预发布环境（内测）：基本和正式一致，正式数据库，可以查出更多问题</li>
+<li>正式环境（线上，公开对外访问）：不要改动，保证正常运行</li>
+</ul>
+</blockquote>
+<h4 id="前端多环境"><a href="#前端多环境" class="headerlink" title="前端多环境"></a>前端多环境</h4><p>请求地址：</p>
+<ul>
+<li>开发环境：localhost:8000</li>
+<li>线上环境：user-backend.code-nav.cn</li>
+</ul>
+<p>前端区分环境，通过env变量传递。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title function_">startFront</span>(<span class="params">env</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (env === <span class="string">&#x27;prod&#x27;</span>) &#123;</span><br><span class="line">        <span class="comment">// 项目优化</span></span><br><span class="line">        <span class="comment">// 修改请求地址</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 保持本地开发...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>原项目使用了umi框架，build的时候自动传入<code>NODE ENV === PRODUCTION</code>参数，START通过process.env取到环境变量，可以通过<code>alert(process.env.NODE_ENV)</code>校验</p>
+<ul>
+<li>启动方式<ul>
+<li>开发环境：npm run start 本地启动</li>
+<li>线上环境：npm run build 项目构建打包，可以使用<code>serve</code>命令（npm i -g serve）在本地启动正式环境</li>
+</ul>
+</li>
+</ul>
+<p>在<code>request.ts</code>中，后续可以考虑打包后怎么更小一些</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> myAxios = axios.<span class="title function_">create</span>(&#123;</span><br><span class="line">  <span class="attr">baseURL</span>: <span class="string">&quot;http://localhost:8080&quot;</span>,</span><br><span class="line">  <span class="comment">// process.env.NODE_ENV === &quot;development&quot;</span></span><br><span class="line">  <span class="comment">//   ? &quot;http://localhost:8080&quot;</span></span><br><span class="line">  <span class="comment">//   : &quot;http://127.0.0.1:8080&quot;,</span></span><br><span class="line">  <span class="attr">timeout</span>: <span class="number">10000</span>,</span><br><span class="line">  <span class="attr">withCredentials</span>: <span class="literal">true</span>,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>项目配置</p>
+<ul>
+<li><p>不同的框架有不同的配置文件，比如umi框架的开发环境在<code>config/config.dev.ts</code>和<code>config/config.prod.ts</code> （配置文件后缀区分 config.ts是公共配置），建议多看文档（可以知道优化方法）</p>
+</li>
+<li><p>在这个配置文件下就可以实现在不同的环境下有不同的效果（如按需加载，静态化实现线上环境优化）。</p>
+<ul>
+<li><code>exportStatic</code>：使得页面静态化（如果遇到问题了查看umi文档）<ul>
+<li>开启后就是根据页面的路由，每个路由都会对应静态文件</li>
+<li>如果不静态化，只有一个index.html，后续根据js加载其他页面，此时如果直接访问其他的路由就会报404（要么配nginix，要么静态化解决）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="后端多环境"><a href="#后端多环境" class="headerlink" title="后端多环境"></a>后端多环境</h4><p><code>application.yml（</code>公共配置）添加不同的后缀来区分</p>
+<blockquote>
+<p>习惯：建表语句保存到项目目录中，由于jdbcDriver的问题，可以禁用SSL协议解决</p>
+</blockquote>
+<p>建立application-prod.yaml</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">user-center-my-backend</span></span><br><span class="line">  <span class="comment"># DataSource Config</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">driver-class-name:</span> <span class="string">com.mysql.jdbc.Driver</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://127.0.0.1:3306/yupi?useSSL=false</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">password:</span> <span class="string">*****</span></span><br><span class="line">  <span class="comment"># session失效时间1天</span></span><br><span class="line">  <span class="attr">session:</span></span><br><span class="line">    <span class="attr">timeout:</span> <span class="number">86400</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>可以在启动项目时传入环境变量，打包时如果不要执行测试，可以选中这个按钮</p>
+<img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250916203331878.png" alt="image-20250916203331878" style="zoom:50%;"  loading="lazy"/>	
+
+<p>启动java，即可启动prod的配置文件</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/home/ljy/.jdks/ms-17.0.16/bin/java -jar ./user-center-my-backend-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="1-原生部署"><a href="#1-原生部署" class="headerlink" title="1. 原生部署"></a>1. 原生部署</h3><blockquote>
+<p> <a target="_blank" rel="noopener" href="https://www.bilibili.com/opus/650021069734805524">https://www.bilibili.com/opus/650021069734805524</a></p>
+<p>建议CentOS8&#x2F;7.6</p>
+</blockquote>
+<h4 id="前端"><a href="#前端" class="headerlink" title="前端"></a>前端</h4><p><strong>ngnix</strong>、apache、tomcat</p>
+<p>安装nginx服务器</p>
+<ul>
+<li>系统自带软件包安装 yum、apt等</li>
+<li>到官网下载stable的版本</li>
+</ul>
+<blockquote>
+<p>小技巧：使用linux下载文件可以节省上传的操作</p>
+</blockquote>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250916211315121.png" alt="image-20250916211315121" loading="lazy"></p>
+<p>这里的v是可视化，configure检查依赖</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 下载源文件</span></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line"><span class="built_in">mkdir</span> services</span><br><span class="line"><span class="built_in">cd</span> services</span><br><span class="line">curl -o nginx-1.28.0.tar.gz https://nginx.org/download/nginx-1.28.0.tar.gz</span><br><span class="line"></span><br><span class="line"><span class="comment">#解压并安装相关依赖</span></span><br><span class="line">tar -zxvf nginx-1.28.0.tar.gz</span><br><span class="line"><span class="built_in">cd</span> nginx-1.28.0</span><br><span class="line">./configure</span><br><span class="line">yum -y install pcre-devel openssl openssl-devel gd-devel gcc gcc-c++</span><br><span class="line"><span class="comment"># 配置系统参数，支持https</span></span><br><span class="line">./configure --with-http_ssl_module --with-http_v2_module --with-stream</span><br><span class="line"></span><br><span class="line"><span class="comment"># 编译安装</span></span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行</span></span><br><span class="line"><span class="built_in">ls</span> /usr/local/nginx/sbin/nginx <span class="comment"># 可执行</span></span><br><span class="line"><span class="comment">#在最后一行添加：export PATH=$PATH:/usr/local/nginx/sbin	</span></span><br><span class="line">vim /etc/profile</span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br><span class="line">nginx</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试</span></span><br><span class="line">netstat -ntlp</span><br></pre></td></tr></table></figure>
+
+<p>编译生成的目录</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250916213320261.png" alt="image-20250916213320261" loading="lazy"></p>
+<p>最终的效果</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Active Internet connections (only servers)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    </span><br><span class="line">tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1830/sshd           </span><br><span class="line">tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      23680/nginx: master</span><br></pre></td></tr></table></figure>
+
+
+
+<p>将我们的项目放上去，重启访问服务器80端口即可得到后端</p>
+<p>在conf&#x2F;nginx.conf中放入我们的路径（注意备份）</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250916214828718.png" alt="image-20250916214828718" loading="lazy"></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> /usr/local/nginx/conf</span><br><span class="line">vim nginx.conf  <span class="comment">#更新location</span></span><br><span class="line">nginx -s reload</span><br></pre></td></tr></table></figure>
+
+<p><strong>此时进程指定用户不对</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@iZ2zefy0b2sguh461yjlwdZ conf]# ps -ef  | grep nginx</span><br><span class="line">root       23680       1  0 21:35 ?        00:00:00 nginx: master process nginx</span><br><span class="line">nobody     25395   23680  0 21:53 ?        00:00:00 nginx: worker process</span><br><span class="line">root       25500   23868  0 21:55 pts/1    00:00:00 grep --color=auto nginx</span><br></pre></td></tr></table></figure>
+
+<p>所以我们要在nginx.conf改成user root，之后重启即可</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250916215651158.png" alt="image-20250916215651158" loading="lazy">	</p>
+<h4 id="后端"><a href="#后端" class="headerlink" title="后端"></a>后端</h4><p>安装java：<a target="_blank" rel="noopener" href="https://www.oracle.com/java/technologies/downloads/?er=221886">https://www.oracle.com/java/technologies/downloads/?er=221886</a></p>
+<p>安装maven：<a target="_blank" rel="noopener" href="https://maven.apache.org/download.cgi">https://maven.apache.org/download.cgi</a></p>
+<p>我们使用tar.gz格式下载（curl或者wget或者ftp传过去），解压后导入环境变量</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/root/services/apache-maven-3.9.11/bin</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> JAVA_HOME=/root/services/jdk-17.0.16</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$JAVA_HOME</span>/bin:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
+
+<p>source更新后即可</p>
+<p>后端代码通过git或者上传后，我们通过mvn 编译代码</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">mvn <span class="keyword">package</span> -DskipTests</span><br></pre></td></tr></table></figure>
+
+<p>运行打包后的jar文件即可</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">java -jar ./user-center-my-backend-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod</span><br></pre></td></tr></table></figure>
+
+<p>但是会存在问题，挂掉ssh后，java也会断，所以我们进行后台运行，通过命令检查</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">nohup</span> java -jar ./user-center-my-backend-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod &amp;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试</span></span><br><span class="line"><span class="built_in">jobs</span></span><br><span class="line">netstat -ntlp</span><br><span class="line">jps</span><br></pre></td></tr></table></figure>
+
+<p>我们用一些可视化的方式来简化上面的操作，例如宝塔linux。</p>
+<h3 id="2-宝塔linux优化"><a href="#2-宝塔linux优化" class="headerlink" title="2. 宝塔linux优化"></a>2. 宝塔linux优化</h3><p>官方教程：<a target="_blank" rel="noopener" href="https://www.bt.cn/new/download.html">https://www.bt.cn/new/download.html</a></p>
+<p>实际是一个运维服务器，方便安装软件（可以初始化，也可以按照官方教程自行安装）</p>
+<h4 id="前端-1"><a href="#前端-1" class="headerlink" title="前端"></a>前端</h4><ul>
+<li>例如安装nginx，直接安装即可</li>
+</ul>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917192358457.png" alt="image-20250917192358457" loading="lazy"></p>
+<p>后续直接在面板里傻瓜式配置即可</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917192923244.png" alt="image-20250917192923244" loading="lazy"></p>
+<p>放入dist目录</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917195055551.png" alt="image-20250917195055551" loading="lazy"></p>
+<p>后续的配置</p>
+<ul>
+<li>servername是对应的域名</li>
+<li>如果找不到会找下面的</li>
+</ul>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917225753020.png" alt="image-20250917225753020" loading="lazy"></p>
+<h4 id="后端-1"><a href="#后端-1" class="headerlink" title="后端"></a>后端</h4><p>建立后端路径</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917195724397.png" alt="image-20250917195724397" loading="lazy"></p>
+<p>用界面来构建项目，通过jar包来构建</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917200215921.png" alt="image-20250917200215921" loading="lazy"></p>
+<p>添加端口放行即可</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917203809835.png" alt="image-20250917203809835" loading="lazy"></p>
+<p>课上疑问：端口开了ipv6可以正常访问端口吗？</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917203757375.png" alt="image-20250917203757375" loading="lazy"></p>
+<h3 id="3-容器"><a href="#3-容器" class="headerlink" title="3. 容器"></a>3. 容器</h3><p>docker将项目环境、代码（java  nginx等）可以打包成镜像，更容易分发和移植，启动项目时不需要敲很多命令，直接启动即可。</p>
+<ul>
+<li>官网安装：<a target="_blank" rel="noopener" href="https://www.docker.com/get-started/">https://www.docker.com/get-started/</a></li>
+<li>宝塔安装docker管理器</li>
+</ul>
+<h4 id="构建镜像"><a href="#构建镜像" class="headerlink" title="构建镜像"></a>构建镜像</h4><p>Dockerfile指定Docker镜像</p>
+<p>一般参考同类项目（github等），然后修改。</p>
+<h5 id="jdk8（服务器构建）"><a href="#jdk8（服务器构建）" class="headerlink" title="jdk8（服务器构建）"></a>jdk8（服务器构建）</h5><ul>
+<li>FROM 依赖基础项</li>
+<li>WORK 工作目录</li>
+<li>COPY 从本机复制文件</li>
+<li>RUN 执行命令</li>
+<li>CMD &#x2F; ENTRYPOINT（附加额外参数） 指定运行容器默认执行的命令</li>
+</ul>
+<p>构建</p>
+<blockquote>
+<p>t是tag的意思，版本等信息</p>
+<p>.表示当前目录下构建镜像</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker build -t user-center-backend:v0.0.1</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight dockerfile"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Docker 镜像构建</span></span><br><span class="line"><span class="comment"># @author &lt;a href=&quot;https://github.com/liyupi&quot;&gt;程序员鱼皮&lt;/a&gt;</span></span><br><span class="line"><span class="comment"># @from &lt;a href=&quot;https://yupi.icu&quot;&gt;编程导航知识星球&lt;/a&gt;</span></span><br><span class="line"><span class="keyword">FROM</span> maven:<span class="number">3.5</span>-jdk-<span class="number">8</span>-alpine as builder</span><br><span class="line"></span><br><span class="line"><span class="comment"># Copy local code to the container image.</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /app</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> pom.xml .</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> src ./src</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Build a release artifact.</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> mvn package -DskipTests</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Run the web service on container startup.</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [<span class="string">&quot;java&quot;</span>,<span class="string">&quot;-jar&quot;</span>,<span class="string">&quot;/app/target/user-center-backend-0.0.1-SNAPSHOT.jar&quot;</span>,<span class="string">&quot;--spring.profiles.active=prod&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="Java17（本地构建）"><a href="#Java17（本地构建）" class="headerlink" title="Java17（本地构建）"></a>Java17（本地构建）</h5><p><code>louislivi/jdk:17</code>构建的镜像参考：<a target="_blank" rel="noopener" href="https://www.louislivi.com/archives/jdk17dockerfile">https://www.louislivi.com/archives/jdk17dockerfile</a></p>
+<figure class="highlight dockerfile"><table><tr><td class="code"><pre><span class="line"><span class="keyword">FROM</span> amazoncorretto:<span class="number">17</span>-alpine</span><br><span class="line"><span class="keyword">LABEL</span><span class="language-bash"> maintainer=<span class="string">&quot;louislivi.com&quot;</span></span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /home</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">ln</span> -sf /usr/share/zoneinfo/Asia/Chongqing /etc/localtime</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">echo</span> <span class="string">&#x27;Asia/Chongqing&#x27;</span> &gt;/etc/timezone</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> yum install -y curl &amp;&amp; yum install -y wget &amp;&amp; yum install -y telnet &amp;&amp; yum install -y procps &amp;&amp; yum install -y vim</span></span><br><span class="line"><span class="keyword">ENV</span> TINI_VERSION v0.<span class="number">19.0</span></span><br><span class="line"><span class="keyword">ADD</span><span class="language-bash"> https://gitee.com/wl4g-k8s/tini/releases/download/<span class="variable">$&#123;TINI_VERSION&#125;</span>/tini /tini</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">chmod</span> +x /tini</span></span><br><span class="line"><span class="keyword">ENV</span> JAVA_OPTS=<span class="string">&quot;\</span></span><br><span class="line"><span class="string">-XX:+UseG1GC \</span></span><br><span class="line"><span class="string">-XX:+UnlockDiagnosticVMOptions \</span></span><br><span class="line"><span class="string">-XX:+UnlockExperimentalVMOptions \</span></span><br><span class="line"><span class="string">-XX:+UseContainerSupport \</span></span><br><span class="line"><span class="string">-Dfile.encoding=UTF-8 \</span></span><br><span class="line"><span class="string">-Djava.security.egd=file:/dev/./urandom \</span></span><br><span class="line"><span class="string">-XX:MaxRAMPercentage=75 \</span></span><br><span class="line"><span class="string">-XX:MinRAMPercentage=75 \</span></span><br><span class="line"><span class="string">-XX:InitialRAMPercentage=75 \</span></span><br><span class="line"><span class="string">-XX:MaxDirectMemorySize=1024m \</span></span><br><span class="line"><span class="string">--add-opens=java.base/java.lang=ALL-UNNAMED \</span></span><br><span class="line"><span class="string">--add-opens java.base/java.lang.invoke=ALL-UNNAMED \</span></span><br><span class="line"><span class="string">--add-opens=java.base/java.io=ALL-UNNAMED \</span></span><br><span class="line"><span class="string">--add-opens=java.base/java.math=ALL-UNNAMED \</span></span><br><span class="line"><span class="string">--add-opens=java.base/java.net=ALL-UNNAMED \</span></span><br><span class="line"><span class="string">--add-opens=java.base/java.nio=ALL-UNNAMED \</span></span><br><span class="line"><span class="string">--add-opens=java.base/java.security=ALL-UNNAMED \</span></span><br><span class="line"><span class="string">--add-opens=java.base/java.text=ALL-UNNAMED \</span></span><br><span class="line"><span class="string">--add-opens=java.base/java.time=ALL-UNNAMED \</span></span><br><span class="line"><span class="string">--add-opens=java.base/java.util=ALL-UNNAMED \</span></span><br><span class="line"><span class="string">--add-opens=java.base/jdk.internal.access=ALL-UNNAMED \</span></span><br><span class="line"><span class="string">--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED&quot;</span></span><br><span class="line"><span class="keyword">ENTRYPOINT</span><span class="language-bash"> [<span class="string">&quot;/tini&quot;</span>, <span class="string">&quot;--&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>docker build -t louislivi&#x2F;jdk:17 .</p>
+</blockquote>
+<figure class="highlight dockerfile"><table><tr><td class="code"><pre><span class="line"><span class="keyword">FROM</span> louislivi/jdk:<span class="number">17</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /home</span></span><br><span class="line"><span class="keyword">ADD</span><span class="language-bash"> target/user-center-my-backend-0.0.1-SNAPSHOT.jar /home/user-center-my-backend-0.0.1-SNAPSHOT.jar</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ENV</span> MY_JAVA_OPTS=<span class="string">&quot;&quot;</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> java <span class="variable">$&#123;JAVA_OPTS&#125;</span> <span class="variable">$&#123;MY_JAVA_OPTS&#125;</span> -jar target/user-center-my-backend-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>docker build -t user-center-backend:v0.0.1 .</p>
+</blockquote>
+<h5 id="nginx"><a href="#nginx" class="headerlink" title="nginx"></a>nginx</h5><p>docker目录下新建<code>Nginx.conf</code>配置</p>
+<ul>
+<li><code>try_files</code> ：用户访问文件找不到时降级找index.html，防止404错误（帮助在js中重定向文件）</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen 80;</span><br><span class="line"></span><br><span class="line">    # gzip config</span><br><span class="line">    gzip on;</span><br><span class="line">    gzip_min_length 1k;</span><br><span class="line">    gzip_comp_level 9;</span><br><span class="line">    gzip_types text/plain text/css text/javascript application/json application/javascript application/x-javascript application/xml;</span><br><span class="line">    gzip_vary on;</span><br><span class="line">    gzip_disable &quot;MSIE [1-6]\.&quot;;</span><br><span class="line"></span><br><span class="line">    root /usr/share/nginx/html;</span><br><span class="line">    include /etc/nginx/mime.types;</span><br><span class="line"></span><br><span class="line">    location / &#123;</span><br><span class="line">        try_files $uri /index.html;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>dockerfile(也可以写一个自带node的，build的过程在容器内进行)</p>
+<figure class="highlight docker"><table><tr><td class="code"><pre><span class="line"><span class="keyword">FROM</span> nginx</span><br><span class="line"></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /usr/share/nginx/html/</span></span><br><span class="line"><span class="keyword">USER</span> root</span><br><span class="line"></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> ./docker/nginx.conf /etc/nginx/conf.d/default.conf</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> ./dist  /usr/share/nginx/html/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">80</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [<span class="string">&quot;nginx&quot;</span>, <span class="string">&quot;-g&quot;</span>, <span class="string">&quot;daemon off;&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p>复制到对应目录同理</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker build -t user-center-frontend:v0.0.1 .</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917212444970.png" alt="image-20250917212444970" loading="lazy"></p>
+<p>至此构建好了镜像</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@iZ2zefy0b2sguh461yjlwdZ user-center-frontend]# docker images</span><br><span class="line">REPOSITORY            TAG       IMAGE ID       CREATED          SIZE</span><br><span class="line">user-center-front     v0.0.1    70b279125558   46 seconds ago   201MB</span><br><span class="line">user-center-backend   v0.0.1    3966c685d24f   15 minutes ago   1.04GB</span><br><span class="line">louislivi/jdk         17        842b092f8377   23 minutes ago   1.01GB</span><br></pre></td></tr></table></figure>
+
+<p>构建优化方向：</p>
+<ul>
+<li><p>构建时间：可以使用<strong>多阶段构建</strong>来优化构建效率（比如maven构建和java运行分开，这样可以丢弃不需要的内容）</p>
+</li>
+<li><p>减小尺寸</p>
+</li>
+</ul>
+<h4 id="启动镜像"><a href="#启动镜像" class="headerlink" title="启动镜像"></a>启动镜像</h4><ul>
+<li>默认找本地镜像，如果没有就去远程拉镜像</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/docker/docker-run-command.html">https://www.runoob.com/docker/docker-run-command.html</a></p>
+<ul>
+<li>端口映射：本机端口和容器端口关联</li>
+<li>容器卷映射：本机资源和容器内部资源关联</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -d -p 80:80 -v /data/app:/usr/share/nginx/html/ user-center-frontend:v0.0.1</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917214744302.png" alt="image-20250917214744302" loading="lazy"></p>
+<p>调试</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker -<span class="built_in">exec</span> -it ca09037f6c01 /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>发现目录下为空，发现是由于容器卷映射的问题，杀掉容器</p>
+<blockquote>
+<p>docker kill 7a2b43496438</p>
+</blockquote>
+<p>去掉-d后，进行测试，后续需要后台再启动即可</p>
+<blockquote>
+<p>docker run -p 80:80 –name user-center-frontend user-center-frontend:v0.0.1</p>
+</blockquote>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917215445158.png" alt="image-20250917215445158" loading="lazy"></p>
+<p>此时可以通过日志来观察：<a target="_blank" rel="noopener" href="https://docs.docker.com/reference/cli/docker/container/logs/">https://docs.docker.com/reference/cli/docker/container/logs/</a></p>
+<blockquote>
+<p>docker logs 7a2b43496438</p>
+<p>docker logs -f 7a2b43496438</p>
+</blockquote>
+<p>删除镜像：<code>docker rmi -f</code></p>
+<p>如法炮制</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -d -p 8080:8080 --name user-center-backend user-center-backend:v0.0.1</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="4-容器平台"><a href="#4-容器平台" class="headerlink" title="4. 容器平台"></a>4. 容器平台</h3><p>直接用别人的容器平台，只要把镜像放上去就行。（大公司用得多）</p>
+<ul>
+<li>云服务商容器平台（腾讯云、阿里云）</li>
+<li>专门的容器平台（后端微信云托管）  <strong>要花钱</strong></li>
+</ul>
+<blockquote>
+<p>前端部署：webify（比容器更傻瓜）</p>
+<ul>
+<li>优势：不用命令，代码更新时自动构建</li>
+<li>缺点：需要把代码放到托管平台上</li>
+</ul>
+</blockquote>
+<p>好处：</p>
+<ul>
+<li>更方便，不如输命令</li>
+<li>更傻瓜式，不用控制台</li>
+<li>大厂运维，更省心</li>
+<li>额外的监控告警、其他（存储、负载均衡、自动缩扩容、流水线）</li>
+</ul>
+<p>使用微信云托管建立</p>
+<img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917222342620.png" alt="image-20250917222342620" style="zoom: 33%;"  loading="lazy"/>	
+
+<p>查看日志也很方便</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917222854088.png" alt="image-20250917222854088" loading="lazy"></p>
+<h2 id="域名配置"><a href="#域名配置" class="headerlink" title="域名配置"></a>域名配置</h2><p>原始的绑定方式（容器也可以直接绑定一个域名）</p>
+<p>前端DNS的过程：</p>
+<p>用户输入网址——域名服务器（解析为ip地址 &#x2F; 交给其他域名解析服务）—— </p>
+<p>（防火墙）nginx（接受请求） —— 找到对应的文件，返回文件给前端——加载js等文件到浏览器中——渲染</p>
+<p>后端DNS过程：</p>
+<p>用户输入网址 —— 域名服务器 —— 我们的服务器 ——  后端服务端口 </p>
+<ul>
+<li>A——直接指向</li>
+<li>CNAME：域名——CDN——负载均衡</li>
+</ul>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917224044878.png" alt="image-20250917224044878" loading="lazy"></p>
+<p>前端部署时要注意：nginix的servername是否加入，宝塔的域名防火墙是否放行</p>
+<p>后端部署要注意：域名默认的是80，直接用域名得加端口号，我们想实现直接用域名转发到端口</p>
+<h4 id="nginx反向代理"><a href="#nginx反向代理" class="headerlink" title="nginx反向代理"></a>nginx反向代理</h4><blockquote>
+<p>方案：配置nginx反向代理——替服务器做请求，让nginx帮忙转发请求</p>
+</blockquote>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917230136136.png" alt="image-20250917230136136" loading="lazy"></p>
+<p>实现效果：该nginx服务请求根目录后，会自动转发到8080端口</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images-ubuntu/image-20250917230226486.png" alt="image-20250917230226486" loading="lazy"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2025/09/18/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/5.%E9%83%A8%E7%BD%B2/">https://yuezi2048.github.io/2025/09/18/2.Areas🌐/01.project/condefather/user-center/back-end/5.部署/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/back-end/">back-end</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="tree-drawer-mask"></div><div id="tree-drawer"><div class="tree-drawer-head"><span><i class="fas fa-folder-open"></i>目录导航</span><button id="tree-drawer-close" type="button" title="关闭" aria-label="关闭"><i class="fas fa-times"></i></button></div><div class="tree-drawer-body"><div class="card-widget card-categories card-category-tree"><ul class="card-category-list expandBtn" id="drawer-cat-list"><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/0-InBox%F0%9F%90%AD/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">0.InBox🐭</span><span class="card-category-list-count">3</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/0-InBox%F0%9F%90%AD/md/"><span class="card-category-list-name">md</span><span class="card-category-list-count">3</span></a></li></ul></li><li class="card-category-list-item parent on-path"><a class="card-category-list-link expand" href="/categories/2-Areas%F0%9F%8C%90/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">2.Areas🌐</span><span class="card-category-list-count">877</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/00-%E7%A7%8B%E6%8B%9B%E5%87%86%E5%A4%87%E6%96%B9%E5%90%91/"><span class="card-category-list-name">00.秋招准备方向</span><span class="card-category-list-count">7</span></a></li><li class="card-category-list-item parent on-path"><a class="card-category-list-link expand" href="/categories/2-Areas%F0%9F%8C%90/01-project/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">01.project</span><span class="card-category-list-count">54</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item parent on-path"><a class="card-category-list-link expand" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">condefather</span><span class="card-category-list-count">37</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/tuku/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">tuku</span><span class="card-category-list-count">2</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/tuku/backend/"><span class="card-category-list-name">backend</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent on-path"><a class="card-category-list-link expand" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/user-center/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">user-center</span><span class="card-category-list-count">9</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item  on-path current"><a class="card-category-list-link expand" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/user-center/back-end/"><span class="card-category-list-name">back-end</span><span class="card-category-list-count">8</span></a><ul class="card-category-list child posts"><li class="card-category-list-item"><a class="card-category-list-link" href="/2025/09/11/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/0.%E8%AE%BE%E8%AE%A1/"><span class="card-category-list-name">0.设计</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2025/09/12/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/1.%E5%90%8E%E7%AB%AF%E5%88%9D%E5%A7%8B%E5%8C%96/"><span class="card-category-list-name">1.后端初始化</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2025/09/14/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/2.%E7%99%BB%E5%BD%95%E6%B3%A8%E5%86%8C/"><span class="card-category-list-name">2.登录注册</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2025/09/13/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/3.%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/"><span class="card-category-list-name">3.用户管理</span></a></li><li class="card-category-list-item"><a class="card-category-list-link active" href="/2025/09/18/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/5.%E9%83%A8%E7%BD%B2/"><span class="card-category-list-name">5.部署</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2025/09/14/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/4.%E7%94%A8%E6%88%B7%E6%A0%A1%E9%AA%8C/"><span class="card-category-list-name">4.用户校验</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2025/09/18/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/6.%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/"><span class="card-category-list-name">6.跨域问题解决</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2025/09/18/2.Areas%F0%9F%8C%90/01.project/condefather/user-center/back-end/7.%E6%89%A9%E5%B1%95%E5%92%8C%E4%BC%98%E5%8C%96%E7%82%B9/"><span class="card-category-list-name">7.扩展和优化点</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/user-center/front-end/"><span class="card-category-list-name">front-end</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/yu-ai-agent/"><span class="card-category-list-name">yu-ai-agent</span><span class="card-category-list-count">11</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/yupao/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">yupao</span><span class="card-category-list-count">14</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/yupao/back-end/"><span class="card-category-list-name">back-end</span><span class="card-category-list-count">13</span></a></li></ul></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/invoice-manager-BugVault/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">invoice-manager&amp;BugVault</span><span class="card-category-list-count">17</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/invoice-manager-BugVault/%E5%87%86%E5%A4%871/"><span class="card-category-list-name">准备1</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/invoice-manager-BugVault/resume/"><span class="card-category-list-name">resume</span><span class="card-category-list-count">8</span></a></li></ul></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">02.面经记录</span><span class="card-category-list-count">501</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AF%BC%E5%9B%BE%E8%BE%93%E5%87%BA/"><span class="card-category-list-name">导图输出</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%BF%AB%E9%80%9F%E5%9B%9E%E9%A1%BE/"><span class="card-category-list-name">快速回顾</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">面试鸭</span><span class="card-category-list-count">484</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/408-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"><span class="card-category-list-name">408-计算机网络</span><span class="card-category-list-count">36</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/Java%E5%9F%BA%E7%A1%80/"><span class="card-category-list-name">Java基础</span><span class="card-category-list-count">64</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/Java%E9%9B%86%E5%90%88/"><span class="card-category-list-name">Java集合</span><span class="card-category-list-count">26</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/JUC/"><span class="card-category-list-name">JUC</span><span class="card-category-list-count">63</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/JVM/"><span class="card-category-list-name">JVM</span><span class="card-category-list-count">47</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/mybatis/"><span class="card-category-list-name">mybatis</span><span class="card-category-list-count">17</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/MySQL/"><span class="card-category-list-name">MySQL</span><span class="card-category-list-count">81</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/Redis/"><span class="card-category-list-name">Redis</span><span class="card-category-list-count">53</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/Spring/"><span class="card-category-list-name">Spring</span><span class="card-category-list-count">71</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/SpringBoot/"><span class="card-category-list-name">SpringBoot</span><span class="card-category-list-count">26</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">实习面试总结</span><span class="card-category-list-count">7</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/ai%E9%9D%A2%E8%AF%95/"><span class="card-category-list-name">ai面试</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%A1%B9%E7%9B%AE/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">项目</span><span class="card-category-list-count">4</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%A1%B9%E7%9B%AE/%E4%BA%91%E5%9B%BE%E5%BA%93/"><span class="card-category-list-name">云图库</span><span class="card-category-list-count">3</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/ai%E6%A8%A1%E6%8B%9F/"><span class="card-category-list-name">ai模拟</span><span class="card-category-list-count">3</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/03-algorithm/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">03.algorithm</span><span class="card-category-list-count">23</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/03-algorithm/01/"><span class="card-category-list-name">01</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/03-algorithm/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/"><span class="card-category-list-name">代码随想录</span><span class="card-category-list-count">15</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/03-algorithm/%E5%AE%9E%E4%B9%A0%E5%87%86%E5%A4%87%E6%80%9D%E8%B7%AF/"><span class="card-category-list-name">实习准备思路</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/03-algorithm/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80%E8%AF%BE/"><span class="card-category-list-name">算法基础课</span><span class="card-category-list-count">2</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">AI</span><span class="card-category-list-count">55</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/%E5%A4%A7%E4%BD%AC%E5%AD%A6%E4%B9%A0/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">大佬学习</span><span class="card-category-list-count">12</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/%E5%A4%A7%E4%BD%AC%E5%AD%A6%E4%B9%A0/mattpocock/"><span class="card-category-list-name">mattpocock</span><span class="card-category-list-count">12</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3AI%E9%9A%8F%E8%AE%B0/"><span class="card-category-list-name">深入理解AI随记</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/%E5%AE%9E%E4%B9%A0%E5%87%86%E5%A4%87/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">实习准备</span><span class="card-category-list-count">1</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/%E5%AE%9E%E4%B9%A0%E5%87%86%E5%A4%87/%E9%9D%A2%E8%AF%95/"><span class="card-category-list-name">面试</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/%E9%9A%8F%E8%AE%B0/"><span class="card-category-list-name">随记</span><span class="card-category-list-count">11</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/agent/"><span class="card-category-list-name">agent</span><span class="card-category-list-count">10</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/Hello-Agents/"><span class="card-category-list-name">Hello-Agents</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/learn-claude-code/"><span class="card-category-list-name">learn-claude-code</span><span class="card-category-list-count">14</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/openclaw/"><span class="card-category-list-name">openclaw</span><span class="card-category-list-count">2</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">back-end-java</span><span class="card-category-list-count">90</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/0-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">0.源码分析</span><span class="card-category-list-count">10</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/0-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/Mybatis/"><span class="card-category-list-name">Mybatis</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/0-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/SpringMVC/"><span class="card-category-list-name">SpringMVC</span><span class="card-category-list-count">9</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/1-JavaSE/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">1.JavaSE</span><span class="card-category-list-count">23</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/1-JavaSE/%E5%9F%BA%E7%A1%80%E7%AF%87%E2%80%94%E2%80%94%E9%9F%A9%E9%A1%BA%E5%B9%B3/"><span class="card-category-list-name">基础篇——韩顺平</span><span class="card-category-list-count">23</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/2-MySQL/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">2.MySQL</span><span class="card-category-list-count">14</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/2-MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/"><span class="card-category-list-name">基础篇</span><span class="card-category-list-count">14</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/3-JDBC/"><span class="card-category-list-name">3.JDBC</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/4-JavaWeb/"><span class="card-category-list-name">4.JavaWeb</span><span class="card-category-list-count">10</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/5-Maven%E4%B8%93%E9%A2%98/"><span class="card-category-list-name">5.Maven专题</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/6-SSM/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">6.SSM</span><span class="card-category-list-count">20</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/6-SSM/Mybatis/"><span class="card-category-list-name">Mybatis</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/6-SSM/Spring/"><span class="card-category-list-name">Spring</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/6-SSM/Spring-MVC/"><span class="card-category-list-name">Spring MVC</span><span class="card-category-list-count">11</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/6-SSM/SSM%E6%95%B4%E5%90%88/"><span class="card-category-list-name">SSM整合</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/7-SpringBoot/"><span class="card-category-list-name">7.SpringBoot</span><span class="card-category-list-count">7</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/docker/"><span class="card-category-list-name">docker</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/basic-408/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">basic-408</span><span class="card-category-list-count">10</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"><span class="card-category-list-name">数据结构</span><span class="card-category-list-count">10</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/dev-env/"><span class="card-category-list-name">dev-env</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/front-end/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">front-end</span><span class="card-category-list-count">2</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/front-end/vue/"><span class="card-category-list-name">vue</span><span class="card-category-list-count">2</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/go/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">go</span><span class="card-category-list-count">2</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/go/go%E5%85%A5%E9%97%A8-%E6%9E%AB%E6%9E%AB%E7%9F%A5%E9%81%93/"><span class="card-category-list-name">go入门-枫枫知道</span><span class="card-category-list-count">2</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">science</span><span class="card-category-list-count">131</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E6%AF%95%E4%B8%9A%E8%AE%BA%E6%96%87%E6%95%B4%E7%90%86/"><span class="card-category-list-name">毕业论文整理</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">小论文准备</span><span class="card-category-list-count">91</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">论文复现总结</span><span class="card-category-list-count">71</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E5%8F%AF%E8%83%BD%E4%BC%9A%E7%94%A8%E5%88%B0%E7%9A%84%E6%A8%A1%E5%9D%97/"><span class="card-category-list-name">可能会用到的模块</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">论文缝合方案实验记录</span><span class="card-category-list-count">12</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER-%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5-%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/"><span class="card-category-list-name">第一次实验：MENTER+用户注入+因果正则</span><span class="card-category-list-count">12</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/"><span class="card-category-list-name">论文梳理</span><span class="card-category-list-count">30</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E5%B0%8F%E8%AE%BA%E6%96%87%E6%95%85%E4%BA%8B%E7%BA%BF%E5%92%8C%E6%A8%A1%E5%9D%97%E8%AE%B0%E5%BD%95%E7%B4%A0%E6%9D%90/"><span class="card-category-list-name">小论文故事线和模块记录素材</span><span class="card-category-list-count">6</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">早期工作的基础知识</span><span class="card-category-list-count">18</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95/"><span class="card-category-list-name">基本方法</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%9F%BA%E6%9C%AC%E9%97%AE%E9%A2%98/"><span class="card-category-list-name">基本问题</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E8%AE%BA%E6%96%87/"><span class="card-category-list-name">论文</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/LightGCN%E7%9A%84%E6%BC%94%E5%8C%96/"><span class="card-category-list-name">LightGCN的演化</span><span class="card-category-list-count">6</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/pytorch%E5%9F%BA%E6%9C%AC%E5%8A%9F/"><span class="card-category-list-name">pytorch基本功</span><span class="card-category-list-count">3</span></a></li></ul></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E5%AE%9E%E9%AA%8C/"><span class="card-category-list-name">实验</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E6%B0%B4%E8%AE%BA%E6%96%87%E7%9A%84%E7%A8%8B%E5%BA%8F%E7%8C%BF/"><span class="card-category-list-name">水论文的程序猿</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83/"><span class="card-category-list-name">云服务器运行环境</span><span class="card-category-list-count">7</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/Github/"><span class="card-category-list-name">Github</span><span class="card-category-list-count">2</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">Pre</span><span class="card-category-list-count">39</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0/"><span class="card-category-list-name">代码实现</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">基础知识</span><span class="card-category-list-count">1</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/GNN/"><span class="card-category-list-name">GNN</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E8%AE%BA%E6%96%87%E6%95%B4%E7%90%86/"><span class="card-category-list-name">论文整理</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E6%A8%A1%E5%9E%8B%E6%95%B4%E7%90%86/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">模型整理</span><span class="card-category-list-count">2</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E6%A8%A1%E5%9E%8B%E6%95%B4%E7%90%86/%E5%BA%8F%E5%88%97%E6%8E%A8%E8%8D%90/"><span class="card-category-list-name">序列推荐</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">统计学习方法</span><span class="card-category-list-count">11</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1-%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/"><span class="card-category-list-name">1.监督学习</span><span class="card-category-list-count">8</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/2-%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/"><span class="card-category-list-name">2.无监督学习</span><span class="card-category-list-count">3</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/"><span class="card-category-list-name">综述</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/Awesome-LLM-for-RecSys-main/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">Awesome-LLM-for-RecSys-main</span><span class="card-category-list-count">1</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/Awesome-LLM-for-RecSys-main/Awesome-LLM-for-RecSys-main/"><span class="card-category-list-name">Awesome-LLM-for-RecSys-main</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/pytorch%E5%AD%A6%E4%B9%A0/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">pytorch学习</span><span class="card-category-list-count">19</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/pytorch%E5%AD%A6%E4%B9%A0/Transformer%E5%89%8D%E4%B8%96%E4%BB%8A%E7%94%9F/"><span class="card-category-list-name">Transformer前世今生</span><span class="card-category-list-count">19</span></a></li></ul></li></ul></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/tools/"><span class="card-category-list-name">tools</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/3-Resources%F0%9F%93%94/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">3.Resources📔</span><span class="card-category-list-count">5</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/3-Resources%F0%9F%93%94/%E8%AE%A4%E7%9F%A5%E5%8F%A5%E5%AD%90%E6%95%B4%E7%90%86/"><span class="card-category-list-name">认知句子整理</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/3-Resources%F0%9F%93%94/%E6%80%9D%E7%BB%B4%E8%AF%AF%E5%8C%BA%E6%95%B4%E7%90%86/"><span class="card-category-list-name">思维误区整理</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/3-Resources%F0%9F%93%94/communication/"><span class="card-category-list-name">communication</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/4-Archives%F0%9F%97%91/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">4.Archives🗑</span><span class="card-category-list-count">11</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/4-Archives%F0%9F%97%91/KOB/"><span class="card-category-list-name">KOB</span><span class="card-category-list-count">11</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/5-Tasks%F0%9F%93%9D/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">5.Tasks📝</span><span class="card-category-list-count">3</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/5-Tasks%F0%9F%93%9D/%E6%97%A5%E8%A7%84%E5%88%92/"><span class="card-category-list-name">日规划</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/5-Tasks%F0%9F%93%9D/%E6%80%BB%E4%BD%93%E8%A7%84%E5%88%92/"><span class="card-category-list-name">总体规划</span><span class="card-category-list-count">2</span></a></li></ul></li></ul></div></div></div><div id="toc-drawer-mask"></div><div id="toc-drawer"><div class="toc-drawer-body"><div id="toc-drawer-top"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar" loading="lazy"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">900</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">92</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">121</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div></div><div id="toc-drawer-main"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span class="toc-percentage"></span><button id="toc-drawer-close" type="button" title="关闭" aria-label="关闭"><i class="fas fa-times"></i></button></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2"><span class="toc-text">项目部署</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E7%8E%AF%E5%A2%83%E7%90%86%E8%AE%BA"><span class="toc-text">多环境理论</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E7%AB%AF%E5%A4%9A%E7%8E%AF%E5%A2%83"><span class="toc-text">前端多环境</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%8E%E7%AB%AF%E5%A4%9A%E7%8E%AF%E5%A2%83"><span class="toc-text">后端多环境</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%8E%9F%E7%94%9F%E9%83%A8%E7%BD%B2"><span class="toc-text">1. 原生部署</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E7%AB%AF"><span class="toc-text">前端</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%8E%E7%AB%AF"><span class="toc-text">后端</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%AE%9D%E5%A1%94linux%E4%BC%98%E5%8C%96"><span class="toc-text">2. 宝塔linux优化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E7%AB%AF-1"><span class="toc-text">前端</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%8E%E7%AB%AF-1"><span class="toc-text">后端</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%AE%B9%E5%99%A8"><span class="toc-text">3. 容器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F"><span class="toc-text">构建镜像</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#jdk8%EF%BC%88%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%9E%84%E5%BB%BA%EF%BC%89"><span class="toc-text">jdk8（服务器构建）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Java17%EF%BC%88%E6%9C%AC%E5%9C%B0%E6%9E%84%E5%BB%BA%EF%BC%89"><span class="toc-text">Java17（本地构建）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#nginx"><span class="toc-text">nginx</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E9%95%9C%E5%83%8F"><span class="toc-text">启动镜像</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%AE%B9%E5%99%A8%E5%B9%B3%E5%8F%B0"><span class="toc-text">4. 容器平台</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%9F%E5%90%8D%E9%85%8D%E7%BD%AE"><span class="toc-text">域名配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86"><span class="toc-text">nginx反向代理</span></a></li></ol></li></ol></div></div></div></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="切换到日间状态" aria-label="切换到日间状态"><i class="fas fa-moon"></i></button><div class="layout-switcher-wrap"><button id="layout-btn" type="button" title="单栏和双栏切换"><i class="fas fa-columns"></i></button><div class="layout-switcher" id="layout-switcher"><button class="layout-option" data-layout="left" type="button"><i class="fas fa-align-left"></i><span>左对齐</span></button><button class="layout-option" data-layout="immersive" type="button"><i class="fas fa-align-center"></i><span>沉浸模式</span></button><button class="layout-option" data-layout="right" type="button"><i class="fas fa-align-right"></i><span>右对齐</span></button></div></div></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(async () => {
+  const showKatex = () => {
+    document.querySelectorAll('#article-container .katex').forEach(el => el.classList.add('katex-show'))
+  }
+
+  if (!window.katex_js_css) {
+    window.katex_js_css = true
+    await btf.getCSS('https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css')
+    if (false) {
+      await btf.getScript('https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js')
+    }
+  }
+
+  showKatex()
+})()</script></div><script src="/js/custom.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script>(() => {
+  const option = null
+  const config = {"site_uv":true,"site_pv":true,"page_pv":true,"token":null}
+  const shareId = 'ldZzVkaLBXQp45r2'
+  let shareAuth = null
+  const getVal = v => v && typeof v === 'object' ? v.value : v
+
+  const runTrack = () => {
+    umami.track(props => ({ ...props, url: window.location.pathname, title: GLOBAL_CONFIG_SITE.title }))
+  }
+
+  const loadUmamiJS = () => {
+    // Load the vendored same-origin copy (source/js/app.js) so ad blockers
+    // cannot block the request. The filename is deliberately neutral: some
+    // blockers filter any URL containing "umami", even on the same origin.
+    // Tracking data is still POSTed to the Umami server via data-host-url.
+    btf.getScript('/js/app.js', {
+      'data-website-id': '2db0436a-1277-492a-b8d5-548e1a7c5bf4',
+      'data-host-url': 'https://umami.lingio.cn',
+      'data-auto-track': 'false',
+      ...option
+    }).then(runTrack).catch(() => {})
+  }
+
+  const getShareAuth = async () => {
+    if (!shareAuth) {
+      const res = await fetch(`https://umami.lingio.cn/api/share/${shareId}`)
+      if (!res.ok) throw new Error(`Failed to get Umami share token: ${res.status}`)
+      shareAuth = await res.json()
+    }
+    return shareAuth
+  }
+
+  const getData = async (isPost) => {
+    const now = Date.now()
+    const keyUrl = isPost ? `&url=${window.location.pathname}` : ''
+    const headerList = { 'Accept': 'application/json' }
+    let statsWebsiteId = '2db0436a-1277-492a-b8d5-548e1a7c5bf4'
+    if (shareId) {
+      const share = await getShareAuth()
+      statsWebsiteId = share.websiteId
+      headerList['x-umami-share-token'] = share.token
+      headerList['x-umami-share-context'] = '1'
+    } else if (true) {
+      headerList['Authorization'] = `Bearer ${config.token}`
+    } else {
+      headerList['x-umami-api-key'] = config.token
+    }
+    const res = await fetch(`https://umami.lingio.cn/api/websites/${statsWebsiteId}/stats?startAt=0000000000&endAt=${now}${keyUrl}`, {
+      method: "GET",
+      headers: headerList
+    })
+    return await res.json()
+  }
+
+  const insertData = async () => {
+    try {
+      if (GLOBAL_CONFIG_SITE.pageType === 'post' && config.page_pv) {
+        const pagePV = document.getElementById('umamiPV')
+        if (pagePV) {
+          const data = await getData(true)
+          pagePV.textContent = getVal(data.pageviews)
+        }
+      } else {
+        const data = (config.site_uv || config.site_pv) && await getData()
+        if (config.site_uv) {
+          const siteUV = document.getElementById('umami-site-uv')
+          if (siteUV) siteUV.textContent = getVal(data.visitors)
+        }
+        if (config.site_pv) {
+          const sitePV = document.getElementById('umami-site-pv')
+          if (sitePV) sitePV.textContent = getVal(data.pageviews)
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load Umami Analytics:', e)
+    }
+  }
+
+  btf.addGlobalFn('pjaxComplete', runTrack, 'umami_analytics_run_track')
+  btf.addGlobalFn('pjaxComplete', insertData, 'umami_analytics_insert')
+
+  loadUmamiJS()
+  insertData()
+})()</script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="/js/search/algolia-loader.js"></script></div></div></body></html>

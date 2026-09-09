@@ -1,0 +1,651 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>rag | yuezi</title><meta name="author" content="yuezi"><meta name="copyright" content="yuezi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="为什么要RAG：LLM存在固有知识、幻觉问题，RAG的则可以动态地为 LLM 注入外部知识。这一过程的核心是语义检索，但其依赖高质量的向量嵌入。 	 准备数据 数据加载（garbage in garbage out） 非结构化文档—（文档转换器）— 结构化文档+元数据 LangChain封装了一些Unstructed等库，如UnstructuredMarkdownLoader         工具">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rag">
+<meta property="og:url" content="https://yuezi2048.github.io/2026/06/30/2.Areas%F0%9F%8C%90/AI/%E9%9A%8F%E8%AE%B0/rag/index.html">
+<meta property="og:site_name" content="yuezi">
+<meta property="og:description" content="为什么要RAG：LLM存在固有知识、幻觉问题，RAG的则可以动态地为 LLM 注入外部知识。这一过程的核心是语义检索，但其依赖高质量的向量嵌入。 	 准备数据 数据加载（garbage in garbage out） 非结构化文档—（文档转换器）— 结构化文档+元数据 LangChain封装了一些Unstructed等库，如UnstructuredMarkdownLoader         工具">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuezi2048.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2026-06-30T14:53:02.000Z">
+<meta property="article:modified_time" content="2026-06-30T14:53:02.000Z">
+<meta property="article:author" content="yuezi">
+<meta property="article:tag" content="随记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuezi2048.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "rag",
+  "url": "https://yuezi2048.github.io/2026/06/30/2.Areas%F0%9F%8C%90/AI/%E9%9A%8F%E8%AE%B0/rag/",
+  "image": "https://yuezi2048.github.io/img/touxiang.jpg",
+  "datePublished": "2026-06-30T14:53:02.000Z",
+  "dateModified": "2026-06-30T14:53:02.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "yuezi",
+      "url": "https://yuezi2048.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://yuezi2048.github.io/2026/06/30/2.Areas%F0%9F%8C%90/AI/%E9%9A%8F%E8%AE%B0/rag/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'undefined')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'undefined')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"FPH6F2TOJL","apiKey":"06d9ea26c803ba912b4d8e13404ed34d","indexName":"blog","hitsPerPage":10,"languages":{"input_placeholder":"搜索","hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  algoliaAssets: {"client":"https://cdn.jsdelivr.net/npm/algoliasearch/dist/lite/builds/browser.umd.min.js","instantSearch":"https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js","runtime":"/js/search/algolia.js"},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false,
+  darkmodeTitle: {
+    night: '切换到日间状态',
+    day: '切换到夜间状态'
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'rag',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/backgound.css"><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 8.1.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar" loading="lazy"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">900</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">92</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">121</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/default.png);"><nav id="nav"><button class="site-page" id="tree-drawer-btn" type="button" title="目录导航" aria-label="目录导航"><i class="fas fa-bars fa-fw"></i></button><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">yuezi</span></a><a class="nav-page-title" href="/"><span class="site-name">rag</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><button class="site-page" id="toc-drawer-btn" type="button" title="目录" aria-label="目录"><i class="fas fa-list-ul fa-fw"></i></button><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><button class="site-page" id="darkmode-nav" type="button" title="切换到日间状态" aria-label="切换到日间状态"><i class="fas fa-fw fa-moon"></i></button><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">rag</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-06-30T14:53:02.000Z" title="发表于 2026-06-30 22:53:02">2026-06-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-06-30T14:53:02.000Z" title="更新于 2026-06-30 22:53:02">2026-06-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/">2.Areas🌐</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/AI/">AI</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/2-Areas%F0%9F%8C%90/AI/%E9%9A%8F%E8%AE%B0/">随记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">4.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>13分钟</span></span><span class="post-meta-separator">|</span><span id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="umamiPV" data-path="/2026/06/30/2.Areas%F0%9F%8C%90/AI/%E9%9A%8F%E8%AE%B0/rag/"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout hide-aside" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>为什么要RAG：LLM存在<strong>固有知识、幻觉</strong>问题，RAG的则可以动态地为 LLM 注入外部知识。这一过程的核心是<strong>语义检索</strong>，但其依赖高质量的向量嵌入。</p>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/4_5_1.webp" alt="retrieval" loading="lazy">	</p>
+<h2 id="准备数据"><a href="#准备数据" class="headerlink" title="准备数据"></a>准备数据</h2><ul>
+<li>数据加载<code>（garbage in garbage out）</code><ul>
+<li>非结构化文档—（文档转换器）— 结构化文档+元数据<ul>
+<li>LangChain封装了一些Unstructed等库，如<code>UnstructuredMarkdownLoader</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">工具名称</th>
+<th align="center">特点</th>
+<th align="center">适用场景</th>
+<th align="center">性能表现</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong>PyMuPDF4LLM</strong></td>
+<td align="center">PDF→Markdown转换，OCR+表格识别</td>
+<td align="center">科研文献、技术手册</td>
+<td align="center">开源免费，GPU加速</td>
+</tr>
+<tr>
+<td align="center"><strong>TextLoader</strong></td>
+<td align="center">基础文本文件加载</td>
+<td align="center">纯文本处理</td>
+<td align="center">轻量高效</td>
+</tr>
+<tr>
+<td align="center"><strong>DirectoryLoader</strong></td>
+<td align="center">批量目录文件处理</td>
+<td align="center">混合格式文档库</td>
+<td align="center">支持多格式扩展</td>
+</tr>
+<tr>
+<td align="center"><strong>Unstructured</strong></td>
+<td align="center">多格式文档解析</td>
+<td align="center">PDF、Word、HTML等</td>
+<td align="center">统一接口，智能解析</td>
+</tr>
+<tr>
+<td align="center"><strong>FireCrawlLoader</strong></td>
+<td align="center">网页内容抓取</td>
+<td align="center">在线文档、新闻</td>
+<td align="center">实时内容获取</td>
+</tr>
+<tr>
+<td align="center"><strong>LlamaParse</strong></td>
+<td align="center">深度PDF结构解析</td>
+<td align="center">法律合同、学术论文</td>
+<td align="center">解析精度高，商业API</td>
+</tr>
+<tr>
+<td align="center"><strong>Docling</strong></td>
+<td align="center">模块化企业级解析</td>
+<td align="center">企业合同、报告</td>
+<td align="center">IBM生态兼容</td>
+</tr>
+<tr>
+<td align="center"><strong>Marker</strong></td>
+<td align="center">PDF→Markdown，GPU加速</td>
+<td align="center">科研文献、书籍</td>
+<td align="center">专注PDF转换</td>
+</tr>
+<tr>
+<td align="center"><strong>MinerU</strong></td>
+<td align="center">多模态集成解析</td>
+<td align="center">学术文献、财务报表</td>
+<td align="center">集成LayoutLMv3+YOLOv8</td>
+</tr>
+</tbody></table>
+<ul>
+<li>分块（向量检索和模型处理的<strong>基本单位</strong>）<ul>
+<li>为什么要分块：嵌入模型上下文窗口（如bge-base-zh-v1.5限制512token）、LLM的窗口（一般百万token上下，但包含用户问题、提示词等）</li>
+<li>那直接分块上限不行吗？<strong>过大的窗口信息会稀释</strong>、<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/all-in-rag/#/chapter2/05_text_chunking?id=_222-%E7%94%9F%E6%88%90%E8%BF%87%E7%A8%8B%E7%9A%84%E5%A4%A7%E6%B5%B7%E6%8D%9E%E9%92%88-lost-in-the-middle">Lost in the Middle</a>、<code>一个好的分块应当明确且相互独立</code><ul>
+<li>Transformer：分词器将文本划分token（<strong>Tokenization</strong>）——然后会对token高维向量化（<strong>Vectorization</strong>）——通过[CLS] mean pooling等方式压缩成一个向量来表示语义（Pooling），这意味着模型看到的是压缩的向量，当一块文本包含信息过载，就会忽略细节特征。</li>
+</ul>
+</li>
+<li>分块策略（LangChain源码中）：<ul>
+<li><code>固定大小</code>（实际上并不是固定，优先保证连贯性，如果超过size会结束，如果一个段落超过了size会放入并警告，以及重叠长度）：<ul>
+<li>段落分割（<code>CharacterTextSplitter</code>按分隔符\n\n或者正则）</li>
+<li>智能合并（将分割段落合并，超过chunk_size后再生成新块，通过chunk_overlap重叠保证上下文连续）</li>
+<li>场景：固定大小牺牲一定连贯性换取开销速度，适合<strong>日志、数据预处理</strong></li>
+</ul>
+</li>
+<li><code>递归字符</code>（长文本处理）<ul>
+<li>分隔符层级递归切分（<code>RecursiveCharacterTextSplitter</code>）</li>
+<li>递归分块会继续使用更细粒度的分隔符（句子→单词→字符）直到满足大小要求（相比上一个警告并保留会好很多）。</li>
+</ul>
+</li>
+<li><code>语义分块</code><ul>
+<li><strong>断点识别</strong>（评估语义的差异）：百分位法、标准差法、四分位距法、梯度法</li>
+</ul>
+</li>
+<li><code>基于文档结构分块</code>（如Langchain的<code>MarkdownHeaderTextSplitter</code>）：先按标题分组，再按需细分<ul>
+<li>，既保留了文档的宏观逻辑结构（通过元数据），又确保了每个块的大小适中</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="索引构建"><a href="#索引构建" class="headerlink" title="索引构建"></a>索引构建</h2><ul>
+<li><p>Embedding：将处理好的chunk基于语义的Embedding高维嵌入 存入 向量数据库，便于我们用<strong>余弦相似度</strong>（<strong>点积</strong> 正则化）、<strong>欧氏距离</strong> 来衡量与查询语义的差距，进而进行后续的召回</p>
+<ul>
+<li><code>一个好的Embedding应当捕捉问题和文档之间的深层语义联系</code></li>
+</ul>
+</li>
+<li><p>构建思路演进</p>
+<ul>
+<li><p><code>静态嵌入</code>：Word2Vec （ Skip-gram 和 CBOW 架构，国王 - 男人 + 女人 ≈ 王后）GloVe （全局词-词共现矩阵）等，但无法处理一词多义。</p>
+</li>
+<li><p><code>动态上下文嵌入</code>：Transformer（Self-attention，生成词向量动态考虑其他词），<strong>BERT</strong>（加入MLM掩码等自监督任务 生成上下文嵌入），解决了一词多义难题。</p>
+</li>
+<li><p><code>更高质量的嵌入</code>：微调或指令（INSTRUCTOR 模型）适应特定领域语义、支持多粒度多模态（CLIP、<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/all-in-rag/#/chapter3/07_multimodal_embedding?id=%E4%B8%89%E3%80%81%E5%B8%B8%E7%94%A8%E5%A4%9A%E6%A8%A1%E6%80%81%E5%B5%8C%E5%85%A5%E6%A8%A1%E5%9E%8B%E4%BB%A5bge-visualized-m3%E4%B8%BA%E4%BE%8B">bge-visualized-m3)</a>）、支持混合检索（BGE-M3）</p>
+<ul>
+<li>CLIP是双编码器架构，图像+文本映射到共享向量空间中，通过对比学习训练双编码器，对齐图文向量空间。赋予了<strong>零样本（Zero-shot）识别能力</strong>，无需微调就有泛化的理解（如传统的分类任务，判断是否为猫，计算和对应文本的相似度即可）</li>
+</ul>
+<p><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/3_2_1.webp" alt="CLIP Architecture" loading="lazy"></p>
+</li>
+</ul>
+</li>
+<li><p>当前整体嵌入思路：一般是BERT变体，堆叠多个 <code>Transformer Encoder</code> 层作为双向表示学习网络。</p>
+<ul>
+<li>掩码语言模型MLM：掩盖15%加入[MASK]，让模型预测原始token，被迫学习token和上下文语义关系</li>
+<li>下一句预测NSP：构建A和B训练样本，50% B是A的真实下一句（isNext），剩下的是随机下一句（notNext），判断B是否是A的下一句，被迫学习句子连贯性<ul>
+<li>但后续预训练模型（如 RoBERTa、SBERT）发现NSP任务可能损害性能， 在预训练阶段移除了 NSP</li>
+</ul>
+</li>
+<li>现代模型针对性策略：<ul>
+<li>度量学习：直接以“相似度”作为优化目标，如（问题，答案）训练这些成对文本的相对距离，将负例推远。</li>
+<li>对比学习：将相似的样本（Anchor-Positive）“拉近”，将不相似的样本（Anchor-Negative）“推远”，通过构建三元组（Anchor, Positive, Negative）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>嵌入模型选型思路</p>
+<ul>
+<li>确定baseLine：<a target="_blank" rel="noopener" href="https://huggingface.co/spaces/mteb/leaderboard"><strong>MTEB (Massive Text Embedding Benchmark)</strong></a> 给出在<strong>特定数据集</strong>上的分类、聚类、检索、排序具体排名<ul>
+<li>x-y：参数量（模型潜力，计算资源）-任务得分（通用语义理解）</li>
+<li>气泡：大小是维度，颜色是最大处理长度</li>
+<li><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/3_1_3.webp" alt="MTEB 排行榜多维度评估示意图" loading="lazy"></li>
+</ul>
+</li>
+<li>根据业务构建私有数据集，典型问题+标准答案</li>
+<li>迭代优化：评估其召回的准确率和相关性，不断更新模型、调整RAG的环节（分块策略等）。</li>
+</ul>
+</li>
+<li><p>向量数据库：</p>
+<ul>
+<li><img src="https://yuezi-1308313119.cos.ap-guangzhou.myqcloud.com/typora-user-images/3_3_1.webp" alt="向量数据库分类图" style="zoom: 50%;"  loading="lazy"/>    
+</li>
+<li><p>为什么需要</p>
+<ul>
+<li><p>相似度检索：通过标量索引（如BITMAP）和向量索引（核心，HNSW IVF），大数据量下毫秒级别的ANN找到最相似的数据</p>
+<ul>
+<li><strong>基于树的方法</strong>：如 Annoy 使用的随机投影树，通过树形结构实现对数复杂度的搜索</li>
+<li><strong>基于哈希的方法</strong>：如 LSH（局部敏感哈希），通过哈希函数将相似向量映射到同一“桶”</li>
+<li><strong>基于图的方法</strong>：如 <code>HNSW</code>（分层可导航小世界图），通过多层邻近图结构实现快速搜索（可载入内存，低延迟）</li>
+<li><strong>基于量化的方法</strong>：如 Faiss 的<code> IVF</code>（<strong>倒排文件</strong>，聚类分桶，先找最相似的桶再精确搜索） 和 PQ，通过聚类和量化压缩向量（可载入内存，追求吞吐）</li>
+<li>补充：Milvus还提供了<strong>FLAT</strong>暴力搜索（高精度慢速度），DiskANN的方案（无法载入内存的海量数据）</li>
+</ul>
+</li>
+<li><p>CRUD：高维向量CRUD，查询可以支持标量字段过滤（如日期范围、聚类分析等业务个性化需求）</p>
+</li>
+<li><p>生态：可以便于LangChain、LLamaIndex和机器学习工作流的集成</p>
+</li>
+<li><table>
+<thead>
+<tr>
+<th><strong>维度</strong></th>
+<th><strong>向量数据库</strong></th>
+<th><strong>传统数据库 (RDBMS)</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>核心数据类型</strong></td>
+<td>高维向量 (Embeddings)</td>
+<td>结构化数据 (文本、数字、日期)</td>
+</tr>
+<tr>
+<td><strong>查询方式</strong></td>
+<td><strong>相似性搜索</strong> (ANN)</td>
+<td><strong>精确匹配</strong></td>
+</tr>
+<tr>
+<td><strong>索引机制</strong></td>
+<td>HNSW, IVF, LSH 等 ANN 索引</td>
+<td>B-Tree, Hash Index</td>
+</tr>
+<tr>
+<td><strong>主要应用场景</strong></td>
+<td>AI 应用、RAG、推荐系统、图像&#x2F;语音识别</td>
+<td>业务系统 (ERP, CRM)、金融交易、数据报表</td>
+</tr>
+<tr>
+<td><strong>数据规模</strong></td>
+<td>轻松应对千亿级向量</td>
+<td>通常在千万到亿级行数据，更大规模需复杂分库分表</td>
+</tr>
+<tr>
+<td><strong>性能特点</strong></td>
+<td>高维数据检索性能极高，计算密集型</td>
+<td>结构化数据查询快，高维数据查询性能呈指数级下降</td>
+</tr>
+<tr>
+<td><strong>一致性</strong></td>
+<td>通常为最终一致性</td>
+<td>强一致性 (ACID 事务)</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+</li>
+<li><p>Milvus说明：组件可以比喻成图书馆：Collection（图书馆，类似Table，是基本单位）-&gt;多个Partition（分区）-&gt;Schema（图书字段卡片）-&gt;Entity（书本身）-&gt;Alias（动态推荐书单，方便应用层切换）</p>
+<ul>
+<li>Collection需要优秀的Schma定义字段：新闻文章为例（典型的多模态、混合向量 Schema 设计场景）。将一篇文章拆解为：唯一的 <code>Article (ID)</code>、文本元数据（如 <code>Title</code>、<code>Author Info</code>）、图像信息（<code>Image URL</code>），并为图像和摘要内容分别生成了密集向量（<code>Image Embedding</code>, <code>Summary Embedding</code>）和稀疏向量（<code>Summary Sparse Embedding</code>）</li>
+<li>分区的意义：查询性能（减少范围）、便于管理</li>
+<li>Alias可以实现在应用层安全更新数据</li>
+<li>检索说明：<strong>近似最近邻</strong> ANN 是利用好索引，快速找到相似向量TopK，并不是暴力而是精度和速度的权衡结果<ul>
+<li>ANN增强策略：<strong>范围检索</strong> （特定范围，人脸&#x2F;异常识别等场景）、<strong>多向量混合检索</strong>（RRF排名平衡 WeightedRanker加权，这里是用到了并行检索+rerank融合，增强RAG）、<strong>分组检索</strong>（比如数据库文档，保证来自不同的来源场景）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>索引优化：</p>
+<ul>
+<li><code>上下文拓展</code>：小块文本精度高但缺乏上下文，因此引入LlamaIndex的<strong>句子窗口检索</strong>。先聚焦精确句子，再生成答案前扩展成更大的窗口，同时兼顾精度+上下文（气候报告案例，更详尽和连贯）</li>
+<li><code>结构化索引</code>：对索引加入元数据，便于定位<ul>
+<li><code>MarkdownHeaderTextSplitter</code>在分词时就可以将各级标题提取出来后存入元数据中，可以直接服务元数据过滤<ul>
+<li>思考：比如LlamaIndex 的PandasQueryEngine要eval执行python代码很危险，我选择创建摘要索引（便于路由）和内容索引（加入年份等元信息）（电影按年份路由问答案例）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="检索优化"><a href="#检索优化" class="headerlink" title="检索优化"></a>检索优化</h2><ul>
+<li><p>混合检索（获得更鲁棒、更准确结果，关键词稀疏向量+语义密集向量）</p>
+<ul>
+<li>向量说明<ul>
+<li>稀疏TF-IDF（BM25），可解释性好，每个维度有确切的词，专业名词可以精确匹配，但同义词无法识别</li>
+<li>密集， （如早期的Word2Vec、GloVe），可以理解同义词，泛化能力好，但可解释性差，需要算力训练，对于未登录词OOV（解决是子词分割，如BPE、WordPiece）处理不好</li>
+</ul>
+</li>
+<li>混合策略：<ul>
+<li>RRF倒排融合</li>
+<li>加权线性组合（归一化相加，比较好控制比例）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>查询构建（除了语义匹配，业务需要复杂的过滤、聚合等，思路是通过LLM将自然语言转换成结构化的请求）</p>
+<ul>
+<li>元数据文本：chunk一般会有元数据MetaData，在LangChain中有一个<strong>Self-Query Retriever</strong>，效果就是查一下2022年发布的机器学习的论文，就会自动把2022加入到MetaData，查询字符串就是精简的机器学习论文</li>
+<li>Cypher：可以衍生到图数据库Neo4j等表示匹配图的模式和关系（如一个人和一个国家的居住在的关系），Langchain提供了GraphCypherQAChain进行转换</li>
+<li>Text2SQL：在结构化数据中，MySQL中也是重点，翻译成能直接执行的SQL语句<ul>
+<li>挑战：幻觉输出（few shots，RAG、自纠错）、数据库理解（要求更精确的Create Schema）、用户输入的模糊性</li>
+<li>其中RAG除了DDL，还需要有表字段业务描述、业务术语同义词、复杂的查询样例（JOIN GROUP BY等特殊业务场景）</li>
+<li>为什么不建议用框架：黑盒问题，你很难判断是RAG还是检索，还是SQL生成的问题，比如上一节LangChain搭建搜索最短bili视频的查询异常，其实很难调试</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>查询重构与分发（查询翻译、查询路由）</p>
+<ul>
+<li>查询翻译：提示工程、多查询分解<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/all-in-rag/#/chapter4/14_query_rewriting?id=_12-%E5%A4%9A%E6%9F%A5%E8%AF%A2%E5%88%86%E8%A7%A3-multi-query">(Multi-query)</a>、退步提示<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/all-in-rag/#/chapter4/14_query_rewriting?id=_13-%E9%80%80%E6%AD%A5%E6%8F%90%E7%A4%BA%EF%BC%88step-back-prompting%EF%BC%89">Step-Back Prompting</a>、假设文档嵌入<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/all-in-rag/#/chapter4/14_query_rewriting?id=_14-%E5%81%87%E8%AE%BE%E6%80%A7%E6%96%87%E6%A1%A3%E5%B5%8C%E5%85%A5-hyde"> (HyDE)</a><ul>
+<li><code>提示工程</code>：如SelfQueryRetriever最短视频没法处理比较的场景，就可以通过提示词来处理这种场景<ul>
+<li><code>退步提示</code>：提升推理能力的提示词技巧，在细节繁多的问题且COT表现也不好的情况下，我们可以退后一步更抽象的问题（Step-back Question，如让他分析体积增加时气压变化，不如先让他思考背后的物理原理），让AI被迫思考问题背后的原理和概念，接下来他就会推理这个退步问题的答案，并基于该上下文解决具体问题。</li>
+</ul>
+</li>
+<li><code>多查询分解</code>：复杂的问题拆分成子问题，对子问题进行检索、合并、去重（如你对人工智能和当下职业裁员的看法就可以拆分）</li>
+<li><code>假设文档嵌入</code>：用户请求简短，所以就生成一个语义相近的虚拟答案靶子作为标准答案，编码后返回最相关的内容</li>
+</ul>
+</li>
+<li>查询路由：数据源（意图）路由（常见 不同的意图定位不同数据库）、组件路由（根据问题复杂度，来直接向量 &#x2F; Agent）、提示模板路由（优化生成）<ul>
+<li>意图识别：LLM构建“分类-分发”的流水线（分类器、路由分支、组合链条），在Langchain中有<strong>LCEL</strong><a target="_blank" rel="noopener" href="https://datawhalechina.github.io/all-in-rag/#fn-6">6</a>这样的链条声明参数，将组件进行串联。</li>
+<li>嵌入相似性路由：计算嵌入相似度进行。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>检索进阶</p>
+<ul>
+<li><p>重排序：RRF（<strong>零样本</strong>重排）、RankLLM、CrossEncoder（查询&amp;每个候选文档输出分数，需要n次模型推理）、ColBERT（优化效率，独立编码后期交互策略，计算查询token和文档中每个token的<strong>最大相似度</strong>，最后聚合最大相似度作为相关性）</p>
+</li>
+<li><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>RRF</th>
+<th>RankLLM</th>
+<th>Cross-Encoder</th>
+<th>ColBERT</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>核心机制</strong></td>
+<td>融合多个排名</td>
+<td>LLM 推理，生成排序列表</td>
+<td>联合编码查询与文档，计算单一相关分</td>
+<td>独立编码，后期交互</td>
+</tr>
+<tr>
+<td><strong>计算成本</strong></td>
+<td>低（简单数学计算）</td>
+<td>中 (API 费用与延迟)</td>
+<td>高（N次模型推理）</td>
+<td>中（向量点积计算）</td>
+</tr>
+<tr>
+<td><strong>交互粒度</strong></td>
+<td>无（仅排名）</td>
+<td>概念&#x2F;语义级</td>
+<td>句子级（Query-Doc Pair）</td>
+<td>Token 级</td>
+</tr>
+<tr>
+<td><strong>适用场景</strong></td>
+<td>多路召回结果融合</td>
+<td>高价值语义理解场景</td>
+<td>Top-K 精排</td>
+<td>Top-K 重排</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>压缩：检索到的chunk的后置处理，提炼关键内容，过滤噪声，避免信息过载影响LLM输出</p>
+<ul>
+<li>Langchain提供<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/all-in-rag/#/chapter4/15_advanced_retrieval_techniques?id=_21-langchain-%E7%9A%84-contextualcompressionretriever">ContextualCompressionRetriever</a>来内容提取，我们一般可以自定义重排器和管道（如ColBERT重排器集成压缩），探索思路<ul>
+<li>官方文档定位到<code>DocumentCompressorPipeline</code>可以组合压缩器，发现没有提供ColBERT重排功能，分析CompressionRetriever源码，得出是base_retriever得到原始文档，再由base_compressor进行压缩重排，得到核心基类base_compressor接收的核心参数对象BaseDocumentCompressor，参考其他实现的类，和使用案例，进行改造即可</li>
+<li>AI改造说明：需要提供给大模型的关键信息<code>BaseDocumentCompressor</code> 的源码和 <code>ContextualCompressionRetriever</code> 的源码及其使用示例、你的明确目标（实现 ColBERT 重排逻辑）、以及 LangChain 中其他重排器的代码作为参考。信息越充分，模型生成的代码越准确</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>校正：检索的内容可能是错误&#x2F;失败的，引申出C-RAG加入自我反思的步骤，对检索到的文档进行评估，进而采取不同的行动【检索-评估-行动】</p>
+<ul>
+<li>评估：正确&#x2F;不正确&#x2F;模糊，随之就是不同的行动：正确就进入知识提炼步骤、错误就知识重写，尝试联网搜索等、模糊就联网辅助生成答案。</li>
+<li>实现思路：可借助langgraph图结构来灵活构建条件判断和循环的复杂 RAG 流程</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>格式化生成（与外部系统&#x2F;工具交互）：</p>
+<ul>
+<li>LangChain提供<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/all-in-rag/#/chapter5/16_formatted_generation?id=_21-output-parsers">Output Parsers</a>的工具处理LLM的输出，加入了如何格式化输出的指令（str json pydantic等）</li>
+<li><a target="_blank" rel="noopener" href="https://datawhalechina.github.io/all-in-rag/#/chapter5/16_formatted_generation?id=%E4%B8%89%E3%80%81function-calling">Function Calling</a>：相比于提示工程输出JSON，Function Calling实际上结构化输出更稳定，也有意图识别的功能，更是可以后续构建与外部世界的交互。</li>
+</ul>
+</li>
+</ul>
+<h2 id="评估"><a href="#评估" class="headerlink" title="评估"></a>评估</h2><ul>
+<li><p>评估（评估RAG应用，量化追踪性能，幻觉定位问题根源）</p>
+<ul>
+<li>三元组：Query —— context（<strong>context_relevance</strong>） —— response（<strong>Faithfulness</strong> ）——Query（<strong>Answer Relevance</strong>）<ul>
+<li>Context_relevance：上下文是否和查询有关</li>
+<li>Faithfulness：关注模型是否严格遵循上下文</li>
+<li><strong>Answer Relevance</strong>：关注模型是否真正完整有效回答了问题</li>
+</ul>
+</li>
+<li>评估工作流：<ul>
+<li>检索评估（<strong>上下文相关性</strong>，通过高质量的标注数据集白盒测试 Precision@k(前k个相关比例) Recall@k(前k个相关在所有文档比例) F1  MRR(靠前) MAP(通过平均精确率AP计算兼顾精确和排名)</li>
+<li>响应评估（忠实度和答案相关性，一般端到端测试，忠实度要保证答案能在上下文找到，答案相关性保证切题，没有冗余信息），方法有两种<ul>
+<li><strong>基于大语言模型的评估</strong>（质量高但成本高有偏见）：忠实度是将生成的答案分解为一系列独立的声明或<strong>断言</strong>，对于每一个断言，在提供的上下文中进行验证，答案相关性则是评估者需要同时分析用户查询和生成的答案。评分时会惩罚那些答非所问、信息不完整或包含过多无关细节的答案</li>
+<li><strong>基于词汇重叠的经典指标</strong>（质量低但客观计算快成本低）：<strong>ROUGE</strong> 关注召回率，标准答案有多少个词语被生成答案所覆盖，来评估完整性，BLEU关注精确率，关注生成的词有效率，有长度过长的惩罚，衡量有效的词，<strong>METEOR</strong> 调和平均</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>评估工具</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://datawhalechina.github.io/all-in-rag/#/chapter6/19_common_tools?id=%E4%B8%80%E3%80%81llamaindex-evaluation">LlamaIndex Evaluation</a></li>
+<li><a target="_blank" rel="noopener" href="https://datawhalechina.github.io/all-in-rag/#/chapter6/19_common_tools?id=%E4%BA%8C%E3%80%81ragas">RAGAS</a></li>
+<li><a target="_blank" rel="noopener" href="https://datawhalechina.github.io/all-in-rag/#/chapter6/19_common_tools?id=%E4%B8%89%E3%80%81phoenix-arize-phoenix">Phoenix (Arize Phoenix)</a></li>
+</ul>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io">yuezi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://yuezi2048.github.io/2026/06/30/2.Areas%F0%9F%8C%90/AI/%E9%9A%8F%E8%AE%B0/rag/">https://yuezi2048.github.io/2026/06/30/2.Areas🌐/AI/随记/rag/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://yuezi2048.github.io" target="_blank">yuezi</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E9%9A%8F%E8%AE%B0/">随记</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="qq,wechat"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By yuezi</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="tree-drawer-mask"></div><div id="tree-drawer"><div class="tree-drawer-head"><span><i class="fas fa-folder-open"></i>目录导航</span><button id="tree-drawer-close" type="button" title="关闭" aria-label="关闭"><i class="fas fa-times"></i></button></div><div class="tree-drawer-body"><div class="card-widget card-categories card-category-tree"><ul class="card-category-list expandBtn" id="drawer-cat-list"><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/0-InBox%F0%9F%90%AD/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">0.InBox🐭</span><span class="card-category-list-count">3</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/0-InBox%F0%9F%90%AD/md/"><span class="card-category-list-name">md</span><span class="card-category-list-count">3</span></a></li></ul></li><li class="card-category-list-item parent on-path"><a class="card-category-list-link expand" href="/categories/2-Areas%F0%9F%8C%90/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">2.Areas🌐</span><span class="card-category-list-count">877</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/00-%E7%A7%8B%E6%8B%9B%E5%87%86%E5%A4%87%E6%96%B9%E5%90%91/"><span class="card-category-list-name">00.秋招准备方向</span><span class="card-category-list-count">7</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">01.project</span><span class="card-category-list-count">54</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">condefather</span><span class="card-category-list-count">37</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/tuku/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">tuku</span><span class="card-category-list-count">2</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/tuku/backend/"><span class="card-category-list-name">backend</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/user-center/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">user-center</span><span class="card-category-list-count">9</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/user-center/back-end/"><span class="card-category-list-name">back-end</span><span class="card-category-list-count">8</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/user-center/front-end/"><span class="card-category-list-name">front-end</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/yu-ai-agent/"><span class="card-category-list-name">yu-ai-agent</span><span class="card-category-list-count">11</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/yupao/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">yupao</span><span class="card-category-list-count">14</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/condefather/yupao/back-end/"><span class="card-category-list-name">back-end</span><span class="card-category-list-count">13</span></a></li></ul></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/invoice-manager-BugVault/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">invoice-manager&amp;BugVault</span><span class="card-category-list-count">17</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/invoice-manager-BugVault/%E5%87%86%E5%A4%871/"><span class="card-category-list-name">准备1</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/01-project/invoice-manager-BugVault/resume/"><span class="card-category-list-name">resume</span><span class="card-category-list-count">8</span></a></li></ul></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">02.面经记录</span><span class="card-category-list-count">501</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AF%BC%E5%9B%BE%E8%BE%93%E5%87%BA/"><span class="card-category-list-name">导图输出</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%BF%AB%E9%80%9F%E5%9B%9E%E9%A1%BE/"><span class="card-category-list-name">快速回顾</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">面试鸭</span><span class="card-category-list-count">484</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/408-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"><span class="card-category-list-name">408-计算机网络</span><span class="card-category-list-count">36</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/Java%E5%9F%BA%E7%A1%80/"><span class="card-category-list-name">Java基础</span><span class="card-category-list-count">64</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/Java%E9%9B%86%E5%90%88/"><span class="card-category-list-name">Java集合</span><span class="card-category-list-count">26</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/JUC/"><span class="card-category-list-name">JUC</span><span class="card-category-list-count">63</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/JVM/"><span class="card-category-list-name">JVM</span><span class="card-category-list-count">47</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/mybatis/"><span class="card-category-list-name">mybatis</span><span class="card-category-list-count">17</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/MySQL/"><span class="card-category-list-name">MySQL</span><span class="card-category-list-count">81</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/Redis/"><span class="card-category-list-name">Redis</span><span class="card-category-list-count">53</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/Spring/"><span class="card-category-list-name">Spring</span><span class="card-category-list-count">71</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%9D%A2%E8%AF%95%E9%B8%AD/SpringBoot/"><span class="card-category-list-name">SpringBoot</span><span class="card-category-list-count">26</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">实习面试总结</span><span class="card-category-list-count">7</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E5%AE%9E%E4%B9%A0%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/ai%E9%9D%A2%E8%AF%95/"><span class="card-category-list-name">ai面试</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%A1%B9%E7%9B%AE/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">项目</span><span class="card-category-list-count">4</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/%E9%A1%B9%E7%9B%AE/%E4%BA%91%E5%9B%BE%E5%BA%93/"><span class="card-category-list-name">云图库</span><span class="card-category-list-count">3</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/02-%E9%9D%A2%E7%BB%8F%E8%AE%B0%E5%BD%95/ai%E6%A8%A1%E6%8B%9F/"><span class="card-category-list-name">ai模拟</span><span class="card-category-list-count">3</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/03-algorithm/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">03.algorithm</span><span class="card-category-list-count">23</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/03-algorithm/01/"><span class="card-category-list-name">01</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/03-algorithm/%E4%BB%A3%E7%A0%81%E9%9A%8F%E6%83%B3%E5%BD%95/"><span class="card-category-list-name">代码随想录</span><span class="card-category-list-count">15</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/03-algorithm/%E5%AE%9E%E4%B9%A0%E5%87%86%E5%A4%87%E6%80%9D%E8%B7%AF/"><span class="card-category-list-name">实习准备思路</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/03-algorithm/%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80%E8%AF%BE/"><span class="card-category-list-name">算法基础课</span><span class="card-category-list-count">2</span></a></li></ul></li><li class="card-category-list-item parent on-path"><a class="card-category-list-link expand" href="/categories/2-Areas%F0%9F%8C%90/AI/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">AI</span><span class="card-category-list-count">55</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/%E5%A4%A7%E4%BD%AC%E5%AD%A6%E4%B9%A0/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">大佬学习</span><span class="card-category-list-count">12</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/%E5%A4%A7%E4%BD%AC%E5%AD%A6%E4%B9%A0/mattpocock/"><span class="card-category-list-name">mattpocock</span><span class="card-category-list-count">12</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3AI%E9%9A%8F%E8%AE%B0/"><span class="card-category-list-name">深入理解AI随记</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/%E5%AE%9E%E4%B9%A0%E5%87%86%E5%A4%87/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">实习准备</span><span class="card-category-list-count">1</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/%E5%AE%9E%E4%B9%A0%E5%87%86%E5%A4%87/%E9%9D%A2%E8%AF%95/"><span class="card-category-list-name">面试</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item  on-path current"><a class="card-category-list-link expand" href="/categories/2-Areas%F0%9F%8C%90/AI/%E9%9A%8F%E8%AE%B0/"><span class="card-category-list-name">随记</span><span class="card-category-list-count">11</span></a><ul class="card-category-list child posts"><li class="card-category-list-item"><a class="card-category-list-link" href="/2026/04/20/2.Areas%F0%9F%8C%90/AI/%E9%9A%8F%E8%AE%B0/AI%20native/"><span class="card-category-list-name">AI native</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2026/05/21/2.Areas%F0%9F%8C%90/AI/%E9%9A%8F%E8%AE%B0/Effective%20context%20engineering%20for%20AI%20agents/"><span class="card-category-list-name">Effective context engineering for AI agents</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2026/07/01/2.Areas%F0%9F%8C%90/AI/%E9%9A%8F%E8%AE%B0/agent/"><span class="card-category-list-name">agent</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2026/05/21/2.Areas%F0%9F%8C%90/AI/%E9%9A%8F%E8%AE%B0/multi-agents/"><span class="card-category-list-name">multi-agents</span></a></li><li class="card-category-list-item"><a class="card-category-list-link active" href="/2026/06/30/2.Areas%F0%9F%8C%90/AI/%E9%9A%8F%E8%AE%B0/rag/"><span class="card-category-list-name">rag</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2026/07/21/2.Areas%F0%9F%8C%90/AI/%E9%9A%8F%E8%AE%B0/skill/"><span class="card-category-list-name">skill</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2026/05/21/2.Areas%F0%9F%8C%90/AI/%E9%9A%8F%E8%AE%B0/building-effective-agents/"><span class="card-category-list-name">building-effective-agents</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2026/07/21/2.Areas%F0%9F%8C%90/AI/%E9%9A%8F%E8%AE%B0/%E5%89%8D%E7%AB%AF%E7%BE%8E%E5%8C%96/"><span class="card-category-list-name">前端美化</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2026/07/02/2.Areas%F0%9F%8C%90/AI/%E9%9A%8F%E8%AE%B0/%E6%90%BA%E7%A8%8B%E5%AF%B9%E7%85%A7JD%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/"><span class="card-category-list-name">携程对照JD面试准备</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2026/07/01/2.Areas%F0%9F%8C%90/AI/%E9%9A%8F%E8%AE%B0/%E8%85%BE%E8%AE%AFai%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/"><span class="card-category-list-name">腾讯ai面试复盘</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/2026/05/25/2.Areas%F0%9F%8C%90/AI/%E9%9A%8F%E8%AE%B0/%E9%A1%B9%E7%9B%AE%E6%89%93%E7%AE%97/"><span class="card-category-list-name">项目打算</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/agent/"><span class="card-category-list-name">agent</span><span class="card-category-list-count">10</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/Hello-Agents/"><span class="card-category-list-name">Hello-Agents</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/learn-claude-code/"><span class="card-category-list-name">learn-claude-code</span><span class="card-category-list-count">14</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/AI/openclaw/"><span class="card-category-list-name">openclaw</span><span class="card-category-list-count">2</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">back-end-java</span><span class="card-category-list-count">90</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/0-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">0.源码分析</span><span class="card-category-list-count">10</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/0-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/Mybatis/"><span class="card-category-list-name">Mybatis</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/0-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/SpringMVC/"><span class="card-category-list-name">SpringMVC</span><span class="card-category-list-count">9</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/1-JavaSE/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">1.JavaSE</span><span class="card-category-list-count">23</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/1-JavaSE/%E5%9F%BA%E7%A1%80%E7%AF%87%E2%80%94%E2%80%94%E9%9F%A9%E9%A1%BA%E5%B9%B3/"><span class="card-category-list-name">基础篇——韩顺平</span><span class="card-category-list-count">23</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/2-MySQL/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">2.MySQL</span><span class="card-category-list-count">14</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/2-MySQL/%E5%9F%BA%E7%A1%80%E7%AF%87/"><span class="card-category-list-name">基础篇</span><span class="card-category-list-count">14</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/3-JDBC/"><span class="card-category-list-name">3.JDBC</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/4-JavaWeb/"><span class="card-category-list-name">4.JavaWeb</span><span class="card-category-list-count">10</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/5-Maven%E4%B8%93%E9%A2%98/"><span class="card-category-list-name">5.Maven专题</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/6-SSM/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">6.SSM</span><span class="card-category-list-count">20</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/6-SSM/Mybatis/"><span class="card-category-list-name">Mybatis</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/6-SSM/Spring/"><span class="card-category-list-name">Spring</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/6-SSM/Spring-MVC/"><span class="card-category-list-name">Spring MVC</span><span class="card-category-list-count">11</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/6-SSM/SSM%E6%95%B4%E5%90%88/"><span class="card-category-list-name">SSM整合</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/7-SpringBoot/"><span class="card-category-list-name">7.SpringBoot</span><span class="card-category-list-count">7</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/back-end-java/docker/"><span class="card-category-list-name">docker</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/basic-408/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">basic-408</span><span class="card-category-list-count">10</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/basic-408/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"><span class="card-category-list-name">数据结构</span><span class="card-category-list-count">10</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/dev-env/"><span class="card-category-list-name">dev-env</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/front-end/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">front-end</span><span class="card-category-list-count">2</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/front-end/vue/"><span class="card-category-list-name">vue</span><span class="card-category-list-count">2</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/go/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">go</span><span class="card-category-list-count">2</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/go/go%E5%85%A5%E9%97%A8-%E6%9E%AB%E6%9E%AB%E7%9F%A5%E9%81%93/"><span class="card-category-list-name">go入门-枫枫知道</span><span class="card-category-list-count">2</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">science</span><span class="card-category-list-count">131</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E6%AF%95%E4%B8%9A%E8%AE%BA%E6%96%87%E6%95%B4%E7%90%86/"><span class="card-category-list-name">毕业论文整理</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">小论文准备</span><span class="card-category-list-count">91</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">论文复现总结</span><span class="card-category-list-count">71</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E5%8F%AF%E8%83%BD%E4%BC%9A%E7%94%A8%E5%88%B0%E7%9A%84%E6%A8%A1%E5%9D%97/"><span class="card-category-list-name">可能会用到的模块</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">论文缝合方案实验记录</span><span class="card-category-list-count">12</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E7%BC%9D%E5%90%88%E6%96%B9%E6%A1%88%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%AE%9E%E9%AA%8C%EF%BC%9AMENTER-%E7%94%A8%E6%88%B7%E6%B3%A8%E5%85%A5-%E5%9B%A0%E6%9E%9C%E6%AD%A3%E5%88%99/"><span class="card-category-list-name">第一次实验：MENTER+用户注入+因果正则</span><span class="card-category-list-count">12</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E8%AE%BA%E6%96%87%E6%A2%B3%E7%90%86/"><span class="card-category-list-name">论文梳理</span><span class="card-category-list-count">30</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E5%B0%8F%E8%AE%BA%E6%96%87%E6%95%85%E4%BA%8B%E7%BA%BF%E5%92%8C%E6%A8%A1%E5%9D%97%E8%AE%B0%E5%BD%95%E7%B4%A0%E6%9D%90/"><span class="card-category-list-name">小论文故事线和模块记录素材</span><span class="card-category-list-count">6</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">早期工作的基础知识</span><span class="card-category-list-count">18</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95/"><span class="card-category-list-name">基本方法</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E5%9F%BA%E6%9C%AC%E9%97%AE%E9%A2%98/"><span class="card-category-list-name">基本问题</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E8%AE%BA%E6%96%87/"><span class="card-category-list-name">论文</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/LightGCN%E7%9A%84%E6%BC%94%E5%8C%96/"><span class="card-category-list-name">LightGCN的演化</span><span class="card-category-list-count">6</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E8%AE%BA%E6%96%87%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/%E6%97%A9%E6%9C%9F%E5%B7%A5%E4%BD%9C%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/pytorch%E5%9F%BA%E6%9C%AC%E5%8A%9F/"><span class="card-category-list-name">pytorch基本功</span><span class="card-category-list-count">3</span></a></li></ul></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E5%AE%9E%E9%AA%8C/"><span class="card-category-list-name">实验</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E6%B0%B4%E8%AE%BA%E6%96%87%E7%9A%84%E7%A8%8B%E5%BA%8F%E7%8C%BF/"><span class="card-category-list-name">水论文的程序猿</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83/"><span class="card-category-list-name">云服务器运行环境</span><span class="card-category-list-count">7</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/%E5%B0%8F%E8%AE%BA%E6%96%87%E5%87%86%E5%A4%87/Github/"><span class="card-category-list-name">Github</span><span class="card-category-list-count">2</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">Pre</span><span class="card-category-list-count">39</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0/"><span class="card-category-list-name">代码实现</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">基础知识</span><span class="card-category-list-count">1</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/GNN/"><span class="card-category-list-name">GNN</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E8%AE%BA%E6%96%87%E6%95%B4%E7%90%86/"><span class="card-category-list-name">论文整理</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E6%A8%A1%E5%9E%8B%E6%95%B4%E7%90%86/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">模型整理</span><span class="card-category-list-count">2</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E6%A8%A1%E5%9E%8B%E6%95%B4%E7%90%86/%E5%BA%8F%E5%88%97%E6%8E%A8%E8%8D%90/"><span class="card-category-list-name">序列推荐</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">统计学习方法</span><span class="card-category-list-count">11</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/1-%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/"><span class="card-category-list-name">1.监督学习</span><span class="card-category-list-count">8</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/2-%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/"><span class="card-category-list-name">2.无监督学习</span><span class="card-category-list-count">3</span></a></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/%E7%BB%BC%E8%BF%B0/"><span class="card-category-list-name">综述</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/Awesome-LLM-for-RecSys-main/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">Awesome-LLM-for-RecSys-main</span><span class="card-category-list-count">1</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/Awesome-LLM-for-RecSys-main/Awesome-LLM-for-RecSys-main/"><span class="card-category-list-name">Awesome-LLM-for-RecSys-main</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/pytorch%E5%AD%A6%E4%B9%A0/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">pytorch学习</span><span class="card-category-list-count">19</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/science/Pre/pytorch%E5%AD%A6%E4%B9%A0/Transformer%E5%89%8D%E4%B8%96%E4%BB%8A%E7%94%9F/"><span class="card-category-list-name">Transformer前世今生</span><span class="card-category-list-count">19</span></a></li></ul></li></ul></li></ul></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/2-Areas%F0%9F%8C%90/tools/"><span class="card-category-list-name">tools</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/3-Resources%F0%9F%93%94/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">3.Resources📔</span><span class="card-category-list-count">5</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/3-Resources%F0%9F%93%94/%E8%AE%A4%E7%9F%A5%E5%8F%A5%E5%AD%90%E6%95%B4%E7%90%86/"><span class="card-category-list-name">认知句子整理</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/3-Resources%F0%9F%93%94/%E6%80%9D%E7%BB%B4%E8%AF%AF%E5%8C%BA%E6%95%B4%E7%90%86/"><span class="card-category-list-name">思维误区整理</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/3-Resources%F0%9F%93%94/communication/"><span class="card-category-list-name">communication</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/4-Archives%F0%9F%97%91/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">4.Archives🗑</span><span class="card-category-list-count">11</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/4-Archives%F0%9F%97%91/KOB/"><span class="card-category-list-name">KOB</span><span class="card-category-list-count">11</span></a></li></ul></li><li class="card-category-list-item parent"><a class="card-category-list-link" href="/categories/5-Tasks%F0%9F%93%9D/"><i class="fas fa-caret-right tree-caret" title="点击展开/收起"></i><span class="card-category-list-name">5.Tasks📝</span><span class="card-category-list-count">3</span><i class="fas fa-folder-open tree-open" title="打开分类页"></i></a><ul class="card-category-list child"><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/5-Tasks%F0%9F%93%9D/%E6%97%A5%E8%A7%84%E5%88%92/"><span class="card-category-list-name">日规划</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item"><a class="card-category-list-link" href="/categories/5-Tasks%F0%9F%93%9D/%E6%80%BB%E4%BD%93%E8%A7%84%E5%88%92/"><span class="card-category-list-name">总体规划</span><span class="card-category-list-count">2</span></a></li></ul></li></ul></div></div></div><div id="toc-drawer-mask"></div><div id="toc-drawer"><div class="toc-drawer-body"><div id="toc-drawer-top"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar" loading="lazy"/></div><div class="author-info-name">yuezi</div><div class="author-info-description">积微者速成</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">900</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">92</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">121</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/yuezi2048"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://githubfast.com/yuezi2048" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_46345703" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=dD62GIPTf5-iS4UdSfJRy7NHwsrCh3-j" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:joyLing@stumail.nwu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">积微者速成</div></div></div><div id="toc-drawer-main"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span class="toc-percentage"></span><button id="toc-drawer-close" type="button" title="关闭" aria-label="关闭"><i class="fas fa-times"></i></button></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E6%95%B0%E6%8D%AE"><span class="toc-text">准备数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E6%9E%84%E5%BB%BA"><span class="toc-text">索引构建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A3%80%E7%B4%A2%E4%BC%98%E5%8C%96"><span class="toc-text">检索优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%84%E4%BC%B0"><span class="toc-text">评估</span></a></li></ol></div></div></div></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="切换到日间状态" aria-label="切换到日间状态"><i class="fas fa-moon"></i></button><div class="layout-switcher-wrap"><button id="layout-btn" type="button" title="单栏和双栏切换"><i class="fas fa-columns"></i></button><div class="layout-switcher" id="layout-switcher"><button class="layout-option" data-layout="left" type="button"><i class="fas fa-align-left"></i><span>左对齐</span></button><button class="layout-option" data-layout="immersive" type="button"><i class="fas fa-align-center"></i><span>沉浸模式</span></button><button class="layout-option" data-layout="right" type="button"><i class="fas fa-align-right"></i><span>右对齐</span></button></div></div></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(async () => {
+  const showKatex = () => {
+    document.querySelectorAll('#article-container .katex').forEach(el => el.classList.add('katex-show'))
+  }
+
+  if (!window.katex_js_css) {
+    window.katex_js_css = true
+    await btf.getCSS('https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css')
+    if (false) {
+      await btf.getScript('https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js')
+    }
+  }
+
+  showKatex()
+})()</script></div><script src="/js/custom.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script>(() => {
+  const option = null
+  const config = {"site_uv":true,"site_pv":true,"page_pv":true,"token":null}
+  const shareId = 'ldZzVkaLBXQp45r2'
+  let shareAuth = null
+  const getVal = v => v && typeof v === 'object' ? v.value : v
+
+  const runTrack = () => {
+    umami.track(props => ({ ...props, url: window.location.pathname, title: GLOBAL_CONFIG_SITE.title }))
+  }
+
+  const loadUmamiJS = () => {
+    // Load the vendored same-origin copy (source/js/app.js) so ad blockers
+    // cannot block the request. The filename is deliberately neutral: some
+    // blockers filter any URL containing "umami", even on the same origin.
+    // Tracking data is still POSTed to the Umami server via data-host-url.
+    btf.getScript('/js/app.js', {
+      'data-website-id': '2db0436a-1277-492a-b8d5-548e1a7c5bf4',
+      'data-host-url': 'https://umami.lingio.cn',
+      'data-auto-track': 'false',
+      ...option
+    }).then(runTrack).catch(() => {})
+  }
+
+  const getShareAuth = async () => {
+    if (!shareAuth) {
+      const res = await fetch(`https://umami.lingio.cn/api/share/${shareId}`)
+      if (!res.ok) throw new Error(`Failed to get Umami share token: ${res.status}`)
+      shareAuth = await res.json()
+    }
+    return shareAuth
+  }
+
+  const getData = async (isPost) => {
+    const now = Date.now()
+    const keyUrl = isPost ? `&url=${window.location.pathname}` : ''
+    const headerList = { 'Accept': 'application/json' }
+    let statsWebsiteId = '2db0436a-1277-492a-b8d5-548e1a7c5bf4'
+    if (shareId) {
+      const share = await getShareAuth()
+      statsWebsiteId = share.websiteId
+      headerList['x-umami-share-token'] = share.token
+      headerList['x-umami-share-context'] = '1'
+    } else if (true) {
+      headerList['Authorization'] = `Bearer ${config.token}`
+    } else {
+      headerList['x-umami-api-key'] = config.token
+    }
+    const res = await fetch(`https://umami.lingio.cn/api/websites/${statsWebsiteId}/stats?startAt=0000000000&endAt=${now}${keyUrl}`, {
+      method: "GET",
+      headers: headerList
+    })
+    return await res.json()
+  }
+
+  const insertData = async () => {
+    try {
+      if (GLOBAL_CONFIG_SITE.pageType === 'post' && config.page_pv) {
+        const pagePV = document.getElementById('umamiPV')
+        if (pagePV) {
+          const data = await getData(true)
+          pagePV.textContent = getVal(data.pageviews)
+        }
+      } else {
+        const data = (config.site_uv || config.site_pv) && await getData()
+        if (config.site_uv) {
+          const siteUV = document.getElementById('umami-site-uv')
+          if (siteUV) siteUV.textContent = getVal(data.visitors)
+        }
+        if (config.site_pv) {
+          const sitePV = document.getElementById('umami-site-pv')
+          if (sitePV) sitePV.textContent = getVal(data.pageviews)
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load Umami Analytics:', e)
+    }
+  }
+
+  btf.addGlobalFn('pjaxComplete', runTrack, 'umami_analytics_run_track')
+  btf.addGlobalFn('pjaxComplete', insertData, 'umami_analytics_insert')
+
+  loadUmamiJS()
+  insertData()
+})()</script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="/js/search/algolia-loader.js"></script></div></div></body></html>
